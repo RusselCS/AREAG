@@ -1,0 +1,6 @@
+# Compiled pk3 files and anything in the distribution folder.
+dist/*.pk3
+mm4sp-pk3/acs/*.o
+*.dbs
+*.backup*
+*.bak
