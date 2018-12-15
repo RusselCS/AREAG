@@ -1,0 +1,23 @@
+clearepisodes
+clearskills
+
+episode TESTMAP
+{
+	name = "Adventure Now"
+}
+
+skill normal
+{
+   SpawnFilter = normal
+   DefaultSkill
+}
+
+cluster 1
+{
+	hub
+}
+
+DoomEdNums
+{
+	10561 = TabletActivatable
+}

@@ -1,0 +1,114 @@
+function int iterateTowards(int base, int amount, int dest)
+{
+	if(dest < base)
+	{
+		return max(base - amount, dest);
+	}
+	return min(base + amount, dest);
+}
+
+function int abs(int x)
+{
+	if(x < 0)
+	{
+		return -x;
+	}
+	return x;
+}
+
+function int max(int x, int y)
+{
+	if(x > y)
+		return x;
+	return y;
+}
+
+function int min(int x, int y)
+{
+	if(x < y)
+		return x;
+	return y;
+}
+
+function int clamp(int n, int mx, int mn)
+{
+	if(n > mx)
+		return mx;
+	if(n < mn)
+		return mn;
+	return n;
+}
+
+function int GetActorMaxHealth(int tid)
+{
+	return GetActorProperty(tid, APROP_SPAWNHEALTH);
+}
+
+function void SetActorMaxHealth(int tid, int hp)
+{
+	SetActorProperty(tid, APROP_SPAWNHEALTH, hp);
+}
+
+function int GetActorHealth(int tid)
+{
+	return GetActorProperty(tid, APROP_HEALTH);
+}
+
+function void SetActorHealth(int tid, int hp)
+{
+	SetActorProperty(tid, APROP_HEALTH, hp);
+}
+
+function bool checkButtonReleased(int button, int buttons, int oldButtons)
+{
+	if(!(buttons & button) && (oldButtons & button))
+	{
+		return true;
+	}
+	return false;
+}
+
+function bool checkButtonPressed(int button, int buttons, int oldButtons)
+{
+	if((buttons & button) && !(oldButtons & button))
+	{
+		return true;
+	}
+	return false;
+}
+
+function bool inRange(int check, int source, int range)
+{
+	return check > source - range && check < source + range;
+}
+
+
+function void SetInventory(str inv, int amt)
+{
+	int oldamt = CheckInventory(inv);
+	if(oldamt>amt)
+	{
+		TakeInventory(inv, oldamt-amt);
+	}
+	else
+	{
+		GiveInventory(inv, amt-oldamt);
+	}
+}
+
+function bool anyButtonPressed(int buttons, int oldButtons)
+{
+	return
+		((buttons & BT_FORWARD) && !(oldButtons & BT_FORWARD)) ||
+		((buttons & BT_BACK) && !(oldButtons & BT_BACK)) ||
+		((buttons & BT_LEFT) && !(oldButtons & BT_LEFT)) ||
+		((buttons & BT_RIGHT) && !(oldButtons & BT_RIGHT)) ||
+		((buttons & BT_MOVELEFT) && !(oldButtons & BT_MOVELEFT)) ||
+		((buttons & BT_MOVERIGHT) && !(oldButtons & BT_MOVERIGHT)) ||
+		((buttons & BT_ATTACK) && !(oldButtons & BT_ATTACK)) ||
+		((buttons & BT_ALTATTACK) && !(oldButtons & BT_ALTATTACK)) ||
+		((buttons & BT_USE) && !(oldButtons & BT_USE)) ||
+		((buttons & BT_JUMP) && !(oldButtons & BT_JUMP)) ||
+		((buttons & BT_LOOKUP) && !(oldButtons & BT_LOOKUP)) ||
+		((buttons & BT_LOOKDOWN) && !(oldButtons & BT_LOOKDOWN));
+}

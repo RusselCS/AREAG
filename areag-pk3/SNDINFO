@@ -1,0 +1,82 @@
+$playersound	clyde	male	*death		PLDEATH // LA-MULANA
+$playersound	clyde	male	*xdeath		PLDEATH // LA-MULANA
+$playersound	clyde	male	*gibbed		PLDEATH // LA-MULANA
+$playersound	clyde	male	*pain100	dsnone
+$playersound	clyde	male	*pain75		dsnone
+$playersound	clyde	male	*pain50		dsnone
+$playersound	clyde	male	*pain25		dsnone
+$playersound	clyde	male	*grunt		PLLAND // LA-MULANA
+$playersound	clyde	male	*land		PLLAND // LA-MULANA
+$playersound	clyde	male	*jump		PLJUMP // LA-MULANA
+$playersound	clyde	male	*fist		dsnone
+$playersound	clyde	male	*usefail	PLLAND // LA-MULANA
+
+misc/switch SWITCH // Virtua Fighter
+
+menu/activate MNUMENU // Virtua Fighter
+menu/backup MNUBACK // Mega Man ZX
+menu/prompt MNUMENU  // Virtua Fighter
+menu/cursor MNUSELEC // Mega Man ZX
+menu/change MNUSELEC // Mega Man ZX
+menu/invalid MNUNO // Mega Man ZX
+menu/dismiss MNUBACK // Mega Man ZX
+menu/choose MNUMENU // Virtua Fighter
+menu/clear MNUBACK // Mega Man ZX
+
+misc/HeavySplash INSPLASH // Mega Man ZX
+misc/WaterLoop UNWATER1 // Mega Man ZX
+$volume misc/WaterLoop 0.5
+misc/WaterEnd OUTSPLAS // Steamworld Dig
+misc/JumpSplash JUMPSPLA // Mega Man Star Force
+
+player/stepdash TAPDASH // Garou: Mark of the Wolves
+player/jetpack jetpack // Catoon sound library- need to trace source. TEMP
+
+weapon/whipswing WHIPSWIN // Mega Man Star Force
+weapon/whipcrack WHIPCRAK // LA-MULANA
+weapon/whipstrike WHIPSMAK // Garou: Mark of the Wolves
+weapon/whipwall WHIPWALL // King of Fighters 2002
+
+weapon/knifethrow	KNIFTHRO // Garou: Mark of the Wolves
+$volume weapon/knifethrow 0.6
+weapon/knifewall	KNIFMISS // Steamworld Dig
+weapon/knifehit		KNIFHIT  // Virtua Fighter
+
+weapon/dynamitethrow	DYNTHROW // Mega Man Star Force
+weapon/dynamiteexplode1 DYNEXPL1 // LA-MULANA
+
+
+weapon/tyrantswing TYNTSWIN // King of Fighters 2002
+weapon/tyrantcrack TYNTCRAK // SNK vs Capcom: SVC Chaos
+weapon/tyrantsmack TYNTSMAK // Garou: Mark of the Wolves
+
+weapon/capitalswing	CAPPSWIN // Dengeki Bunko: Fighting Climax
+weapon/capitalcrack	CAPPCRAK // King of Fighters XIV
+$random weapon/capitalsmack // Dengeki Bunko: Fighting Climax
+{ weapon/capitalsmack1 weapon/capitalsmack2 }
+weapon/capitalsmack1 CAPPSMAK
+weapon/capitalsmack2 CAPPSMA2
+
+weapon/dronelaser DRONELAZ // LA-MULANA
+
+ammo/pickup AMMO // LA-MULANA
+
+upgrade/artifice PKARTIFI // Dengeki Bunko: Fighting Climax
+upgrade/offense  PKOFFENS // Dengeki Bunko: Fighting Climax
+upgrade/treasure PKTREASU // Dengeki Bunko: Fighting Climax
+
+footstep/stone FTSTONE1 // Mega Man ZX
+$pitchshift footstep/stone 7 
+$volume footstep/stone 0.1
+
+footstep/spider SPWALK // STRIFE: QUEST FOR THE SIGIL
+
+misc/jarpain JARDMG // Mega Man Star Force
+misc/jarbreak JARSMASH // LA-MULANA
+
+misc/mapchange MAPSWAP // LA-MULANA
+
+misc/TabletOn  TABLEON  // Mega Man Star Force 2 - Unsure of 1's is different.
+misc/TabletOff TABLEOFF // Mega Man Star Force 2
+misc/TabletType TABLETYP // Mega Man Star Force 2
+misc/TabletSkip TABLESKI // Mega Man Star Force 2

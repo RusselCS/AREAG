@@ -1,0 +1,252 @@
+#library "mapcont"
+#include "zcommon.acs"
+#include "commfunc.acs"
+#include "mapfunc.acs"
+
+#define MAP_TABLET_WRAP 100
+
+#define TID_MUSFADE 999
+
+// MAP CONTROLLER SCRIPTS
+
+// Script that actually handles map connections.
+// ARG1 - map: which arg the map abides by, as noted in the array.
+// ARG2 - door: which player spawn the player is intended to spawn, as noted by the value in its first special argument.
+
+script "map_switchto" (int map, int door, int noSound)
+{
+	SetPlayerProperty(true, true, PROP_INVULNERABILITY);
+	SetPlayerProperty(true, true, PROP_TOTALLYFROZEN);
+	
+	// Map transition stuff
+	int baseVal = 640.0;
+	int fadeTime = 0.2;
+	int texWidth = 142.0;
+	SetActorState("MusicFader", "FadeOut");
+	if(!noSound)
+	{
+		AmbientSound("misc/mapchange", 255);
+	}
+	SetHudSize(1280, 960, 0);
+	SetFont("MAPTRANS");
+	HudMessageBold(s:"A"; HUDMSG_FADEINOUT, 100, CR_UNTRANSLATED, baseVal, 480.0, 30.0, fadeTime, 0.0);
+	Delay(2);
+	for(int i = 1; i < 7; i++)
+	{
+		HudMessageBold(s:"A"; HUDMSG_FADEINOUT, 100+i, CR_UNTRANSLATED, baseVal + i * texWidth, 480.0, 30.0, fadeTime, 0.0);
+		HudMessageBold(s:"A"; HUDMSG_FADEINOUT, 110+i, CR_UNTRANSLATED, baseVal - i * texWidth, 480.0, 30.0, fadeTime, 0.0);
+		Delay(2);
+	}
+	FadeTo(0, 0, 0, 1.0, fadeTime);
+	
+	Delay(35);
+	
+	checkDroneTransform(0, false);
+	ChangeLevel(mapList[map][MAPPROP_MAPCODE], door, CHANGELEVEL_NOINTERMISSION);
+	
+	// Because ENTER scripts are only executed once per map, gotta re-execute these here.
+	SetPlayerProperty(true, true, PROP_INVULNERABILITY);
+	SetPlayerProperty(true, true, PROP_TOTALLYFROZEN);
+	ACS_NamedExecuteAlways("map_startup", 0);
+}
+
+int musicVolume = 1.0;
+
+function void Music_FadeTo(int del, int rate, int dest)
+{
+	ACS_NamedExecute("music_fade", 0, del, rate, dest);
+}
+
+script "music_fade" (int del, int rate, int dest)
+{
+	while(musicVolume != dest)
+	{
+		musicVolume = iterateTowards(musicVolume, rate, dest);
+		SetMusicVolume(musicVolume);
+		PrintBold(f:musicVolume, s:" / ", f:dest);
+		Delay(del);
+	}
+}
+
+script "map_startup" ENTER
+{
+	if(CheckInventory("DroneFlag")>0)
+	{
+		transformToDrone(0);
+	}
+	int baseVal = 640.0;
+	int fadeTime = 0.2;
+	int texWidth = 142.0;
+	FadeTo(0, 0, 0, 1.0, 0.0);
+	SetHudSize(1280, 960, 0);
+	SetFont("MAPTRANS");
+	int holdTime = 0.6;
+	for(int o = 6; o > 0; o--)
+	{
+		HudMessage(s:"A"; HUDMSG_FADEINOUT, 100+o, CR_UNTRANSLATED, baseVal + o * texWidth, 480.0, holdTime, 0.0, fadeTime);
+		HudMessage(s:"A"; HUDMSG_FADEINOUT, 110+o, CR_UNTRANSLATED, baseVal - o * texWidth, 480.0, holdTime, 0.0, fadeTime);
+		Delay(2);
+	}
+	HudMessage(s:"A"; HUDMSG_FADEINOUT, 100, CR_UNTRANSLATED, baseVal, 480.0, holdTime, 0.0, fadeTime);
+	FadeTo(0, 0, 0, 0.2, fadeTime);
+	
+	SetPlayerProperty(true, false, PROP_INVULNERABILITY);
+	SetPlayerProperty(true, false, PROP_TOTALLYFROZEN);
+}
+
+// TABLET HANDLE SCRIPT
+script MAP_TABLET_WRAP (int arg1, int arg2, int arg3)
+{
+	ACS_NamedExecuteAlways("map_tablet", 0, arg1, arg2, arg3);
+}
+
+script "map_tablet" (int tabletNum)
+{
+	int levelNum = GetLevelInfo(LEVELINFO_LEVELNUM);
+	if(levelNum == 0)
+	{
+		PrintBold(s:"LEVELNUM FOR THIS MAP IS 0. PLEASE SET LEVELNUM TO NON-ZERO FOR TABLETS TO WORK!");
+		terminate;
+	}
+	
+	int mapIndex = getMapByLevelNum(levelNum);
+	if(mapIndex == -1)
+	{
+		PrintBold(s:"LEVELNUM NOT FOUND IN ACS REGISTRY. PLEASE REGISTER YOUR MAP TO USE TABLETS.");
+		terminate;
+	}
+	
+	if(CheckInventory("MenuFreezer")>0)
+	{
+		terminate;
+	}
+	
+	GiveInventory("MenuFreezer", 1);
+	PlaySound(ActivatorTID(), "misc/TabletOn", CHAN_BODY|CHAN_NOPAUSE, 0.5);
+	Thing_Stop(0);
+	SetPlayerProperty(0, true, PROP_TOTALLYFROZEN);
+	SetPlayerProperty(0, true, PROP_INVULNERABILITY);
+	
+	str langName = strParam(s:mapList[mapIndex][MAPPROP_LANGNAME], s:"_TABLET_", i:tabletNum);
+	int buttons = GetPlayerInput(-1, INPUT_BUTTONS);
+	int oldButtons = GetPlayerInput(-1, INPUT_OLDBUTTONS);
+	str message = strParam(l:langName);
+	int letterTime = 0.01;
+	int fadeTime = 0.2;
+	int delayTime = (FixedMul(FixedMul(letterTime, strLen(message)<<16), 35<<16)>>16);
+	bool messageActive = true;
+	
+	printTablet(-1, 30.0, fadeTime, 0.0);
+	SetHudSize(1280, 960, 0);
+	SetHudClipRect(140, 0, 1000, 960, 1000, true);
+	SetFont("TABLFONT");
+	HudMessage(s:message; HUDMSG_TYPEON, 200, CR_UNTRANSLATED, 640.0, 470.0, 30.0, letterTime);
+	FadeTo(0.0, 0.0, 0.0, 1.0, fadeTime);
+	
+	delay(1);
+	
+	while(delayTime > 0)
+	{
+		oldButtons = buttons;
+		buttons = GetPlayerInput(-1, INPUT_BUTTONS);
+		printTablet(-1, 30.0, 0.0, 0.0);
+		
+		if(delaytime % 4 == 0)
+			PlaySound(ActivatorTID(), "misc/TabletType", CHAN_VOICE|CHAN_NOPAUSE, 0.2);
+		
+		if(anyButtonPressed(buttons, oldButtons))
+		{
+			SetHudSize(1280, 960, 0);
+			SetHudClipRect(140, 0, 1000, 960, 1000, true);
+			SetFont("TABLFONT");
+			HudMessage(s:message; HUDMSG_FADEOUT, 200, CR_UNTRANSLATED, 640.0, 470.0, 30.0, 0.0);
+			delayTime = 0;
+			PlaySound(ActivatorTID(), "misc/TabletSkip", CHAN_VOICE|CHAN_NOPAUSE, 0.5);
+		}
+		delayTime--;
+		delay(1);
+	}
+	
+	oldButtons = buttons;
+	delayTime = 0;
+	
+	while(!anyButtonPressed(buttons, oldButtons))
+	{
+		oldButtons = buttons;
+		buttons = GetPlayerInput(-1, INPUT_BUTTONS);
+		printTablet(message, 30.0, 0.0, 0.0);
+		Delay(1);
+	}
+	
+	printTablet(message, 0.0, 0.0, fadeTime);
+	FadeTo(0.0, 0.0, 0.0, 0.0, fadeTime);
+	PlaySound(ActivatorTID(), "misc/TabletOff", CHAN_BODY|CHAN_NOPAUSE, 0.5);
+	
+	SetPlayerProperty(0, false, PROP_TOTALLYFROZEN);
+	SetPlayerProperty(0, false, PROP_INVULNERABILITY);
+	TakeInventory("MenuFreezer", 1);
+}
+
+function int printTablet (str message, int hold, int fadeIn, int fadeOut)
+{
+	SetHudClipRect(0, 0, 0, 0, 0, true);
+	int baseCam = 55.0;
+	SetHudSize(110, 100, false);
+	SetFont("CAMBLUR");
+	SetCameraToTexture(PlayerNumber()+1000, "CAMBLUR", 85);
+	HudMessage(s:"A"; HUDMSG_FADEINOUT|HUDMSG_ALPHA, 203, CR_UNTRANSLATED, baseCam-20.0, 50.0, hold, fadeIn, fadeOut, 0.2);
+	HudMessage(s:"A"; HUDMSG_FADEINOUT|HUDMSG_ALPHA, 202, CR_UNTRANSLATED, baseCam+20.0, 50.0, hold, fadeIn, fadeOut, 0.15);
+	SetHudSize(1024, 768, false);
+	SetFont("TABLETBG");
+	HudMessage(s:"A"; HUDMSG_FADEINOUT|HUDMSG_ALPHA, 201, CR_UNTRANSLATED, 512.0, 384.0, hold, fadeIn, fadeOut, 0.9);
+	if(message != -1)
+	{
+		SetHudSize(1280, 960, 0);
+		SetHudClipRect(140, 0, 1000, 960, 1000, true);
+		SetFont("TABLFONT");
+		HudMessage(s:message; HUDMSG_FADEINOUT, 200, CR_UNTRANSLATED, 640.0, 470.0, hold, fadeIn, fadeOut, 0.9);
+	}
+	return 0;
+}
+
+script "movement_aircontrol" OPEN
+{
+	Delay(1);
+	SetAirControl(0.65);
+	SpawnForced("MusicFader", 0, 0, 0, TID_MUSFADE);
+}
+
+script "tablet_distanceCheck" (void)
+{
+	int z = GetActorZ(0);
+	bool active = false;
+	while(true)
+	{
+		for(int i = 0; i < PlayerCount(); i++)
+		{
+			if(abs(z - GetActorZ(i+1000)) < 64.0)
+			{
+				active = true;
+			}
+		}
+		
+		if(active)
+		{
+			if(!CheckFlag(0, "USESPECIAL"))
+			{
+				SetActorFlag(0, "USESPECIAL", true);
+			}
+		}
+		else if(!active)
+		{
+			if(CheckFlag(0, "USESPECIAL"))
+			{
+				SetActorFlag(0, "USESPECIAL", false);
+			}
+		}
+		
+		active = false;
+		
+		Delay(5);
+	}
+}

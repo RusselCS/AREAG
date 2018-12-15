@@ -1,0 +1,64 @@
+actor BaseHealthPickup : CustomInventory
+{
+	inventory.pickupmessage ""
+	inventory.amount 1
+	inventory.maxamount 1
+	Scale 2.5
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		stop
+	Pickup:
+		TNT1 A 0 A_JumpIf(CallACS("status_heal_check") == true, "Success")
+		fail
+	Success:
+		TNT1 A 0 ACS_NamedExecuteAlways("status_heal", 0, 5)
+		stop
+	}
+}
+
+actor SmallHealthPickup : BaseHealthPickup
+{
+	States
+	{
+	Spawn:
+		HPUP A 1
+		wait
+	Success:
+		TNT1 A 0 ACS_NamedExecuteAlways("status_heal", 0, 5)
+		stop
+	}
+}
+
+actor LargeHealthPickup : BaseHealthPickup
+{
+	States
+	{
+	Spawn:
+		HPUP B 1
+		wait
+	Success:
+		TNT1 A 0 ACS_NamedExecuteAlways("status_heal", 0, 10)
+		stop
+	}
+}
+
+actor MaxHealthUp : CustomInventory
+{
+	inventory.pickupmessage ""
+	inventory.pickupsound "upgrade/treasure"
+	inventory.amount 1
+	inventory.maxamount 1
+	States
+	{
+	Spawn:
+		HPUP C 1
+		wait
+	Pickup:
+		TNT1 A 0 A_GiveInventory("MaxHealthBars", 1)
+		TNT1 A 0 ACS_NamedExecuteAlways("pickups_displayMessage", 0, PICKTYPE_TREASURE, PICKMSG_HEALTHUP)
+		TNT1 A 0 ACS_NamedExecuteAlways("status_heal", 0, HEALTH_MAX, 1)
+		stop
+	}
+}

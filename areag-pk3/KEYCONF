@@ -1,0 +1,4 @@
+ClearPlayerclasses
+AddPlayerClass "AREAGPlayer"
+
+alias StepDash "pukename movement_stepdash"
