@@ -1,5 +1,5 @@
 # Compiled pk3 files and anything in the distribution folder.
-dist/*.pk3
+*.pk3
 areag-pk3/acs/*.o
 *.dbs
 *.backup*
@@ -7,3 +7,4 @@ areag-pk3/acs/*.o
 screenshot*.png
 *.ini
 *.zds
+*lastrun.log
