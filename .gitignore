@@ -4,3 +4,6 @@ areag-pk3/acs/*.o
 *.dbs
 *.backup*
 *.bak
+screenshot*.png
+*.ini
+*.zds
