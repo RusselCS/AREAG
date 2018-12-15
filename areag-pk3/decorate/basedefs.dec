@@ -1,0 +1,126 @@
+const int PICKTYPE_ARTIFICE = 0;
+const int PICKTYPE_WEAPON = 1;
+const int PICKTYPE_SUBWEAPON = 2;
+const int PICKTYPE_TREASURE = 3;
+
+const int PICKMSG_GEAR = 0;
+const int PICKMSG_STEAM = 1;
+const int PICKMSG_KNIFE = 2;
+const int PICKMSG_HEALTHUP = 3;
+const int PICKMSG_DYNAMITE = 4;
+const int PICKMSG_NOVAPACK = 5;
+
+const int PICKMSG_SPIDERDRONE = 6;
+const int PICKMSG_BEEDRONE = 7;
+
+const int SUB_KNIFE = 0;
+const int SUB_DYNAMITE = 1;
+
+const int HEALTH_MAX = -1;
+
+const int MAP_TABLET_WRAP = 100;
+
+actor Once : Inventory
+{
+	inventory.amount 1
+	inventory.maxamount 1
+}
+
+actor Counter : Inventory
+{
+	inventory.amount 1
+	inventory.maxamount 65536
+}
+
+// MOVEMENT FLAGS //
+actor OnGround : Once {}
+actor JumpCancel : Once {}
+actor HeadUnderwater : Once {}
+actor LegsUnderwater : Once {}
+
+// MOVEBOB FLAGS //
+actor PosWeapOffsetX : Counter {}
+actor PosWeapOffsetY : Counter {}
+actor NegWeapOffsetX : Counter {}
+actor NegWeapOffsetY : Counter {}
+
+actor UpdateWeapOffset : CustomInventory
+{
+	States
+	{
+	Pickup:
+		TNT1 A 0 A_WeaponOffset((CountInv("PosWeapOffsetX") - CountInv("NegWeapOffsetX")),
+								(CountInv("PosWeapOffsetY") - CountInv("NegWeapOffsetY") + 35),
+								WOF_INTERPOLATE)
+		/*TNT1 A 0 A_LogInt((CountInv("PosWeapOffsetX") - CountInv("NegWeapOffsetX")))
+		TNT1 A 0 A_LogInt((CountInv("PosWeapOffsetY") - CountInv("NegWeapOffsetY")))*/
+		stop
+	}
+}
+
+// BASIC ACTORS //
+actor BasicFastProjectile : FastProjectile
+{
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(true, "SpawnLoop")
+		goto SpawnLoop
+	SpawnLoop:
+		TNT1 A 0
+		stop
+	}
+}
+
+actor BasicProjectile
+{
+	States
+	{
+	Spawn:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(true, "SpawnLoop")
+		goto SpawnLoop
+	SpawnLoop:
+		TNT1 A 0
+		stop
+	}
+}
+
+actor BasicEffect
+{
+	PROJECTILE
+	+NOINTERACTION
+	+THRUACTORS
+	+NOGRAVITY
+	renderstyle translucent
+	height 1
+	radius 1
+}
+
+actor MenuFreezer : Once {}
+actor TimeFreezer : PowerTimeFreezerSound
+{
+	powerup.duration 0x7ffffff
+}
+
+actor BasicTreasureItem : CustomInventory
+{
+	+INVBAR
+	States
+	{
+	Use:
+		TNT1 A 0 A_JumpIfInventory("DroneFlag", 1, "DroneUse")
+		TNT1 A 0 A_JumpIf(true, "TreasureUse")
+		goto TreasureUse
+	DroneUse:
+		TNT1 A 0 ACS_NamedExecuteAlways("drone_disengage", 0)
+		fail
+	TreasureUse:
+		TNT1 A 0
+		fail
+	}
+}
+
+actor LevelNumTracker : Counter {}
+

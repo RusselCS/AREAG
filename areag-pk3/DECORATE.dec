@@ -1,0 +1,22 @@
+#include "decorate/basedefs.dec"
+#include "decorate/player/player.dec"
+
+#include "decorate/player/subweapons/0-subwepbase.dec"
+#include "decorate/player/subweapons/1-knives.dec"
+#include "decorate/player/subweapons/2-dynamite.dec"
+
+#include "decorate/player/1-whip.dec"
+#include "decorate/player/9-drone.dec"
+
+// UPGRADES
+#include "decorate/pickups/boots.dec"
+#include "decorate/pickups/jetpack.dec"
+#include "decorate/pickups/health.dec"
+
+#include "decorate/props/testmap/testmap.dec"
+#include "decorate/props/common/jars.dec"
+
+#include "decorate/effects/splashes.dec"
+
+#include "decorate/tools.dec"
+

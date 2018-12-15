@@ -1,0 +1,74 @@
+actor NovaPackPickup : CustomInventory
+{
+	inventory.pickupmessage ""
+	inventory.pickupsound "upgrade/artifice"
+	+INVENTORY.AUTOACTIVATE
+	+FLOATBOB
+	+NOGRAVITY
+	Height 64 // tall
+	States
+	{
+	Spawn:
+		BOOT I 1
+		loop
+	Pickup:
+		TNT1 A 0 A_JumpIfInventory("NovaPackFlag", 1, "PickupFail")
+		TNT1 A 0 ACS_NamedExecuteAlways("pickups_displayMessage", 0, PICKTYPE_ARTIFICE, PICKMSG_NOVAPACK)
+		TNT1 A 0 A_GiveInventory("NovaPackFlag", 1)
+		TNT1 A 0 A_GiveInventory("NovaFuel", 100)
+		stop
+	PickupFail:
+		TNT1 A 0
+		fail
+	}
+}
+
+actor NovaPackFlag : Once {}
+
+actor NovaFuel : Ammo
+{
+	inventory.amount 1
+	inventory.maxamount 100
+	+INVENTORY.IGNORESKILL
+}
+
+actor NovaRefuel : CustomInventory
+{
+	States
+	{
+	Pickup:
+		TNT1 A 0 A_JumpIfInventory("NovaRefuelCooldown", 1, "End")
+		TNT1 A 0 A_GiveInventory("NovaFuel", 3)
+		TNT1 A 0 A_GiveInventory("NovaRefuelCooldown", 1)
+		stop
+	End:
+		TNT1 A 0
+		stop
+	}
+}
+
+actor NovaRefuelCooldown : Powerup
+{
+	powerup.duration 2
+}
+
+actor NovaSpend : CustomInventory
+{
+	States
+	{
+	Pickup:
+		TNT1 A 0 A_JumpIfInventory("NovaSpendCooldown", 1, "End")
+		TNT1 A 0 A_TakeInventory("NovaFuel", 4)
+		TNT1 A 0 A_GiveInventory("NovaSpendCooldown", 1)
+		TNT1 A 0 A_PlaySoundEx("player/jetpack", "body")
+		stop
+	End:
+		TNT1 A 0
+		stop
+	}
+}
+
+actor NovaSpendCooldown : Powerup
+{
+	powerup.duration 5
+}

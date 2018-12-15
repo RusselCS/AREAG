@@ -1,0 +1,17 @@
+
+// CHAIN WHIP DECALS
+decal WhipGash1L
+{
+    pic WHIPDECL
+    shade "00 00 00"
+    x-scale 0.25
+    y-scale 0.25
+}
+
+decal WhipGash1R
+{
+    pic WHIPDECR
+    shade "00 00 00"
+    x-scale 0.25
+    y-scale 0.25
+}

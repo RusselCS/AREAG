@@ -1,0 +1,272 @@
+// Acts as parent weapon to supply functionality of all subs. Not used directly.
+actor SubWeapon : Weapon
+{
+	Weapon.AmmoUse 1
+	Weapon.AmmoGive 20
+	weapon.ammotype2 "WhipLash"
+	Weapon.Ammotype "WhipLash"
+	+WEAPON.AMMO_OPTIONAL
+	+WEAPON.ALT_AMMO_OPTIONAL
+	+WEAPON.NOALERT
+	+WEAPON.CHEATNOTWEAPON
+	States
+	{
+	ReadyLoop:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIf(true, "ReadyFrame")
+		goto ReadyFrame
+	WeaponReadyLoop:
+		"----" "#" 0 A_JumpIfInventory("LowerWeapon", 1, "LowerWeapon")
+		"----" "#" 1 A_WeaponReady(WRF_ALLOWUSER1|WRF_ALLOWUSER2)
+		loop
+	Altfire:
+		TNT1 A 0
+		TNT1 A 0 A_GiveInventory("AltfireCheck", 1)
+		TNT1 A 0 A_JumpIfInventory("SubReady", 1, "AltfireWindup")
+		TNT1 A 0 A_JumpIf(true, "ReadyFrame")
+		goto ReadyFrame
+	AltfireHold:
+		TNT1 A 1
+		TNT1 A 0 A_GiveInventory("AltfireCheck", 1)
+		TNT1 A 0 A_JumpIf(CountInv("SubReady")==0, "Ready")
+		TNT1 A 0 A_Refire("AltfireHold")
+		TNT1 A 0 A_JumpIfInventory("KnifeEquipped", 1, "AltfireKnife")
+		TNT1 A 0 A_JumpIfInventory("DynamiteEquipped", 1, "AltfireDynamite")
+		goto AltfireNothing
+	AltfireNothing:
+		HBMA ABCDE 1
+		goto AltRefire
+	AltfireKnife:
+		HBMA A 0 A_PlaySoundEx("weapon/knifethrow", "Weapon")
+		HBMA A 0 A_TakeInventory("KnifeStock", 1)
+		HBMA A 0 A_FireCustomMissile("ThrowKnife")
+		HBMA ABCDE 1
+		goto AltRefire
+	AltfireDynamite:
+		HBMA A 0 A_PlaySoundEx("weapon/dynamitethrow", "Weapon")
+		HBMA A 0 A_TakeInventory("DynamiteStock", 1)
+		HBMA A 0 A_FireCustomMissile("DynamiteProjectile", 0, 0, 0, 0)
+		HBMA ABCDE 1
+		goto AltRefire
+	AltRefire:
+		TNT1 A 8
+		TNT1 A 0 A_GiveInventory("AltfireCheck", 1)
+		TNT1 A 0 A_JumpIf(CountInv("SubReady")==0, "Ready")
+		TNT1 AAAAAAAA 1 A_WeaponReady(WRF_DISABLESWITCH)
+		TNT1 A 0 A_JumpIf(true, "Ready")
+		goto Ready
+		
+	LowerCheck:
+		TNT1 A 1
+		TNT1 A 0 A_JumpIfInventory("UsedItem", 1, "ItemCheck")
+		TNT1 A 0 A_JumpIf(true, "Ready")
+		goto Ready
+	ItemCheck:
+		TNT1 A 0 A_JumpIfInventory("DroneUsedFlag", 1, "UseDrone")
+		goto ItemUseEnd
+		
+	UseDrone:
+		// Because this is morphing, I'm unsure if these items stick around
+		// so this item needs to take away the framework controlling items
+		// BEFORE morphing, because the weapon may be reset before anything can
+		// go away
+		TNT1 A 5
+		WDRO ABC 1
+		WDRO A 0 A_PlaySoundEx("weapon/dynamitethrow", "Weapon")
+		WDRO E 0 A_FireCustomMissile("DroneTransitionMissile")
+		WDRO DE 2
+		WDRO D 12
+		TNT1 A 0 A_TakeInventory("UsedItem", 1)
+		TNT1 A 0 A_TakeInventory("LowerWeapon", 1)
+		TNT1 A 0 A_TakeInventory("DroneUsedFlag", 1)
+		TNT1 A 0 A_GiveInventory("DroneActivate", 1)
+		goto ItemUseEnd
+		
+	ItemUseEnd:
+		TNT1 A 0 A_TakeInventory("UsedItem", 1)
+		TNT1 A 0 A_TakeInventory("LowerWeapon", 1)
+		TNT1 A 0 A_JumpIf(true, "Ready")
+		goto Ready
+
+	User1:
+		"----" "#" 6 A_GiveInventory("SubNext", 1)
+	UserLoop1:
+		"----" "#" 1
+		"----" "#" 0 A_JumpIf(GetPlayerInput(0) & BT_USER1, "UserLoop1")
+		TNT1 A 0 A_JumpIf(true, "ReadyFrame")
+		goto ReadyFrame
+	User2:
+		"----" "#" 6 A_GiveInventory("SubPrev", 1)
+	UserLoop2:
+		"----" "#" 1
+		"----" "#" 0 A_JumpIf(GetPlayerInput(0) & BT_USER2, "UserLoop2")
+		TNT1 A 0 A_JumpIf(true, "ReadyFrame")
+		goto ReadyFrame
+	
+	Flash:
+	FlashReady:
+		TNT1 A 0
+		TNT1 A 0 A_JumpIfInventory("KnifeEquipped", 1, "FlashKnifeCheck")
+		TNT1 A 0 A_JumpIfInventory("DynamiteEquipped", 1, "FlashDynamiteCheck")
+		goto FlashNoAmmo
+	FlashKnifeCheck:
+		TNT1 A 0 A_GiveInventory("AltfireCheck", 1)
+		TNT1 A 0 A_JumpIfInventory("SubReady", 1, "FlashKnifeRaise")
+		goto FlashNoAmmo
+	FlashKnifeRaise:
+		SKHD DCBA 1
+	FlashKnifeReady:
+		SKHD A 1
+		SKHD A 0 A_JumpIfInventory("LowerWeapon", 1, "FlashKnifeLower")
+		TNT1 A 0 A_GiveInventory("AltfireCheck", 1)
+		SKHD A 0 A_JumpIf(CountInv("KnifeEquipped")>0 && CountInv("SubReady")>0, "FlashKnifeReady")
+	FlashKnifeLower:
+		SKHD ABCD 1
+		goto FlashWait
+		
+	FlashDynamiteCheck:
+		TNT1 A 0 A_GiveInventory("AltfireCheck", 1)
+		TNT1 A 0 A_JumpIfInventory("SubReady", 1, "FlashDynamiteRaise")
+		goto FlashNoAmmo
+	FlashDynamiteRaise:
+		SDHD DCBA 1
+	FlashDynamiteReady:
+		SDHD A 1
+		SDHD A 0 A_JumpIfInventory("LowerWeapon", 1, "FlashDynamiteLower")
+		TNT1 A 0 A_GiveInventory("AltfireCheck", 1)
+		SDHD A 0 A_JumpIf(CountInv("DynamiteEquipped")>0 && CountInv("SubReady")>0, "FlashDynamiteReady")
+	FlashDynamiteLower:
+		SDHD ABCD 1
+		goto FlashWait
+		
+	FlashWait:
+		TNT1 A 1
+		TNT1 A 0 A_JumpifInventory("LowerWeapon", 1, "FlashWait")
+		goto FlashReady
+	FlashNoAmmo:
+		HBM2 DCBA 1
+	FlashNoLoop:
+		HBM2 A 1
+		HBM2 A 0 A_GiveInventory("AltfireCheck", 1)
+		HBM2 A 0 A_JumpIf(CountInv("SubReady")>0 || CountInv("LowerWeapon")>0, "FlashNoAmmoLower")
+		loop
+	FlashNoAmmoLower:
+		HBM2 ABCD 1
+		goto FlashWait
+		
+	// Framework wrapper states.
+	// Plug these into your main weapons to make the animations carry over properly.
+	AltfireWindup:
+		TNT1 A 0
+		goto Ready
+	ReadyFrame:
+		TNT1 A 0
+		goto WeaponReadyLoop
+	
+	// The following states are here to keep GZDoom from throwing a fit
+	// Even though none of them are used directly because this is a
+	// prototype class :)
+	Deselect:
+		TNT1 A 1 A_Lower
+		Loop
+	Select:
+		TNT1 A 1 A_Lower
+		Loop
+	Ready:
+	ReadyLoop:
+		TNT1 A 1
+		loop
+	Fire:
+		TNT1 A 0
+		goto Ready
+	AltfireLower:
+		TNT1 A 0
+		goto AltfireHold
+	}
+}
+
+actor LowerWeapon : Once {}
+actor SubReady : Once {}
+actor UsedItem : Once {}
+
+actor AltfireCheck : CustomInventory
+{
+	States
+	{
+	Pickup:
+		TNT1 A 0 A_TakeInventory("SubReady", 1)
+		TNT1 A 0 A_JumpIfInventory("KnifeEquipped", 1, "KnifeCheck")
+		TNT1 A 0 A_JumpIfInventory("DynamiteEquipped", 1, "DynamiteCheck")
+		TNT1 A 0
+		stop
+	KnifeCheck:
+		TNT1 A 0 A_JumpIfInventory("KnifeStock", 1, "SubReady")
+		stop
+	DynamiteCheck:
+		TNT1 A 0 A_JumpIfInventory("DynamiteStock", 1, "SubReady")
+		stop
+	SubReady:
+		TNT1 A 0 A_GiveInventory("SubReady", 1)
+		stop
+	}
+}
+
+actor SetSub : Custominventory
+{
+	States
+	{
+	Pickup:
+		TNT1 A 0 A_TakeInventory("KnifeEquipped", 1)
+		TNT1 A 0 A_TakeInventory("DynamiteEquipped", 1)
+		TNT1 A 0 A_JumpIf(true, "Equip")
+	Equip:
+		TNT1 A 0
+		stop
+	}
+}
+
+actor SubNext : CustomInventory
+{
+	States
+	{
+	Pickup:
+		TNT1 A 0 A_JumpIfInventory("KnifeEquipped", 1, "KnifeNext")
+		TNT1 A 0 A_JumpIfInventory("DynamiteEquipped", 1, "DynamiteNext")
+		stop
+	KnifeNext:
+		TNT1 A 0 A_JumpIfInventory("DynamiteMax", 1, "SwitchDynamite")
+		stop
+	DynamiteNext:
+		TNT1 A 0 A_JumpIfInventory("KnifeMax", 1, "SwitchKnife")
+		stop
+	SwitchDynamite:
+		TNT1 A 0 A_GiveInventory("SetDynamite", 1)
+		stop
+	SwitchKnife:
+		TNT1 A 0 A_GiveInventory("SetKnife", 1)
+		stop
+	}
+}
+
+actor SubPrev : SubNext
+{
+	States
+	{
+	Pickup:
+		TNT1 A 0 A_JumpIfInventory("KnifeEquipped", 1, "KnifePrev")
+		TNT1 A 0 A_JumpIfInventory("DynamiteEquipped", 1, "DynamitePrev")
+		stop
+	KnifePrev:
+		TNT1 A 0 A_JumpIfInventory("DynamiteMax", 1, "SwitchDynamite")
+		stop
+	DynamitePrev:
+		TNT1 A 0 A_JumpIfInventory("KnifeMax", 1, "SwitchKnife")
+		stop
+	SwitchDynamite:
+		TNT1 A 0 A_GiveInventory("SetDynamite", 1)
+		stop
+	SwitchKnife:
+		TNT1 A 0 A_GiveInventory("SetKnife", 1)
+		stop
+	}
+}

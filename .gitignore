@@ -1,0 +1,10 @@
+# Compiled pk3 files and anything in the distribution folder.
+*.pk3
+areag-pk3/acs/*.o
+*.dbs
+*.backup*
+*.bak
+screenshot*.png
+*.ini
+*.zds
+*.log

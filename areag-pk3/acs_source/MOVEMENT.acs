@@ -1,0 +1,552 @@
+#library "movement"
+#include "zcommon.acs"
+#include "commfunc.acs"
+
+#define WATER_GRAVITY_MULT 0.2
+#define WATER_JUMP_MULT 0.65
+
+#define NOVA_MAXHEIGHT 128.0
+#define NOVA_SPEED 7
+
+// THE SCRIPTS BELOW ARE INTENDED TO HANDLE MOVEMENT ONLY.
+// Jump Cancelling
+// Water
+// Quick-Step
+// Jump and Move speed manipulation
+
+script "movement_enter" ENTER
+{
+	int pln = PlayerNumber();
+	int tid = pln+1000;
+	Thing_ChangeTID(0, tid);
+	int baseGravity = GetActorProperty(0, APROP_GRAVITY);
+	int jumpInventory = CheckInventory("BaseJumpSpeed");
+	int speedInventory = CheckInventory("BaseMoveSpeed");
+	int baseJump = FixedDiv(jumpInventory << 16, 100.0);
+	int baseSpeed = FixedDiv(speedInventory << 16, 100.0);
+	int buttons = GetPlayerInput(-1, INPUT_BUTTONS);
+	int oldButtons = 0;
+	
+	int novaFlightHeight;
+	int heightCooldown = 0;
+	bool novaFlight = false;
+	
+	bool legsInWater = false;
+	bool headInWater = false;
+	
+	bool menuFreeze = false;
+	
+	ACS_NamedExecuteAlways("movement_standing", 0);
+	ACS_NamedExecuteAlways("movement_water_player", 0);
+	delay(1);
+	while(GetActorProperty(0, APROP_HEALTH)>0)
+	{
+		// JUMP CANCEL
+		if(checkButtonReleased(BT_JUMP, buttons, oldButtons) && GetActorVelZ(0) > 0 && CheckInventory("JumpCancel")>0)
+		{
+			ThrustThingZ(0, 0, 0, 0);
+			TakeInventory("JumpCancel", 1);
+		}
+		
+		// NOVA PACK
+		if(CheckInventory("NovaPackFlag") > 0 && CheckInventory("NovaFuel") > 0 &&
+		   CheckInventory("JumpCancel")==0 && buttons & BT_JUMP)
+		{
+			if(!novaFlight)
+			{
+				novaFlight = true;
+				novaFlightHeight = GetActorZ(0);
+			}
+			if(GetActorZ(0) < novaFlightHeight + NOVA_MAXHEIGHT && heightCooldown == 0)
+			{
+				ThrustThingZ(0, NOVA_SPEED, 0, true);
+			}
+			else
+			{
+				if(heightCooldown == 0)
+				{
+					ThrustThingZ(0, 0, 0, 0);
+					heightCooldown = 4;
+				}
+				else
+				{
+					heightCooldown--;
+				}
+			}
+			GiveInventory("NovaSpend", 1);
+		}
+		
+		if(CheckInventory("JumpCancel"))
+		{
+			novaFlight = false;
+			heightCooldown = 0;
+			
+			if(CheckInventory("NovaFuel") < GetAmmoCapacity("NovaFuel"))
+			{
+				GiveInventory("NovaRefuel", 1);
+			}
+		}
+		
+		// This just makes it so if you fall off a ledge you don't have to double tap jump
+		// to activate nova pack
+		// but you still have to press it twice to active it from a jump
+		if(GetActorVelZ(0) < 0 && !(buttons & BT_JUMP))
+		{
+			TakeInventory("JumpCancel", 1);
+		}
+		
+		// ANTI-STRAFERUNNING
+		if(((buttons & BT_FORWARD) || (buttons & BT_BACK)) && ((buttons & BT_MOVELEFT) || (buttons & BT_MOVERIGHT)))
+		{
+			SetActorProperty(0, APROP_SPEED, FixedMul(baseSpeed, 0.78089));
+		}
+		else
+		{
+			SetActorProperty(0, APROP_SPEED, baseSpeed);
+		}
+		
+		// TAP DASH
+		// Only triggers when the player has tap dash enabled, and
+		// if they're using gear greaves and standing on ground, or
+		// if they're using steam greaves at all, AND
+		// if the dash cooldown has been sated.
+		if(GetUserCVar(pln, "cl_tapdash") && canDash())
+		{
+			if(checkButtonPressed(BT_FORWARD, buttons, oldButtons))
+			{
+				if(CheckInventory("PressedForward"))
+				{
+					GiveInventory("DashForward", 1);
+				}
+				else
+				{
+					GiveInventory("PressedForward", 1);
+					TakeInventory("PressedBack", 1);
+					TakeInventory("PressedLeft", 1);
+					TakeInventory("PressedRight", 1);
+				}
+			}
+			
+			if(checkButtonPressed(BT_BACK, buttons, oldButtons))
+			{
+				if(CheckInventory("PressedBack"))
+				{
+					GiveInventory("DashBackward", 1);
+				}
+				else
+				{
+					TakeInventory("PressedForward", 1);
+					GiveInventory("PressedBack", 1);
+					TakeInventory("PressedLeft", 1);
+					TakeInventory("PressedRight", 1);
+				}
+			}
+			
+			if(checkButtonPressed(BT_MOVERIGHT, buttons, oldButtons))
+			{
+				if(CheckInventory("PressedRight"))
+				{
+					GiveInventory("DashRight", 1);
+				}
+				else
+				{
+					TakeInventory("PressedForward", 1);
+					TakeInventory("PressedBack", 1);
+					TakeInventory("PressedLeft", 1);
+					GiveInventory("PressedRight", 1);
+				}
+			}
+			
+			if(checkButtonPressed(BT_MOVELEFT, buttons, oldButtons))
+			{
+				if(CheckInventory("PressedLeft"))
+				{
+					GiveInventory("DashLeft", 1);
+				}
+				else
+				{
+					TakeInventory("PressedForward", 1);
+					TakeInventory("PressedBack", 1);
+					GiveInventory("PressedLeft", 1);
+					TakeInventory("PressedRight", 1);
+				}
+			}
+		}
+		
+		// WATER
+		if(CheckInventory("LegsUnderwater")>0)
+		{
+			if(!legsInWater) {
+				SetActorProperty(0, APROP_Gravity, FixedMul(baseGravity, WATER_GRAVITY_MULT));
+				SetActorProperty(0, APROP_JumpZ, FixedMul(baseJump, WATER_JUMP_MULT));
+				GiveInventory("WaterSpeed", 1);
+				legsInWater = true;
+			}
+		}
+		else
+		{
+			if(legsInWater) {
+				SetActorProperty(0, APROP_Gravity, baseGravity);
+				SetActorProperty(0, APROP_JumpZ, baseJump);
+				TakeInventory("WaterSpeed", 1);
+				legsInWater = false;
+			}
+		}
+		
+		if(CheckInventory("HeadUnderwater")>0)
+		{
+			if(!headInWater)
+			{
+				GiveInventory("BreathCooldown", 1);
+				headInWater = true;
+			}
+			if(CheckInventory("BreathCooldown") == 0)
+			{
+				if(CheckInventory("BreathTime") > 0)
+				{
+					TakeInventory("BreathTime", 10);
+				}
+				else
+				{
+					Thing_Damage(0, 5, MOD_WATER);
+				}
+				GiveInventory("BreathCooldown", 1);
+			}
+		}
+		else
+		{
+			GiveInventory("BreathTime", 100);
+			headInWater = false;
+		}
+		
+		// JUMP MANIPULATION (eg. Steam Greaves)
+		if(jumpInventory != Checkinventory("BaseJumpSpeed"))
+		{
+			jumpInventory = CheckInventory("BaseJumpSpeed");
+			baseJump = FixedDiv(jumpInventory << 16, 100.0);
+			if(legsInWater)
+			{
+				SetActorProperty(0, APROP_JumpZ, FixedMul(baseJump, WATER_JUMP_MULT));
+			}
+			else
+			{
+				SetActorProperty(0, APROP_JumpZ, baseJump);
+			}
+		}
+		
+		// SPEED MANIPULATION (eg. Gear Greaves)
+		if(speedInventory != Checkinventory("BaseMoveSpeed"))
+		{
+			speedInventory = CheckInventory("BaseMoveSpeed");
+			baseSpeed = FixedDiv(speedInventory << 16, 100.0);
+		}
+		
+		// TIME MANIPULATION (Menus, Timewatch)
+		if(CheckInventory("MenuFreezer")>0)
+		{
+			if(!menuFreeze)
+			{
+				menuFreeze = true;
+				SpawnSpotForced("LevelFreezeOn", 0, 0, 0);
+			}
+		}
+		else
+		{
+			if(menuFreeze)
+			{
+				menuFreeze = false;
+				SpawnSpotForced("LevelFreezeOff", 0, 0, 0);
+			}
+		}
+		
+		Delay(1);
+		oldButtons = buttons;
+		buttons = GetPlayerInput(-1, INPUT_BUTTONS);
+	}
+}
+
+script "movement_respawn" RESPAWN
+{
+	ACS_NamedExecuteAlways("movement_enter", 0);
+}
+
+script "movement_standing" (void)
+{
+	int pln = PlayerNumber();
+	int tid = pln+1000;
+	int groundReset = 0;
+	
+	Delay(1);
+	while(GetActorProperty(0, APROP_HEALTH)>0)
+	{
+		if(!CheckInventory("MenuFreezer"))
+		{
+			if(GetActorFloorZ(0) == GetActorZ(0))
+			{
+				if(CheckInventory("OnGround")==0 || CheckInventory("JumpCancel")==0)
+				{
+					GiveInventory("OnGround", 1);
+					GiveInventory("JumpCancel", 1);
+				}
+			}
+			else
+			{
+				if(GetActorVelZ(0) == 0 && GetActorProperty(0, APROP_HEIGHT) + GetActorZ(0) != GetActorCeilingZ(0))
+				{
+					groundReset++;
+					if(groundReset >= 3)
+					{
+						if(CheckInventory("OnGround")==0 || CheckInventory("JumpCancel")==0)
+						{
+							GiveInventory("OnGround", 1);
+							GiveInventory("JumpCancel", 1);
+						}
+					}
+				}
+				else
+				{
+					groundReset = 0;
+					TakeInventory("OnGround", 1);
+				}
+			}
+		}
+		Delay(1);
+	}
+}
+
+/*
+	0 - Sector Tag
+	1 - Max Height Difference
+*/
+
+int waterSectors[64];
+int sectorSlot = 0;
+
+script "movement_water_map" (int height)
+{
+	int tid = ActivatorTID();
+	
+	if(tid == 0)
+	{
+		waterSectors[0] = 0;
+		sectorSlot = -1;
+	}
+	else
+	{
+		if(sectorSlot != -1)
+		{
+			waterSectors[sectorSlot] = tid;
+			sectorSlot++;
+		}
+	}
+}
+
+// This script only handles the inventory flags stating which version of "underwater" the player is in.
+// No additional BS is here for drowning or movement. Just toggling inventory flags and splash effects.
+script "movement_water_player" (void)
+{
+	if(ThingCountName("WaterSector", T_NONE) == 0)
+	{
+		terminate;
+	}
+	
+	int pln = PlayerNumber();
+	int tid = pln+1000;
+	
+	int waterSlot = -1;
+	
+	Delay(1);
+	while(GetActorProperty(0, APROP_HEALTH)>0)
+	{
+		int waterMode = getPlayerWaterLevel();
+		bool headUnderWater = waterMode >> 1;
+		bool legsUnderWater = waterMode - (headUnderWater << 1);
+		
+		if(headUnderWater)
+		{
+			if(CheckInventory("HeadUnderwater")==0)
+			{
+				GiveInventory("HeadUnderwater", 1);
+				waterSlot = getWaterSlot();
+				PlaySound(tid, "misc/WaterLoop", CHAN_AUTO, 0.5, true);
+				Thing_Activate(waterSectors[waterSlot]);
+			}
+			
+			/*if(CheckInventory("UnderwaterSoundPlaying")==0)
+			{
+				
+				GiveInventory("UnderwaterSoundPlaying", 1);
+			}*/
+		}
+		else
+		{
+			if(CheckInventory("HeadUnderwater")==1)
+			{
+				If(GetActorVelZ(0) > 8.24)
+				{
+					SpawnSpot("OutSplashHeavy", tid);
+					GiveInventory("SplashCooldown", 1);
+				}
+				else
+				{
+					SpawnSpot("OutSplashLight", tid);
+				}
+				
+				SetThingSpecial(waterSectors[waterSlot], 0, 0, 0);
+				Thing_Activate(waterSectors[waterSlot]);
+				SetThingSpecial(waterSectors[waterSlot], 0, 255, 255);
+				TakeInventory("HeadUnderwater", 1);
+				StopSound(tid, CHAN_AUTO);
+				//GiveInventory("UnderwaterSoundStop", 1);
+			}
+		}
+		
+		if(legsUnderWater)
+		{
+			if(CheckInventory("LegsUnderwater")==0)
+			{
+				If(GetActorVelZ(0) < -8.24)
+				{
+					SpawnSpot("InSplash", tid);
+				}
+				GiveInventory("LegsUnderwater", 1);
+			}
+		}
+		else
+		{
+			if(CheckInventory("LegsUnderwater")==1)
+			{
+				If(GetActorVelZ(0) > 8.24 && CheckInventory("SplashCooldown")==0)
+				{
+					SpawnSpot("OutSplashHeavy", tid);
+				}
+				TakeInventory("LegsUnderwater", 1);
+			}
+		}
+		
+		Delay(1);
+	}
+}
+
+// This returns the Player's water level, which can be one of four values:
+// 0 - Nothing is in the water
+// 1 - Legs are in the water
+// 2 - Head is in the water
+// 3 - Everything is in the water
+//
+function int getPlayerWaterLevel (void)
+{
+	int playerHeight = GetActorZ(0);
+	int viewHeight = playerHeight+GetActorProperty(0, APROP_ViewHeight);
+	
+	bool headUnderWater = false;
+	bool legsUnderWater = false;
+	
+	int sectorCeil, sectorFloor;
+	int selectedSector = -1;
+	
+	// GLOBAL WATER LEVEL
+	if(sectorSlot == -1)
+	{
+		selectedSector = 0;
+	}
+	// END GLOBAL WATER LEVEL
+	
+	// INDIVIDUAL WATER LEVELS
+	else
+	{
+		selectedSector = getWaterSlot();
+	}
+	// END INDIVIDUAL WATER LEVELS
+	
+	
+	if(selectedSector > -1)
+	{
+		sectorCeil = GetActorCeilingZ(waterSectors[selectedSector]);
+		sectorFloor = GetActorFloorZ(waterSectors[selectedSector]);
+		
+		// WATER KEEPS GOING DOWN
+		if(sectorCeil - sectorFloor < 16.0)
+		{
+			if(playerHeight < sectorCeil)
+			{
+				legsUnderWater = true;
+			}
+			
+			if(viewHeight < sectorCeil)
+			{
+				headUnderWater = true;
+			}
+		} // END ENDLESS GLOBAL WATER
+		
+		// WATER HAS BELOW SECTIONS
+		else
+		{
+			if(playerHeight < sectorCeil && playerHeight >= sectorFloor)
+			{
+				legsUnderWater = true;
+			}
+			
+			if(viewHeight < sectorCeil && viewHeight >= sectorFloor)
+			{
+				headUnderWater = true;
+			}
+			// END BELOW GLOBAL WATER
+		}
+	}
+	
+	return headUnderWater << 1 | legsUnderWater;
+}
+
+function int getWaterSlot(void)
+{
+	int selectedSector = -1;
+	for(int i = 0; i < sectorSlot && selectedSector == -1; i++)
+	{
+		if(ThingCountSector(T_NONE, ActivatorTID(), waterSectors[i])>0)
+		{
+			selectedSector = i;
+		}
+	}
+	return selectedSector;
+}
+
+script "movement_stepdash" (void) NET
+{
+	int buttons = GetPlayerInput(-1, INPUT_BUTTONS);
+	
+	if(canDash())
+	{
+		if(buttons & BT_FORWARD)
+		{
+			GiveInventory("DashForward", 1);
+		}
+		else if(buttons & BT_BACK)
+		{
+			GiveInventory("DashBackward", 1);
+		}
+		else if(buttons & BT_MOVERIGHT)
+		{
+			GiveInventory("DashRight", 1);
+		}
+		else if(buttons & BT_MOVELEFT)
+		{
+			GiveInventory("DashLeft", 1);
+		}
+	}
+}
+
+function bool canDash(void)
+{
+	return (
+		(
+			CheckInventory("GearGreavesSpeed") && 
+			CheckInventory("OnGround") > 0  &&
+			CheckInventory("DashCooldown")==0
+		) || (
+			CheckInventory("SteamGreavesFlag") &&
+			CheckInventory("OnGround") == 0 &&
+			CheckInventory("AirDashCooldown")==0
+		)
+	);
+}

@@ -1,0 +1,198 @@
+#library "status"
+#include "zcommon.acs"
+#include "commfunc.acs"
+
+#define HEALTH_PIECE 25
+#define HEALTH_MAX -1
+
+#define SUB_MAX 2
+#define AMMO_MAX -1
+
+str subWeaponNames[SUB_MAX] = {
+	"Knife",
+	"Dynamite"
+};
+
+// The scripts in this file handle the status of the player.
+// This includes things like health and such.
+
+script "status_enter" ENTER
+{
+	int pln = PlayerNumber();
+	int tid = pln+1000;
+	
+	int maxHealthBars = CheckInventory("MaxHealthBars");
+	int maxHealth = maxHealthBars * HEALTH_PIECE;
+	SetActorMaxHealth(0, maxHealthBars*HEALTH_PIECE);
+	SetActorHealth(0, maxHealthBars*HEALTH_PIECE);
+	SetPlayerProperty(false, true, PROP_BUDDHA);
+	SetInventory("HealthCounter", HEALTH_PIECE);
+	int prevHealth = GetActorHealth(0);
+	
+	while(GetActorHealth(0)>0)
+	{
+		// HEALTH MANAGEMENT (hell)
+		if(prevHealth != GetActorHealth(0))
+		{
+			int health = GetActorProperty(0, APROP_HEALTH);
+			int bars = max(0, barCount(health));
+			int shieldBars = CheckInventory("ShieldBars");
+			int healthCount = health % HEALTH_PIECE;
+			if(healthCount == 0)
+			{
+				healthCount = HEALTH_PIECE;
+			}
+			
+			if(health < prevHealth && health == 1)
+			{
+				SetInventory("ShieldBars", 0);
+				SetPlayerProperty(false, false, PROP_BUDDHA);
+				ACS_NamedExecuteAlways("status_invuln", 0);
+			}
+			
+			if(shieldCount(health) > CheckInventory("shieldBars"))
+			{
+				SetInventory("ShieldBars", shieldCount(health));
+				SetPlayerProperty(false, true, PROP_BUDDHA);
+			}
+			
+			SetInventory("HealthCounter", healthCount);
+			if(bars != CheckInventory("healthBars"))
+			{
+				if(bars < CheckInventory("healthBars"))
+				{
+					if(bars < shieldBars && health != 1)
+					{
+						SetInventory("ShieldBars", bars);
+						SetActorHealth(0, bars * HEALTH_PIECE);
+						ACS_NamedExecuteAlways("status_invuln", 0);
+					}
+				}
+				SetInventory("healthBars", bars);
+			}
+			
+			prevHealth = health;
+		}
+		
+		if(maxHealthBars != CheckInventory("MaxHealthBars"))
+		{
+			if(maxHealthBars > CheckInventory("MaxHealthBars"))
+			{
+				maxHealthBars = CheckInventory("MaxHealthBars");
+				setInventory("ShieldBars", min(maxHealthBars, CheckInventory("ShieldBars")));
+				setInventory("HealthBars", min(maxHealthBars, CheckInventory("HealthBars")));
+				SetActorHealth(0, min(maxHealthBars*HEALTH_PIECE, GetActorHealth(0)));
+				healthCount = GetActorHealth(0) % HEALTH_PIECE;
+				if(healthCount == 0)
+				{
+					healthCount = HEALTH_PIECE;
+				}
+				SetInventory("HealthCounter", healthCount);
+				prevHealth = GetActorHealth(0);
+			}
+			maxHealthBars = CheckInventory("MaxHealthBars");
+			
+			SetActorMaxHealth(0, maxHealthBars*HEALTH_PIECE);
+		}
+		
+		Delay(1);
+	}
+}
+
+script "status_respawn" RESPAWN
+{
+	ACS_NamedExecuteAlways("status_respawn", 0);
+}
+
+function int barCount(int hp)
+{
+int r = hp/HEALTH_PIECE;
+if(r*HEALTH_PIECE<hp)r++;
+return r;
+}
+
+function int shieldCount(int hp)
+{
+	int r = hp/HEALTH_PIECE;
+	return r;
+}
+
+script "status_invuln" (void)
+{
+	int delaytotal = 104;
+	GiveInventory("InvulnCounter", delayTotal);
+	int delaytime = 10;
+	int delaycount = 0;
+	
+	SetActorProperty(0, APROP_INVULNERABLE,1);
+	
+	while (CheckInventory("InvulnCounter") > 0)
+	{
+		int delayTimer = CheckInventory("InvulnCounter");
+		if (delaytimer % 2)
+			SetActorProperty(0,APROP_RENDERSTYLE,STYLE_Fuzzy);
+		else
+			SetActorProperty(0,APROP_RENDERSTYLE,STYLE_Add);
+		
+		TakeInventory("InvulnCounter", 1);
+		delaycount++;
+		if (delaycount > 1)
+		{
+			delaytime--;
+			delaycount = 0;
+		}
+		
+		Delay(delaytime);
+	}
+	   
+	SetActorProperty(0,APROP_RENDERSTYLE,STYLE_Normal);
+	SetActorProperty(0,APROP_INVULNERABLE,0);
+}
+
+// Health Recovery
+
+script "status_heal" (int amount, int del)
+{
+	if(del > 0)
+	{
+		delay(del);
+	}
+	int currentHP = GetActorHealth(0);
+	int maxHP = GetActorMaxHealth(0);
+		
+	if(amount == HEALTH_MAX)
+	{
+		amount = maxHP;
+	}
+	
+	if(amount > 0)
+	{
+		SetActorHealth(0, min(maxHP, currentHP+amount));
+	}
+}
+
+script "status_heal_check" (void)
+{
+	int currentHP = GetActorHealth(0);
+	int maxHP = GetActorMaxHealth(0);
+	SetResultValue(currentHP < maxHP);
+}
+
+// Ammo Recovery
+script "status_ammo_check" (int which)
+{
+	int currentAM = CheckInventory(StrParam(s:subWeaponNames[which], s:"Stock"));
+	int maxAM = CheckInventory(StrParam(s:subWeaponNames[which], s:"Max"));
+	SetResultValue(currentAM < maxAM);
+}
+
+script "status_ammo" (int which, int amount)
+{
+	str ammoName = StrParam(s:subWeaponNames[which], s:"Stock");
+	int currentAM = CheckInventory(ammoName);
+	int maxAM = CheckInventory(StrParam(s:subWeaponNames[which], s:"Max"));
+	
+	int result = min(currentAM + amount, maxAM);
+	
+	SetInventory(ammoName, result);
+}
