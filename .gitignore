@@ -7,4 +7,4 @@ areag-pk3/acs/*.o
 screenshot*.png
 *.ini
 *.zds
-*lastrun.log
+*.log
