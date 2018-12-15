@@ -1,1 +1,0 @@
-"engine/gzdoom.exe" -iwad ../wads/megagame.wad -file ../wads/AREAG.pk3 -file ../wads/TESTMAP.wad -file ../wads/TESTMAP2.wad file "../wads/Grand Gateway.wad" +sv_cheats true +map TESTMAP +logfile lastrun.log
