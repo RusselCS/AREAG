@@ -7,6 +7,36 @@ function int iterateTowards(int base, int amount, int dest)
 	return min(base + amount, dest);
 }
 
+function int angleInRange(int check, int angle, int range) {
+	if(abs(check-angle) > 0.5) {
+		if(check < angle) {
+			if(abs(check+1.0-angle) < range) {
+				return true;
+			}
+		} else {
+			if(abs(angle+1.0-check) < range) {
+				return true;
+			}
+		}
+	} else {
+		return abs(angle-check) < range;
+	}
+	return false;
+}
+
+function int normalizeFixedAngle(int angle) {
+
+	while(angle > 1.0) {
+		angle -= 1.0;
+	}
+
+	while(angle < 0.0) {
+		angle += 1.0;
+	}
+
+	return angle;
+}
+
 function int abs(int x)
 {
 	if(x < 0)

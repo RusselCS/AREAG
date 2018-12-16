@@ -224,7 +224,7 @@ script "tablet_distanceCheck" (void)
 	{
 		for(int i = 0; i < PlayerCount(); i++)
 		{
-			if(abs(z - GetActorZ(i+1000)) < 64.0)
+			if(abs(z - GetActorZ(i+1000)) < 64.0 && angleInRange(GetActorAngle(i+1000), GetActorAngle(0), 0.25))
 			{
 				active = true;
 			}
