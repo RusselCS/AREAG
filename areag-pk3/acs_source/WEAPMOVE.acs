@@ -33,30 +33,11 @@ script "weapmove_enter" ENTER
 			velz = GetActorVelZ(0);
 			netVel = FixedSqrt(fixedmul(velx, velx) + fixedmul(vely, vely));
 			
-			if(buttons & BT_FORWARD || buttons & BT_BACK || 
-			   buttons & BT_MOVELEFT || buttons & BT_MOVERIGHT || landed)
-			{
-				if((landed || netVel != 0) && CheckInventory("OnGround"))
-				{
-					moveAng += 0.03;
-				}
-			}
-			else
-			{
-				moveAng = 0;
-			}
-			
 			int maxHeight = 0.08;
 			int velFactor = fixeddiv(netVel, maxVel);
 			
 			//print(f:netVel, s:" / ", f:maxVel, s:" = ", f:velFactor);
-			
-			int trigPos = sin(moveAng);
-			
-			if(landed && trigPos < 0.0)
-			{
-				landed = false;
-			}
+			int trigPos = 0;
 			
 			if(landed)
 			{
@@ -74,9 +55,15 @@ script "weapmove_enter" ENTER
 				destY += fixedmul(fixedMul(fallAng, fallAng), fallAng);
 				destY = clamp(destY, 0.6, -0.18);
 				landed = false;
+				if(CheckInventory("ZSCTrigHaltViewbob") == 0) {
+					GiveInventory("ZSCTrigHaltViewbob", 1);
+				}
 			}
 			else
 			{
+				if(CheckInventory("ZSCTrigHaltViewbob") != 0) {
+					TakeInventory("ZSCTrigHaltViewbob", 1);
+				}
 				if(fallAng != 0.0)
 				{
 					moveAng = 0.0;

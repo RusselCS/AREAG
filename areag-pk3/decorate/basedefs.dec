@@ -37,6 +37,7 @@ actor OnGround : Once {}
 actor JumpCancel : Once {}
 actor HeadUnderwater : Once {}
 actor LegsUnderwater : Once {}
+actor ZSCTrigHaltViewbob : Once {}
 
 // MOVEBOB FLAGS //
 actor PosWeapOffsetX : Counter {}

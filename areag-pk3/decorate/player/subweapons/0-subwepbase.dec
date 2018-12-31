@@ -9,6 +9,7 @@ actor SubWeapon : Weapon
 	+WEAPON.ALT_AMMO_OPTIONAL
 	+WEAPON.NOALERT
 	+WEAPON.CHEATNOTWEAPON
+	Weapon.BobStyle "Inverse"
 	States
 	{
 	ReadyLoop:

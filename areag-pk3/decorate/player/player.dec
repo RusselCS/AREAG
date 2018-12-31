@@ -1,4 +1,4 @@
-actor AREAGPlayer : PlayerPawn
+actor AREAGPlayer : ZSCPlayerPawn
 {
 	player.displayname "Clyde"
 	player.soundclass "clyde"

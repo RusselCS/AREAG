@@ -3,6 +3,23 @@
 // to keep things in development, I'd rather just use ZScript for the things
 // I need it for.
 
+class ZSCPlayerPawn : PlayerPawn {
+
+	override void Tick() {
+		Super.Tick();
+		
+		if(CheckInventory("ZSCTrigHaltViewbob", 0)) {
+			if(ViewBob > 0.0) {
+				ViewBob = max(ViewBob - 0.3, 0.0);
+			}
+		} else {
+			if(ViewBob < 1.0) {
+				ViewBob = min(ViewBob + 0.1, 1.0);
+			}
+		}
+	}
+}
+
 class LevelFreezeOn : Actor
 {
 	Default
