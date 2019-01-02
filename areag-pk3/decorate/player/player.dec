@@ -20,7 +20,7 @@ actor AREAGPlayer : ZSCPlayerPawn
 	+NOBLOOD
 	+QUICKTORETALIATE
 	damagefactor "Dummy", 0.0
-	scale 2.5
+	scale 1.0
 	States
 	{
 	Spawn:
@@ -95,6 +95,21 @@ actor PlayerStomp
 	Spawn:
 		TNT1 A 1
 		wait
+	}
+}
+
+actor PlayerBlurCam : BasicEffect
+{
+	//renderstyle none
+	var int user_angleoffs;
+	States
+	{
+	Spawn:
+		PLAY A 1
+		loop
+	Death:
+		TNT1 A 1
+		stop
 	}
 }
 

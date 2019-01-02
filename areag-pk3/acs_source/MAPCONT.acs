@@ -140,7 +140,7 @@ script "map_tablet" (int tabletNum)
 	SetHudSize(1280, 960, 0);
 	SetHudClipRect(140, 0, 1000, 960, 1000, true);
 	SetFont("TABLFONT");
-	HudMessage(s:message; HUDMSG_TYPEON, 200, CR_UNTRANSLATED, 640.0, 470.0, 30.0, letterTime);
+	HudMessage(s:message; HUDMSG_TYPEON, 200, CR_UNTRANSLATED, 150.1, 60.1, 30.0, letterTime);
 	FadeTo(0.0, 0.0, 0.0, 1.0, fadeTime);
 	
 	delay(1);
@@ -159,7 +159,7 @@ script "map_tablet" (int tabletNum)
 			SetHudSize(1280, 960, 0);
 			SetHudClipRect(140, 0, 1000, 960, 1000, true);
 			SetFont("TABLFONT");
-			HudMessage(s:message; HUDMSG_FADEOUT, 200, CR_UNTRANSLATED, 640.0, 470.0, 30.0, 0.0);
+			HudMessage(s:message; HUDMSG_FADEOUT, 200, CR_UNTRANSLATED, 150.1, 60.1, 30.0, 0.0);
 			delayTime = 0;
 			PlaySound(ActivatorTID(), "misc/TabletSkip", CHAN_VOICE|CHAN_NOPAUSE, 0.5);
 		}
@@ -192,10 +192,14 @@ function int printTablet (str message, int hold, int fadeIn, int fadeOut)
 	SetHudClipRect(0, 0, 0, 0, 0, true);
 	int baseCam = 55.0;
 	SetHudSize(110, 100, false);
-	SetFont("CAMBLUR");
-	SetCameraToTexture(PlayerNumber()+1000, "CAMBLUR", 85);
-	HudMessage(s:"A"; HUDMSG_FADEINOUT|HUDMSG_ALPHA, 203, CR_UNTRANSLATED, baseCam-20.0, 50.0, hold, fadeIn, fadeOut, 0.2);
-	HudMessage(s:"A"; HUDMSG_FADEINOUT|HUDMSG_ALPHA, 202, CR_UNTRANSLATED, baseCam+20.0, 50.0, hold, fadeIn, fadeOut, 0.15);
+	SetCameraToTexture(PlayerNumber()+1100, "CAMBLUR1", 85);
+	SetCameraToTexture(PlayerNumber()+1200, "CAMBLUR2", 85);
+	SetFont("CAMBLUR1");
+	SetFont("CAMBLUR2");
+	//ACS_NamedExecuteAlways("blurcam_angle", 0, PlayerNumber()+1100, 0.25);
+	//ACS_NamedExecuteAlways("blurcam_angle", 0, PlayerNumber()+1200, -0.25);
+	HudMessage(s:"A"; HUDMSG_FADEINOUT|HUDMSG_ALPHA, 203, CR_UNTRANSLATED, baseCam, 50.0, hold, fadeIn, fadeOut, 0.2);
+	HudMessage(s:"A"; HUDMSG_FADEINOUT|HUDMSG_ALPHA, 202, CR_UNTRANSLATED, baseCam, 50.0, hold, fadeIn, fadeOut, 0.15);
 	SetHudSize(1024, 768, false);
 	SetFont("TABLETBG");
 	HudMessage(s:"A"; HUDMSG_FADEINOUT|HUDMSG_ALPHA, 201, CR_UNTRANSLATED, 512.0, 384.0, hold, fadeIn, fadeOut, 0.9);
@@ -204,7 +208,7 @@ function int printTablet (str message, int hold, int fadeIn, int fadeOut)
 		SetHudSize(1280, 960, 0);
 		SetHudClipRect(140, 0, 1000, 960, 1000, true);
 		SetFont("TABLFONT");
-		HudMessage(s:message; HUDMSG_FADEINOUT, 200, CR_UNTRANSLATED, 640.0, 470.0, hold, fadeIn, fadeOut, 0.9);
+		HudMessage(s:message; HUDMSG_FADEINOUT, 200, CR_UNTRANSLATED, 150.1, 60.1, hold, fadeIn, fadeOut, 0.9);
 	}
 	return 0;
 }
