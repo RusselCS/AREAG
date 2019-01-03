@@ -100,7 +100,7 @@ actor PlayerStomp
 
 actor PlayerBlurCam : BasicEffect
 {
-	//renderstyle none
+	renderstyle none
 	var int user_angleoffs;
 	States
 	{

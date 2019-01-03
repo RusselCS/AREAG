@@ -195,10 +195,10 @@ function int printTablet (str message, int hold, int fadeIn, int fadeOut)
 	SetCameraToTexture(PlayerNumber()+1100, "CAMBLUR1", 85);
 	SetCameraToTexture(PlayerNumber()+1200, "CAMBLUR2", 85);
 	SetFont("CAMBLUR1");
-	SetFont("CAMBLUR2");
 	//ACS_NamedExecuteAlways("blurcam_angle", 0, PlayerNumber()+1100, 0.25);
 	//ACS_NamedExecuteAlways("blurcam_angle", 0, PlayerNumber()+1200, -0.25);
 	HudMessage(s:"A"; HUDMSG_FADEINOUT|HUDMSG_ALPHA, 203, CR_UNTRANSLATED, baseCam, 50.0, hold, fadeIn, fadeOut, 0.2);
+	SetFont("CAMBLUR2");
 	HudMessage(s:"A"; HUDMSG_FADEINOUT|HUDMSG_ALPHA, 202, CR_UNTRANSLATED, baseCam, 50.0, hold, fadeIn, fadeOut, 0.15);
 	SetHudSize(1024, 768, false);
 	SetFont("TABLETBG");
