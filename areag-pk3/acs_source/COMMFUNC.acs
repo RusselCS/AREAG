@@ -1,6 +1,5 @@
 function int iterateTowards(int base, int amount, int dest)
 {
-	if(dest < base)
 	{
 		return max(base - amount, dest);
 	}
