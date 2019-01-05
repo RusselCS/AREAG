@@ -155,16 +155,17 @@ script "map_tablet" (int tabletNum, int image)
 		msgY = msgBaseY + (40.0 * square(CYCLES-i)/2);
 		msgAlpha = fixeddiv(i, CYCLES);
 		printTablet(message, msgAlpha, msgX, msgY, tabletImage);
+		buttons = GetPlayerInput(-1, INPUT_BUTTONS);
 		delay(1);
 	}
 	
-	while(!anyButtonPressed(buttons, oldButtons))
+	do
 	{
 		oldButtons = buttons;
 		buttons = GetPlayerInput(-1, INPUT_BUTTONS);
 		printTablet(message, 1.0, msgBaseX, msgBaseY, tabletImage);
 		Delay(1);
-	}
+	} while(!anyButtonPressed(buttons, oldButtons));
 
 	PlaySound(ActivatorTID(), "misc/TabletOff", CHAN_BODY|CHAN_NOPAUSE, 0.5);
 

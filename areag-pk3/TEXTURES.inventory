@@ -1,0 +1,13 @@
+graphic INICSPID, 72, 37
+{
+   XScale 2.2
+   YScale 2.2
+   Offset 5, -15
+   Patch SDROA0, 0, 0
+}
+
+graphic INICMEAT, 100, 100
+{
+   Offset -3, -8
+   Patch MEATA0, 0, 0
+}

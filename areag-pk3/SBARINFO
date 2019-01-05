@@ -3,6 +3,8 @@ interpolatehealth false;
 
 statusbar normal, forcescaled
 {
+	DrawInventoryBar Doom, 10, INDEXFONT, 0, 3;
+
 	// Air Supply
 	InInventory HeadUnderwater, 1
 	{

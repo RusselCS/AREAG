@@ -31,7 +31,7 @@ actor DronePickup : CustomInventory
 actor DroneUsedFlag : Once {}
 actor DroneTrigger : BasicTreasureItem
 {
-	inventory.icon "SDROC1"
+	inventory.icon "INICSPID"
 	States
 	{
 	TreasureUse:

@@ -123,6 +123,17 @@ actor TestMapSpiderDrone : TestMapProp 12310
 	}
 }
 
+actor TestMapPortableHealth : TestMapProp 12311
+{
+	scale 2.0
+	States
+	{
+	Spawn:
+		MEAT A -1
+		stop
+	}
+}
+
 actor TestMapSpeedCheck : TestMapProp 12400
 {
 	States

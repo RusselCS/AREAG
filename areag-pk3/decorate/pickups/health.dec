@@ -62,3 +62,22 @@ actor MaxHealthUp : CustomInventory
 		stop
 	}
 }
+
+actor PortableHealthPickup : CustomInventory {
+	inventory.maxamount 999
+	inventory.icon "INICMEAT"
+	+INVBAR
+	scale 2.0
+	states
+	{
+	Spawn:
+		MEAT A 1
+		loop
+	Use:
+		TNT1 A 0 A_JumpIf(CallACS("status_heal_check") == true, "Success")
+		fail
+	Success:
+		TNT1 A 0 ACS_NamedExecuteAlways("status_heal", 0, 10)
+		stop
+	}
+}
