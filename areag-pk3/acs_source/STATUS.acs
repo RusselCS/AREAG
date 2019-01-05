@@ -28,6 +28,14 @@ script "status_enter" ENTER
 	SetPlayerProperty(false, true, PROP_BUDDHA);
 	SetInventory("HealthCounter", HEALTH_PIECE);
 	int prevHealth = GetActorHealth(0);
+
+	Delay(1);
+
+	SpawnSpot("PlayerBlurCam", tid, 1100+pln, 0);
+	SpawnSpot("PlayerBlurCam", tid, 1200+pln, 0);
+
+	ACS_NamedExecuteAlways("status_blurcam", 0, pln, 1100);
+	ACS_NamedExecuteAlways("status_blurcam", 0, pln, 1200);
 	
 	while(GetActorHealth(0)>0)
 	{
@@ -95,6 +103,33 @@ script "status_enter" ENTER
 			SetActorMaxHealth(0, maxHealthBars*HEALTH_PIECE);
 		}
 		
+		Delay(1);
+	}
+}
+
+script "status_blurcam" (int pln, int pcam) {
+
+	int tid = pln + pcam;
+	int user = pln + 1000;
+	SetUserVariable(tid, "user_angleoffs", 0.0);
+
+	while(true) {
+		Warp(tid, 0, 0, GetActorProperty(user, APROP_ViewHeight), 0, WARPF_MOVEPTR|WARPF_INTERPOLATE);
+		SetActorAngle(tid, GetActorAngle(user) + GetUserVariable(tid, "user_angleoffs"));
+		SetActorPitch(tid, GetActorPitch(user));
+		Delay(1);
+	}
+}
+
+script "blurcam_angle" (int tid, int angle, int tics) {
+
+	if(tics == 0)
+		tics = 5;
+
+	int angleoffs = abs(angle / tics);
+
+	while(GetUserVariable(tid, "user_angleoffs")!=angle) {
+		SetUserVariable(tid, "user_angleoffs", iterateTowards(GetUserVariable(tid, "user_angleoffs"), angleoffs, angle));
 		Delay(1);
 	}
 }

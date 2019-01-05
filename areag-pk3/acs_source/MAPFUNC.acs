@@ -14,10 +14,15 @@
 // 4 - Map's language name
 
 #define MAX_MAPS 2
+#define MAX_IMAGES 10
 
 str mapList[MAX_MAPS][5] = {
 	{100, "TESTMAP", "Beyond Valley", "", "TESTMAP"},
 	{101, "TESTMAP2", "Valley Coliseum", "", "TESTMAP2"}
+};
+
+str imageList[MAX_MAPS][MAX_IMAGES] = {
+	{"TBTM_01", "TBTM_02"}
 };
 
 function int getMapByLevelNum(int levelNum)

@@ -1,0 +1,13 @@
+sprite TBTM_01, 244, 190 {
+    Offset 0, 0
+    xscale 0.5
+    yscale 0.5
+    Patch TM_01, 0, 0
+}
+
+sprite TBTM_02, 244, 190 {
+    Offset 0, 0
+    xscale 0.25
+    yscale 0.25
+    Patch TM_02, 0, 0
+}
