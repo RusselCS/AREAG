@@ -6,6 +6,11 @@ function int iterateTowards(int base, int amount, int dest)
 	return min(base + amount, dest);
 }
 
+function int square(int x)
+{
+	return x*x;
+}
+
 function int angleInRange(int check, int angle, int range) {
 	if(abs(check-angle) > 0.5) {
 		if(check < angle) {

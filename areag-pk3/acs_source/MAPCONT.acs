@@ -78,6 +78,9 @@ script "map_startup" ENTER
 	int fadeTime = 0.2;
 	int texWidth = 142.0;
 	FadeTo(0, 0, 0, 1.0, 0.0);
+	SetHudSize(1, 1, false);
+	SetFont("BLACK");
+	HudMessage(s:"A"; HUDMSG_ALPHA, 120, CR_UNTRANSLATED, 0, 0, 0, 1.0);
 	SetHudSize(1280, 960, 0);
 	SetFont("MAPTRANS");
 	int holdTime = 0.6;
@@ -88,6 +91,7 @@ script "map_startup" ENTER
 		Delay(2);
 	}
 	HudMessage(s:"A"; HUDMSG_FADEINOUT, 100, CR_UNTRANSLATED, baseVal, 480.0, holdTime, 0.0, fadeTime);
+	HudMessage(s:""; HUDMSG_ALPHA, 120, CR_UNTRANSLATED, 0, 0, 0, 0);
 	FadeTo(0, 0, 0, 0.2, fadeTime);
 	
 	SetPlayerProperty(true, false, PROP_INVULNERABILITY);
@@ -100,121 +104,125 @@ script MAP_TABLET_WRAP (int arg1, int arg2, int arg3)
 	ACS_NamedExecuteAlways("map_tablet", 0, arg1, arg2, arg3);
 }
 
-script "map_tablet" (int tabletNum)
+script "map_tablet" (int tabletNum, int image)
 {
+	if(CheckInventory("MenuFreezer")>0)
+	{
+		terminate;
+	}
+	GiveInventory("MenuFreezer", 1);
+
 	int levelNum = GetLevelInfo(LEVELINFO_LEVELNUM);
 	if(levelNum == 0)
 	{
-		PrintBold(s:"LEVELNUM FOR THIS MAP IS 0. PLEASE SET LEVELNUM TO NON-ZERO FOR TABLETS TO WORK!");
+		PrintBold(s:"\cgERROR: LEVELNUM FOR THIS MAP IS 0. PLEASE SET LEVELNUM TO NON-ZERO FOR TABLETS TO WORK!");
 		terminate;
 	}
 	
 	int mapIndex = getMapByLevelNum(levelNum);
 	if(mapIndex == -1)
 	{
-		PrintBold(s:"LEVELNUM NOT FOUND IN ACS REGISTRY. PLEASE REGISTER YOUR MAP TO USE TABLETS.");
+		PrintBold(s:"\cgERROR: LEVELNUM NOT FOUND IN ACS REGISTRY. PLEASE REGISTER YOUR MAP TO USE TABLETS.");
 		terminate;
 	}
-	
-	if(CheckInventory("MenuFreezer")>0)
-	{
-		terminate;
+
+	str langName = strParam(s:mapList[mapIndex][MAPPROP_LANGNAME], s:"_TABLET_", i:tabletNum);
+	str tabletImage = -1;
+	if(image != 0) {
+		tabletImage = imageList[mapIndex][image-1];
 	}
-	
-	GiveInventory("MenuFreezer", 1);
+	int buttons = GetPlayerInput(-1, INPUT_BUTTONS);
+	int oldButtons = GetPlayerInput(-1, INPUT_OLDBUTTONS);
+	str message = strParam(l:langName);
+	int CYCLES = 6;
+	int i = 0; // For the iterators.
+	int msgBaseX = 150.1;
+	int msgBaseY = 60.1;
+	int msgAlpha = 1.0;
+
+	int msgX = msgBaseX;
+	int msgY = msgBaseY;
+
 	PlaySound(ActivatorTID(), "misc/TabletOn", CHAN_BODY|CHAN_NOPAUSE, 0.5);
 	Thing_Stop(0);
 	SetPlayerProperty(0, true, PROP_TOTALLYFROZEN);
 	SetPlayerProperty(0, true, PROP_INVULNERABILITY);
 	
-	str langName = strParam(s:mapList[mapIndex][MAPPROP_LANGNAME], s:"_TABLET_", i:tabletNum);
-	int buttons = GetPlayerInput(-1, INPUT_BUTTONS);
-	int oldButtons = GetPlayerInput(-1, INPUT_OLDBUTTONS);
-	str message = strParam(l:langName);
-	int letterTime = 0.01;
-	int fadeTime = 0.2;
-	int delayTime = (FixedMul(FixedMul(letterTime, strLen(message)<<16), 35<<16)>>16);
-	bool messageActive = true;
-	
-	ACS_NamedExecuteAlways("blurcam_angle", 0, PlayerNumber()+1100, 0.025, 4);
-	ACS_NamedExecuteAlways("blurcam_angle", 0, PlayerNumber()+1200, -0.025, 4);
-	printTablet(-1, 30.0, fadeTime, 0.0);
-	SetHudSize(1280, 960, 0);
-	SetHudClipRect(140, 0, 1000, 960, 1000, true);
-	SetFont("TABLFONT");
-	HudMessage(s:message; HUDMSG_TYPEON, 200, CR_UNTRANSLATED, 150.1, 60.1, 30.0, letterTime);
-	FadeTo(0.0, 0.0, 0.0, 1.0, fadeTime);
-	
-	delay(1);
-	
-	while(delayTime > 0)
-	{
-		oldButtons = buttons;
-		buttons = GetPlayerInput(-1, INPUT_BUTTONS);
-		printTablet(-1, 30.0, 0.0, 0.0);
-		
-		if(delaytime % 4 == 0)
-			PlaySound(ActivatorTID(), "misc/TabletType", CHAN_VOICE|CHAN_NOPAUSE, 0.2);
-		
-		if(anyButtonPressed(buttons, oldButtons))
-		{
-			SetHudSize(1280, 960, 0);
-			SetHudClipRect(140, 0, 1000, 960, 1000, true);
-			SetFont("TABLFONT");
-			HudMessage(s:message; HUDMSG_FADEOUT, 200, CR_UNTRANSLATED, 150.1, 60.1, 30.0, 0.0);
-			delayTime = 0;
-			PlaySound(ActivatorTID(), "misc/TabletSkip", CHAN_VOICE|CHAN_NOPAUSE, 0.5);
-		}
-		delayTime--;
+	ACS_NamedExecuteAlways("blurcam_angle", 0, PlayerNumber()+1100, 0.0125, 4);
+	ACS_NamedExecuteAlways("blurcam_angle", 0, PlayerNumber()+1200, -0.0125, 4);
+
+	for(i = 0; i <= CYCLES; i++) {
+		msgY = msgBaseY + (40.0 * square(CYCLES-i)/2);
+		msgAlpha = fixeddiv(i, CYCLES);
+		printTablet(message, msgAlpha, msgX, msgY, tabletImage);
 		delay(1);
 	}
-	
-	oldButtons = buttons;
-	delayTime = 0;
 	
 	while(!anyButtonPressed(buttons, oldButtons))
 	{
 		oldButtons = buttons;
 		buttons = GetPlayerInput(-1, INPUT_BUTTONS);
-		printTablet(message, 30.0, 0.0, 0.0);
+		printTablet(message, 1.0, msgBaseX, msgBaseY, tabletImage);
 		Delay(1);
 	}
-	
-	printTablet(message, 0.0, 0.0, fadeTime);
-	FadeTo(0.0, 0.0, 0.0, 0.0, fadeTime);
+
 	PlaySound(ActivatorTID(), "misc/TabletOff", CHAN_BODY|CHAN_NOPAUSE, 0.5);
 
-	ACS_NamedExecuteAlways("blurcam_angle", 0, PlayerNumber()+1100, 0.0, 2);
-	ACS_NamedExecuteAlways("blurcam_angle", 0, PlayerNumber()+1200, 0.0, 2);
-	
+	ACS_NamedExecuteAlways("blurcam_angle", 0, PlayerNumber()+1100, 0.0, 4);
+	ACS_NamedExecuteAlways("blurcam_angle", 0, PlayerNumber()+1200, 0.0, 4);
+
 	SetPlayerProperty(0, false, PROP_TOTALLYFROZEN);
 	SetPlayerProperty(0, false, PROP_INVULNERABILITY);
 	TakeInventory("MenuFreezer", 1);
+
+	for(i = CYCLES; i >= 0; i--) {
+		msgY = msgBaseY + (40.0 * square(CYCLES-i)/2);
+		msgAlpha = fixeddiv(i, CYCLES);
+		printTablet(message, msgAlpha, msgX, msgY, tabletImage);
+		delay(1);
+	}
 }
 
-function int printTablet (str message, int hold, int fadeIn, int fadeOut)
+function void printTablet (str message, int alpha, int x, int y, str image)
 {
-	SetHudClipRect(0, 0, 0, 0, 0, true);
-	int camX = 110;
-	int camY = 100;
-	SetHudSize(camX, camY, false);
-	SetCameraToTexture(PlayerNumber()+1100, "CAMBLUR1", 85);
-	SetCameraToTexture(PlayerNumber()+1200, "CAMBLUR2", 85);
-	SetFont("CAMBLUR1");
-	HudMessage(s:"A"; HUDMSG_FADEINOUT|HUDMSG_ALPHA, 203, CR_UNTRANSLATED, (camX/2)<<16, (camY/2)<<16, hold, fadeIn, fadeOut, 0.4);
-	SetFont("CAMBLUR2");
-	HudMessage(s:"A"; HUDMSG_FADEINOUT|HUDMSG_ALPHA, 202, CR_UNTRANSLATED, (camX/2)<<16, (camY/2)<<16, hold, fadeIn, fadeOut, 0.35);
-	SetHudSize(1024, 768, false);
-	SetFont("TABLETBG");
-	HudMessage(s:"A"; HUDMSG_FADEINOUT|HUDMSG_ALPHA, 201, CR_UNTRANSLATED, 512.0, 384.0, hold, fadeIn, fadeOut, 0.9);
-	if(message != -1)
-	{
+	if(alpha == 0) {
+		HudMessage(s:""; HUDMSG_ALPHA, 205, CR_UNTRANSLATED, 0, 0, 0, 0);
+		HudMessage(s:""; HUDMSG_ALPHA, 204, CR_UNTRANSLATED, 0, 0, 0, 0);
+		HudMessage(s:""; HUDMSG_ALPHA, 203, CR_UNTRANSLATED, 0, 0, 0, 0);
+		HudMessage(s:""; HUDMSG_ALPHA, 202, CR_UNTRANSLATED, 0, 0, 0, 0);
+		HudMessage(s:""; HUDMSG_ALPHA, 201, CR_UNTRANSLATED, 0, 0, 0, 0);
+		HudMessage(s:""; HUDMSG_ALPHA, 200, CR_UNTRANSLATED, 0, 0, 0, 0);
+		fadeto(0, 0, 0, 0, 0);
+	} else {
+		int camX = 110;
+		int camY = 100;
+		int hold = 0.0;
+
+		SetHudClipRect(0, 0, 0, 0, 0, true);
+		SetHudSize(1, 1, false);
+		SetFont("BLACK");
+		HudMessage(s:"A"; HUDMSG_ALPHA, 205, CR_UNTRANSLATED, 0, 0, 0, alpha);
+
+		SetHudSize(camX, camY, false);
+		SetCameraToTexture(PlayerNumber()+1100, "CAMBLUR1", 85);
+		SetCameraToTexture(PlayerNumber()+1200, "CAMBLUR2", 85);
+		SetFont("CAMBLUR1");
+		HudMessage(s:"A"; HUDMSG_ALPHA|HUDMSG_ADDBLEND, 204, CR_UNTRANSLATED, (camX/2)<<16, (camY/2)<<16, hold, fixedmul(0.3, alpha));
+		SetFont("CAMBLUR2");
+		HudMessage(s:"A"; HUDMSG_ALPHA|HUDMSG_ADDBLEND, 203, CR_UNTRANSLATED, (camX/2)<<16, (camY/2)<<16, hold, fixedmul(0.3, alpha));
+		SetHudSize(1024, 768, false);
+		SetFont("TABLETBG");
+		HudMessage(s:"A"; HUDMSG_ALPHA, 202, CR_UNTRANSLATED, 512.0, 384.0, hold, fixedmul(0.9, alpha));
+		
 		SetHudSize(1280, 960, 0);
 		SetHudClipRect(140, 0, 1000, 960, 1000, true);
 		SetFont("TABLFONT");
-		HudMessage(s:message; HUDMSG_FADEINOUT, 200, CR_UNTRANSLATED, 150.1, 60.1, hold, fadeIn, fadeOut, 0.9);
+		HudMessage(s:message; HUDMSG_ALPHA, 201, CR_UNTRANSLATED, x, y, hold, fixedmul(0.9, alpha));
+		if(image != -1) {
+			SetFont(image);
+			HudMessage(s:"A"; HUDMSG_ALPHA, 200, CR_UNTRANSLATED, x+500.0, y+500.0, hold, fixedmul(0.9, alpha));
+		}
 	}
-	return 0;
 }
 
 script "movement_aircontrol" OPEN
