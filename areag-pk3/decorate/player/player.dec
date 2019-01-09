@@ -26,7 +26,7 @@ actor AREAGPlayer : ZSCPlayerPawn
 	Spawn:
 		PLAY A 0
 		PLAY B 1
-		PLAY Z 1
+		PLAY A 1
 		Goto Spawn+2
 	See:
 		PLAY BC 7

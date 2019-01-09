@@ -205,12 +205,12 @@ function void printTablet (str message, int alpha, int x, int y, str image)
 		HudMessage(s:"A"; HUDMSG_ALPHA, 205, CR_UNTRANSLATED, 0, 0, 0, alpha);
 
 		SetHudSize(camX, camY, false);
-		SetCameraToTexture(PlayerNumber()+1100, "CAMBLUR1", 85);
-		SetCameraToTexture(PlayerNumber()+1200, "CAMBLUR2", 85);
+		SetCameraToTexture(PlayerNumber()+1100, "CAMBLUR1", 100);
+		SetCameraToTexture(PlayerNumber()+1200, "CAMBLUR2", 100);
 		SetFont("CAMBLUR1");
-		HudMessage(s:"A"; HUDMSG_ALPHA|HUDMSG_ADDBLEND, 204, CR_UNTRANSLATED, (camX/2)<<16, (camY/2)<<16, hold, fixedmul(0.3, alpha));
+		HudMessage(s:"A"; HUDMSG_ALPHA|HUDMSG_ADDBLEND, 204, CR_UNTRANSLATED, (camX/2)<<16, (camY/2)<<16, hold, fixedmul(0.2, alpha));
 		SetFont("CAMBLUR2");
-		HudMessage(s:"A"; HUDMSG_ALPHA|HUDMSG_ADDBLEND, 203, CR_UNTRANSLATED, (camX/2)<<16, (camY/2)<<16, hold, fixedmul(0.3, alpha));
+		HudMessage(s:"A"; HUDMSG_ALPHA|HUDMSG_ADDBLEND, 203, CR_UNTRANSLATED, (camX/2)<<16, (camY/2)<<16, hold, fixedmul(0.2, alpha));
 		SetHudSize(1024, 768, false);
 		SetFont("TABLETBG");
 		HudMessage(s:"A"; HUDMSG_ALPHA, 202, CR_UNTRANSLATED, 512.0, 384.0, hold, fixedmul(0.9, alpha));
