@@ -1,4 +1,4 @@
-actor WaterSector : SoundEnvironment 10560
+actor WaterSector : SoundEnvironment
 {
 	//$Category AREAG-Map Tools
 	//$Title Water Sector
@@ -142,3 +142,29 @@ actor TabletFXP : TabletFXL
 		wait
 	}
 }
+
+/*actor SwitchCrystal
+{
+	+SOLID
+	+SHOOTABLE
+	+INVULNERABLE
+	+ALLOWPAIN
+	health 9999
+    mass 9999
+    height 56
+	radius 16
+	scale 1.5
+	painchance 256
+    States
+    {
+    Spawn:
+        SCRY A 1
+        loop
+    Pain:
+        SCRY B 0 A_ChangeFlag(NOPAIN, true)
+        SCRY B 0 A_PlaySoundEx("misc/switchon", "body", false, 2)
+        SCRY B 0 A_CallSpecial(special, args[0], args[1], args[2], args[3], args[4])
+		SCRY B 1
+		wait
+    }
+}*/

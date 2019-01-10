@@ -1,6 +1,13 @@
 clearepisodes
 clearskills
 
+DoomEdNums
+{
+	10560 = WaterSector
+	10561 = TabletActivatable
+	10562 = SwitchCrystal
+}
+
 episode TESTMAP
 {
 	name = "Adventure Now"
@@ -15,9 +22,4 @@ skill normal
 cluster 1
 {
 	hub
-}
-
-DoomEdNums
-{
-	10561 = TabletActivatable
 }

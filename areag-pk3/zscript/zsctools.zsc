@@ -1,0 +1,65 @@
+class SwitchCrystal : Actor
+{
+    bool bSwitchOn;
+
+    Default
+    {
+        +SOLID;
+        +SHOOTABLE;
+        +NOBLOOD;
+        health 1;
+        mass 9999;
+        height 56;
+        radius 16;
+        scale 1.5;
+    }
+
+    override void PostBeginPlay()
+    {
+        super.PostBeginPlay();
+        bSwitchOn = false;
+    }
+	
+    override int DamageMobj(Actor inflictor, Actor source, int damage, Name mod, int flags = 0, double angle = 0) {
+        
+        bool success = false;
+
+        if(!bSwitchOn) {
+            if(!bSTANDSTILL) {
+                SetState(ResolveState("SwitchOn"));
+            } else {
+                SetState(ResolveState("SwitchOnOff"));
+            }
+            success = true;
+            bSwitchOn = true;
+        }
+
+        if(success) {
+            A_PlaySound("misc/switchon", CHAN_BODY, 1.0, false, ATTN_NONE);
+            A_CallSpecial(special, args[0], args[1], args[2], args[3], args[4]);
+        }
+        
+        return 0;
+    }
+
+    void switchOff() {
+        A_PlaySound("misc/switchoff", CHAN_BODY, 1.0, false, ATTN_NONE);
+        bSwitchOn = false;
+    }
+
+    States
+    {
+    Spawn:
+        SCRY A 0;
+        SCRY A 1;
+        wait;
+    SwitchOn:
+        
+		SCRY B 1;
+        wait;
+    SwitchOnOff:
+        SCRY B 35;
+        SCRY B 0 switchOff();
+		goto Spawn;
+    }
+}

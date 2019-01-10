@@ -80,3 +80,6 @@ misc/TabletOn  TABLEON  // Mega Man Star Force 2 - Unsure of 1's is different.
 misc/TabletOff TABLEOFF // Mega Man Star Force 2
 misc/TabletType TABLETYP // Mega Man Star Force 2
 misc/TabletSkip TABLESKI // Mega Man Star Force 2
+
+misc/switchoff SCRYOFF // Mega Man Star Force
+misc/switchon SCRYON // Mega Man Star Force

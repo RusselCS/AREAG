@@ -3,6 +3,8 @@
 // to keep things in development, I'd rather just use ZScript for the things
 // I need it for.
 
+#include "zscript/zsctools.zsc"
+
 class ZSCPlayerPawn : PlayerPawn {
 
 	override void Tick() {
