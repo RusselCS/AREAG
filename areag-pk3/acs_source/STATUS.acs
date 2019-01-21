@@ -231,3 +231,13 @@ script "status_ammo" (int which, int amount)
 	
 	SetInventory(ammoName, result);
 }
+
+script "status_smallpickup" (int which, int amount)
+{
+	str activator = GetActorClass(0);
+	
+	switch(which) {
+		case 0: // COINS
+			break;
+	}
+}

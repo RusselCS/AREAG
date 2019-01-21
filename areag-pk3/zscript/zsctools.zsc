@@ -1,4 +1,4 @@
-class SwitchCrystal : Actor
+class ZSCSwitchCrystal : Actor
 {
     bool bSwitchOn;
 
@@ -20,7 +20,7 @@ class SwitchCrystal : Actor
         bSwitchOn = false;
     }
 	
-    override int DamageMobj(Actor inflictor, Actor source, int damage, Name mod, int flags = 0, double angle = 0) {
+    override int DamageMobj(Actor inflictor, Actor source, int damage, Name mod, int flags, double angle) {
         
         bool success = false;
 
@@ -54,12 +54,109 @@ class SwitchCrystal : Actor
         SCRY A 1;
         wait;
     SwitchOn:
-        
 		SCRY B 1;
         wait;
     SwitchOnOff:
         SCRY B 35;
         SCRY B 0 switchOff();
 		goto Spawn;
+    }
+}
+
+class ZSCNumber : Actor
+{
+    int iNumberToDraw;
+
+    Default
+    {
+        -SOLID;
+        +NOGRAVITY;
+        +THRUACTORS;
+    }
+
+    override void PostBeginPlay()
+    {
+        super.PostBeginPlay();
+
+        iNumberToDraw = random(0, random(1, 100)*10);
+        int digits = countDigits(iNumberToDraw);
+        int start = digits/2;
+
+        for(int i = 0; i < digits; i++)
+        {
+            Actor act;
+            bool res;
+            [res, act] = A_SpawnItemEx("ZSCDigit", 0, ((i-start)*10));
+            let actb = ZSCDigit(act);
+            actb.iDigit = getDigit(iNumberToDraw, i);
+            actb.iIndex = i-start;
+            act.Tracer = self;
+        }
+    }
+
+    override void Tick()
+    {
+        super.Tick();
+        A_Face(Players[ConsolePlayer].MO);
+    }
+
+    private int countDigits(int input)
+    {
+        int res = 0;
+
+        while(input > 0) {
+            res++;
+            input /= 10;
+        }
+
+        return res;
+    }
+
+    private int getDigit(int number, int index)
+    {
+        for(int i = 0; i < index; i++)
+        {
+            number /= 10;
+        }
+
+        int excess = (number / 10) * 10;
+
+        return number - excess;
+    }
+
+    States
+    {
+    Spawn:
+        TNT1 A 1;
+        loop;
+    }
+}
+
+class ZSCDigit : Actor
+{
+    int iDigit;
+    int iIndex;
+    int iTime;
+
+    Default
+    {
+        +NOGRAVITY;
+        +FORCEXYBILLBOARD;
+    }
+
+    override void Tick() {
+        super.Tick();
+        
+        self.sprite = GetSpriteIndex(name("NUM1"));
+        self.frame = max(0, iDigit);
+
+        A_Warp(AAPTR_TRACER, 0, iIndex * 10, 0, 0, WARPF_INTERPOLATE);
+    }
+
+    States
+    {
+    Spawn:
+        NUM1 A 1;
+        loop;
     }
 }

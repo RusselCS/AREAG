@@ -3,7 +3,9 @@ interpolatehealth false;
 
 statusbar normal, forcescaled
 {
-	DrawInventoryBar Doom, 10, INDEXFONT, 0, 3;
+	DrawSelectedInventory INDEXFONT, 0, 20;
+	DrawImage "COINI0", 0, 3;
+	DrawNumber 3, INDEXFONT, GREEN, AGCoin, 25, 8;
 
 	// Air Supply
 	InInventory HeadUnderwater, 1

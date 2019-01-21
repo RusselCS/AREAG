@@ -3,7 +3,7 @@ actor DynamiteEquipped : Once {}
 actor DynamiteStock : Counter {}
 actor DynamiteMax : Counter {}
 
-actor DynamiteCratePickup : CustomInventory
+actor DynamiteCratePickup : BasicInventory
 {
 	inventory.pickupmessage ""
 	inventory.pickupsound "upgrade/offense"

@@ -4,6 +4,7 @@
 // I need it for.
 
 #include "zscript/zsctools.zsc"
+#include "zscript/zscbasicactors.zsc"
 
 class ZSCPlayerPawn : PlayerPawn {
 

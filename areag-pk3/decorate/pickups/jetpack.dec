@@ -1,4 +1,4 @@
-actor NovaPackPickup : CustomInventory
+actor NovaPackPickup : BasicInventory
 {
 	inventory.pickupmessage ""
 	inventory.pickupsound "upgrade/artifice"

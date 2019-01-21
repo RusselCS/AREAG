@@ -7,7 +7,7 @@ actor AREAGDrone : AREAGPlayer
 	Player.AttackZOffset 5 // 41 - view height
 }
 
-actor DronePickup : CustomInventory 
+actor DronePickup : BasicInventory 
 {
 	inventory.pickupmessage ""
 	inventory.pickupsound "upgrade/treasure"

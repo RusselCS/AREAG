@@ -3,7 +3,7 @@ actor KnifeEquipped : Once {}
 actor KnifeStock : Counter {}
 actor KnifeMax : Counter {}
 
-actor KnifePouchPickup : CustomInventory
+actor KnifePouchPickup : BasicInventory
 {
 	inventory.pickupmessage ""
 	inventory.pickupsound "upgrade/offense"

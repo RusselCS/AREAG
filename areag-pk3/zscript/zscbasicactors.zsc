@@ -1,0 +1,83 @@
+class Once : Inventory
+{
+    Default
+    {
+        inventory.amount 1;
+        inventory.maxamount 1;
+    }
+}
+
+class Counter : Inventory
+{
+    Default
+    {
+        inventory.amount 1;
+        inventory.maxamount 65536;
+    }
+}
+
+class AGCoin : Counter {}
+
+class ZSCCoinPickup : Counter
+{
+    Default {
+        inventory.pickupmessage "";
+        -INVENTORY.INVBAR;
+    }
+
+    override void PostBeginPlay()
+    {
+        super.PostBeginPlay();
+
+        self.sprite = GetSpriteIndex(name("COIN"));
+
+        if(amount < 5) {
+            // Do nothing
+        } else if(amount >= 5 && amount < 10) {
+            self.frame = 1;
+        } else if(amount >= 10 && amount < 50) {
+            self.frame = 2;
+        } else if(amount >= 50) {
+            self.frame = 3;
+        }
+    }
+
+    override String PickupMessage ()
+	{
+        CallACS("status_smallpickup", 0, amount);
+		return "";
+    }
+    
+    // SUPER jank method of implementing this, but
+    // this gives X coins, and then *does not* give the item
+    // itself
+    override bool CanPickup(Actor toucher)
+	{
+        int res = super.CanPickup(toucher);
+        
+        if(res) {
+            toucher.A_GiveInventory("AGCoin", amount);
+        }
+
+		return res;
+    }
+    
+    override void AttachToOwner (Actor other)
+	{
+		becomeItem();
+	}
+}
+
+class BasicEffect : Actor
+{
+    Default {
+        PROJECTILE;
+        +NOINTERACTION;
+        +THRUACTORS;
+        +NOGRAVITY;
+        renderstyle "translucent";
+        alpha 1.0;
+        height 1;
+        radius 1;
+    }
+}

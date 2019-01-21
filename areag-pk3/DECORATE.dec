@@ -12,6 +12,7 @@
 #include "decorate/pickups/boots.dec"
 #include "decorate/pickups/jetpack.dec"
 #include "decorate/pickups/health.dec"
+#include "decorate/pickups/money.dec"
 
 #include "decorate/props/testmap/testmap.dec"
 #include "decorate/props/common/jars.dec"

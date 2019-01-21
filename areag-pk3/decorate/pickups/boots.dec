@@ -1,4 +1,4 @@
-actor GearGreavesPickup : CustomInventory
+actor GearGreavesPickup : BasicInventory
 {
 	inventory.pickupmessage ""
 	inventory.pickupsound "upgrade/artifice"
@@ -117,7 +117,7 @@ actor DashLeft : DashForward
 	}
 }
 
-actor SteamGreavesPickup : GearGreavesPickup
+actor SteamGreavesPickup : BasicInventory
 {
 	States
 	{
