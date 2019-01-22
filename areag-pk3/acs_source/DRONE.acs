@@ -15,7 +15,7 @@ script "drone_activate" (void)
 	Delay(1);
 	SpawnSpotForced("DronePlayerDummy", 0, pln+3000, GetActorAngle(0) >> 8);
 	Warp(pln+2000, 0, 0, 0, 0, WARPF_STOP);
-	transformToDrone(0);
+	transformToDrone(ActivatorTID());
 	FadeTo(0.0, 0.4, 0.0, 0.0, 1.0);
 	Thing_Remove(pln+2000);
 	
@@ -53,6 +53,6 @@ script "drone_warpback" (int changeMap)
 	Warp(pln+3000, 0, 0, 0, 0, WARPF_STOP);
 	SetActorAngle(0, GetActorAngle(pln+3000));
 	Thing_Remove(pln+3000);
-	UnmorphActor(pln+1000, true);
+	TransformFromDrone(pln+1000);
 	FadeTo(0.0, 0.4, 0.0, 0.0, 1.0);
 }

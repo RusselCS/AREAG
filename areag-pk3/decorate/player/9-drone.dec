@@ -1,3 +1,6 @@
+actor DroneBattery : Counter { inventory.maxamount 100 }
+actor PlayerTempHealth : Counter {}
+
 actor AREAGDrone : AREAGPlayer
 {
 	Height 24
@@ -23,6 +26,7 @@ actor DronePickup : BasicInventory
 		loop
 	Pickup:
 		TNT1 A 0 ACS_NamedExecuteAlways("pickups_displayMessage", 0, PICKTYPE_TREASURE, PICKMSG_SPIDERDRONE)
+		TNT1 A 0 A_GiveInventory("DroneBattery", 100)
 		TNT1 A 0 A_GiveInventory("DroneTrigger", 1)
 		stop
 	}

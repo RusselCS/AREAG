@@ -160,3 +160,78 @@ class ZSCDigit : Actor
         loop;
     }
 }
+
+class AREAGPushBlock : Actor
+{
+    Default
+    {
+        +SOLID;
+        +PUSHABLE;
+        Height 48;
+        Radius 24;
+        Scale 1.5;
+    }
+
+    States
+    {
+    Spawn:
+        PCBA A 1;
+        loop;
+    }
+}
+
+class ZSCFloorSwitch : Actor
+{
+    Default
+    {
+        -SOLID;
+        radius 32;
+        height 10;
+        renderstyle "none";
+    }
+
+    bool bActive;
+    override void Tick() {
+
+        super.Tick();
+        float fCheckRadius = 48.0;
+        bool bSwitchState = false;
+        
+        if(CheckProximity("AREAGPlayer", fCheckRadius, 1, CPXF_SETTARGET)) {
+            bSwitchState = bSwitchState || target.pos.z - target.floorz == 0;
+        }
+
+        if(CheckProximity("AREAGPushBlock", fCheckRadius, 1, CPXF_SETTARGET)) {
+            bSwitchState = bSwitchState || target.pos.z - target.floorz == 0;
+        }
+
+        if(bSwitchState != bActive) {
+            bActive = bSwitchState;
+            ACS_ExecuteAlways(args[0], 0, bActive);
+
+            if(bActive) {
+                A_PlaySound("misc/switchon", CHAN_BODY, 1.0, false, ATTN_NONE);
+                SetState(ResolveState("SwitchOn"));
+            } else {
+                A_PlaySound("misc/switchoff", CHAN_BODY, 1.0, false, ATTN_NONE);
+                SetState(ResolveState("SwitchOff"));
+            }
+        }
+    }
+
+    override void PostBeginPlay() {
+        super.PostBeginPlay();
+        bActive = false;
+        SetState(ResolveState("SwitchOff"));
+    }
+
+    States
+    {
+    SwitchOn:
+		SCRY B 1;
+        wait;
+    SwitchOff:
+        SCRY A 1;
+        wait;
+    }
+}

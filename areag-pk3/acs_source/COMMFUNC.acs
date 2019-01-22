@@ -64,15 +64,6 @@ function int min(int x, int y)
 	return y;
 }
 
-function int clamp(int n, int mx, int mn)
-{
-	if(n > mx)
-		return mx;
-	if(n < mn)
-		return mn;
-	return n;
-}
-
 function int GetActorMaxHealth(int tid)
 {
 	return GetActorProperty(tid, APROP_SPAWNHEALTH);
@@ -128,6 +119,37 @@ function void SetInventory(str inv, int amt)
 	{
 		GiveInventory(inv, amt-oldamt);
 	}
+}
+
+function void SetActorInventory(int tid, str inv, int amt) {
+    int oldamt = CheckActorInventory(tid, inv);
+	if(oldamt>amt)
+	{
+		TakeActorInventory(tid, inv, oldamt-amt);
+	}
+	else
+	{
+		GiveActorInventory(tid, inv, amt-oldamt);
+	}
+}
+
+function int clamp(int minamt, int amt, int maxamt) {
+
+	if(minamt > maxamt) {
+		int temp = minamt;
+		minamt = maxamt;
+		maxamt = temp;
+	}
+
+    if(amt < minamt) {
+        return minamt;
+    }
+
+    if(amt > maxamt) {
+        return maxamt;
+    }
+
+    return amt;
 }
 
 function bool anyButtonPressed(int buttons, int oldButtons)

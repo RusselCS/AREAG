@@ -41,7 +41,7 @@ script "map_switchto" (int map, int door, int noSound)
 	
 	Delay(35);
 	
-	checkDroneTransform(0, false);
+	checkDroneTransform(ActivatorTID(), false);
 	ChangeLevel(mapList[map][MAPPROP_MAPCODE], door, CHANGELEVEL_NOINTERMISSION);
 	
 	// Because ENTER scripts are only executed once per map, gotta re-execute these here.
@@ -72,7 +72,7 @@ script "map_startup" ENTER
 {
 	if(CheckInventory("DroneFlag")>0)
 	{
-		transformToDrone(0);
+		transformToDrone(ActivatorTID());
 	}
 	int baseVal = 640.0;
 	int fadeTime = 0.2;

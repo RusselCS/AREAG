@@ -151,3 +151,10 @@ actor SwitchCrystal : ZSCSwitchCrystal {
 	//$Sprite SCRYA0
 	Scale 1.5
 }
+
+actor FloorSwitch : ZSCFloorSwitch {
+	//$Category AREAG-Map Tools
+	//$Title Floor Switch
+	//$Sprite SCRYA0
+	Scale 1.5
+}

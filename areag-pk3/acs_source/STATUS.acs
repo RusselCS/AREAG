@@ -16,7 +16,7 @@ str subWeaponNames[SUB_MAX] = {
 // The scripts in this file handle the status of the player.
 // This includes things like health and such.
 
-script "status_enter" ENTER
+script "status_enter" (void)//ENTER
 {
 	int pln = PlayerNumber();
 	int tid = pln+1000;

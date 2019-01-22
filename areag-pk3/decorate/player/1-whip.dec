@@ -122,6 +122,7 @@ actor WhipPuff : BasicEffect
 	+FORCEXYBILLBOARD
 	+ROLLSPRITE
 	-ACTIVATEIMPACT
+	+MOVEWITHSECTOR
 	bouncetype hexen
 	alpha 0.4
 	scale 1.5
