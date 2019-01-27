@@ -9,6 +9,9 @@
 
 #include "zscript/monsters/zsctempimp.zsc"
 
+#include "zscript/weapons/0_prototype.zsc"
+#include "zscript/weapons/1_knives.zsc"
+
 class LevelFreezeOn : Actor
 {
 	Default

@@ -56,7 +56,6 @@ function void transformToDrone(int tid)
 {
 	SetActorInventory(tid, "PlayerTempHealth", GetActorHealth(tid));
 	MorphActor(tid, "AREAGDrone", "", 0x7ffffff, MRF_NEWTIDBEHAVIOUR|MRF_UNDOALWAYS|MRF_WHENINVULNERABLE, "", "");
-	PrintBold(i:tid, s:" - ", i:CheckActorInventory(tid, "DroneBattery"), s:" ", i:ThingCount(T_NONE, tid));
 	SetActorHealth(tid, CheckActorInventory(tid, "DroneBattery"));
 }
 
@@ -64,6 +63,5 @@ function void transformFromDrone(int tid)
 {
 	SetActorInventory(tid, "DroneBattery", GetActorHealth(tid));
 	UnmorphActor(tid, true);
-	PrintBold(i:CheckActorInventory(tid, "PlayerTempHealth"));
 	SetActorHealth(tid, CheckActorInventory(tid, "PlayerTempHealth"));
 }

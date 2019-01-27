@@ -16,6 +16,7 @@ script "drone_activate" (void)
 	SpawnSpotForced("DronePlayerDummy", 0, pln+3000, GetActorAngle(0) >> 8);
 	Warp(pln+2000, 0, 0, 0, 0, WARPF_STOP);
 	transformToDrone(ActivatorTID());
+	PlaySound(ActivatorTID(), "drone/activate", CHAN_BODY);
 	FadeTo(0.0, 0.4, 0.0, 0.0, 1.0);
 	Thing_Remove(pln+2000);
 	
@@ -46,6 +47,7 @@ script "drone_warpback" (int changeMap)
 {
 	int pln = PlayerNumber();
 	
+	PlaySound(ActivatorTID(), "drone/disengage", CHAN_BODY);
 	if(changeMap)
 	{
 		Delay(10);

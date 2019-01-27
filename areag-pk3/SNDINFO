@@ -59,6 +59,8 @@ weapon/capitalsmack1 CAPPSMAK
 weapon/capitalsmack2 CAPPSMA2
 
 weapon/dronelaser DRONELAZ // LA-MULANA
+drone/activate DRONEON // THE KING OF FIGHTERS XIV
+drone/disengage DRONEOFF // THE KING OF FIGHTERS XIV
 
 ammo/pickup AMMO // LA-MULANA
 
