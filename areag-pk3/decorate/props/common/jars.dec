@@ -1,7 +1,7 @@
-ACTOR JarSmall 20000
+ACTOR JarSmall : ZSCStoneBody 20000
 {
 //$Category Props-TheAdventure
-	Health 60
+	Health 3
 	scale 2.5
 	radius 14
 	height 26
@@ -24,7 +24,6 @@ ACTOR JarSmall 20000
 ACTOR JarBig : JarSmall 20001
 {
 	//$Category Props-TheAdventure
-	Health 60
 	radius 18
 	height 36
 	states

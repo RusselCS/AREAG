@@ -81,3 +81,11 @@ class BasicEffect : Actor
         radius 1;
     }
 }
+
+class ZSCStoneBody : Actor
+{
+    override int DamageMobj(Actor inflictor, Actor source, int damage, Name mod, int flags, double angle) {
+        int dmg = super.DamageMobj(inflictor, source, min(damage, 1), mod, flags, angle);
+        return dmg;
+    }
+}
