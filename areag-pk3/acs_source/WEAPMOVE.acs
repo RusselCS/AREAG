@@ -5,7 +5,7 @@
 // The following script handles weapon bobbing.
 // The base movement factor is used 
 
-script "weapmove_enter" ENTER
+script "weapmove_enter" (void)//ENTER
 {
 	int pln = PlayerNumber();
 	int tid = pln + 1000;

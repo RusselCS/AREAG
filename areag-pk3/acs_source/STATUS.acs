@@ -16,18 +16,18 @@ str subWeaponNames[SUB_MAX] = {
 // The scripts in this file handle the status of the player.
 // This includes things like health and such.
 
-script "status_enter" (void)//ENTER
+script "status_enter" ENTER
 {
 	int pln = PlayerNumber();
 	int tid = pln+1000;
 	
-	int maxHealthBars = CheckInventory("MaxHealthBars");
-	int maxHealth = maxHealthBars * HEALTH_PIECE;
-	SetActorMaxHealth(0, maxHealthBars*HEALTH_PIECE);
-	SetActorHealth(0, maxHealthBars*HEALTH_PIECE);
-	SetPlayerProperty(false, true, PROP_BUDDHA);
-	SetInventory("HealthCounter", HEALTH_PIECE);
-	int prevHealth = GetActorHealth(0);
+	// int maxHealthBars = CheckInventory("MaxHealthBars");
+	// int maxHealth = maxHealthBars * HEALTH_PIECE;
+	// SetActorMaxHealth(0, maxHealthBars*HEALTH_PIECE);
+	// SetActorHealth(0, maxHealthBars*HEALTH_PIECE);
+	// SetPlayerProperty(false, true, PROP_BUDDHA);
+	// SetInventory("HealthCounter", HEALTH_PIECE);
+	// int prevHealth = GetActorHealth(0);
 
 	Delay(1);
 
@@ -37,74 +37,75 @@ script "status_enter" (void)//ENTER
 	ACS_NamedExecuteAlways("status_blurcam", 0, pln, 1100);
 	ACS_NamedExecuteAlways("status_blurcam", 0, pln, 1200);
 	
-	while(GetActorHealth(0)>0)
-	{
-		// HEALTH MANAGEMENT (hell)
-		if(prevHealth != GetActorHealth(0))
-		{
-			int health = GetActorProperty(0, APROP_HEALTH);
-			int bars = max(0, barCount(health));
-			int shieldBars = CheckInventory("ShieldBars");
-			int healthCount = health % HEALTH_PIECE;
-			if(healthCount == 0)
-			{
-				healthCount = HEALTH_PIECE;
-			}
+	// HANDLED IN ZSCRIPT NOW.
+	// while(GetActorHealth(0)>0)
+	// {
+	// 	// HEALTH MANAGEMENT (hell)
+	// 	if(prevHealth != GetActorHealth(0))
+	// 	{
+	// 		int health = GetActorProperty(0, APROP_HEALTH);
+	// 		int bars = max(0, barCount(health));
+	// 		int shieldBars = CheckInventory("ShieldBars");
+	// 		int healthCount = health % HEALTH_PIECE;
+	// 		if(healthCount == 0)
+	// 		{
+	// 			healthCount = HEALTH_PIECE;
+	// 		}
 			
-			if(health < prevHealth && health == 1)
-			{
-				SetInventory("ShieldBars", 0);
-				SetPlayerProperty(false, false, PROP_BUDDHA);
-				ACS_NamedExecuteAlways("status_invuln", 0);
-			}
+	// 		if(health < prevHealth && health == 1)
+	// 		{
+	// 			SetInventory("ShieldBars", 0);
+	// 			SetPlayerProperty(false, false, PROP_BUDDHA);
+	// 			ACS_NamedExecuteAlways("status_invuln", 0);
+	// 		}
 			
-			if(shieldCount(health) > CheckInventory("shieldBars"))
-			{
-				SetInventory("ShieldBars", shieldCount(health));
-				SetPlayerProperty(false, true, PROP_BUDDHA);
-			}
+	// 		if(shieldCount(health) > CheckInventory("shieldBars"))
+	// 		{
+	// 			SetInventory("ShieldBars", shieldCount(health));
+	// 			SetPlayerProperty(false, true, PROP_BUDDHA);
+	// 		}
 			
-			SetInventory("HealthCounter", healthCount);
-			if(bars != CheckInventory("healthBars"))
-			{
-				if(bars < CheckInventory("healthBars"))
-				{
-					if(bars < shieldBars && health != 1)
-					{
-						SetInventory("ShieldBars", bars);
-						SetActorHealth(0, bars * HEALTH_PIECE);
-						ACS_NamedExecuteAlways("status_invuln", 0);
-					}
-				}
-				SetInventory("healthBars", bars);
-			}
+	// 		SetInventory("HealthCounter", healthCount);
+	// 		if(bars != CheckInventory("healthBars"))
+	// 		{
+	// 			if(bars < CheckInventory("healthBars"))
+	// 			{
+	// 				if(bars < shieldBars && health != 1)
+	// 				{
+	// 					SetInventory("ShieldBars", bars);
+	// 					SetActorHealth(0, bars * HEALTH_PIECE);
+	// 					ACS_NamedExecuteAlways("status_invuln", 0);
+	// 				}
+	// 			}
+	// 			SetInventory("healthBars", bars);
+	// 		}
 			
-			prevHealth = health;
-		}
+	// 		prevHealth = health;
+	// 	}
 		
-		if(maxHealthBars != CheckInventory("MaxHealthBars"))
-		{
-			if(maxHealthBars > CheckInventory("MaxHealthBars"))
-			{
-				maxHealthBars = CheckInventory("MaxHealthBars");
-				setInventory("ShieldBars", min(maxHealthBars, CheckInventory("ShieldBars")));
-				setInventory("HealthBars", min(maxHealthBars, CheckInventory("HealthBars")));
-				SetActorHealth(0, min(maxHealthBars*HEALTH_PIECE, GetActorHealth(0)));
-				healthCount = GetActorHealth(0) % HEALTH_PIECE;
-				if(healthCount == 0)
-				{
-					healthCount = HEALTH_PIECE;
-				}
-				SetInventory("HealthCounter", healthCount);
-				prevHealth = GetActorHealth(0);
-			}
-			maxHealthBars = CheckInventory("MaxHealthBars");
+	// 	if(maxHealthBars != CheckInventory("MaxHealthBars"))
+	// 	{
+	// 		if(maxHealthBars > CheckInventory("MaxHealthBars"))
+	// 		{
+	// 			maxHealthBars = CheckInventory("MaxHealthBars");
+	// 			setInventory("ShieldBars", min(maxHealthBars, CheckInventory("ShieldBars")));
+	// 			setInventory("HealthBars", min(maxHealthBars, CheckInventory("HealthBars")));
+	// 			SetActorHealth(0, min(maxHealthBars*HEALTH_PIECE, GetActorHealth(0)));
+	// 			healthCount = GetActorHealth(0) % HEALTH_PIECE;
+	// 			if(healthCount == 0)
+	// 			{
+	// 				healthCount = HEALTH_PIECE;
+	// 			}
+	// 			SetInventory("HealthCounter", healthCount);
+	// 			prevHealth = GetActorHealth(0);
+	// 		}
+	// 		maxHealthBars = CheckInventory("MaxHealthBars");
 			
-			SetActorMaxHealth(0, maxHealthBars*HEALTH_PIECE);
-		}
+	// 		SetActorMaxHealth(0, maxHealthBars*HEALTH_PIECE);
+	// 	}
 		
-		Delay(1);
-	}
+	// 	Delay(1);
+	// }
 }
 
 script "status_blurcam" (int pln, int pcam) {

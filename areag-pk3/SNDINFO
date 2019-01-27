@@ -31,6 +31,7 @@ misc/JumpSplash JUMPSPLA // Mega Man Star Force
 
 player/stepdash TAPDASH // Garou: Mark of the Wolves
 player/jetpack jetpack // Catoon sound library- need to trace source. TEMP
+player/ouch OUCH // LA-MULANA
 
 weapon/whipswing WHIPSWIN // Mega Man Star Force
 weapon/whipcrack WHIPCRAK // LA-MULANA

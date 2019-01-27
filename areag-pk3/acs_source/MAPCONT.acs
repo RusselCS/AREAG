@@ -148,8 +148,8 @@ script "map_tablet" (int tabletNum, int image)
 	SetPlayerProperty(0, true, PROP_TOTALLYFROZEN);
 	SetPlayerProperty(0, true, PROP_INVULNERABILITY);
 	
-	ACS_NamedExecuteAlways("blurcam_angle", 0, PlayerNumber()+1100, 0.0125, 4);
-	ACS_NamedExecuteAlways("blurcam_angle", 0, PlayerNumber()+1200, -0.0125, 4);
+	ACS_NamedExecuteAlways("blurcam_angle", 0, PlayerNumber()+1100, 0.0125, 8);
+	ACS_NamedExecuteAlways("blurcam_angle", 0, PlayerNumber()+1200, -0.0125, 8);
 
 	for(i = 0; i <= CYCLES; i++) {
 		msgY = msgBaseY + (40.0 * square(CYCLES-i)/2);

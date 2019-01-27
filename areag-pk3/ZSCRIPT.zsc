@@ -5,23 +5,9 @@
 
 #include "zscript/zsctools.zsc"
 #include "zscript/zscbasicactors.zsc"
+#include "zscript/zscplayer.zsc"
 
-class ZSCPlayerPawn : PlayerPawn {
-
-	override void Tick() {
-		Super.Tick();
-		
-		if(CheckInventory("ZSCTrigHaltViewbob", 0)) {
-			if(ViewBob > 0.0) {
-				ViewBob = max(ViewBob - 0.3, 0.0);
-			}
-		} else {
-			if(ViewBob < 1.0) {
-				ViewBob = min(ViewBob + 0.1, 1.0);
-			}
-		}
-	}
-}
+#include "zscript/monsters/zsctempimp.zsc"
 
 class LevelFreezeOn : Actor
 {
