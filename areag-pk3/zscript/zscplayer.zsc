@@ -1,8 +1,10 @@
-const HP_SEG_MAX = 25;
-
 class ZSCPlayerPawn : PlayerPawn {
 
+	int iButtons, iOldButtons;
 	int lastHealth;
+
+	int iSelectedWep;
+    int iPrevSelect;
 
 	override void Tick() {
 		Super.Tick();
@@ -16,23 +18,28 @@ class ZSCPlayerPawn : PlayerPawn {
 			updateHealth();
 		}
 
+		iOldButtons = iButtons;
+		iButtons = GetPlayerInput(INPUT_BUTTONS);
 
-		
-		// if(CheckInventory("ZSCTrigHaltViewbob", 0)) {
-		// 	if(ViewBob > 0.0) {
-		// 		ViewBob = max(ViewBob - 0.3, 0.0);
-		// 	}
-		// } else {
-		// 	if(ViewBob < 1.0) {
-		// 		ViewBob = min(ViewBob + 0.1, 1.0);
-		// 	}
-		// }
+        if(iSelectedWep != iPrevSelect) {
+            iPrevSelect = iSelectedWep;
+            if(iSelectedWep > SWEP_NONE && iSelectedWep < SWEP_END)
+            {
+                for(int i = 0; i < SWEP_END; i++) {
+                    TakeInventory(SubWeapons.equippedField(i), 1);
+                }
+                GiveInventory(SubWeapons.equippedField(iSelectedWep), 1);
+            }
+        }
     }
     
     override void PostBeginPlay() {
 
 		super.PostBeginPlay();
 		lastHealth = health;
+		iButtons = GetPlayerInput(INPUT_BUTTONS);
+		iOldButtons = GetPlayerInput(INPUT_OLDBUTTONS);
+		iSelectedWep = SWEP_NONE;
 		
 		updateHealth();
 	}

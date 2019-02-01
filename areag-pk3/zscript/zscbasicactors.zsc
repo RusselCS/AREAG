@@ -1,3 +1,31 @@
+const HP_SEG_MAX = 25;
+
+enum ESubWeapons {
+	SWEP_NONE = -1,
+	SWEP_KNIFE,
+	SWEP_DYNAMITE,
+    SWEP_END
+}
+
+enum PickupTypes {
+	PICKTYPE_ARTIFICE,
+	PICKTYPE_WEAPON,
+	PICKTYPE_SUBWEAPON,
+	PICKTYPE_TREASURE
+}
+
+enum UpgradeTypes {
+	PICKMSG_GEAR,
+	PICKMSG_STEAM,
+	PICKMSG_KNIFE,
+	PICKMSG_HEALTHUP,
+	PICKMSG_DYNAMITE,
+	PICKMSG_NOVAPACK,
+
+	PICKMSG_SPIDERDRONE,
+	PICKMSG_BEEDRONE
+}
+
 class Once : Inventory
 {
     Default
@@ -70,7 +98,8 @@ class ZSCCoinPickup : Counter
 
 class BasicEffect : Actor
 {
-    Default {
+    Default
+    {
         PROJECTILE;
         +NOINTERACTION;
         +THRUACTORS;
@@ -88,4 +117,49 @@ class ZSCStoneBody : Actor
         int dmg = super.DamageMobj(inflictor, source, min(damage, 1), mod, flags, angle);
         return dmg;
     }
+}
+
+// BASIC ACTORS //
+class BasicFastProjectile : FastProjectile
+{
+	States
+	{
+	Spawn:
+		TNT1 A 0;
+		TNT1 A 0 A_JumpIf(true, "SpawnLoop");
+		goto SpawnLoop;
+	SpawnLoop:
+		TNT1 A 0;
+		stop;
+	}
+}
+
+class BasicProjectile : Actor
+{
+	States
+	{
+	Spawn:
+		TNT1 A 0;
+		TNT1 A 0 A_JumpIf(true, "SpawnLoop");
+		goto SpawnLoop;
+	SpawnLoop:
+		TNT1 A 0;
+		stop;
+	}
+}
+
+class BasicInventory : CustomInventory {
+	States
+	{
+	Spawn:
+		TNT1 A 0;
+		stop;
+	ShopSpawn:
+		"----" "#" 0 {
+            bFLOATBOB = false; 
+            bFLOAT = false;
+        }
+		"----" "#" 1;
+		wait;
+	}
 }

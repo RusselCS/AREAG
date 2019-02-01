@@ -67,7 +67,7 @@ class ZSCImpKnife : FastProjectile replaces DoomImpBall
 		SUBK W 1;
 		loop;
 	Death:
-		SUBK W 0 A_PlaySoundEx("weapon/knifewall", "Weapon");
+		SUBK W 0 A_PlaySound("weapon/knifewall", CHAN_WEAPON);
 		SUBK W 0 A_SpawnItemEx("KnifeDeath", 0, 0, 0);
 		SUBK W 0 A_AlertMonsters(96);
 		stop;

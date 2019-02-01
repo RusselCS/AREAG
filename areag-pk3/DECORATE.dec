@@ -1,11 +1,9 @@
 #include "decorate/basedefs.dec"
 #include "decorate/player/player.dec"
 
-#include "decorate/player/subweapons/0-subwepbase.dec"
-#include "decorate/player/subweapons/1-knives.dec"
-#include "decorate/player/subweapons/2-dynamite.dec"
+//#include "decorate/player/subweapons/0-subwepbase.dec"
 
-#include "decorate/player/1-whip.dec"
+//#include "decorate/player/1-whip.dec"
 #include "decorate/player/9-drone.dec"
 
 // UPGRADES

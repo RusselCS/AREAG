@@ -10,7 +10,10 @@
 #include "zscript/monsters/zsctempimp.zsc"
 
 #include "zscript/weapons/0_prototype.zsc"
-#include "zscript/weapons/1_knives.zsc"
+#include "zscript/weapons/0_subweapons/1_knives.zsc"
+#include "zscript/weapons/0_subweapons/2_dynamite.zsc"
+
+#include "zscript/weapons/1_mainweapons/1_whip.zsc"
 
 class LevelFreezeOn : Actor
 {

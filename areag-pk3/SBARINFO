@@ -17,7 +17,7 @@ statusbar normal, forcescaled
 	InInventory "KnifeEquipped", 1
 	{
 		DrawImage "KNIFICO", 10, 150;
-		DrawNumber 3, AMMOFONT, untranslated, KnifeStock, alignment(right), 50, 150;
+		DrawNumber 3, AMMOFONT, untranslated, KnifeAmmo, alignment(right), 50, 150;
 		DrawImage "AMMSLASH", 53, 150;
 		DrawNumber 3, AMMOFONT, untranslated, KnifeMax, alignment(right), 85, 150;
 	}
@@ -25,7 +25,7 @@ statusbar normal, forcescaled
 	InInventory "DynamiteEquipped", 1
 	{
 		DrawImage "DYNAICO", 10, 150;
-		DrawNumber 3, AMMOFONT, untranslated, DynamiteStock, alignment(right), 50, 150;
+		DrawNumber 3, AMMOFONT, untranslated, DynamiteAmmo, alignment(right), 50, 150;
 		DrawImage "AMMSLASH", 53, 150;
 		DrawNumber 3, AMMOFONT, untranslated, DynamiteMax, alignment(right), 85, 150;
 	}

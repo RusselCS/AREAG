@@ -9,7 +9,7 @@ actor AREAGPlayer : ZSCPlayerPawn
 	player.jumpz 15
 	player.startitem "BaseJumpSpeed", 1500
 	player.startitem "BaseMoveSpeed", 85
-	player.startitem "AdventureWhip"
+	player.startitem "ZSCAdventureWhip"
 	player.startitem "BreathTime", 100
 	player.startitem "MaxHealthBars", 4
 	player.startitem "HealthBars", 4
