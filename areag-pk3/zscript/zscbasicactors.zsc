@@ -1,12 +1,3 @@
-const HP_SEG_MAX = 25;
-
-enum ESubWeapons {
-	SWEP_NONE = -1,
-	SWEP_KNIFE,
-	SWEP_DYNAMITE,
-    SWEP_END
-}
-
 enum PickupTypes {
 	PICKTYPE_ARTIFICE,
 	PICKTYPE_WEAPON,

@@ -1,0 +1,75 @@
+class SubWeaponPickup : CustomInventory
+{
+	Default
+	{
+		inventory.pickupmessage "";
+		inventory.pickupsound "upgrade/offense";
+		+INVENTORY.AUTOACTIVATE;
+		+FLOATBOB;
+		+NOGRAVITY;
+		Height 64;
+		Scale 2.5;
+	}
+
+	action void A_AREAGSelectWeapon(int wep) {
+		if(ZSCPlayerPawn(self).iSelectedWep == SWEP_NONE)
+			ZSCPlayerPawn(self).iSelectedWep = wep;
+	}
+}
+
+enum ESubWeapons {
+	SWEP_NONE = -1,
+	SWEP_KNIFE,
+	SWEP_DYNAMITE,
+    SWEP_END
+}
+
+struct SubWeapons {
+	static const String[] subFields = {
+		"Knife",
+		"Dynamite"
+	};
+
+    static const StateLabel[] subRaise = {
+		"KnifeRaise",
+		"DynamiteRaise"
+	};
+
+    static const StateLabel[] subRelease = {
+		"KnifeThrow",
+		"DynamiteThrow"
+	};
+
+    static String maxField(int i) {
+        return String.format("%s%s", SubWeapons.subFields[i], "Max");
+    }
+
+    static String ammoField(int i) {
+        return String.format("%s%s", SubWeapons.subFields[i], "Ammo");
+    }
+
+    static String equippedField(int i) {
+        return String.format("%s%s", SubWeapons.subFields[i], "Equipped");
+    }
+
+    static StateLabel raiseState(int i) {
+        return SubWeapons.subRaise[i];
+    }
+
+    static StateLabel releaseState(int i) {
+        return SubWeapons.subRelease[i];
+    }
+
+    static int subWepCount() {
+        return SubWeapons.subFields.Size();
+    }
+
+    static int nextSubCycle(int wep) {
+        return ++wep < SWEP_END ? wep : SWEP_NONE+1;
+    }
+
+    static int prevSubCycle(int wep) {
+        return --wep > SWEP_NONE ? wep : SWEP_END-1;
+    }
+   
+}

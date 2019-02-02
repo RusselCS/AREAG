@@ -4,7 +4,7 @@
 //#include "decorate/player/subweapons/0-subwepbase.dec"
 
 //#include "decorate/player/1-whip.dec"
-#include "decorate/player/9-drone.dec"
+//#include "decorate/player/9-drone.dec"
 
 // UPGRADES
 #include "decorate/pickups/boots.dec"

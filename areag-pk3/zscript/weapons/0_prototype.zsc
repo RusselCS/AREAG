@@ -1,5 +1,8 @@
 // The root of it all. Contains the essential features that get wrapped into all other weapons.
 
+#include "zscript/weapons/0_subweapons/0_subwepdefs.zsc"
+#include "zscript/weapons/1_inventory/0_invdefs.zsc"
+
 class AREAGProtoWeapon : Weapon {
 
     bool bLowerSub;
@@ -17,6 +20,13 @@ class AREAGProtoWeapon : Weapon {
     }
 
     action State A_AREAGRefire() {
+
+        for(int i = 0; i < TreasureItems.itemFields.Size(); i++) {
+            if(countInv(TreasureItems.activeItem(i))) {
+                return ResolveState(TreasureItems.raiseState(i));
+            }
+        }
+
         int iButtons = ZSCPlayerPawn(self).iButtons;
 
         if(iButtons & BT_ATTACK) {
@@ -32,10 +42,10 @@ class AREAGProtoWeapon : Weapon {
 
         int wep = ZSCPlayerPawn(self).iSelectedWep;
 
-        for(int i = 0; i < SWEP_END; i++) {
+        for(int i = 0; i < SubWeapons.subWepCount(); i++) {
             if(wep == i && CountInv(SubWeapons.ammoField(i)) > 0)
             {
-                return resolveState(SubWeapons.subRelease[i]);
+                return resolveState(SubWeapons.releaseState(i));
             }
         }
 
@@ -60,12 +70,12 @@ class AREAGProtoWeapon : Weapon {
 
         if(invoker.bLowerSub) {
             return ResolveState(Null);
-        } else
-        if(wep == SWEP_KNIFE && CountInv("KnifeAmmo") > 0) {
-            return resolveState("KnifeRaise");
-        } else
-        if(wep == SWEP_DYNAMITE && CountInv("DynamiteAmmo") > 0) {
-            return resolveState("DynamiteRaise");
+        }
+
+        for(int i = 0; i < SubWeapons.subWepCount(); i++) {
+            if(wep == i && CountInv(SubWeapons.ammoField(i)) > 0) {
+                return ResolveState(SubWeapons.raiseState(i));
+            }
         }
 
         return ResolveState("EmptyRaise");
@@ -76,7 +86,7 @@ class AREAGProtoWeapon : Weapon {
         int wep = ZSCPlayerPawn(self).iSelectedWep;
         bool bSwitch = invoker.bLowerSub;
 
-        for(int i = 0; i < SWEP_END && !bSwitch; i++) {
+        for(int i = 0; i < SubWeapons.subWepCount() && !bSwitch; i++) {
             bSwitch |= wep == i && CountInv(SubWeapons.ammoField(i)) > 0;
         }
 
@@ -92,19 +102,25 @@ class AREAGProtoWeapon : Weapon {
         int iButtons = ZSCPlayerPawn(self).iButtons;
         int iOldButtons = ZSCPlayerPawn(self).iOldButtons;
 
+        for(int i = 0; i < TreasureItems.itemFields.Size(); i++) {
+            if(countInv(TreasureItems.activeItem(i))) {
+                return ResolveState("Fire");
+            }
+        }
+
         int rWep = ZSCPlayerPawn(self).iSelectedWep;
-        if(rWep >= 0 && rWep < SubWeapons.subFields.Size()) {
+        if(rWep >= 0 && rWep < SubWeapons.subWepCount()) {
             if((iButtons & BT_USER1) && !(iOldButtons & BT_USER1)) {
-                rWep = invoker.nextSubCycle(rWep);
+                rWep = SubWeapons.nextSubCycle(rWep);
 
                 while(self.CountInv(SubWeapons.maxField(rWep)) == 0) {
-                    rWep = invoker.nextSubCycle(rWep);
+                    rWep = SubWeapons.nextSubCycle(rWep);
                 }
             } else if((iButtons & BT_USER2) && !(iOldButtons & BT_USER2)) {
-                rWep = invoker.prevSubCycle(rWep);
+                rWep = SubWeapons.prevSubCycle(rWep);
 
                 while(self.CountInv(SubWeapons.maxField(rWep)) == 0) {
-                    rWep = invoker.prevSubCycle(rWep);
+                    rWep = SubWeapons.prevSubCycle(rWep);
                 }
             }
             ZSCPlayerPawn(self).iSelectedWep = rWep;
@@ -112,14 +128,6 @@ class AREAGProtoWeapon : Weapon {
 
         A_WeaponReady();
         return ResolveState(null);
-    }
-
-    int nextSubCycle(int wep) {
-        return ++wep < SWEP_END ? wep : SWEP_NONE+1;
-    }
-
-    int prevSubCycle(int wep) {
-        return --wep > SWEP_NONE ? wep : SWEP_END-1;
     }
 
     States
@@ -175,58 +183,5 @@ class AREAGProtoWeapon : Weapon {
         NoAmmo:
             HBM2 A 1;
             goto ReadyLoop;
-    }
-}
-
-class SubWeaponPickup : CustomInventory
-{
-	Default
-	{
-		inventory.pickupmessage "";
-		inventory.pickupsound "upgrade/offense";
-		+INVENTORY.AUTOACTIVATE;
-		+FLOATBOB;
-		+NOGRAVITY;
-		Height 64;
-		Scale 2.5;
-	}
-
-	action void A_AREAGSelectWeapon(int wep) {
-		if(ZSCPlayerPawn(self).iSelectedWep == SWEP_NONE)
-			ZSCPlayerPawn(self).iSelectedWep = wep;
-	}
-}
-
-struct SubWeapons {
-	static const String[] subFields = {
-		"Knife",
-		"Dynamite"
-	};
-
-    static const StateLabel[] subRaise = {
-		"KnifeRaise",
-		"DynamiteRaise"
-	};
-
-    static const StateLabel[] subRelease = {
-		"KnifeThrow",
-		"DynamiteThrow"
-	};
-
-    static const String[] subNames = {
-		"Knife",
-		"Dynamite"
-	};
-
-    static String maxField(int i) {
-        return String.format("%s%s", SubWeapons.subFields[i], "Max");
-    }
-
-    static String ammoField(int i) {
-        return String.format("%s%s", SubWeapons.subFields[i], "Ammo");
-    }
-
-    static String equippedField(int i) {
-        return String.format("%s%s", SubWeapons.subFields[i], "Equipped");
     }
 }

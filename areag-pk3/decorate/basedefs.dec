@@ -53,23 +53,5 @@ actor TimeFreezer : PowerTimeFreezerSound
 	powerup.duration 0x7ffffff
 }
 
-actor BasicTreasureItem : CustomInventory
-{
-	+INVBAR
-	States
-	{
-	Use:
-		TNT1 A 0 A_JumpIfInventory("DroneFlag", 1, "DroneUse")
-		TNT1 A 0 A_JumpIf(true, "TreasureUse")
-		goto TreasureUse
-	DroneUse:
-		TNT1 A 0 ACS_NamedExecuteAlways("drone_disengage", 0)
-		fail
-	TreasureUse:
-		TNT1 A 0
-		fail
-	}
-}
-
 actor LevelNumTracker : Counter {}
 
