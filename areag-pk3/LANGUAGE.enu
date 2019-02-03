@@ -41,6 +41,17 @@ TESTMAP_TABLET_1 = "Due to extensive research done by the University of Pittsbur
 "into iron per wall. The results were inconclusive. Finally, they placed 400 diamonds per hour in front of a car made of wall travelling at miles per iron, and the result proved "
 "with out a doubt that diamonds were the hardest metal of all time, if not just the hardest metal known to man.";
 
+TESTMAP_TABLET_2 = "The land far above is a path of two crystals.";
+
+TESTMAP_TABLET_3 = "Water. The realm of fish.\n"
+"\n"
+"Long ago, there was once a lone angler. He pulled a fish to the beach.\n"
+"A great fish of gargantuan size.\n"
+"\n"
+"This lone angler was henceforth called... \"Beach Boy\"";
+
+TESTMAP_TABLET_4 = "You are now underwater. You can drown, so be careful!";
+
 TESTMAP2_TABLET_0 =
 "The following is lyrics to a song I've been listening to a while. The other tablet has useful information.\n\n"
 "Every time that I look into the mirror\n"

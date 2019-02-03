@@ -1,3 +1,14 @@
+struct AREAG_Func {
+    static bool checkButtonReleased(int button, int buttons, int oldButtons)
+    {
+        if(!(buttons & button) && (oldButtons & button))
+        {
+            return true;
+        }
+        return false;
+    }
+}
+
 class ZSCSwitchCrystal : Actor
 {
     bool bSwitchOn;

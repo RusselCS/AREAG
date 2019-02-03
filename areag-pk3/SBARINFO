@@ -6,12 +6,6 @@ statusbar normal, forcescaled
 	DrawSelectedInventory INDEXFONT, 0, 20;
 	DrawImage "COINI0", 0, 3;
 	DrawNumber 3, INDEXFONT, GREEN, AGCoin, 25, 8;
-
-	// Air Supply
-	InInventory HeadUnderwater, 1
-	{
-		DrawBar "AIRFULL", "AIREMPTY", BreathTime, horizontal, 130, 184;
-	}
 	
 	// Sub Weapons
 	InInventory "KnifeEquipped", 1
@@ -38,6 +32,12 @@ statusbar normal, forcescaled
 	
     // Health System
     inInventory not DroneFlag, 1 {
+        // Air Supply
+        InInventory HeadUnderwater, 1
+        {
+            DrawBar "AIRFULL", "AIREMPTY", BreathTime, horizontal, 130, 184;
+        }
+
         InInventory "DroneTrigger", 1
         {
             DrawImage "HPDRBASE",  17, 178;

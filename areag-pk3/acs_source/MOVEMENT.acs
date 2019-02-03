@@ -18,7 +18,7 @@ script "movement_enter" ENTER
 {
 	int pln = PlayerNumber();
 	int tid = pln+1000;
-	Thing_ChangeTID(0, tid);
+	//Thing_ChangeTID(0, tid);
 	int baseGravity = GetActorProperty(0, APROP_GRAVITY);
 	int jumpInventory = CheckInventory("BaseJumpSpeed");
 	int speedInventory = CheckInventory("BaseMoveSpeed");
@@ -36,17 +36,11 @@ script "movement_enter" ENTER
 	
 	bool menuFreeze = false;
 	
-	ACS_NamedExecuteAlways("movement_standing", 0);
-	ACS_NamedExecuteAlways("movement_water_player", 0);
+	// ACS_NamedExecuteAlways("movement_standing", 0);
+	// ACS_NamedExecuteAlways("movement_water_player", 0);
 	delay(1);
 	while(GetActorProperty(0, APROP_HEALTH)>0)
 	{
-		// JUMP CANCEL
-		if(checkButtonReleased(BT_JUMP, buttons, oldButtons) && GetActorVelZ(0) > 0 && CheckInventory("JumpCancel")>0)
-		{
-			ThrustThingZ(0, 0, 0, 0);
-			TakeInventory("JumpCancel", 1);
-		}
 		
 		// NOVA PACK
 		if(CheckInventory("NovaPackFlag") > 0 && CheckInventory("NovaFuel") > 0 &&
@@ -93,16 +87,6 @@ script "movement_enter" ENTER
 		if(GetActorVelZ(0) < 0 && !(buttons & BT_JUMP))
 		{
 			TakeInventory("JumpCancel", 1);
-		}
-		
-		// ANTI-STRAFERUNNING
-		if(((buttons & BT_FORWARD) || (buttons & BT_BACK)) && ((buttons & BT_MOVELEFT) || (buttons & BT_MOVERIGHT)))
-		{
-			SetActorProperty(0, APROP_SPEED, FixedMul(baseSpeed, 0.78089));
-		}
-		else
-		{
-			SetActorProperty(0, APROP_SPEED, baseSpeed);
 		}
 		
 		// TAP DASH
@@ -171,74 +155,6 @@ script "movement_enter" ENTER
 					TakeInventory("PressedRight", 1);
 				}
 			}
-		}
-		
-		// WATER
-		if(CheckInventory("LegsUnderwater")>0)
-		{
-			if(!legsInWater) {
-				SetActorProperty(0, APROP_Gravity, FixedMul(baseGravity, WATER_GRAVITY_MULT));
-				SetActorProperty(0, APROP_JumpZ, FixedMul(baseJump, WATER_JUMP_MULT));
-				GiveInventory("WaterSpeed", 1);
-				legsInWater = true;
-			}
-		}
-		else
-		{
-			if(legsInWater) {
-				SetActorProperty(0, APROP_Gravity, baseGravity);
-				SetActorProperty(0, APROP_JumpZ, baseJump);
-				TakeInventory("WaterSpeed", 1);
-				legsInWater = false;
-			}
-		}
-		
-		if(CheckInventory("HeadUnderwater")>0)
-		{
-			if(!headInWater)
-			{
-				GiveInventory("BreathCooldown", 1);
-				headInWater = true;
-			}
-			if(CheckInventory("BreathCooldown") == 0)
-			{
-				if(CheckInventory("BreathTime") > 0)
-				{
-					TakeInventory("BreathTime", 10);
-				}
-				else
-				{
-					Thing_Damage(0, 5, MOD_WATER);
-				}
-				GiveInventory("BreathCooldown", 1);
-			}
-		}
-		else
-		{
-			GiveInventory("BreathTime", 100);
-			headInWater = false;
-		}
-		
-		// JUMP MANIPULATION (eg. Steam Greaves)
-		if(jumpInventory != Checkinventory("BaseJumpSpeed"))
-		{
-			jumpInventory = CheckInventory("BaseJumpSpeed");
-			baseJump = FixedDiv(jumpInventory << 16, 100.0);
-			if(legsInWater)
-			{
-				SetActorProperty(0, APROP_JumpZ, FixedMul(baseJump, WATER_JUMP_MULT));
-			}
-			else
-			{
-				SetActorProperty(0, APROP_JumpZ, baseJump);
-			}
-		}
-		
-		// SPEED MANIPULATION (eg. Gear Greaves)
-		if(speedInventory != Checkinventory("BaseMoveSpeed"))
-		{
-			speedInventory = CheckInventory("BaseMoveSpeed");
-			baseSpeed = FixedDiv(speedInventory << 16, 100.0);
 		}
 		
 		// TIME MANIPULATION (Menus, Timewatch)

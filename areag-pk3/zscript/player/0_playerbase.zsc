@@ -1,0 +1,35 @@
+const HP_SEG_MAX = 25;
+
+class ZSCPlayerPawn : PlayerPawn {
+
+    int iSelectedWep;
+    int iPrevSelect;
+
+	override void Tick() {
+		Super.Tick();
+
+        if(!level.frozen && !bNOTIMEFREEZE) {
+            AREAGHealthTick();
+            AREAGMoveTick();
+
+            if(iSelectedWep != iPrevSelect) {
+                iPrevSelect = iSelectedWep;
+                if(iSelectedWep > SWEP_NONE && iSelectedWep < SubWeapons.subWepCount())
+                {
+                    for(int i = 0; i < SubWeapons.subWepCount(); i++) {
+                        TakeInventory(SubWeapons.equippedField(i), 1);
+                    }
+                    GiveInventory(SubWeapons.equippedField(iSelectedWep), 1);
+                }
+            }
+        }
+    }
+    
+    override void PostBeginPlay() {
+
+		super.PostBeginPlay();
+		AREAGMoveInit();
+		AREAGHealthInit();
+		iSelectedWep = SWEP_NONE;
+	}
+}

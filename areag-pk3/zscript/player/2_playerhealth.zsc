@@ -1,17 +1,16 @@
-const HP_SEG_MAX = 25;
 
-class ZSCPlayerPawn : PlayerPawn {
+extend class ZSCPlayerPawn {
 
-	int iButtons, iOldButtons;
-	int lastHealth;
+    int lastHealth;
 
-	int iSelectedWep;
-    int iPrevSelect;
+    void AREAGHealthInit() {
+        lastHealth = health;
+        bBUDDHA = true;
+        updateHealth();
+    }
 
-	override void Tick() {
-		Super.Tick();
-
-		if(lastHealth != health) {
+    void AREAGHealthTick() {
+        if(lastHealth != health) {
 			updateHealth();
 			lastHealth = health;
 		}
@@ -19,32 +18,7 @@ class ZSCPlayerPawn : PlayerPawn {
 		if(CountInv("MaxHealthBars") * HP_SEG_MAX != starthealth){
 			updateHealth();
 		}
-
-		iOldButtons = iButtons;
-		iButtons = GetPlayerInput(INPUT_BUTTONS);
-
-        if(iSelectedWep != iPrevSelect) {
-            iPrevSelect = iSelectedWep;
-            if(iSelectedWep > SWEP_NONE && iSelectedWep < SubWeapons.subWepCount())
-            {
-                for(int i = 0; i < SubWeapons.subWepCount(); i++) {
-                    TakeInventory(SubWeapons.equippedField(i), 1);
-                }
-                GiveInventory(SubWeapons.equippedField(iSelectedWep), 1);
-            }
-        }
     }
-    
-    override void PostBeginPlay() {
-
-		super.PostBeginPlay();
-		lastHealth = health;
-		iButtons = GetPlayerInput(INPUT_BUTTONS);
-		iOldButtons = GetPlayerInput(INPUT_OLDBUTTONS);
-		iSelectedWep = SWEP_NONE;
-		
-		updateHealth();
-	}
 	
 	void updateHealth() {
 
@@ -63,6 +37,7 @@ class ZSCPlayerPawn : PlayerPawn {
 
 		if(healthBars < CountInv("ShieldBars") || shieldBars > CountInv("ShieldBars")) {
 			SetInventory("ShieldBars", shieldBars);
+            bBUDDHA = true;
 		}
 		SetInventory("HealthBars", healthBars);
 		SetInventory("HealthCounter", hpPool);
@@ -83,7 +58,12 @@ class ZSCPlayerPawn : PlayerPawn {
 
 		if(bINVULNERABLE) {
 			return super.DamageMobj(inflictor, source, damage, mod, flags, angle);
-		} else {
+        } else if(mod == "Drowning") {
+            if(damage >= health) {
+                bBUDDHA = false;
+            }
+            return super.DamageMobj(inflictor, source, damage, mod, flags, angle);
+        } else {
 			int currentShield = CountInv("ShieldBars");
 			int targetHP = health - damage;
 			bool imhit = false;
@@ -96,6 +76,12 @@ class ZSCPlayerPawn : PlayerPawn {
 
 			trueDmg = super.DamageMobj(inflictor, source, trueDmg, mod, flags, angle);
 			updateHealth();
+
+            if(health == 1) {
+                imhit = true;
+                bBUDDHA = false;
+                A_SetInventory("ShieldBars", 0);
+            }
 
 			if(imhit) {
 				A_PlaySound("player/ouch", CHAN_VOICE);
