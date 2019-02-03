@@ -212,8 +212,13 @@ function void printTablet (str message, int alpha, int x, int y, str image)
 		SetFont("CAMBLUR2");
 		HudMessage(s:"A"; HUDMSG_ALPHA|HUDMSG_ADDBLEND, 203, CR_UNTRANSLATED, (camX/2)<<16, (camY/2)<<16, hold, fixedmul(0.2, alpha));
 		SetHudSize(1024, 768, false);
-		SetFont("TABLETBG");
-		HudMessage(s:"A"; HUDMSG_ALPHA, 202, CR_UNTRANSLATED, 512.0, 384.0, hold, fixedmul(0.9, alpha));
+		if(CheckInventory("DroneFlag") == 0) {
+            SetFont("TABLETBG");
+            HudMessage(s:"A"; HUDMSG_ALPHA, 202, CR_UNTRANSLATED, 512.0, 384.0, hold, fixedmul(0.9, alpha));
+        } else {
+            SetFont("DRONETBG");
+            HudMessage(s:"A"; HUDMSG_ALPHA, 202, CR_UNTRANSLATED, 512.0, 384.0, hold, fixedmul(0.6, alpha));
+        }
 		
 		SetHudSize(1280, 960, 0);
 		SetHudClipRect(140, 0, 1000, 960, 1000, true);

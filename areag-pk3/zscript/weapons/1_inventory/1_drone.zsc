@@ -27,6 +27,10 @@ class AREAGDrone : PlayerPawn
         player.viewheight 20;
         player.morphweapon "DronePlasmaGun";
         Player.AttackZOffset 5; // 41 - view height
+        speed 0.85;
+	    player.jumpz 10;
+        gravity 1.2;
+        maxstepheight 16;
     }
 }
 
@@ -127,7 +131,7 @@ class DroneTransitionMissile : BasicProjectile
         bouncetype "Doom";
         bouncefactor 0.0;
         wallbouncefactor 0.0;
-        Damage (0);
+        DamageFunction (0);
         Speed 24;
     }
 	States
@@ -155,7 +159,7 @@ class DroneLaser : BasicFastProjectile
         renderstyle "add";
         Radius 6;
         Height 7;
-        damage (5);
+        DamageFunction (5);
         speed 45;
         scale 0.2;
         reactiontime 10;
@@ -172,7 +176,7 @@ class DroneActivator : DroneLaser
 {
     Default
     {
-        Damage 0;
+        DamageFunction (0);
         renderstyle "none";
         missiletype "";
         +ACTIVATEIMPACT;

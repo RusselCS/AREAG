@@ -57,7 +57,7 @@ class ZSCImpKnife : FastProjectile replaces DoomImpBall
 		missileheight 8;
 		Radius 6;
 		Height 7;
-		damage (15);
+		DamageFunction (15);
 		speed 100;
 		scale 2.0;
 	}

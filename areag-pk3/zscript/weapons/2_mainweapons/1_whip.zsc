@@ -77,7 +77,7 @@ class WhipProjectileL : BasicFastProjectile
     Default
     {
         Speed 40;
-        Damage (20);
+        DamageFunction (20);
         +NOTIMEFREEZE;
         +HITTRACER;
         +BLOODSPLATTER;
