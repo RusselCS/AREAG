@@ -162,5 +162,5 @@ actor FloorSwitch : ZSCFloorSwitch {
 actor DecPushBlock : AREAGPushBlock {
     //$Category AREAG-Map Tools
 	//$Title Pushable Block
-	//$Sprite PCBAA0
+	//$Sprite PCBAB0
 }
