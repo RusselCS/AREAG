@@ -212,7 +212,7 @@ class ZSCFloorSwitch : Actor
             bSwitchState = bSwitchState || target.pos.z - target.floorz == 0;
         }
 
-        if(CheckProximity("AREAGPushBlock", fCheckRadius, 1, CPXF_SETTARGET)) {
+        if(CheckProximity("DecPushBlock", fCheckRadius, 1, CPXF_SETTARGET)) {
             bSwitchState = bSwitchState || target.pos.z - target.floorz == 0;
         }
 

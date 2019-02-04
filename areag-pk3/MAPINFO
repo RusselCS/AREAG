@@ -7,7 +7,7 @@ DoomEdNums
 	10561 = TabletActivatable
 	10562 = SwitchCrystal
 	10563 = FloorSwitch
-	10564 = AREAGPushBlock
+	10564 = DecPushBlock
 }
 
 episode TESTMAP
