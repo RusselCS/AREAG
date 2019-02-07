@@ -3,6 +3,10 @@ extend class ZSCPlayerPawn {
     const WATER_GRAVITY_MULT = 0.2;
     const WATER_JUMP_MULT = 0.65;
 
+    Default {
+        Player.FallingScreamSpeed 32.0, 1000.0;
+    }
+
     int iButtons, iOldButtons;
 
     bool bOnGround;
@@ -65,29 +69,8 @@ extend class ZSCPlayerPawn {
         // On Ground bool based on Marrub/Allie's Lithium code.
         bOnGround = pos.z ~== floorz || bONMOBJ || bMBFBOUNCER;
 
-        // VelZ interpolations also based on Lithium.
-        if(Vel.Z - lastVelZ > double.Epsilon)
-        {
-            if(lastVelZ >= 0) zVelLerp += Vel.Z;
-            else              zVelLerp += 5 - lastVelZ * 2;
-        }
-
-        zVelLerp = AREAG_Func.Lerp(zVelLerp, 0, 0.277);
-        lastVelZ = Vel.Z;
-
-        lastZVelLerp = lerpVelZ;
-        lerpVelZ = AREAG_Func.Lerp(lerpVelZ, zVelLerp, 0.42);
-
-        if(!bOnGround && viewbob != 0.0) {
-            viewbob = 0.0;
-        }
-
-        if(bOnGround && viewbob != 1.0) {
-            viewbob = 1.0;
-        }
-
-        if(bOnGround && !bJumpCancel) {
-            bJumpCancel = true;
+        if(bOnGround && lastVelZ < -FallingScreamMinSpeed) {
+            A_GiveInventory("FallStunTime", 175);
         }
 
         // JUMP CANCEL
@@ -178,6 +161,31 @@ extend class ZSCPlayerPawn {
 		{
 			AREAGUpdateSpeeds();
 		}
+
+        // VelZ interpolations also based on Lithium.
+        if(Vel.Z - lastVelZ > double.Epsilon)
+        {
+            if(lastVelZ >= 0) zVelLerp += Vel.Z;
+            else              zVelLerp += 5 - lastVelZ * 2;
+        }
+
+        zVelLerp = AREAG_Func.Lerp(zVelLerp, 0, 0.277);
+        lastVelZ = Vel.Z;
+
+        lastZVelLerp = lerpVelZ;
+        lerpVelZ = AREAG_Func.Lerp(lerpVelZ, zVelLerp, 0.42);
+
+        if(!bOnGround && viewbob != 0.0) {
+            viewbob = 0.0;
+        }
+
+        if(bOnGround && viewbob != 1.0) {
+            viewbob = 1.0;
+        }
+
+        if(bOnGround && !bJumpCancel) {
+            bJumpCancel = true;
+        }
     }
 
     override vector2 BobWeapon(double ticfrac)

@@ -2,14 +2,28 @@
 extend class ZSCPlayerPawn {
 
     int lastHealth;
+    int lastFallStun;
 
     void AREAGHealthInit() {
         lastHealth = health;
+        lastFallStun = 0;
         bBUDDHA = true;
         updateHealth();
     }
 
     void AREAGHealthTick() {
+
+        if(CountInv("FallStunTime") > 0) {
+            if(CountInv("FallStunSlow") == 0) {
+                A_GiveInventory("FallStunSlow", 1);
+            }
+            A_TakeInventory("FallStunTime", 1);
+        } else {
+            if(CountInv("FallStunSlow") > 0) {
+                A_TakeInventory("FallStunSlow", 1);
+            }
+        }
+
         if(lastHealth != health) {
 			updateHealth();
 			lastHealth = health;
@@ -91,4 +105,11 @@ extend class ZSCPlayerPawn {
 			return trueDmg;
 		}
 	}
+}
+
+class FallStunTime : Counter {}
+class FallStunSlow : PowerSpeed {
+    Default {
+        speed 0.4;
+    }
 }
