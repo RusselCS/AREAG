@@ -7,6 +7,11 @@ struct AREAG_Func {
         }
         return false;
     }
+
+    static double Lerp(double a, double b, double t)
+	{
+		return (1 - t) * a + t * b;
+	}
 }
 
 class ZSCSwitchCrystal : Actor

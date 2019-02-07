@@ -19,10 +19,25 @@ extend class ZSCPlayerPawn {
 
     float fBaseGravity;
 
+    double prevBobXFracMult;
+    double prevBobYFracMult;
+    double prevViewBob;
+
+    double zVelLerp;
+    double lastVelZ;
+    double lerpVelZ;
+    double lastZVelLerp;
+
     void AREAGMoveInit() {
         Thing_ChangeTID(0, PlayerNumber()+1000);
         ACS_NamedExecuteAlways("movement_standing", 0);
 	    ACS_NamedExecuteAlways("movement_water_player", 0);
+        prevBobXFracMult = 0.0;
+        prevBobYFracMult = 0.0;
+        prevViewBob = ViewBob;
+        lerpVelZ = 0.0;
+        zVelLerp = 0.0;
+        lastZVelLerp = 0.0;
 
         iButtons = GetPlayerInput(INPUT_BUTTONS);
 		iOldButtons = GetPlayerInput(INPUT_OLDBUTTONS);
@@ -49,6 +64,27 @@ extend class ZSCPlayerPawn {
 
         // On Ground bool based on Marrub/Allie's Lithium code.
         bOnGround = pos.z ~== floorz || bONMOBJ || bMBFBOUNCER;
+
+        // VelZ interpolations also based on Lithium.
+        if(Vel.Z - lastVelZ > double.Epsilon)
+        {
+            if(lastVelZ >= 0) zVelLerp += Vel.Z;
+            else              zVelLerp += 5 - lastVelZ * 2;
+        }
+
+        zVelLerp = AREAG_Func.Lerp(zVelLerp, 0, 0.277);
+        lastVelZ = Vel.Z;
+
+        lastZVelLerp = lerpVelZ;
+        lerpVelZ = AREAG_Func.Lerp(lerpVelZ, zVelLerp, 0.42);
+
+        if(!bOnGround && viewbob != 0.0) {
+            viewbob = 0.0;
+        }
+
+        if(bOnGround && viewbob != 1.0) {
+            viewbob = 1.0;
+        }
 
         if(bOnGround && !bJumpCancel) {
             bJumpCancel = true;
@@ -142,6 +178,44 @@ extend class ZSCPlayerPawn {
 		{
 			AREAGUpdateSpeeds();
 		}
+    }
+
+    override vector2 BobWeapon(double ticfrac)
+    {
+    if(!Player) return (0, 0);
+    let wep = Player.ReadyWeapon;
+
+    if(!wep || wep.bDONTBOB) return (0, 0);
+
+    vector2 p[2];
+
+    double ang = wep.BobSpeed * 128 * Player.GetWBobSpeed() * (Level.Time) * 0.05;
+    prevViewBob = AREAG_Func.Lerp(prevViewBob, ViewBob, ticfrac/2);
+    let xFracMult = cos(ang) * prevViewBob * 0.8;
+    let yFracMult = 0.5-abs(sin(ang)) * prevViewBob * 0.5;
+    double bobx = 0;
+    double boby = 0;
+
+    bobx = Player.Bob * wep.BobRangeX;
+    boby = Player.Bob * wep.BobRangeY;
+    bobx *= xFracMult;
+    boby *= yFracMult;
+    p[0] = (bobx, boby+5.0);
+
+    bobx = Player.Bob * wep.BobRangeX;
+    boby = Player.Bob * wep.BobRangeY;
+    bobx *= prevBobXFracMult;
+    boby *= prevBobYFracMult;
+    p[1] = (bobx, boby+5.0);
+
+    prevBobXFracMult = xFracMult;
+    prevBobYFracMult = yFracMult;
+    
+    
+    vector2 interp = p[0] * (1 - 0.5) + p[1] * 0.5;
+    interp.y += AREAG_Func.Lerp(lerpVelZ, vel.z, 0.5);
+
+    return interp;
     }
 
 }
