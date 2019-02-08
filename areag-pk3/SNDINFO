@@ -35,7 +35,7 @@ player/ouch OUCH // LA-MULANA
 
 weapon/whipswing WHIPSWIN // Mega Man Star Force
 weapon/whipcrack WHIPCRAK // LA-MULANA
-weapon/whipstrike WHIPSMAK // Garou: Mark of the Wolves
+weapon/whipstrike WHIPSMAN // Garou: Mark of the Wolves
 weapon/whipwall WHIPWALL // King of Fighters 2002
 
 weapon/knifethrow	KNIFTHRO // Garou: Mark of the Wolves
@@ -73,6 +73,7 @@ $pitchshift footstep/stone 7
 $volume footstep/stone 0.1
 
 footstep/spider SPWALK // STRIFE: QUEST FOR THE SIGIL
+player/crashland HARDLAND // THE KING OF FIGHTERS XIV
 
 misc/jarpain JARDMG // Mega Man Star Force
 misc/jarbreak JARSMASH // LA-MULANA

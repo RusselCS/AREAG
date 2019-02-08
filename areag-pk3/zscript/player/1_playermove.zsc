@@ -69,6 +69,7 @@ extend class ZSCPlayerPawn {
             A_GiveInventory("FallStunTime", 175);
             A_GiveInventory("ScreenShakeTime", 5);
             A_SpawnItemEx("AREAGCrashLand");
+            A_PlaySound("player/crashland", CHAN_BODY);
         }
 
         // JUMP CANCEL
@@ -188,40 +189,40 @@ extend class ZSCPlayerPawn {
 
     override vector2 BobWeapon(double ticfrac)
     {
-    if(!Player) return (0, 0);
-    let wep = Player.ReadyWeapon;
+        if(!Player) return (0, 0);
+        let wep = Player.ReadyWeapon;
 
-    if(!wep || wep.bDONTBOB) return (0, 0);
+        if(!wep || wep.bDONTBOB) return (0, 0);
 
-    vector2 p[2];
+        vector2 p[2];
 
-    double ang = wep.BobSpeed * 128 * Player.GetWBobSpeed() * (Level.Time) * 0.08;
-    prevViewBob = AREAG_Func.Lerp(prevViewBob, ViewBob, ticfrac/2);
-    let xFracMult = cos(ang) * prevViewBob * 0.8;
-    let yFracMult = 0.5-abs(sin(ang)) * prevViewBob * 0.5;
-    double bobx = 0;
-    double boby = 0;
+        double ang = wep.BobSpeed * 128 * Player.GetWBobSpeed() * (Level.Time) * 0.08;
+        prevViewBob = AREAG_Func.Lerp(prevViewBob, ViewBob, ticfrac/2);
+        let xFracMult = cos(ang) * prevViewBob * 0.8;
+        let yFracMult = 0.5-abs(sin(ang)) * prevViewBob * 0.5;
+        double bobx = 0;
+        double boby = 0;
 
-    bobx = Player.Bob * wep.BobRangeX;
-    boby = Player.Bob * wep.BobRangeY;
-    bobx *= xFracMult;
-    boby *= yFracMult;
-    p[0] = (bobx, boby+5.0);
+        bobx = Player.Bob * wep.BobRangeX;
+        boby = Player.Bob * wep.BobRangeY;
+        bobx *= xFracMult;
+        boby *= yFracMult;
+        p[0] = (bobx, boby+5.0);
 
-    bobx = Player.Bob * wep.BobRangeX;
-    boby = Player.Bob * wep.BobRangeY;
-    bobx *= prevBobXFracMult;
-    boby *= prevBobYFracMult;
-    p[1] = (bobx, boby+5.0);
+        bobx = Player.Bob * wep.BobRangeX;
+        boby = Player.Bob * wep.BobRangeY;
+        bobx *= prevBobXFracMult;
+        boby *= prevBobYFracMult;
+        p[1] = (bobx, boby+5.0);
 
-    prevBobXFracMult = xFracMult;
-    prevBobYFracMult = yFracMult;
-    
-    
-    vector2 interp = p[0] * (1 - 0.5) + p[1] * 0.5;
-    interp.y += AREAG_Func.Lerp(lerpVelZ, vel.z, 0.5);
+        prevBobXFracMult = xFracMult;
+        prevBobYFracMult = yFracMult;
+        
+        
+        vector2 interp = p[0] * (1 - 0.5) + p[1] * 0.5;
+        interp.y += AREAG_Func.Lerp(lerpVelZ, vel.z, 0.5);
 
-    return interp;
+        return interp;
     }
 }
 

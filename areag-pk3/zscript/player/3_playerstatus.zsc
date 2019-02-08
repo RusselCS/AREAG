@@ -2,8 +2,10 @@ extend class ZSCPlayerPawn {
 
     const MAX_SHAKE = 20.0;
 
-    void AREAGStatusInit() {
+    bool shakeScreen;
 
+    void AREAGStatusInit() {
+        shakeScreen = false;
     }
 
     void AREAGStatusTick() {
@@ -19,11 +21,15 @@ extend class ZSCPlayerPawn {
         }
 
         if(CountInv("ScreenShakeTime") > 0) {
+            if(!shakeScreen) {
+                shakeScreen = true;
+            }
             A_SetRoll(frandom(-MAX_SHAKE, MAX_SHAKE));
             A_TakeInventory("ScreenShakeTime", 1);
         } else {
-            if(roll != 0.0) {
+            if(shakeScreen) {
                 A_SetRoll(0);
+                shakeScreen = false;
             }
         }
     }
