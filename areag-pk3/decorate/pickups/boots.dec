@@ -117,7 +117,7 @@ actor DashLeft : DashForward
 	}
 }
 
-actor SteamGreavesPickup : BasicInventory
+actor SteamGreavesPickup : GearGreavesPickup
 {
 	States
 	{

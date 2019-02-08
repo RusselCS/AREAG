@@ -12,6 +12,7 @@
 
 #include "zscript/weapons/2_mainweapons/1_whip.zsc"
 
+#include "zscript/player/__protoplayer.zsc"
 #include "zscript/player/0_playerbase.zsc"
 #include "zscript/player/1_playermove.zsc"
 #include "zscript/player/2_playerhealth.zsc"

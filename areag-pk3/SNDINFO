@@ -8,6 +8,11 @@ $playersound	clyde	male	*pain25		dsnone
 $playersound	clyde	male	*grunt		PLLAND // LA-MULANA
 $playersound	clyde	male	*land		PLLAND // LA-MULANA
 $playersound	clyde	male	*jump		PLJUMP // LA-MULANA
+$playersound	clyde	male	*superjump	SPJUMP // THE KING OF FIGHTERS XIV
+$playersound	clyde	male	*dronejump	DRJUMP // Fatal Fury 2
+$playersound	clyde	male	*droneland	DRLAND // Fatal Fury 2
+$playersound	clyde	male	*dronewalk	SPWALK // STRIFE: QUEST FOR THE SIGIL
+$playersound	clyde	male	*footstep	FTSTONE1 // Mega Man ZX
 $playersound	clyde	male	*fist		dsnone
 $playersound	clyde	male	*usefail	PLLAND // LA-MULANA
 

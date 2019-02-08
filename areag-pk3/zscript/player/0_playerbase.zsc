@@ -1,12 +1,11 @@
 const HP_SEG_MAX = 25;
 
-class ZSCPlayerPawn : PlayerPawn {
+class ZSCPlayerPawn : AREAGProtoPlayer {
 
     int iSelectedWep;
     int iPrevSelect;
 
-	override void Tick() {
-		Super.Tick();
+	override void AREAGTick() {
 
         if(!level.frozen && !bNOTIMEFREEZE) {
             AREAGHealthTick();
@@ -26,9 +25,8 @@ class ZSCPlayerPawn : PlayerPawn {
         }
     }
     
-    override void PostBeginPlay() {
+    override void AREAGInit() {
 
-		super.PostBeginPlay();
 		AREAGMoveInit();
 		AREAGHealthInit();
         AREAGStatusInit();

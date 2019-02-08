@@ -18,8 +18,18 @@ extend class AREAGProtoWeapon {
     }
 }
 
-class AREAGDrone : PlayerPawn
+class AREAGDrone : AREAGProtoPlayer
 {
+    int iWalkCooldown;
+    double prevBobYFracMult;
+    double prevViewBob;
+    bool bLegsInWater;
+    
+    double fBaseSpeed;
+    double fStrafeSpeed;
+    double fBaseJump;
+    double fBaseGravity;
+
     Default
     {
         Height 24;
@@ -27,10 +37,123 @@ class AREAGDrone : PlayerPawn
         player.viewheight 20;
         player.morphweapon "DronePlasmaGun";
         Player.AttackZOffset 5; // 41 - view height
+        player.gruntspeed 8;
+        player.soundclass "clyde";
         speed 0.85;
 	    player.jumpz 10;
         gravity 1.2;
+        friction 1.0;
         maxstepheight 16;
+    }
+
+    override void AREAGInit() {
+        iWalkCooldown = 0;
+        prevBobYFracMult = 0.0;
+        prevViewBob = 0.0;
+        fBaseSpeed = speed;
+        fStrafeSpeed = fBaseSpeed * 0.78089;
+        bLegsInWater = false;
+        fBaseJump = jumpz;
+        fBaseGravity = gravity;
+    }
+
+    override void AREAGTick() {
+        if(bOnGround && lastZVel < -GruntSpeed) {
+            A_PlaySound("*droneland", CHAN_5);
+            iWalkCooldown = 5;
+        }
+
+        if(bOnGround && AREAGIsWalking()) {
+            if(iWalkCooldown == 0) {
+                A_PlaySound("*dronewalk", CHAN_5);
+                iWalkCooldown = 5;
+            }
+        }
+
+        // STRAFERUN HANDLER
+        if(((iButtons & BT_FORWARD) || (iButtons & BT_BACK)) && ((iButtons & BT_MOVELEFT) || (iButtons & BT_MOVERIGHT)))
+		{
+            if(!(speed ~== fStrafeSpeed)) {
+                speed = fStrafeSpeed;
+            }
+		}
+		else
+		{
+            if(!(speed ~== fBaseSpeed)) {
+                speed = fBaseSpeed;
+            }
+		}
+
+        // WATER
+		if(CountInv("LegsUnderwater")>0)
+		{
+			if(!bLegsInWater) {
+				gravity = fBaseGravity * WATER_GRAVITY_MULT;
+				jumpz = fBaseJump * WATER_JUMP_MULT;
+				A_GiveInventory("WaterSpeed", 1);
+				bLegsInWater = true;
+			}
+		}
+		else
+		{
+			if(bLegsInWater) {
+				gravity = fBaseGravity;
+				jumpz = fBaseJump;
+				A_TakeInventory("WaterSpeed", 1);
+				bLegsInWater = false;
+			}
+		}
+
+        if(iWalkCooldown > 0) {
+            iWalkCooldown--;
+        }
+
+        if(!bOnGround && viewbob != 0.0 && pos.z - floorz > 16.0) {
+            viewbob = 0.0;
+        }
+
+        if(bOnGround && viewbob != 1.0) {
+            viewbob = 1.0;
+        }
+    }
+
+    override vector2 BobWeapon(double ticfrac)
+    {
+        if(!Player) return (0, 0);
+        let wep = Player.ReadyWeapon;
+
+        if(!wep || wep.bDONTBOB) return (0, 0);
+
+        vector2 p[2];
+
+        double ang = wep.BobSpeed * 128 * Player.GetWBobSpeed() * (Level.Time) * 0.4;
+        prevViewBob = AREAG_Func.Lerp(prevViewBob, ViewBob, ticfrac/2);
+        let yFracMult = 0.05-sin(ang) * prevViewBob * 0.05;
+        double boby = 0;
+
+        boby = Player.Bob * wep.BobRangeY;
+        boby *= yFracMult;
+        p[0] = (0, boby+5.0);
+
+        boby = Player.Bob * wep.BobRangeY;
+        boby *= prevBobYFracMult;
+        p[1] = (0, boby+5.0);
+
+        prevBobYFracMult = yFracMult;
+        
+        vector2 interp = p[0] * (1 - 0.5) + p[1] * 0.5;
+        interp.y += AREAG_Func.Lerp(lerpVelZ, vel.z, 0.5);
+
+        // if(abs(sin(ang)) < 0.2 && bOnGround && AREAGIsWalking()) {
+        //     if(iStepCD == 0) {
+        //         A_PlaySound("*footstep", CHAN_BODY);
+        //         iStepCD = 1;
+        //     }
+        // } else {
+        //     iStepCD = 0;
+        // }
+
+        return interp;
     }
 }
 
@@ -39,7 +162,6 @@ class DronePlasmaGun : Weapon
     Default
     {
         +WEAPON.WIMPY_WEAPON;
-        +WEAPON.DONTBOB;
     }
 	States
 	{

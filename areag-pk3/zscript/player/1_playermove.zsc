@@ -1,11 +1,5 @@
 extend class ZSCPlayerPawn {
 
-    const WATER_GRAVITY_MULT = 0.2;
-    const WATER_JUMP_MULT = 0.65;
-
-    int iButtons, iOldButtons;
-
-    bool bOnGround;
     bool bJumpCancel;
     bool bLegsInWater;
     bool bHeadInWater;
@@ -23,10 +17,7 @@ extend class ZSCPlayerPawn {
     double prevBobYFracMult;
     double prevViewBob;
 
-    double zVelLerp;
-    double lastVelZ;
-    double lerpVelZ;
-    double lastZVelLerp;
+    int iStepCD;
 
     void AREAGMoveInit() {
         Thing_ChangeTID(0, PlayerNumber()+1000);
@@ -35,14 +26,9 @@ extend class ZSCPlayerPawn {
         prevBobXFracMult = 0.0;
         prevBobYFracMult = 0.0;
         prevViewBob = ViewBob;
-        lerpVelZ = 0.0;
-        zVelLerp = 0.0;
-        lastZVelLerp = 0.0;
+        iStepCD = 0;
 
-        iButtons = GetPlayerInput(INPUT_BUTTONS);
-		iOldButtons = GetPlayerInput(INPUT_OLDBUTTONS);
         bJumpCancel = true;
-        bOnGround = true;
         bLegsInWater = false;
         bheadInWater = false;
         fBaseGravity = gravity;
@@ -62,10 +48,7 @@ extend class ZSCPlayerPawn {
         iOldButtons = iButtons;
 		iButtons = GetPlayerInput(INPUT_BUTTONS);
 
-        // On Ground bool based on Marrub/Allie's Lithium code.
-        bOnGround = pos.z ~== floorz || bONMOBJ || bMBFBOUNCER;
-
-        if(bOnGround && lastVelZ < -FallingScreamMinSpeed) {
+        if(bOnGround && lastZVel < -FallingScreamMinSpeed) {
             A_GiveInventory("FallStunTime", 175);
             A_GiveInventory("ScreenShakeTime", 5);
             A_SpawnItemEx("AREAGCrashLand");
@@ -161,19 +144,6 @@ extend class ZSCPlayerPawn {
 			AREAGUpdateSpeeds();
 		}
 
-        // VelZ interpolations also based on Lithium.
-        if(Vel.Z - lastVelZ > double.Epsilon)
-        {
-            if(lastVelZ >= 0) zVelLerp += Vel.Z;
-            else              zVelLerp += 5 - lastVelZ * 2;
-        }
-
-        zVelLerp = AREAG_Func.Lerp(zVelLerp, 0, 0.277);
-        lastVelZ = Vel.Z;
-
-        lastZVelLerp = lerpVelZ;
-        lerpVelZ = AREAG_Func.Lerp(lerpVelZ, zVelLerp, 0.42);
-
         if(!bOnGround && viewbob != 0.0 && pos.z - floorz > 16.0) {
             viewbob = 0.0;
         }
@@ -218,9 +188,17 @@ extend class ZSCPlayerPawn {
         prevBobXFracMult = xFracMult;
         prevBobYFracMult = yFracMult;
         
-        
         vector2 interp = p[0] * (1 - 0.5) + p[1] * 0.5;
         interp.y += AREAG_Func.Lerp(lerpVelZ, vel.z, 0.5);
+
+        // if(abs(sin(ang)) < 0.2 && bOnGround && AREAGIsWalking()) {
+        //     if(iStepCD == 0) {
+        //         A_PlaySound("*footstep", CHAN_BODY);
+        //         iStepCD = 1;
+        //     }
+        // } else {
+        //     iStepCD = 0;
+        // }
 
         return interp;
     }
