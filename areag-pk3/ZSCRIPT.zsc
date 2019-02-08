@@ -15,6 +15,7 @@
 #include "zscript/player/0_playerbase.zsc"
 #include "zscript/player/1_playermove.zsc"
 #include "zscript/player/2_playerhealth.zsc"
+#include "zscript/player/3_playerstatus.zsc"
 
 class LevelFreezeOn : Actor
 {

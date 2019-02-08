@@ -13,7 +13,8 @@ actor AREAGPlayer : ZSCPlayerPawn
 	player.startitem "BreathTime", 100
 	player.startitem "MaxHealthBars", 4
 	player.startitem "HealthBars", 4
-	player.startitem "ShieldBars", 4
+    player.startitem "ShieldBars", 4
+    Player.FallingScreamSpeed 32.0, 1000.0
 	mass 100
 	gravity 1.2
 	+DONTBLAST

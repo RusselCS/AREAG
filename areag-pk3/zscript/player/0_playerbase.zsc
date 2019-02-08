@@ -11,6 +11,7 @@ class ZSCPlayerPawn : PlayerPawn {
         if(!level.frozen && !bNOTIMEFREEZE) {
             AREAGHealthTick();
             AREAGMoveTick();
+            AREAGStatusTick();
 
             if(iSelectedWep != iPrevSelect) {
                 iPrevSelect = iSelectedWep;
@@ -30,6 +31,7 @@ class ZSCPlayerPawn : PlayerPawn {
 		super.PostBeginPlay();
 		AREAGMoveInit();
 		AREAGHealthInit();
+        AREAGStatusInit();
 		iSelectedWep = SWEP_NONE;
 	}
 }
