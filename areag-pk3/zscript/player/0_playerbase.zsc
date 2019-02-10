@@ -5,6 +5,10 @@ class ZSCPlayerPawn : AREAGProtoPlayer {
     int iSelectedWep;
     int iPrevSelect;
 
+    override void AREAGThink() {
+        AREAGMoveThink();
+    }
+
 	override void AREAGTick() {
 
         if(!level.frozen && !bNOTIMEFREEZE) {

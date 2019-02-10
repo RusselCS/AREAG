@@ -10,6 +10,7 @@ extend class ZSCPlayerPawn {
     float fBaseSpeed;
     float fBaseJump;
     float fStrafeSpeed;
+    float fSR50Speed;
 
     float fBaseGravity;
 
@@ -41,7 +42,26 @@ extend class ZSCPlayerPawn {
     void AREAGUpdateSpeeds() {
         iSpeedInv = CountInv("BaseMoveSpeed");
         fBaseSpeed = float(iSpeedInv) / 100.0;
-        fStrafeSpeed = fBaseSpeed * 0.78089;
+        fStrafeSpeed = fBaseSpeed * 0.78087;
+        fSR50Speed = fBaseSpeed * 0.7071;
+    }
+
+    void AREAGMoveThink() {
+        int SR = checkSR(iButtons);
+        if(SR > 0)
+		{  
+            if(SR == 40 && !(speed ~== fStrafeSpeed)) {
+                speed = fStrafeSpeed;
+            } else if(SR == 50 && !(speed ~== fSR50Speed)) {
+                speed = fSR50Speed;
+            }
+		}
+		else
+		{
+            if(!(speed ~== fBaseSpeed)) {
+                speed = fBaseSpeed;
+            }
+		}
     }
 
     void AREAGMoveTick() {
@@ -60,20 +80,6 @@ extend class ZSCPlayerPawn {
 		{
 			ThrustThingZ(0, 0, 0, 0);
 			bJumpCancel = false;
-		}
-
-        // STRAFERUN HANDLER
-        if(((iButtons & BT_FORWARD) || (iButtons & BT_BACK)) && ((iButtons & BT_MOVELEFT) || (iButtons & BT_MOVERIGHT)))
-		{
-            if(!(speed ~== fStrafeSpeed)) {
-                speed = fStrafeSpeed;
-            }
-		}
-		else
-		{
-            if(!(speed ~== fBaseSpeed)) {
-                speed = fBaseSpeed;
-            }
 		}
 
         // WATER
@@ -201,6 +207,19 @@ extend class ZSCPlayerPawn {
         // }
 
         return interp;
+    }
+
+    static int checkSR(int iButtons) {
+        if(iButtons & BT_MOVELEFT || iButtons & BT_MOVERIGHT) {
+            if(iButtons & BT_FORWARD || iButtons & BT_BACK) { // Pressing forward / back
+                if((iButtons & BT_LEFT || iButtons & BT_RIGHT) && iButtons & BT_STRAFE) {
+                    return 50;
+                }
+                return 40;
+            }
+            return 0;
+        }
+        return 0;
     }
 }
 

@@ -27,6 +27,7 @@ class AREAGDrone : AREAGProtoPlayer
     
     double fBaseSpeed;
     double fStrafeSpeed;
+    double fSR50Speed;
     double fBaseJump;
     double fBaseGravity;
 
@@ -52,6 +53,7 @@ class AREAGDrone : AREAGProtoPlayer
         prevViewBob = 0.0;
         fBaseSpeed = speed;
         fStrafeSpeed = fBaseSpeed * 0.78089;
+        fSR50Speed = fBaseSpeed * 0.7071;
         bLegsInWater = false;
         fBaseJump = jumpz;
         fBaseGravity = gravity;
@@ -117,6 +119,24 @@ class AREAGDrone : AREAGProtoPlayer
         }
     }
 
+    override void AREAGThink() {
+        int SR = checkSR(iButtons);
+        if(SR > 0)
+		{  
+            if(SR == 40 && !(speed ~== fStrafeSpeed)) {
+                speed = fStrafeSpeed;
+            } else if(SR == 50 && !(speed ~== fSR50Speed)) {
+                speed = fSR50Speed;
+            }
+		}
+		else
+		{
+            if(!(speed ~== fBaseSpeed)) {
+                speed = fBaseSpeed;
+            }
+		}
+    }
+
     override vector2 BobWeapon(double ticfrac)
     {
         if(!Player) return (0, 0);
@@ -154,6 +174,19 @@ class AREAGDrone : AREAGProtoPlayer
         // }
 
         return interp;
+    }
+
+    static int checkSR(int iButtons) {
+        if(iButtons & BT_MOVELEFT || iButtons & BT_MOVERIGHT) {
+            if(iButtons & BT_FORWARD || iButtons & BT_BACK) { // Pressing forward / back
+                if((iButtons & BT_LEFT || iButtons & BT_RIGHT) && iButtons & BT_STRAFE) {
+                    return 50;
+                }
+                return 40;
+            }
+            return 0;
+        }
+        return 0;
     }
 }
 
