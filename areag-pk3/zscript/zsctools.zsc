@@ -12,6 +12,13 @@ struct AREAG_Func {
 	{
 		return (1 - t) * a + t * b;
 	}
+
+    static bool collidingBoxes(Actor a, Actor b, double rad) {
+        double diffX = abs(a.pos.x - b.pos.x) - rad;
+        double diffY = abs(a.pos.y - b.pos.y) - rad;
+
+        return diffX <= 0 && diffY <= 0;
+    }
 }
 
 class ZSCSwitchCrystal : Actor
@@ -198,6 +205,11 @@ class AREAGPushBlock : Actor
 
 class ZSCFloorSwitch : Actor
 {
+    static const String[] steps = {
+        "AREAGPlayer",
+        "DecPushBlock"
+    };
+
     Default
     {
         -SOLID;
@@ -210,15 +222,14 @@ class ZSCFloorSwitch : Actor
     override void Tick() {
 
         super.Tick();
-        float fCheckRadius = 48.0;
         bool bSwitchState = false;
-        
-        if(CheckProximity("AREAGPlayer", fCheckRadius, 1, CPXF_SETTARGET)) {
-            bSwitchState = bSwitchState || target.pos.z - target.floorz == 0;
-        }
 
-        if(CheckProximity("DecPushBlock", fCheckRadius, 1, CPXF_SETTARGET)) {
-            bSwitchState = bSwitchState || target.pos.z - target.floorz == 0;
+        double fCheckRadius = radius*3;
+
+        for(int i = 0; i < ZSCFloorSwitch.steps.Size(); i++) {
+            if(CheckProximity(ZSCFloorSwitch.steps[i], fCheckRadius, 1, CPXF_NOZ|CPXF_SETTARGET)) {
+                bSwitchState = bSwitchState || (target.pos.z ~== pos.z && AREAG_Func.collidingBoxes(target, self, target.radius+self.radius));
+            }
         }
 
         if(bSwitchState != bActive) {
