@@ -103,8 +103,8 @@ class AREAGProtoWeapon : Weapon {
 
     action State A_AREAGWeaponReady() {
 
-        int iButtons = ZSCPlayerPawn(self).iButtons;
-        int iOldButtons = ZSCPlayerPawn(self).iOldButtons;
+        int iButtons = AREAGProtoPlayer(self).iButtons;
+        int iOldButtons = AREAGProtoPlayer(self).iOldButtons;
 
         if(CountInv("FallStunTime") > 0)
         {

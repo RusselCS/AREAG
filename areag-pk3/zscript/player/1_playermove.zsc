@@ -65,8 +65,6 @@ extend class ZSCPlayerPawn {
     }
 
     void AREAGMoveTick() {
-        iOldButtons = iButtons;
-		iButtons = GetPlayerInput(INPUT_BUTTONS);
 
         if(bOnGround && lastZVel < -FallingScreamMinSpeed) {
             A_GiveInventory("FallStunTime", 175);
