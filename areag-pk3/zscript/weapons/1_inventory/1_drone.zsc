@@ -72,20 +72,6 @@ class AREAGDrone : AREAGProtoPlayer
             }
         }
 
-        // STRAFERUN HANDLER
-        if(((iButtons & BT_FORWARD) || (iButtons & BT_BACK)) && ((iButtons & BT_MOVELEFT) || (iButtons & BT_MOVERIGHT)))
-		{
-            if(!(speed ~== fStrafeSpeed)) {
-                speed = fStrafeSpeed;
-            }
-		}
-		else
-		{
-            if(!(speed ~== fBaseSpeed)) {
-                speed = fBaseSpeed;
-            }
-		}
-
         // WATER
 		if(CountInv("LegsUnderwater")>0)
 		{
@@ -174,6 +160,11 @@ class AREAGDrone : AREAGProtoPlayer
         // }
 
         return interp;
+    }
+
+    override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {
+        ACS_NamedExecuteAlways("drone_disengage", 0);
+        super.Die(source, inflictor, dmgflags, MeansOfDeath);
     }
 
     static int checkSR(int iButtons) {

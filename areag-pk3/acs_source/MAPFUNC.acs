@@ -55,7 +55,7 @@ function void checkDroneTransform(int tid, int drone)
 function void transformToDrone(int tid)
 {
 	SetActorInventory(tid, "PlayerTempHealth", GetActorHealth(tid));
-	MorphActor(tid, "AREAGDrone", "", 0x7ffffff, MRF_NEWTIDBEHAVIOUR|MRF_UNDOALWAYS|MRF_WHENINVULNERABLE, "", "");
+	MorphActor(tid, "AREAGDrone", "", 0x7ffffff, MRF_NEWTIDBEHAVIOUR|MRF_UNDOALWAYS|MRF_WHENINVULNERABLE|MRF_UNDOBYDEATH|MRF_UNDOBYDEATHSAVES, "", "");
 	SetActorHealth(tid, CheckActorInventory(tid, "DroneBattery"));
 }
 

@@ -67,7 +67,7 @@ extend class ZSCPlayerPawn {
     void AREAGMoveTick() {
 
         if(bOnGround && lastZVel < -FallingScreamMinSpeed) {
-            A_GiveInventory("FallStunTime", 175);
+            A_GiveInventory("FallStunTime", 140);
             A_GiveInventory("ScreenShakeTime", 5);
             A_SpawnItemEx("AREAGCrashLand");
             A_PlaySound("player/crashland", CHAN_BODY);
