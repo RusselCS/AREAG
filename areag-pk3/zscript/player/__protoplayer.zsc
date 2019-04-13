@@ -37,7 +37,9 @@ class AREAGProtoPlayer : PlayerPawn {
         bOnGround = pos.z ~== floorz || bONMOBJ || bMBFBOUNCER;
 
         // This will be overridden by subclasses.
-        AREAGTick();
+        if(!level.frozen && !bNOTIMEFREEZE) {
+            AREAGTick();
+        }
 
         iOldButtons = iButtons;
         iButtons = GetPlayerInput(INPUT_BUTTONS);

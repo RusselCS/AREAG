@@ -20,6 +20,9 @@ extend class AREAGProtoWeapon {
 
 class AREAGDrone : AREAGProtoPlayer
 {
+    const HP_TIME_MAX = 10;
+    int iHpDrainTime;
+
     int iWalkCooldown;
     double prevBobYFracMult;
     double prevViewBob;
@@ -57,6 +60,7 @@ class AREAGDrone : AREAGProtoPlayer
         bLegsInWater = false;
         fBaseJump = jumpz;
         fBaseGravity = gravity;
+        iHpDrainTime = HP_TIME_MAX;
     }
 
     override void AREAGTick() {
@@ -103,6 +107,16 @@ class AREAGDrone : AREAGProtoPlayer
         if(bOnGround && viewbob != 1.0) {
             viewbob = 1.0;
         }
+
+        if(iHpDrainTime == 0) {
+            health--;
+            if(health <= 0) {
+                revertDrone();
+            }
+            iHpDrainTime = HP_TIME_MAX;
+        } else {
+            iHpDrainTime--;
+        }
     }
 
     override void AREAGThink() {
@@ -121,6 +135,10 @@ class AREAGDrone : AREAGProtoPlayer
                 speed = fBaseSpeed;
             }
 		}
+    }
+
+    void revertDrone() {
+        ACS_NamedExecuteAlways("drone_disengage", 0);
     }
 
     override vector2 BobWeapon(double ticfrac)
@@ -163,7 +181,7 @@ class AREAGDrone : AREAGProtoPlayer
     }
 
     override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {
-        ACS_NamedExecuteAlways("drone_disengage", 0);
+        revertDrone();
         super.Die(source, inflictor, dmgflags, MeansOfDeath);
     }
 

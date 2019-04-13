@@ -455,13 +455,15 @@ script "movement_stepdash" (void) NET
 function bool canDash(void)
 {
 	return (
-		(
-			CheckInventory("GearGreavesSpeed") && 
+        (
+            CheckInventory("DroneFlag") == 0 &&
 			CheckInventory("OnGround") > 0  &&
+            CheckInventory("GearGreavesSpeed") > 0 && 
 			CheckInventory("DashCooldown")==0
 		) || (
-			CheckInventory("SteamGreavesFlag") &&
+            CheckInventory("DroneFlag") == 0 &&
 			CheckInventory("OnGround") == 0 &&
+			CheckInventory("SteamGreavesFlag") > 0 &&
 			CheckInventory("AirDashCooldown")==0
 		)
 	);

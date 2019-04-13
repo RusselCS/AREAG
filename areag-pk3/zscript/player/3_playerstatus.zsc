@@ -1,6 +1,8 @@
 extend class ZSCPlayerPawn {
 
     const MAX_SHAKE = 20.0;
+    const DRONE_REGEN = 3;
+    int iDroneRegenTime;
 
     bool shakeScreen;
 
@@ -31,6 +33,13 @@ extend class ZSCPlayerPawn {
                 A_SetRoll(0);
                 shakeScreen = false;
             }
+        }
+
+        if(iDroneRegenTime == 0) {
+            iDroneRegenTime = DRONE_REGEN;
+            A_GiveInventory("DroneBattery", 1);
+        } else {
+            iDroneRegenTime--;
         }
     }
 }

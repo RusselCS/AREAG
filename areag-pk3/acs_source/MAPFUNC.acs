@@ -61,7 +61,7 @@ function void transformToDrone(int tid)
 
 function void transformFromDrone(int tid)
 {
-	SetActorInventory(tid, "DroneBattery", GetActorHealth(tid));
+	SetActorInventory(tid, "DroneBattery", 0);
 	UnmorphActor(tid, true);
 	SetActorHealth(tid, CheckActorInventory(tid, "PlayerTempHealth"));
 }

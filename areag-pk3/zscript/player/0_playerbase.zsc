@@ -11,20 +11,18 @@ class ZSCPlayerPawn : AREAGProtoPlayer {
 
 	override void AREAGTick() {
 
-        if(!level.frozen && !bNOTIMEFREEZE) {
-            AREAGHealthTick();
-            AREAGMoveTick();
-            AREAGStatusTick();
+        AREAGHealthTick();
+        AREAGMoveTick();
+        AREAGStatusTick();
 
-            if(iSelectedWep != iPrevSelect) {
-                iPrevSelect = iSelectedWep;
-                if(iSelectedWep > SWEP_NONE && iSelectedWep < SubWeapons.subWepCount())
-                {
-                    for(int i = 0; i < SubWeapons.subWepCount(); i++) {
-                        TakeInventory(SubWeapons.equippedField(i), 1);
-                    }
-                    GiveInventory(SubWeapons.equippedField(iSelectedWep), 1);
+        if(iSelectedWep != iPrevSelect) {
+            iPrevSelect = iSelectedWep;
+            if(iSelectedWep > SWEP_NONE && iSelectedWep < SubWeapons.subWepCount())
+            {
+                for(int i = 0; i < SubWeapons.subWepCount(); i++) {
+                    TakeInventory(SubWeapons.equippedField(i), 1);
                 }
+                GiveInventory(SubWeapons.equippedField(iSelectedWep), 1);
             }
         }
     }
