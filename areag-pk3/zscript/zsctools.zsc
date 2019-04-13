@@ -190,9 +190,9 @@ class AREAGPushBlock : Actor
     {
         +SOLID;
         +PUSHABLE;
-        Height 48;
-        Radius 24;
-        Scale 1.5;
+        Height 64;
+        Radius 32;
+        Scale 2.0;
     }
 
     States
@@ -200,6 +200,16 @@ class AREAGPushBlock : Actor
     Spawn:
         PCBA A 1;
         loop;
+    }
+}
+
+class AREAGPushBlockSmall : AREAGPushBlock
+{
+    Default
+    {
+        Height 32;
+        Radius 16;
+        Scale 1.0;
     }
 }
 

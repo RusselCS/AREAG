@@ -1,4 +1,4 @@
-ACTOR JarSmall : ZSCStoneBody 20000
+ACTOR JarSmall : ZSCStoneBody
 {
 //$Category Props-TheAdventure
 	Health 3
@@ -22,7 +22,7 @@ ACTOR JarSmall : ZSCStoneBody 20000
 	}
 }
 
-ACTOR JarBig : JarSmall 20001
+ACTOR JarBig : JarSmall
 {
 	//$Category Props-TheAdventure
 	radius 18

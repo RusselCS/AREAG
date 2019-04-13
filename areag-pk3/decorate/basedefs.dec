@@ -27,6 +27,8 @@ actor HeadUnderwater : Once {}
 actor LegsUnderwater : Once {}
 actor ZSCTrigHaltViewbob : Once {}
 
+actor NoItem : BasicInventory {}
+
 // MOVEBOB FLAGS //
 actor PosWeapOffsetX : Counter {}
 actor PosWeapOffsetY : Counter {}

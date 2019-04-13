@@ -142,25 +142,3 @@ actor TabletFXP : TabletFXL
 		wait
 	}
 }
-
-// Defined in zscript/zsctools.zsc
-// This actor is present for GZDB
-actor SwitchCrystal : ZSCSwitchCrystal {
-	//$Category AREAG-Map Tools
-	//$Title Switch Crystal
-	//$Sprite SCRYA0
-	Scale 1.5
-}
-
-actor FloorSwitch : ZSCFloorSwitch {
-	//$Category AREAG-Map Tools
-	//$Title Floor Switch
-	//$Sprite E0WAB0
-	Scale 1.5
-}
-
-actor DecPushBlock : AREAGPushBlock {
-    //$Category AREAG-Map Tools
-	//$Title Pushable Block
-	//$Sprite PCBAB0
-}
