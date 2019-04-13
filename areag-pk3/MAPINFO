@@ -5,8 +5,8 @@ DoomEdNums
 {
 	10560 = WaterSector
 	10561 = TabletActivatable
-	10562 = SwitchCrystal
-	10563 = FloorSwitch
+	10562 = ZSCSwitchCrystal
+	10563 = ZSCFloorSwitch
 	10564 = AREAGPushBlock
     10565 = AREAGPushBlockSmall
 
