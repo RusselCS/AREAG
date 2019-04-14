@@ -21,6 +21,7 @@ struct AREAG_Func {
     }
 }
 
+// SWITCH CRYSTALS
 class ZSCSwitchCrystal : Actor
 {
     bool bSwitchOn;
@@ -48,7 +49,7 @@ class ZSCSwitchCrystal : Actor
         bool success = false;
 
         if(!bSwitchOn) {
-            if(!bSTANDSTILL) {
+            if(score == 0) {
                 SetState(ResolveState("SwitchOn"));
             } else {
                 SetState(ResolveState("SwitchOnOff"));
@@ -59,15 +60,20 @@ class ZSCSwitchCrystal : Actor
 
         if(success) {
             A_PlaySound("misc/switchon", CHAN_BODY, 1.0, false, ATTN_NONE);
-            A_CallSpecial(special, args[0], args[1], args[2], args[3], args[4]);
+            runSpecial();
         }
         
         return 0;
     }
 
     void switchOff() {
-        A_PlaySound("misc/switchoff", CHAN_BODY, 1.0, false, ATTN_NONE);
         bSwitchOn = false;
+        A_PlaySound("misc/switchoff", CHAN_BODY, 1.0, false, ATTN_NONE);
+        runSpecial();
+    }
+
+    void runSpecial() {
+        A_CallSpecial(special, args[0], 0, bSwitchOn, args[3], args[4]);
     }
 
     States
@@ -80,12 +86,104 @@ class ZSCSwitchCrystal : Actor
 		SCRY B 1;
         wait;
     SwitchOnOff:
-        SCRY B 35;
+        SCRY B 0 A_SetTics(score);
         SCRY B 0 switchOff();
 		goto Spawn;
     }
 }
 
+// PUSH BLOCKS, FLOOR SWITCHES
+class AREAGPushBlock : Actor
+{
+    Default
+    {
+        +SOLID;
+        +PUSHABLE;
+        Height 64;
+        Radius 32;
+        Scale 2.0;
+    }
+
+    States
+    {
+    Spawn:
+        PCBA A 1;
+        loop;
+    }
+}
+
+class AREAGPushBlockSmall : AREAGPushBlock
+{
+    Default
+    {
+        Height 32;
+        Radius 16;
+        Scale 1.0;
+    }
+}
+
+class ZSCFloorSwitch : Actor
+{
+    static const String[] steps = {
+        "AREAGPlayer",
+        "AREAGPushBlock",
+        "AREAGPushBlockSmall"
+    };
+
+    Default
+    {
+        -SOLID;
+        radius 32;
+        height 10;
+        renderstyle "none";
+    }
+
+    bool bActive;
+    override void Tick() {
+
+        super.Tick();
+        bool bSwitchState = false;
+
+        double fCheckRadius = radius*3;
+
+        for(int i = 0; i < ZSCFloorSwitch.steps.Size(); i++) {
+            if(CheckProximity(ZSCFloorSwitch.steps[i], fCheckRadius, 1, CPXF_NOZ|CPXF_SETTARGET)) {
+                bSwitchState = bSwitchState || (target.pos.z ~== pos.z && AREAG_Func.collidingBoxes(target, self, target.radius+self.radius));
+            }
+        }
+
+        if(bSwitchState != bActive) {
+            bActive = bSwitchState;
+            ACS_ExecuteAlways(args[0], 0, bActive);
+
+            if(bActive) {
+                A_PlaySound("misc/switchon", CHAN_BODY, 1.0, false, ATTN_NONE);
+                SetState(ResolveState("SwitchOn"));
+            } else {
+                A_PlaySound("misc/switchoff", CHAN_BODY, 1.0, false, ATTN_NONE);
+                SetState(ResolveState("SwitchOff"));
+            }
+        }
+    }
+
+    override void PostBeginPlay() {
+        super.PostBeginPlay();
+        bActive = false;
+        SetState(ResolveState("SwitchOff"));
+    }
+
+    States
+    {
+    SwitchOn:
+		SCRY B 1;
+        wait;
+    SwitchOff:
+        SCRY A 1;
+        wait;
+    }
+}
+
+// THE SHOP
 class ZSCNumber : Actor
 {
     int iNumberToDraw;
@@ -181,94 +279,5 @@ class ZSCDigit : Actor
     Spawn:
         NUM1 A 1;
         loop;
-    }
-}
-
-class AREAGPushBlock : Actor
-{
-    Default
-    {
-        +SOLID;
-        +PUSHABLE;
-        Height 64;
-        Radius 32;
-        Scale 2.0;
-    }
-
-    States
-    {
-    Spawn:
-        PCBA A 1;
-        loop;
-    }
-}
-
-class AREAGPushBlockSmall : AREAGPushBlock
-{
-    Default
-    {
-        Height 32;
-        Radius 16;
-        Scale 1.0;
-    }
-}
-
-class ZSCFloorSwitch : Actor
-{
-    static const String[] steps = {
-        "AREAGPlayer",
-        "DecPushBlock"
-    };
-
-    Default
-    {
-        -SOLID;
-        radius 32;
-        height 10;
-        renderstyle "none";
-    }
-
-    bool bActive;
-    override void Tick() {
-
-        super.Tick();
-        bool bSwitchState = false;
-
-        double fCheckRadius = radius*3;
-
-        for(int i = 0; i < ZSCFloorSwitch.steps.Size(); i++) {
-            if(CheckProximity(ZSCFloorSwitch.steps[i], fCheckRadius, 1, CPXF_NOZ|CPXF_SETTARGET)) {
-                bSwitchState = bSwitchState || (target.pos.z ~== pos.z && AREAG_Func.collidingBoxes(target, self, target.radius+self.radius));
-            }
-        }
-
-        if(bSwitchState != bActive) {
-            bActive = bSwitchState;
-            ACS_ExecuteAlways(args[0], 0, bActive);
-
-            if(bActive) {
-                A_PlaySound("misc/switchon", CHAN_BODY, 1.0, false, ATTN_NONE);
-                SetState(ResolveState("SwitchOn"));
-            } else {
-                A_PlaySound("misc/switchoff", CHAN_BODY, 1.0, false, ATTN_NONE);
-                SetState(ResolveState("SwitchOff"));
-            }
-        }
-    }
-
-    override void PostBeginPlay() {
-        super.PostBeginPlay();
-        bActive = false;
-        SetState(ResolveState("SwitchOff"));
-    }
-
-    States
-    {
-    SwitchOn:
-		SCRY B 1;
-        wait;
-    SwitchOff:
-        SCRY A 1;
-        wait;
     }
 }
