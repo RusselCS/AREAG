@@ -1,7 +1,6 @@
 actor GearGreavesPickup : BasicInventory
 {
 	inventory.pickupmessage ""
-	inventory.pickupsound "upgrade/artifice"
 	+INVENTORY.AUTOACTIVATE
 	+FLOATBOB
 	+NOGRAVITY

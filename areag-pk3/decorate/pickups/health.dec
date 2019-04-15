@@ -47,7 +47,6 @@ actor LargeHealthPickup : BaseHealthPickup
 actor MaxHealthUp : CustomInventory
 {
 	inventory.pickupmessage ""
-	inventory.pickupsound "upgrade/treasure"
 	inventory.amount 1
 	inventory.maxamount 1
 	States

@@ -5,20 +5,20 @@
 // UPGRADE HANDLERS
 
 #define MAX_TYPES 4
-#define MAX_UPGRADES 8
+#define MAX_UPGRADES 9
 
 int pickupColors[MAX_TYPES][3] = {
 	{0.00, 0.28, 0.38}, // Artifice - Passive Permanent Upgrade
-	{0.80, 0.32, 0.00}, // Champion - Main Weapon
+	{0.69, 0.00, 0.13}, // Champion - Main Weapon
 	{0.80, 0.30, 0.00}, // Tributary - Sub Weapon
 	{0.00, 0.52, 0.22}//, // Prosperity - Treasure, Use Items, Puzzle Items
 };
 
-str pickupTypes[MAX_TYPES][3] = {
-{"Artifice", "ARTIBG", "ARTITX"},
-{"Champion", "ARTIBG", "ARTITX"},
-{"Tributary", "SUBWBG", "SUBWTX"},
-{"Prosperity", "UTILBG", "UTILTX"}
+str pickupTypes[MAX_TYPES][4] = {
+{"Artifice", "ARTIBG", "ARTITX", "upgrade/artifice"},
+{"Champion", "WEAPBG", "WEAPTX", "upgrade/weapon"},
+{"Tributary", "SUBWBG", "SUBWTX", "upgrade/offense"},
+{"Prosperity", "UTILBG", "UTILTX", "upgrade/treasure"}
 };
 
 str pickupInfo[MAX_UPGRADES][2] = {
@@ -29,11 +29,13 @@ str pickupInfo[MAX_UPGRADES][2] = {
 {"AR_DYNAMITECRATE", "PU_DYNAMITECRATE"},
 {"AR_NOVAPACK", "PU_NOVAPACK"},
 {"AR_SPIDERDRONE", "PU_SPIDERDRONE"},
-{"AR_BEEDRONE", "PU_BEEDRONE"}
+{"AR_BEEDRONE", "PU_BEEDRONE"},
+{"AR_STEELTYRANT", "PU_STEELTYRANT"}
 };
 
 script "pickups_displayMessage" (int type, int which)
 {
+    LocalAmbientSound(pickupTypes[type][3], 128);
 	FadeTo(pickupColors[type][0], pickupColors[type][1], pickupColors[type][2], 0.8, 0.0);
 	SetHudSize(1280, 960, 0);
 	SetFont(pickupTypes[type][1]);

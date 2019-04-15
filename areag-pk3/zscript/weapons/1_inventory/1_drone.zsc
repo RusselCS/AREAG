@@ -236,7 +236,6 @@ class DronePickup : BasicInventory
     Default
     {
         inventory.pickupmessage "";
-        inventory.pickupsound "upgrade/treasure";
         +INVENTORY.AUTOACTIVATE;
         +FLOATBOB;
         +NOGRAVITY;

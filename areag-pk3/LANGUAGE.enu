@@ -26,6 +26,9 @@ PU_SPIDERDRONE = "Use to deploy spider drone\nNavigate small spaces";
 AR_BEEDRONE = "BEE DRONE";
 PU_BEEDRONE = "Use to deploy bee drone\nNavigate small spaces\nJump in air to fly";
 
+AR_STEELTYRANT = "STEEL TYRANT";
+PU_STEELTYRANT = "Whip Damage Increased\nWhip attacks knock enemies back.";
+
 // TABLETS
 
 TESTMAP_TABLET_0 = "This is a puzzle tablet. Read the other using nova pack.";

@@ -1,3 +1,10 @@
+const SUB_KNIFE = 0;
+const SUB_DYNAMITE = 1;
+
+const HEALTH_MAX = -1;
+
+const MAP_TABLET_WRAP = 100;
+
 enum PickupTypes {
 	PICKTYPE_ARTIFICE,
 	PICKTYPE_WEAPON,
@@ -14,7 +21,8 @@ enum UpgradeTypes {
 	PICKMSG_NOVAPACK,
 
 	PICKMSG_SPIDERDRONE,
-	PICKMSG_BEEDRONE
+	PICKMSG_BEEDRONE,
+	PICKMSG_STEELWHIP
 }
 
 class Once : Inventory

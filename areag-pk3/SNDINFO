@@ -55,9 +55,10 @@ weapon/dynamiteexplode1 DYNEXPL1 // LA-MULANA
 weapon/tyrantswing TYNTSWIN // King of Fighters 2002
 weapon/tyrantcrack TYNTCRAK // SNK vs Capcom: SVC Chaos
 weapon/tyrantsmack TYNTSMAK // Garou: Mark of the Wolves
+weapon/tyrantwall TYNTWALL // Magi: Labyrinth of Magic
 
 weapon/capitalswing	CAPPSWIN // Dengeki Bunko: Fighting Climax
-weapon/capitalcrack	CAPPCRAK // King of Fighters XIV
+weapon/capitalcrack	CAPPCRAK // THE KING OF FIGHTERS XIV
 $random weapon/capitalsmack // Dengeki Bunko: Fighting Climax
 { weapon/capitalsmack1 weapon/capitalsmack2 }
 weapon/capitalsmack1 CAPPSMAK
@@ -72,6 +73,7 @@ ammo/pickup AMMO // LA-MULANA
 upgrade/artifice PKARTIFI // Dengeki Bunko: Fighting Climax
 upgrade/offense  PKOFFENS // Dengeki Bunko: Fighting Climax
 upgrade/treasure PKTREASU // Dengeki Bunko: Fighting Climax
+upgrade/weapon   PKWEAPON // THE KING OF FIGHTERS XIV
 
 footstep/stone FTSTONE1 // Mega Man ZX
 $pitchshift footstep/stone 7 

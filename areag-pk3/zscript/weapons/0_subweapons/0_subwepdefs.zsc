@@ -3,7 +3,6 @@ class SubWeaponPickup : CustomInventory
 	Default
 	{
 		inventory.pickupmessage "";
-		inventory.pickupsound "upgrade/offense";
 		+INVENTORY.AUTOACTIVATE;
 		+FLOATBOB;
 		+NOGRAVITY;
