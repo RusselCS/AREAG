@@ -78,10 +78,7 @@ class ZSCChainWhip : AREAGProtoWeapon
 		WHP2 A 0 A_AREAGLowerSub();
 	MainLower:
 		WHP2 AABCD 1;
-	Hold:
-		TNT1 A 1;
-		TNT1 A 0 A_AREAGRefire();
-		goto MainRelease;
+        goto Hold;
 	MainRelease:
 		CWPL A 0 A_PlaySound("weapon/tyrantswing", CHAN_WEAPON);
 		TNT1 A 0 A_SwingWhip();

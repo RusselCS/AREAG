@@ -42,10 +42,7 @@ class ZSCAdventureWhip : AREAGProtoWeapon
 		WHP1 A 0 A_AREAGLowerSub();
 	MainLower:
 		WHP1 AABCD 1;
-	Hold:
-		TNT1 A 1;
-		TNT1 A 0 A_AREAGRefire();
-		goto MainRelease;
+        goto Hold;
 	MainRelease:
 		WHPL A 0 A_PlaySound("weapon/whipswing", CHAN_WEAPON);
 		TNT1 A 0 A_SwingWhip();

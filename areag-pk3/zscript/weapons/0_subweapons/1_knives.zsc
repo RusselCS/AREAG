@@ -44,7 +44,7 @@ extend class AREAGProtoWeapon {
             HBMA A 0 A_FireProjectile("ThrowKnife");
             HBMA ABCDE 1;
 			TNT1 A 6;
-		goto FireEnd;
+		    goto AltFireEnd;
 		KnifeLower:
             SKHD ABCD 1;
             goto Flash;

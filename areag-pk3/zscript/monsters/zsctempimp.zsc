@@ -10,7 +10,11 @@ class ZSCDoomImp : DoomImp replaces DoomImp
 			A_SpawnItemEx("KnockBackTrail", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERSPRITEFRAME);
 			A_ChangeVelocity(cos(ang)*90, sin(ang)*90, 0, CVF_REPLACE);
 			kbTime = 2;
-		}
+		} else if(mod == "TribalShield") {
+            A_SpawnItemEx("KnockBackTrail", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERSPRITEFRAME);
+			A_ChangeVelocity(cos(ang)*90, sin(ang)*90, 0, CVF_REPLACE);
+			kbTime = 4;
+        }
 
 		return super.DamageMobj(inflictor, source, damage, mod, flags, angle);
 	}

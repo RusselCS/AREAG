@@ -48,7 +48,7 @@ extend class AREAGProtoWeapon {
             HBMA A 0 A_FireProjectile("DynamiteProjectile", 0, 0, 0, 0);
             HBMA ABCDE 1;
             TNT1 A 6;
-            goto FireEnd;
+            goto AltFireEnd;
         DynamiteLower:
             SDHD ABCD 1;
             goto Flash;

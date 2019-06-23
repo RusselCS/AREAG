@@ -29,6 +29,9 @@ PU_BEEDRONE = "Use to deploy bee drone\nNavigate small spaces\nJump in air to fl
 AR_STEELTYRANT = "STEEL TYRANT";
 PU_STEELTYRANT = "Whip Damage Increased\nWhip attacks knock enemies back.";
 
+AR_TRIBALSHIELD = "TRIBAL SHIELD";
+PU_TRIBALSHIELD = "Knock Close by targets away.\nHold to defend attacks from the front.";
+
 // TABLETS
 
 TESTMAP_TABLET_0 = "This is a puzzle tablet. Read the other using nova pack.";
