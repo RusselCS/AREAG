@@ -6,6 +6,7 @@ class SubWeaponPickup : CustomInventory
 		+INVENTORY.AUTOACTIVATE;
 		+FLOATBOB;
 		+NOGRAVITY;
+        +RELATIVETOFLOOR;
 		Height 64;
 		Scale 2.5;
 	}

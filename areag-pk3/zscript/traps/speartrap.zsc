@@ -1,0 +1,145 @@
+class SpearTrap : Actor
+{
+    Default
+    {
+        //$Category AREAG-Traps
+        //$Title Spear Trap
+        //$Sprite E0WBA0
+        //$NotAngled
+        height 1;
+        radius 7;
+        +SOLID;
+    }
+
+    static int altAngle(int input) {
+        if(input % 2 == 0) {
+            return -input;
+        }
+        return input;
+    }
+
+    static const String[] steps = {
+        "AREAGPlayer"
+    };
+
+    double dTrapMaxHeight;
+    int iTimeToRaise;
+    int iTimeToLower;
+    int iTrapState;
+    int iHoldTime;
+
+    Actor spearSprite;
+    Actor spearDamager;
+
+
+    override void postBeginPlay() {
+        super.postBeginPlay();
+
+        bool success;
+
+        [success, spearSprite] = A_SpawnItemEx("SpearTrapTip", 0, 0, 0, 0, 0, 0, 0, SXF_SETTRACER);
+        [success, spearDamager] = A_SpawnItemEx("SpearTrapDamager", 0, 0, 0, 0, 0, 0, 0, SXF_SETTRACER);
+        dTrapMaxHeight = 96.0;
+        iTrapState = 0;
+        iTimeToRaise = 3;
+        iTimeToLower = 20;
+        int iTimeToRaise;
+    }
+
+    override void Tick() {
+        super.Tick();
+
+        double fCheckRadius = 48.0;
+        double fTrapRadius = 32.0;
+
+        switch(iTrapState) {
+            case 0: // Awaiting a target.
+                bool bSwitchState = false;
+
+                for(int i = 0; i < SpearTrap.steps.Size(); i++) {
+                    if(CheckProximity(SpearTrap.steps[i], fCheckRadius, 1, CPXF_NOZ|CPXF_SETTARGET)) {
+                        bSwitchState = bSwitchState || (abs(target.pos.z - pos.z) < 32.0 && AREAG_Func.collidingBoxes(target, self, target.radius+fTrapRadius));
+                    }
+                }
+
+                if(bSwitchState) {
+                    iTrapState++;
+                    iHoldTime = 1;
+                }
+                break;
+            case 1: // Raising.
+                if(iHoldTime > 0) {
+                    iHoldTime = 0;
+                    A_PlaySound("trap/spearlaunch", CHAN_VOICE);
+                }
+                if(height < dTrapMaxHeight) {
+                    height = min(height + dTrapMaxHeight/iTimeToRaise, dTrapMaxHeight);
+                    spearDamager.A_Explode(4, 32, 0, 0, 32);
+                } else {
+                    iTrapState++;
+                    iHoldTime = 10;
+                }
+                break;
+            case 2: // Shake.
+                if(iHoldTime == 10) {
+                    A_PlaySound("trap/speartwang", CHAN_VOICE);
+                }
+                if(iHoldTime > 0) {
+                    spearSprite.A_SetRoll(altAngle(iHoldTime)/2, SPF_INTERPOLATE);
+                    iHoldTime--;
+                } else {
+                    iTrapState++;
+                    iHoldTime = 70;
+                }
+                break;
+            case 3: // Up, awaiting lower.
+                if(iHoldTime > 0) {
+                    iHoldTime--;
+                } else {
+                    iTrapState++;
+                }
+                break;
+            case 4: // Lowering.
+                if(height > 1) {
+                    height = max(height - dTrapMaxHeight/iTimeToLower, 1);
+                } else {
+                    iTrapState++;
+                    iHoldTime = 20;
+                }
+                break;
+            case 5: // Cooldown.
+                if(iHoldTime > 0) {
+                    iHoldTime--;
+                } else {
+                    iTrapState = 0;
+                }
+                break;
+        }
+
+        spearSprite.A_Warp(AAPTR_TRACER, 0, 0, height-110.0, 0, WARPF_INTERPOLATE|WARPF_NOCHECKPOSITION);
+        spearDamager.A_Warp(AAPTR_TRACER, 0, 0, height, 0, WARPF_INTERPOLATE);
+    }
+}
+
+class SpearTrapTip : BasicEffect
+{
+    Default
+    {
+        Scale 2.0;
+        +ROLLSPRITE;
+    }
+    States
+    {
+    Spawn:
+        TRAP A 1;
+        loop;
+    }
+}
+
+class SpearTrapDamager : BasicEffect
+{
+    Default
+    {
+        renderstyle "none";
+    }
+}

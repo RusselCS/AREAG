@@ -11,6 +11,10 @@ function int square(int x)
 	return x*x;
 }
 
+function int actorInSector(int tid, int tag) {
+    return ThingCountSector(T_NONE, tid, tag)>0;
+}
+
 function int angleInRange(int check, int angle, int range) {
 	if(abs(check-angle) > 0.5) {
 		if(check < angle) {

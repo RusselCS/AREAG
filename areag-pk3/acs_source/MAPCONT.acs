@@ -1,5 +1,6 @@
 #library "mapcont"
 #include "zcommon.acs"
+#nocompact
 #include "commfunc.acs"
 #include "mapfunc.acs"
 
@@ -8,6 +9,66 @@
 #define TID_MUSFADE 999
 
 // MAP CONTROLLER SCRIPTS
+
+// KEY CHECK
+script "map_checkKey" (int keyId) {
+    str key = ScriptCall("KeyBase", "getKey", keyId);
+
+    SetActivator(0, AAPTR_PLAYER1);
+    SetResultValue(CheckInventory("getKey")>0);
+}
+
+// DOORS
+script "map_door" (int tag, int top, int bottom) {
+    int fixBottom = bottom << 16;
+
+    if(GetSectorCeilingZ(tag, 0, 0) == fixBottom) {
+        int tid = ActivatorTID();
+        Radius_Quake(10, 4, 0, 5, tag);
+        Ceiling_RaiseByValue(tag, 96, 16);
+        Tagwait(tag);
+        Delay(15);
+        Ceiling_RaiseByValue(tag, 20, 64);
+        Tagwait(tag);
+        Ceiling_MoveToValue(tag, 40, top);
+        TagWait(tag);
+        Radius_Quake(5, 4, 0, 5, tag);
+        Delay(70);
+        while(actorInSector(tid, tag)) {
+            Delay(1);
+        }
+        Radius_Quake(5, 4, 0, 5, tag);
+        Ceiling_MoveToValue(tag, 32, bottom);
+
+        bool movingUp = false;
+
+        int oldHeight = GetSectorCeilingZ(tag, 0, 0);
+
+        while(GetSectorCeilingZ(tag, 0, 0) > fixBottom) {
+            oldHeight = GetSectorCeilingZ(tag, 0, 0);
+            delay(1);
+
+            if(oldHeight == GetSectorCeilingZ(tag, 0, 0)) {
+                // TO DO: Push player out
+            }
+
+            if(actorInSector(tid, tag)) {
+                if(!movingUp) {
+                    movingUp = true;
+                    Ceiling_Stop(tag);
+                }
+            } else {
+                if(movingUp) {
+                    movingUp = false;
+                    Ceiling_Stop(tag);
+                    Delay(10);
+                    Ceiling_MoveToValue(tag, 32, bottom);
+                }
+            }
+        }
+        Radius_Quake(10, 4, 0, 5, tag);
+    }
+}
 
 // Script that actually handles map connections.
 // ARG1 - map: which arg the map abides by, as noted in the array.

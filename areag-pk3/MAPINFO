@@ -9,9 +9,16 @@ DoomEdNums
 	10563 = ZSCFloorSwitch
 	10564 = AREAGPushBlock
     10565 = AREAGPushBlockSmall
+    10566 = DoorManager
 
     20000 = JarSmall
     20001 = JarBig
+    
+    30000 = SpearTrap
+
+    31000 = RubyGateKey
+
+    31100 = KnifePouchPickup
 }
 
 episode TESTMAP

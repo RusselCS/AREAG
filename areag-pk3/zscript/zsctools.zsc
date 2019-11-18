@@ -21,9 +21,65 @@ struct AREAG_Func {
     }
 }
 
+// DEBUG FUNCTIONS
+class HitboxParticle : BasicEffect
+{
+    Default
+    {
+        +FORCEXYBILLBOARD;
+        translation "0:255=104:104";
+    }
+
+    States
+    {
+    Spawn:
+        CHWP BB 1 bright;
+        stop;
+    }
+}
+
+class HitboxActor : Actor
+{
+    override void Tick() {
+        Super.Tick();
+
+        for(int i = 0; i < radius; i++) {
+            A_SpawnItemEx("HitboxParticle", radius, i, 1);
+            A_SpawnItemEx("HitboxParticle", radius, -i, 1);
+            A_SpawnItemEx("HitboxParticle", -radius, i, 1);
+            A_SpawnItemEx("HitboxParticle", -radius, -i, 1);
+            A_SpawnItemEx("HitboxParticle", i, radius, 1);
+            A_SpawnItemEx("HitboxParticle", -i, radius, 1);
+            A_SpawnItemEx("HitboxParticle", i, -radius, 1);
+            A_SpawnItemEx("HitboxParticle", -i, -radius, 1);
+
+            A_SpawnItemEx("HitboxParticle", radius, i, height);
+            A_SpawnItemEx("HitboxParticle", radius, -i, height);
+            A_SpawnItemEx("HitboxParticle", -radius, i, height);
+            A_SpawnItemEx("HitboxParticle", -radius, -i, height);
+            A_SpawnItemEx("HitboxParticle", i, radius, height);
+            A_SpawnItemEx("HitboxParticle", -i, radius, height);
+            A_SpawnItemEx("HitboxParticle", i, -radius, height);
+            A_SpawnItemEx("HitboxParticle", -i, -radius, height);
+        }
+
+        for(int i = 0; i < height; i++) {
+            A_SpawnItemEx("HitboxParticle", radius, radius, i);
+            A_SpawnItemEx("HitboxParticle", radius, -radius, i);
+            A_SpawnItemEx("HitboxParticle", -radius, radius, i);
+            A_SpawnItemEx("HitboxParticle", -radius, -radius, i);
+        }
+    }
+}
+
 // SWITCH CRYSTALS
 class ZSCSwitchCrystal : Actor
 {
+    //$Category AREAG-Map Tools
+    //$Title Crystal Switch
+	//$Sprite E0WAD0
+    //$NotAngled
+
     bool bSwitchOn;
 
     Default
@@ -95,13 +151,42 @@ class ZSCSwitchCrystal : Actor
 // PUSH BLOCKS, FLOOR SWITCHES
 class AREAGPushBlock : Actor
 {
+    //$Category AREAG-Map Tools
+    //$Title Large Stone Block
+	//$Sprite PCBAA0
+    //$NotAngled
+
     Default
     {
         +SOLID;
         +PUSHABLE;
+        +SLIDESONWALLS;
         Height 64;
-        Radius 32;
+        Radius 30;
+        maxstepheight 0;
         Scale 2.0;
+    }
+
+    States
+    {
+    Spawn:
+        PCBA B 1;
+        loop;
+    }
+}
+
+class AREAGPushBlockSmall : AREAGPushBlock
+{
+    //$Category AREAG-Map Tools
+    //$Title Small Metal Block
+	//$Sprite PCBAA0
+    //$NotAngled
+
+    Default
+    {
+        Height 32;
+        Radius 16;
+        Scale 1.0;
     }
 
     States
@@ -112,20 +197,16 @@ class AREAGPushBlock : Actor
     }
 }
 
-class AREAGPushBlockSmall : AREAGPushBlock
-{
-    Default
-    {
-        Height 32;
-        Radius 16;
-        Scale 1.0;
-    }
-}
-
 class ZSCFloorSwitch : Actor
 {
+    //$Category AREAG-Map Tools
+    //$Title Floor Switch
+	//$Sprite E0WAB0
+    //$NotAngled
+
     static const String[] steps = {
         "AREAGPlayer",
+        "DronePlayerDummy",
         "AREAGPushBlock",
         "AREAGPushBlockSmall"
     };
@@ -139,6 +220,7 @@ class ZSCFloorSwitch : Actor
     }
 
     bool bActive;
+    bool bEndState;
     override void Tick() {
 
         super.Tick();
@@ -146,22 +228,24 @@ class ZSCFloorSwitch : Actor
 
         double fCheckRadius = radius*3;
 
-        for(int i = 0; i < ZSCFloorSwitch.steps.Size(); i++) {
-            if(CheckProximity(ZSCFloorSwitch.steps[i], fCheckRadius, 1, CPXF_NOZ|CPXF_SETTARGET)) {
-                bSwitchState = bSwitchState || (target.pos.z ~== pos.z && AREAG_Func.collidingBoxes(target, self, target.radius+self.radius));
+        if(!bEndState) {
+            for(int i = 0; i < ZSCFloorSwitch.steps.Size(); i++) {
+                if(CheckProximity(ZSCFloorSwitch.steps[i], fCheckRadius, 1, CPXF_NOZ|CPXF_SETTARGET)) {
+                    bSwitchState = bSwitchState || (target.pos.z ~== pos.z && AREAG_Func.collidingBoxes(target, self, target.radius+self.radius+self.score));
+                }
             }
-        }
 
-        if(bSwitchState != bActive) {
-            bActive = bSwitchState;
-            ACS_ExecuteAlways(args[0], 0, bActive);
+            if(bSwitchState != bActive) {
+                bActive = bSwitchState;
+                ACS_ExecuteAlways(args[0], 0, bActive, args[3], args[4]);
 
-            if(bActive) {
-                A_PlaySound("misc/switchon", CHAN_BODY, 1.0, false, ATTN_NONE);
-                SetState(ResolveState("SwitchOn"));
-            } else {
-                A_PlaySound("misc/switchoff", CHAN_BODY, 1.0, false, ATTN_NONE);
-                SetState(ResolveState("SwitchOff"));
+                if(bActive) {
+                    A_PlaySound("misc/floorswitchon", CHAN_BODY, 1.0, false, ATTN_NONE);
+                    SetState(ResolveState("SwitchOn"));
+                } else {
+                    A_PlaySound("misc/floorswitchoff", CHAN_BODY, 1.0, false, ATTN_NONE);
+                    SetState(ResolveState("SwitchOff"));
+                }
             }
         }
     }
@@ -169,6 +253,7 @@ class ZSCFloorSwitch : Actor
     override void PostBeginPlay() {
         super.PostBeginPlay();
         bActive = false;
+        bEndState = false;
         SetState(ResolveState("SwitchOff"));
     }
 
@@ -180,6 +265,113 @@ class ZSCFloorSwitch : Actor
     SwitchOff:
         SCRY A 1;
         wait;
+    }
+}
+
+// DOORS
+class DoorManager : Actor
+{
+    //$Category AREAG-Map Tools
+    //$Title Door Controller
+	//$Sprite E0WAC0
+    //$Arg0 Key Number
+    //$Arg1 Front Room ID
+    //$Arg2 Back Room ID
+    //$Arg3 Open Height
+    //$Arg4 Closed Height
+
+    Sector sDoor;
+    array<Line> doorLines;
+    int time;
+    bool bApplyDoor;
+    bool bJammedDoor;
+
+    bool voidLine(Line ln) {
+        return ln.BackSector == null;
+    }
+
+    bool hasKey(int keyId) {
+        if(keyId == 0) {
+            return true;
+        } else {
+            return CountInv(KeyBase.keys[keyId-1], AAPTR_PLAYER1);
+        }
+    }
+
+    static void applyDoor(Line ln, int id, int maxHeight, int minHeight) {
+        ln.Activation |= 1<<1;
+        ln.Activation |= 1<<10;
+        ln.Flags |= 0x00000200; // ELineFlags.ML_REPEAT_SPECIAL;
+
+        ln.special = 226;
+        ln.args[0] = -int(Name("map_door"));
+        ln.args[1] = 0;
+        ln.args[2] = id;
+        ln.args[3] = maxHeight;
+        ln.args[4] = minHeight;
+    }
+
+    static void revokeDoor(Line ln, int id, int maxHeight, int minHeight) {
+        ln.special = 0;
+        ln.args[0] = 0;
+        ln.args[1] = 0;
+        ln.args[2] = 0;
+        ln.args[3] = 0;
+        ln.args[4] = 0;
+    }
+
+    override void PostBeginPlay() {
+        super.PostBeginPlay();
+
+        sDoor = CurSector;
+        bJammedDoor = score > 0;
+
+        time = 70;
+        bApplyDoor = !bJammedDoor;
+
+        if(args[3] == 0) {
+            args[3] = ceilingz;
+        }
+
+        if(args[4] == 0) {
+            args[4] = floorz;
+        }
+        
+        for(int i = 0; i < CurSector.Lines.size(); i++) {
+            if(voidLine(CurSector.Lines[i])) {
+                CurSector.Lines[i].Flags |= 0x00000010; // ELineFlags.ML_DONTPEGBOTTOM;
+            } else {
+                CurSector.Lines[i].Flags |= 0x00000002; // ELineFlags.ML_BLOCKMONSTERS;
+            }
+        }
+
+        Ceiling_MoveToValue(tid, 96, args[4]);
+    }
+
+    override void Tick() {
+        super.Tick();
+
+        if(hasKey(args[0]) && !bJammedDoor) {
+            if(bApplyDoor)
+            {
+                bApplyDoor = false;
+                for(int i = 0; i < CurSector.Lines.size(); i++) {
+                    if(!voidLine(CurSector.Lines[i])) {
+                        applyDoor(CurSector.Lines[i], tid, args[3], args[4]);
+                    }
+                }
+            }
+        } else if(!hasKey(args[0]) || bJammedDoor) {
+            if(!bApplyDoor)
+            {
+                bApplyDoor = true;
+                for(int i = 0; i < CurSector.Lines.size(); i++) {
+                    if(!voidLine(CurSector.Lines[i])) {
+                        revokeDoor(CurSector.Lines[i], tid, args[3], args[4]);
+                    }
+                }
+            }
+        }
     }
 }
 

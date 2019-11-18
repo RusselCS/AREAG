@@ -1,0 +1,4 @@
+:Floor
+	playrepeat	seq/floormove
+	stopsound	seq/floorstop
+end

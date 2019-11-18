@@ -1,6 +1,9 @@
 ACTOR JarSmall : ZSCStoneBody
 {
-//$Category Props-TheAdventure
+    //$Category AREAG-Map Tools
+    //$Title Small Jar
+	//$Sprite JAR1A0
+    //$NotAngled
 	Health 3
 	scale 2.5
 	radius 14
@@ -24,7 +27,10 @@ ACTOR JarSmall : ZSCStoneBody
 
 ACTOR JarBig : JarSmall
 {
-	//$Category Props-TheAdventure
+    //$Category AREAG-Map Tools
+    //$Title Large Jar
+	//$Sprite JAR2A0
+    //$NotAngled
 	radius 18
 	height 36
 	states

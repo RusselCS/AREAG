@@ -97,3 +97,11 @@ misc/TabletSkip TABLESKI // Mega Man Star Force 2
 
 misc/switchoff SCRYOFF // Mega Man Star Force
 misc/switchon SCRYON // Mega Man Star Force
+misc/floorswitchoff FLORSWOF // Rayman 2: The Great Escape
+misc/floorswitchon FLORSWON // Rayman 2: The Great Escape
+
+seq/floormove FLMOVE // Rayman 2: The Great Escape
+seq/floorstop FLSTOP // Rayman 2: The Great Escape
+
+trap/spearlaunch STLAUNCH // Rayman 2: The Great Escape
+trap/speartwang STTWANG // Rayman 2: The Great Escape

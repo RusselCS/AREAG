@@ -14,11 +14,15 @@
 #include "zscript/weapons/2_mainweapons/2_steeltyrant.zsc"
 #include "zscript/weapons/2_mainweapons/4_tribalshield.zsc"
 
+#include "zscript/treasures/keys.zsc"
+
 #include "zscript/player/__protoplayer.zsc"
 #include "zscript/player/0_playerbase.zsc"
 #include "zscript/player/1_playermove.zsc"
 #include "zscript/player/2_playerhealth.zsc"
 #include "zscript/player/3_playerstatus.zsc"
+
+#include "zscript/traps/speartrap.zsc"
 
 class LevelFreezeOn : Actor
 {

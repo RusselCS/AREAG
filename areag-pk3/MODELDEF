@@ -1,0 +1,9 @@
+Model AREAGPushBlock
+{
+   Path "models"
+   Model 0 "ROCKCUBE.obj"
+   Scale 1.0 1.0 1.0
+   Offset -16.0 16.0 0.0
+
+   FrameIndex PCBA B 0 0
+}

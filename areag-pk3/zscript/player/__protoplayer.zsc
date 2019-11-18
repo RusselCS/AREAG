@@ -70,7 +70,7 @@ class AREAGProtoPlayer : PlayerPawn {
     // -----------------------------------------------------
 
     // [Russ] This method is a near direct port from GZDoom.pk3.
-    // There's only a few additional lines added to the bottom for 
+    // There's only a few additional lines added to the bottom for drone jump sounds.
     override void CheckJump() {
         let player = self.player;
 		// [RH] check for jump
