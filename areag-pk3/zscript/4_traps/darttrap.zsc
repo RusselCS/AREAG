@@ -1,0 +1,7 @@
+class DartTrap : Actor
+{
+    //$Category AREAG-Traps
+    //$Title Dart Trap
+    //$Sprite E0WBA0 -- INCORRECT. FIX LATER.
+    //$NotAngled
+}

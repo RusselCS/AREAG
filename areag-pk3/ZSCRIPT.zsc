@@ -1,28 +1,31 @@
 #include "zscript/zsctools.zsc"
 #include "zscript/zscbasicactors.zsc"
 
-#include "zscript/monsters/zsctempimp.zsc"
+#include "zscript/0_player/__protoplayer.zsc"
+#include "zscript/0_player/0_playerbase.zsc"
+#include "zscript/0_player/1_playermove.zsc"
+#include "zscript/0_player/2_playerhealth.zsc"
+#include "zscript/0_player/3_playerstatus.zsc"
 
-#include "zscript/weapons/0_prototype.zsc"
+#include "zscript/1_weapons/0_prototype.zsc"
+#include "zscript/1_weapons/0_subweapons/1_knives.zsc"
+#include "zscript/1_weapons/0_subweapons/2_dynamite.zsc"
+#include "zscript/1_weapons/1_inventory/1_drone.zsc"
+#include "zscript/1_weapons/2_mainweapons/1_whip.zsc"
+#include "zscript/1_weapons/2_mainweapons/2_steeltyrant.zsc"
+#include "zscript/1_weapons/2_mainweapons/4_tribalshield.zsc"
 
-#include "zscript/weapons/0_subweapons/1_knives.zsc"
-#include "zscript/weapons/0_subweapons/2_dynamite.zsc"
+#include "zscript/2_treasures/keys.zsc"
 
-#include "zscript/weapons/1_inventory/1_drone.zsc"
+#include "zscript/3_artifice/boots.zsc"
 
-#include "zscript/weapons/2_mainweapons/1_whip.zsc"
-#include "zscript/weapons/2_mainweapons/2_steeltyrant.zsc"
-#include "zscript/weapons/2_mainweapons/4_tribalshield.zsc"
+#include "zscript/4_traps/speartrap.zsc"
+#include "zscript/4_traps/darttrap.zsc"
+#include "zscript/4_traps/lasertrap.zsc"
 
-#include "zscript/treasures/keys.zsc"
-
-#include "zscript/player/__protoplayer.zsc"
-#include "zscript/player/0_playerbase.zsc"
-#include "zscript/player/1_playermove.zsc"
-#include "zscript/player/2_playerhealth.zsc"
-#include "zscript/player/3_playerstatus.zsc"
-
-#include "zscript/traps/speartrap.zsc"
+#include "zscript/5_monsters/0_basicenemy.zsc"
+#include "zscript/5_monsters/1_golem.zsc"
+#include "zscript/5_monsters/zsctempimp.zsc"
 
 class LevelFreezeOn : Actor
 {

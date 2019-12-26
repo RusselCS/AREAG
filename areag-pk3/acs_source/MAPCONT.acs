@@ -74,10 +74,17 @@ script "map_door" (int tag, int top, int bottom) {
 // ARG1 - map: which arg the map abides by, as noted in the array.
 // ARG2 - door: which player spawn the player is intended to spawn, as noted by the value in its first special argument.
 
-script "map_switchto" (int map, int door, int noSound)
+script "map_switchto" (int ogmap, int door, int noSound)
 {
 	SetPlayerProperty(true, true, PROP_INVULNERABILITY);
 	SetPlayerProperty(true, true, PROP_TOTALLYFROZEN);
+
+	int map = findMapRoute(ogmap);
+
+	if(map == -1) {
+		PrintBold(s:"\cgMAP ", i:ogmap, s:" NOT FOUND! \cdMAP MAY BE IN DEVELOPMENT. PLEASE TRY AGAIN LATER.");
+		terminate;
+	}
 	
 	// Map transition stuff
 	int baseVal = 640.0;

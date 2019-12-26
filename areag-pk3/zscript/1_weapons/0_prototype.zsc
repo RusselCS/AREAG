@@ -1,7 +1,7 @@
 // The root of it all. Contains the essential features that get wrapped into all other weapons.
 
-#include "zscript/weapons/0_subweapons/0_subwepdefs.zsc"
-#include "zscript/weapons/1_inventory/0_invdefs.zsc"
+#include "zscript/1_weapons/0_subweapons/0_subwepdefs.zsc"
+#include "zscript/1_weapons/1_inventory/0_invdefs.zsc"
 
 class AREAGProtoWeapon : Weapon {
 

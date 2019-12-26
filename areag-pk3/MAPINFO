@@ -10,13 +10,17 @@ DoomEdNums
 	10564 = AREAGPushBlock
     10565 = AREAGPushBlockSmall
     10566 = DoorManager
+    10567 = AreaGate
 
     20000 = JarSmall
     20001 = JarBig
     
     30000 = SpearTrap
+    30002 = LaserTrap
 
-    31000 = RubyGateKey
+    30100 = StoneGolem
+
+    31000 = RubyKeyPickup
 
     31100 = KnifePouchPickup
 }

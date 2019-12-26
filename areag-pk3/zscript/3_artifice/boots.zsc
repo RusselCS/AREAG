@@ -1,0 +1,153 @@
+enum BootDashes {
+    DASH_WATER = 15,
+    DASH_SPEED = 20
+};
+
+class GearGreavesPickup : BasicInventory
+{
+    Default
+    {
+        BasicInventory.PickupType PICKTYPE_ARTIFICE;
+        BasicInventory.PickupID PICKMSG_GEAR;
+        BasicInventory.CheckItem "GearGreavesSpeed";
+	    Scale 2.5;
+    }
+	States
+	{
+	Spawn:
+		BOOT G 1;
+		loop;
+    PickupEffect:
+		TNT1 A 0 A_GiveInventory("GearGreavesSpeed", 1);
+		TNT1 A 0 A_GiveInventory("BaseMoveSpeed", 25);
+		stop;
+	}
+}
+
+class GearGreavesSpeed : Once {}
+
+class PressFrames : Powerup
+{
+    Default
+    {
+        powerup.duration 20;
+    }
+}
+
+class PressedLeft : PressFrames {}
+class PressedRight : PressFrames {}
+class PressedForward : PressFrames {}
+class PressedBack : PressFrames {}
+
+class DashHUD : Powerup
+{
+    Default
+    {
+        powerup.duration 25;
+    }
+}
+
+class DashCooldown : Powerup
+{
+    Default
+    {
+        powerup.duration 50;
+    }
+}
+
+class AirDashCooldown : DashCooldown {}
+
+class DashForward : Custominventory
+{
+    Default
+    {
+	    +INVENTORY.AUTOACTIVATE;
+    }
+	States
+	{
+	Use:
+		TNT1 A 0 A_JumpIfInventory("OnGround", 1, "Ground");
+		goto Air;
+	Ground:
+		TNT1 A 0 A_GiveInventory("DashCooldown", 1);
+		goto DashStart;
+	Air:
+		TNT1 A 0 A_GiveInventory("AirDashCooldown", 1);
+		goto DashStart;
+	DashStart:
+		TNT1 A 0 A_PlaySoundEx("player/stepdash", "SoundSlot7");
+		TNT1 A 0 A_GiveInventory("DashHUD", 1);
+		TNT1 A 0 A_JumpIfInventory("LegsUnderwater", 1, "WaterDash");
+		TNT1 A 0 A_ChangeVelocity(momx, momy, (momz>0)*momz, CVF_REPLACE);
+		TNT1 A 0 A_JumpIf(true, "Dash");
+		goto Dash;
+	Dash:
+		TNT1 A 0 A_ChangeVelocity(DASH_SPEED, 0, 0, CVF_RELATIVE);
+		stop;
+	WaterDash:
+		TNT1 A 0 A_ChangeVelocity(DASH_WATER, 0 ,0, CVF_RELATIVE);
+		stop;
+	}
+}
+
+class DashBackward : DashForward
+{
+	States
+	{
+	Dash:
+		TNT1 A 0 A_ChangeVelocity(-DASH_SPEED, 0 ,0, CVF_RELATIVE);
+		stop;
+	WaterDash:
+		TNT1 A 0 A_ChangeVelocity(-DASH_WATER, 0 ,0, CVF_RELATIVE);
+		stop;
+	}
+}
+
+class DashRight : DashForward
+{
+	States
+	{
+	Dash:
+		TNT1 A 0 A_ChangeVelocity(0, -DASH_SPEED, 0, CVF_RELATIVE);
+		stop;
+	WaterDash:
+		TNT1 A 0 A_ChangeVelocity(0, -DASH_WATER, 0, CVF_RELATIVE);
+		stop;
+	}
+}
+
+class DashLeft : DashForward
+{
+	States
+	{
+	Dash:
+		TNT1 A 0 A_ChangeVelocity(0, DASH_SPEED, 0, CVF_RELATIVE);
+		stop;
+	WaterDash:
+		TNT1 A 0 A_ChangeVelocity(0, DASH_WATER, 0, CVF_RELATIVE);
+		stop;
+	}
+}
+
+class SteamGreavesPickup : GearGreavesPickup
+{
+    Default
+    {
+        BasicInventory.PickupType PICKTYPE_ARTIFICE;
+        BasicInventory.PickupID PICKMSG_STEAM;
+        BasicInventory.CheckItem "SteamGreavesFlag";
+	    Scale 2.5;
+    }
+	States
+	{
+	Spawn:
+		BOOT H 1;
+		loop;
+	PickupEffect:
+		TNT1 A 0 A_GiveInventory("SteamGreavesFlag", 1);
+		TNT1 A 0 A_GiveInventory("BaseJumpSpeed", 250);
+		stop;
+	}
+}
+
+class SteamGreavesFlag : Once {}

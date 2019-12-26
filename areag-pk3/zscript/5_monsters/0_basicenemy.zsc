@@ -1,0 +1,212 @@
+class BasicEnemy : Actor
+{
+    Default
+    {
+        MONSTER;
+        +FLOORCLIP;
+        +SLIDESONWALLS;
+        height 10;
+        renderstyle "translucent";
+        alpha 1.0;
+    }
+
+    int iTrueHeight;
+    property TrueHeight: iTrueHeight;
+    
+    int kbTime;
+    bool bInDeathSequence;
+    int iDamageTick;
+
+    override void PostBeginPlay() {
+        super.PostBeginPlay();
+        iDamageTick = 0;
+
+        if(score > 0) {
+            scale = scale * 0.5;
+            SetState(ResolveState("TestSpawn"));
+            bINVULNERABLE = true;
+            bSHOOTABLE = false;
+            bNOBLOOD = true;
+        } else {
+            height = iTrueHeight;
+        }
+
+        init();
+    }
+
+    virtual void init() {}
+
+	override int DamageMobj(Actor inflictor, Actor source, int damage, Name mod, int flags, double angle) {
+
+		int ang = inflictor.angle % 360;
+
+        A_PlaySound("*pain", CHAN_VOICE);
+        iDamageTick = 18;
+
+		if(mod == "SteelWhip" || mod == "LaserWhip") {
+			A_SpawnItemEx("KnockBackTrail", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERSPRITEFRAME);
+			A_ChangeVelocity(cos(ang)*90, sin(ang)*90, 0, CVF_REPLACE);
+			kbTime = 2;
+		} else if(mod == "TribalShield") {
+            A_SpawnItemEx("KnockBackTrail", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERSPRITEFRAME);
+			A_ChangeVelocity(cos(ang)*90, sin(ang)*90, 0, CVF_REPLACE);
+			kbTime = 4;
+        }
+
+		return super.DamageMobj(inflictor, source, damage, mod, flags, angle);
+	}
+
+	override void Tick() {
+		super.Tick();
+		tick_KnockBack();
+        tick_DeathSequence();
+        tick_DamageFlash();
+        
+        monsterTick();
+	}
+
+    virtual void monsterTick() {}
+
+    void tick_KnockBack() {
+        if(kbTime > 0) {
+			kbTime--;
+			if(kbTime == 0) {
+				A_ScaleVelocity(0.1);
+			} else {
+				A_SpawnItemEx("KnockBackTrail", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERSPRITEFRAME);
+			}
+		}
+    }
+
+    void tick_DamageFlash() {
+        if(health > 0) {
+            int div = 3;
+            if(iDamageTick > 0 && iDamageTick % div == 0) {
+                
+            } else if(iDamageTick == 0) {
+                
+            }
+            iDamageTick--;
+        }
+    }
+
+    action void A_DeathSequence() {
+        invoker.bInDeathSequence = true;
+    }
+
+    void tick_DeathSequence() {
+        if(bInDeathSequence) {
+            A_SpawnItemEx("EnemyDeathSmoke", frandom(-radius, radius), frandom(-radius, radius), frandom(0, iTrueHeight));
+            A_FadeOut(0.03);
+        }
+    }
+
+    States
+    {
+    Spawn:
+        TNT1 A 0;
+        stop;
+    TestSpawn:
+        "----" "#" 1;
+        loop;
+    }
+}
+
+class EnemyDeathSmoke : BasicEffect
+{
+    Default
+    {
+        +FORCEXYBILLBOARD;
+    }
+    States
+    {
+    Spawn:
+        EDT0 ABCDEFG 1;
+        stop;
+    }
+}
+
+class BasicTrackingPoint : Actor
+{
+    Default
+    {
+        +NOINTERACTION;
+        +NOGRAVITY;
+        +VULNERABLE;
+        health 1;
+        renderstyle "none";
+    }
+
+    States
+    {
+    Spawn:
+        PLAY A 1;
+        loop;
+    Death:
+        TNT1 A 1;
+        stop;
+    }
+}
+
+class DamageFlashEffect : BasicEffect
+{
+    Default
+    {
+        renderstyle "AddStencil";
+    }
+
+    States
+    {
+    Spawn:
+        "----" "#" 4;
+        stop;
+    }
+}
+
+class DamageFlashEffect1 : DamageFlashEffect
+{
+    Default
+    {
+        StencilColor "99 00 FF";
+    }
+}
+
+class DamageFlashEffect2 : DamageFlashEffect
+{
+    Default
+    {
+        StencilColor "FF 00 00";
+    }
+}
+
+class DamageFlashEffect3 : DamageFlashEffect
+{
+    Default
+    {
+        StencilColor "FF 99 00";
+    }
+}
+
+class DamageFlashEffect4 : DamageFlashEffect
+{
+    Default
+    {
+        StencilColor "FF FF 00";
+    }
+}
+
+class DamageFlashEffect5 : DamageFlashEffect
+{
+    Default
+    {
+        StencilColor "00 FF 00";
+    }
+}
+
+class DamageFlashEffect6 : DamageFlashEffect
+{
+    Default
+    {
+        StencilColor "00 00 FF";
+    }
+}

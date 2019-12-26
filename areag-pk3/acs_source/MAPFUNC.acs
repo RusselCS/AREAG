@@ -13,13 +13,60 @@
 // 3 - Map Name texture
 // 4 - Map's language name
 
-#define MAX_MAPS 2
+#define MAX_MAPS 14
 #define MAX_IMAGES 10
 
 str mapList[MAX_MAPS][5] = {
+	{ 0, "ADV00", "Outskirts", "", "ADV00"}, // OUTSKIRTS
+	{ 1, "ADV01", "Grand Gateway", "", "ADV01"}, // GRAND GATEWAY
+	{ 2, "ADV02", "LOST IMPACT", "", "ADV02"}, // LOST IMPACT
+	{ 3, "ADV03", "ECLIPSE ENGINE", "", "ADV03"}, // ECLIPSE ENGINE
+	{ 4, "ADV04", "QUEEN'S STUDY", "", "ADV04"}, // QUEEN'S STUDY
+	{ 5, "ADV05", "TOWER OF THIRST", "", "ADV05"}, // TOWER OF THIRST
+	{ 6, "ADV06", "KING'S DUNGEON", "", "ADV06"}, // KING'S DUNGEON
+	{ 7, "ADV07", "ECLIPSE ENGINE", "", "ADV07"}, // ECLIPSE ENGINE
+	{ 8, "ADV08", "REALM OF SHADOWS", "", "ADV08"}, // REALM OF SHADOWS
+	{ 9, "ADV09", "TEMPORAL TOWER", "", "ADV09"}, // TEMPORAL TOWER
+	{10, "ADV10", "THRONE ROOM", "", "ADV10"}, // THRONE ROOM
+	{11, "ADV11", "BLACK MARKET", "", "ADV11"}, // BLACK MARKET
+	
+
 	{100, "TESTMAP", "Beyond Valley", "", "TESTMAP"},
 	{101, "TESTMAP2", "Valley Coliseum", "", "TESTMAP2"}
 };
+
+int mapRoutes[MAX_MAPS+1][2] = {
+	{ 0,  0}, // OUTSKIRTS
+	{ 1,  1}, // GRAND GATEWAY
+	{ 2, -1}, // LOST IMPACT
+	{ 3, -1}, // ECLIPSE ENGINE
+	{ 4, -1}, // QUEEN'S STUDY
+	{ 5, -1}, // TOWER OF THIRST
+	{ 6, -1}, // KING'S DUNGEON
+	{ 7, -1}, // ECLIPSE ENGINE
+	{ 8, -1}, // REALM OF SHADOWS
+	{ 9, -1}, // TEMPORAL TOWER
+	{10, -1}, // THRONE ROOM
+	{11, -1}, // BLACK MARKET
+
+
+
+	{100, 100}, // TESTMAP1 - Outer Valley
+	{101, 101}, // TESTMAP2 - Valley Coliseum
+	{-1, -1} // NOT FOUND
+};
+
+function int findMapRoute(int mapNum) {
+	int ret = 0;
+
+	for(int i = 0; i < MAX_MAPS; i++) {
+		if(mapRoutes[i][0]==mapNum) {
+			return mapRoutes[i][1];
+		}
+	}
+
+	return -1;
+}
 
 str imageList[MAX_MAPS][MAX_IMAGES] = {
 	{"TBTM_01", "TBTM_02"}

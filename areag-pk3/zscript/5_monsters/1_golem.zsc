@@ -1,0 +1,185 @@
+// PLACEHOLDER SPRITES:
+// EARTH ELEMENTAL FROM MIGHT & MAGIC 7
+// SPECIFIC RIPS OBTAINED FROM ARMAGEDDON 2
+//
+class StoneGolem : BasicEnemy
+{
+    Default
+    {
+        scale 0.6;
+        BasicEnemy.TrueHeight 80;
+        Radius 48;
+        Health 800;
+        mass 800;
+        Speed 15;
+        reactiontime 30;
+    }
+
+    override void init() {
+        iInitReactionTime = reactiontime;
+    }
+
+    Actor tracker;
+    bool startedMoving;
+    int iInitReactionTime;
+    
+    action void A_SpawnChasePoint()
+    {
+        bool attempt;
+        invoker.startedMoving = false;
+        if(invoker.tracker != null) {
+            invoker.tracker.A_Die();
+        }
+
+        int ticks = int(distance2D(target) / speed);
+        float posX = target.vel.x * ticks;
+        float posY = -target.vel.y * ticks;
+        [attempt, invoker.tracker] = target.A_SpawnItemEx("BasicTrackingPoint", posX, posY, 0, 0, 0, 0, 0, SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION);
+
+        if(distance2D(target) > distance2D(invoker.tracker)) {
+            invoker.tracker.A_Die();
+            [attempt, invoker.tracker] = target.A_SpawnItemEx("BasicTrackingPoint", 0, 0, 0, 0, 0, 0, 0, SXF_ABSOLUTEANGLE|SXF_NOCHECKPOSITION);
+        }
+        invoker.tracker.reactiontime = invoker.iInitReactionTime;
+    }
+
+    action State A_ChasePoint(double dist, StateLabel jump, double sleepDist, StateLabel sleepJump) {
+        dist += radius;
+
+        A_PrintBold(String.format("Distance2D(tracker): %d\nDistance2D(target): %d\nvel.x: %d\nvel.y: %d\ninvoker.tracker.reactiontime: %d",
+            Distance2D(invoker.tracker), Distance2D(target),
+            vel.x, vel.y,reactiontime));
+
+        if((invoker.startedMoving && vel.x ~== 0 && vel.y ~== 0) ||
+            Distance2D(invoker.tracker) < dist ||
+            Distance2D(target) < dist ||
+            invoker.tracker.reactiontime == 0) {
+            return ResolveState(jump);
+        } else {
+            if(Distance2D(invoker.tracker) > sleepDist) {
+                return ResolveState(sleepJump);
+            }
+            double ang = VectorAngle((invoker.tracker.pos.x - pos.x), (invoker.tracker.pos.y - pos.y));
+            A_SetAngle(ang);
+            A_ChangeVelocity(speed, 0, Vel.Z, CVF_RELATIVE|CVF_REPLACE);
+            invoker.startedMoving = true;
+            invoker.tracker.reactiontime--;      
+            return ResolveState(null);
+        }
+    }
+
+    States
+    {
+    Spawn:
+        EREL N 0;
+        EREL N 0 A_SetAngle(frandom(0, 360));
+        EREL N 1 ;//A_LookEx(LOF_NOSOUNDCHECK, 0, 512, 0, 360.0, "Awaken");
+        wait;
+    Awaken:
+        EREL NOPA 5 A_FaceTarget();
+    ChaseBegin:
+        EREL C 0 A_SpawnChasePoint();
+    ChaseLoop:
+        EREL A 4 A_ChasePoint(32.0, "Smash", 768.0, "Rest");
+        EREL CDEFGHIB 4 A_ChasePoint(32.0, "Smash", 768.0, "Rest"); // Stomp sound on F and B.
+        goto ChaseLoop+1;
+    Smash:
+        EREL A 0 A_ScaleVelocity(0.5);
+        EREL JKL 7;
+        EREL M 50 {
+            A_SpawnItemEx("StoneGolemCrush", 56, 0, 0);
+        }
+        EREL A 0 A_ClearTarget();
+        EREL AAAAAAA 5 A_LookEx(LOF_NOSOUNDCHECK, 0, 512, 0, 360.0, "ChaseBegin");
+        goto Rest;
+    Rest:
+        EREL A 0 A_ScaleVelocity(0.5);
+        EREL A 0 A_ClearTarget();
+        EREL AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 1 A_LookEx(LOF_NOSOUNDCHECK, 0, 512, 0, 360.0, "ChaseBegin");
+        EREL AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 1 A_LookEx(LOF_NOSOUNDCHECK, 0, 512, 0, 360.0, "ChaseBegin");
+        EREL PON 5;
+        goto Spawn;
+    Death:
+        EREL W 0 A_DeathSequence();
+        EREL AWXYZ 4;
+        ERED A 4;
+        wait;
+    }
+}
+
+class StoneGolemCrush : BasicProjectile
+{
+    Default
+    {
+        renderstyle "none";
+        +NOINTERACTION;
+        +THRUACTORS;
+    }
+
+    States
+    {
+    Spawn:
+        TNT1 A 0;
+        TNT1 A 0 A_Explode(10, 96, 0, 0, 96);
+        TNT1 A 0 A_SpawnItemEx("StoneGolemQuake");
+		TNT1 A 0 A_SpawnItemEx("StoneGolemDustLeft", 48, 0, 8, 0, 0, 0, 45, SXF_ABSOLUTEANGLE);
+		TNT1 A 0 A_SpawnItemEx("StoneGolemDustLeft", 48, 0, 8, 0, 0, 0, 90, SXF_ABSOLUTEANGLE);
+		TNT1 A 0 A_SpawnItemEx("StoneGolemDustLeft", 48, 0, 8, 0, 0, 0, 135, SXF_ABSOLUTEANGLE);
+		TNT1 A 0 A_SpawnItemEx("StoneGolemDustLeft", 48, 0, 8, 0, 0, 0, 180, SXF_ABSOLUTEANGLE);
+		TNT1 A 0 A_SpawnItemEx("StoneGolemDustLeft", 48, 0, 8, 0, 0, 0, 225, SXF_ABSOLUTEANGLE);
+		TNT1 A 0 A_SpawnItemEx("StoneGolemDustLeft", 48, 0, 8, 0, 0, 0, 270, SXF_ABSOLUTEANGLE);
+		TNT1 A 0 A_SpawnItemEx("StoneGolemDustLeft", 48, 0, 8, 0, 0, 0, 315, SXF_ABSOLUTEANGLE);
+		TNT1 A 0 A_SpawnItemEx("StoneGolemDustLeft", 48, 0, 8, 0, 0, 0, 0, SXF_ABSOLUTEANGLE);
+		
+		TNT1 A 0 A_SpawnItemEx("StoneGolemDustRight", 48, 0, 8, 0, 0, 0, 45+22.5, SXF_ABSOLUTEANGLE);
+		TNT1 A 0 A_SpawnItemEx("StoneGolemDustRight", 48, 0, 8, 0, 0, 0, 90+22.5, SXF_ABSOLUTEANGLE);
+		TNT1 A 0 A_SpawnItemEx("StoneGolemDustRight", 48, 0, 8, 0, 0, 0, 135+22.5, SXF_ABSOLUTEANGLE);
+		TNT1 A 0 A_SpawnItemEx("StoneGolemDustRight", 48, 0, 8, 0, 0, 0, 180+22.5, SXF_ABSOLUTEANGLE);
+		TNT1 A 0 A_SpawnItemEx("StoneGolemDustRight", 48, 0, 8, 0, 0, 0, 225+22.5, SXF_ABSOLUTEANGLE);
+		TNT1 A 0 A_SpawnItemEx("StoneGolemDustRight", 48, 0, 8, 0, 0, 0, 270+22.5, SXF_ABSOLUTEANGLE);
+		TNT1 A 0 A_SpawnItemEx("StoneGolemDustRight", 48, 0, 8, 0, 0, 0, 315+22.5, SXF_ABSOLUTEANGLE);
+		TNT1 A 0 A_SpawnItemEx("StoneGolemDustRight", 48, 0, 8, 0, 0, 0, 22.5, SXF_ABSOLUTEANGLE);
+        stop;
+    }
+}
+
+class StoneGolemDustLeft : BasicEffect
+{
+    Default
+    {
+        alpha 0.7;
+        -FORCEXYBILLBOARD;
+    }
+
+    action void A_DustRotate() {
+        A_ChangeVelocity(4, 0, 0, CVF_RELATIVE|CVF_REPLACE);
+        A_SetAngle(angle+12);
+    }
+
+	States
+	{
+	Spawn:
+        MDAD HHHIIIJJJ 2 A_DustRotate();
+		stop;
+	}
+}
+
+class StoneGolemDustRight : StoneGolemDustLeft
+{
+    action void A_DustRotate() {
+        A_ChangeVelocity(8, 0, 0, CVF_RELATIVE|CVF_REPLACE);
+        A_SetAngle(angle-4);
+    }
+}
+
+class StoneGolemQuake : BasicEffect
+{
+    States
+    {
+    Spawn:
+        TNT1 A 0;
+        TNT1 A 0 A_Quake(3, 10, 0, 50*64, "");
+        TNT1 A 35;
+        stop;
+    }
+}
