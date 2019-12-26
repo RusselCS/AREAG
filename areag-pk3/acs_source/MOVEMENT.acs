@@ -36,8 +36,8 @@ script "movement_enter" ENTER
 	
 	bool menuFreeze = false;
 	
-	// ACS_NamedExecuteAlways("movement_standing", 0);
-	// ACS_NamedExecuteAlways("movement_water_player", 0);
+	ACS_NamedExecuteAlways("movement_standing", 0);
+	ACS_NamedExecuteAlways("movement_water_player", 0);
 	delay(1);
 	while(GetActorProperty(0, APROP_HEALTH)>0)
 	{
@@ -257,6 +257,18 @@ script "movement_water_map" (int height)
 	}
 }
 
+script "map_waterlog" (void) NET
+{
+str num = strparam(s:"Sectors that have water: ", i:sectorSlot);
+	for(int i = 0; i < 64; i++) {
+		if(i % 8 == 0) {
+			num = StrParam(s:num, s:"\n");
+		}
+		num = StrParam(s:num, i:waterSectors[i], s:", ");
+	}
+	Log(s:num);
+}
+
 // This script only handles the inventory flags stating which version of "underwater" the player is in.
 // No additional BS is here for drowning or movement. Just toggling inventory flags and splash effects.
 script "movement_water_player" (void)
@@ -374,7 +386,7 @@ function int getPlayerWaterLevel (void)
 		selectedSector = getWaterSlot();
 	}
 	// END INDIVIDUAL WATER LEVELS
-	
+
 	
 	if(selectedSector > -1)
 	{

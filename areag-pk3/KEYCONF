@@ -2,3 +2,4 @@ ClearPlayerclasses
 AddPlayerClass "AREAGPlayer"
 
 alias StepDash "pukename movement_stepdash"
+alias printwater "pukename map_waterlog"

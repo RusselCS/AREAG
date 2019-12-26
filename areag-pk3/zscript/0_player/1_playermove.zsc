@@ -22,8 +22,6 @@ extend class ZSCPlayerPawn {
 
     void AREAGMoveInit() {
         Thing_ChangeTID(0, PlayerNumber()+1000);
-        ACS_NamedExecuteAlways("movement_standing", 0);
-	    ACS_NamedExecuteAlways("movement_water_player", 0);
         prevBobXFracMult = 0.0;
         prevBobYFracMult = 0.0;
         prevViewBob = ViewBob;
