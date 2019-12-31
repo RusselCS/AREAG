@@ -5,6 +5,17 @@ class MapUtilInit : StaticEventHandler
 
     override void NewGame() {
         addMap(new("AREAGMapData").Init(1, "ADV00", "MCRNE_00", "$NAME_ADV00", "SAVE_OUTSKIRTS"));
+        latest.addPickup("ZSCTribalShieldPickup");
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");
         addMap(new("AREAGMapData").Init(2, "ADV01", "MCRNE_01", "$NAME_ADV01", "SAVE_GATEWAY"));
         latest.addPickup("EmptyItem");
         latest.addPickup("EmptyItem");

@@ -394,6 +394,8 @@ script "map_loadGame" (int file)
 		}
 	}
 
+	delay(1);
+
 	ACS_NamedExecuteAlways("map_switchto", 100, levelNum, doorNum, true);
 	ACS_NamedExecuteAlways("map_switchto", 0, 100, 0);
 }
