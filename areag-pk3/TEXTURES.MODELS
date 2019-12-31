@@ -1,0 +1,15 @@
+Texture "SAVEOBEL", 32, 32
+{
+	XScale 0.500
+	YScale 0.500
+	WorldPanning
+	Patch "P_SAVOBX", 0, 0
+}
+
+Texture "SAVEBASE", 32, 32
+{
+	XScale 0.500
+	YScale 0.500
+	WorldPanning
+	Patch "P_SAVBAS", 0, 0
+}

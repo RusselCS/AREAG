@@ -1,0 +1,89 @@
+class AREAGMapData : Object
+{
+    private int levelNum;
+    private String code;
+    private String runeName;
+    private String langName;
+    private String cvar;
+    private Array<String> tabletImages;
+    private int route;
+    private Array<String> pickups;
+
+    AREAGMapData Init(int lnum, String cd, String rn, String ln, String cv) {
+        levelNum = lnum;
+        code = cd;
+        runeName = rn;
+        langName = ln;
+        cvar = cv;
+        route = lnum;
+        return self;
+    }
+
+    void addTabletImage(String st) {
+        tabletImages.push(st);
+    }
+
+    void clearTabletImages() {
+        tabletImages.clear();
+    }
+
+    void addPickup(String pk) {
+        pickups.push(pk);
+    }
+
+    void clearPickups() {
+        pickups.clear();
+    }
+
+    String getPickup(int id) {
+        return pickups[id];
+    }
+
+    int getLevelNum() {
+        return levelNum;
+    }
+
+    String getCode() {
+        return code;
+    }
+
+    String getRuneName() {
+        return runeName;
+    }
+
+    String getLangName() {
+        return langName;
+    }
+
+    String getTempEvent() {
+        return String.format("%s_EVENT_0", cvar);
+    }
+
+    String getTempPickup() {
+        return String.format("%s_PICKUP_0", cvar);
+    }
+
+    String getSaveEvent(int save) {
+        return String.format("%s_EVENT_%d", cvar, save);
+    }
+
+    String getSavePickup(int save) {
+        return String.format("%s_PICKUP_%d", cvar, save);
+    }
+
+    String getTabletImage(int index) {
+        if(index >= tabletImages.size()) {
+            return "";
+        } else {
+            return tabletImages[index];
+        }
+    }    
+
+    void setRoute(int rt) {
+        route = rt;
+    }
+
+    int getRoute() {
+        return route;
+    }
+}

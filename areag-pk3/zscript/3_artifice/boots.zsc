@@ -14,7 +14,7 @@ class GearGreavesPickup : BasicInventory
     }
 	States
 	{
-	Spawn:
+	SpawnFrames:
 		BOOT G 1;
 		loop;
     PickupEffect:
@@ -140,7 +140,7 @@ class SteamGreavesPickup : GearGreavesPickup
     }
 	States
 	{
-	Spawn:
+	SpawnFrames:
 		BOOT H 1;
 		loop;
 	PickupEffect:

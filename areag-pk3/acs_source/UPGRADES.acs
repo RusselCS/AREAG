@@ -40,17 +40,34 @@ str pickupInfo[MAX_UPGRADES][2] = {
 
 script "pickups_displayMessage" (int type, int which)
 {
-    LocalAmbientSound(pickupTypes[type][3], 128);
-	FadeTo(pickupColors[type][0], pickupColors[type][1], pickupColors[type][2], 0.8, 0.0);
-	SetHudSize(1280, 960, 0);
-	SetFont(pickupTypes[type][1]);
-	HudMessage(s:"A"; HUDMSG_FADEOUT, 9, CR_UNTRANSLATED, 600.4, 210.0, 3.0, 0.4);
-	SetFont(pickupTypes[type][2]);
-	HudMessage(s:"A"; HUDMSG_FADEOUT, 8, CR_UNTRANSLATED, 600.4, 210.0, 0.5, 0.8);
-	SetFont("AREAFONT");
-	HudMessage(l:pickupInfo[which][0]; HUDMSG_FADEOUT, 7, CR_UNTRANSLATED, 600.4, 200.0, 3.0, 0.4);
-	SetFont("DESCFONT");
-	HudMessage(l:pickupInfo[which][1]; HUDMSG_FADEOUT, 6, CR_UNTRANSLATED, 600.4, 265.0, 3.0, 0.4);
-	HudMessage(s:pickupTypes[type][0]; HUDMSG_FADEOUT, 5, CR_UNTRANSLATED, 600.4, 140.0, 3.0, 0.4);
-	FadeTo(pickupColors[type][0], pickupColors[type][1], pickupColors[type][2], 0.0, 0.3);
+	if(type == -1 && which == -1) {
+		type = 3;
+		LocalAmbientSound(pickupTypes[type][3], 128);
+		FadeTo(pickupColors[type][0], pickupColors[type][1], pickupColors[type][2], 0.8, 0.0);
+		SetHudSize(1280, 960, 0);
+		SetFont(pickupTypes[type][1]);
+		HudMessage(s:"A"; HUDMSG_FADEOUT, 9, CR_UNTRANSLATED, 600.4, 210.0, 3.0, 0.4);
+		SetFont(pickupTypes[type][2]);
+		HudMessage(s:"A"; HUDMSG_FADEOUT, 8, CR_UNTRANSLATED, 600.4, 210.0, 0.5, 0.8);
+		SetFont("AREAFONT");
+		HudMessage(l:"CAN YOU BELIEVE IT"; HUDMSG_FADEOUT, 7, CR_UNTRANSLATED, 600.4, 200.0, 3.0, 0.4);
+		SetFont("DESCFONT");
+		HudMessage(l:"It's fucking nothing!"; HUDMSG_FADEOUT, 6, CR_UNTRANSLATED, 600.4, 265.0, 3.0, 0.4);
+		HudMessage(s:"WOW!"; HUDMSG_FADEOUT, 5, CR_UNTRANSLATED, 600.4, 140.0, 3.0, 0.4);
+		FadeTo(pickupColors[type][0], pickupColors[type][1], pickupColors[type][2], 0.0, 0.3);
+	} else {
+		LocalAmbientSound(pickupTypes[type][3], 128);
+		FadeTo(pickupColors[type][0], pickupColors[type][1], pickupColors[type][2], 0.8, 0.0);
+		SetHudSize(1280, 960, 0);
+		SetFont(pickupTypes[type][1]);
+		HudMessage(s:"A"; HUDMSG_FADEOUT, 9, CR_UNTRANSLATED, 600.4, 210.0, 3.0, 0.4);
+		SetFont(pickupTypes[type][2]);
+		HudMessage(s:"A"; HUDMSG_FADEOUT, 8, CR_UNTRANSLATED, 600.4, 210.0, 0.5, 0.8);
+		SetFont("AREAFONT");
+		HudMessage(l:pickupInfo[which][0]; HUDMSG_FADEOUT, 7, CR_UNTRANSLATED, 600.4, 200.0, 3.0, 0.4);
+		SetFont("DESCFONT");
+		HudMessage(l:pickupInfo[which][1]; HUDMSG_FADEOUT, 6, CR_UNTRANSLATED, 600.4, 265.0, 3.0, 0.4);
+		HudMessage(s:pickupTypes[type][0]; HUDMSG_FADEOUT, 5, CR_UNTRANSLATED, 600.4, 140.0, 3.0, 0.4);
+		FadeTo(pickupColors[type][0], pickupColors[type][1], pickupColors[type][2], 0.0, 0.3);
+	}
 }

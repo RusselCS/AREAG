@@ -13,76 +13,98 @@
 // 3 - Map Name texture
 // 4 - Map's language name
 
-#define MAX_MAPS 14
+#define MAX_MAPS 11
 #define MAX_IMAGES 10
 
-str mapList[MAX_MAPS][5] = {
-	{ 0, "ADV00", "Outskirts", "", "ADV00"}, // OUTSKIRTS
-	{ 1, "ADV01", "Grand Gateway", "", "ADV01"}, // GRAND GATEWAY
-	{ 2, "ADV02", "LOST IMPACT", "", "ADV02"}, // LOST IMPACT
-	{ 3, "ADV03", "ECLIPSE ENGINE", "", "ADV03"}, // ECLIPSE ENGINE
-	{ 4, "ADV04", "QUEEN'S STUDY", "", "ADV04"}, // QUEEN'S STUDY
-	{ 5, "ADV05", "TOWER OF THIRST", "", "ADV05"}, // TOWER OF THIRST
-	{ 6, "ADV06", "KING'S DUNGEON", "", "ADV06"}, // KING'S DUNGEON
-	{ 7, "ADV07", "ECLIPSE ENGINE", "", "ADV07"}, // ECLIPSE ENGINE
-	{ 8, "ADV08", "REALM OF SHADOWS", "", "ADV08"}, // REALM OF SHADOWS
-	{ 9, "ADV09", "TEMPORAL TOWER", "", "ADV09"}, // TEMPORAL TOWER
-	{10, "ADV10", "THRONE ROOM", "", "ADV10"}, // THRONE ROOM
-	{11, "ADV11", "BLACK MARKET", "", "ADV11"}, // BLACK MARKET
-	
-
-	{100, "TESTMAP", "Beyond Valley", "", "TESTMAP"},
-	{101, "TESTMAP2", "Valley Coliseum", "", "TESTMAP2"}
-};
-
-int mapRoutes[MAX_MAPS+1][2] = {
-	{ 0,  0}, // OUTSKIRTS
-	{ 1,  1}, // GRAND GATEWAY
-	{ 2, -1}, // LOST IMPACT
-	{ 3, -1}, // ECLIPSE ENGINE
-	{ 4, -1}, // QUEEN'S STUDY
-	{ 5, -1}, // TOWER OF THIRST
-	{ 6, -1}, // KING'S DUNGEON
-	{ 7, -1}, // ECLIPSE ENGINE
-	{ 8, -1}, // REALM OF SHADOWS
-	{ 9, -1}, // TEMPORAL TOWER
-	{10, -1}, // THRONE ROOM
-	{11, -1}, // BLACK MARKET
-
-
-
-	{100, 100}, // TESTMAP1 - Outer Valley
-	{101, 101}, // TESTMAP2 - Valley Coliseum
-	{-1, -1} // NOT FOUND
-};
+global int 50: global_saveId;
 
 function int findMapRoute(int mapNum) {
-	int ret = 0;
-
-	for(int i = 0; i < MAX_MAPS; i++) {
-		if(mapRoutes[i][0]==mapNum) {
-			return mapRoutes[i][1];
-		}
-	}
-
-	return -1;
+	return ScriptCall("MapDataRepo", "getMapByRoute", mapNum);
 }
 
-str imageList[MAX_MAPS][MAX_IMAGES] = {
-	{"TBTM_01", "TBTM_02"}
-};
+#define STR_EVENT "EVENT"
+#define STR_PICKUP "PICKUP"
 
 function int getMapByLevelNum(int levelNum)
 {
-	for(int i = 0; i < MAX_MAPS; i++)
-	{
-		if(mapList[i][MAPPROP_LEVELNUM] == levelNum)
-		{
-			return i;
-		}
-	}
-	return -1;
+	return ScriptCall("MapDataRepo", "getMapByLevelNum", levelNum);
 }
+
+function str getMapCode(int mapIndex)
+{
+	return ScriptCall("MapDataRepo", "getCode", mapIndex);
+}
+
+function str getTabletImage(int mapIndex, int tabletIndex)
+{
+	return ScriptCall("MapDataRepo", "getTabletImage", mapIndex, tabletIndex);
+}
+
+function int getSaveEvent(int levelNum, int evt)
+{
+	return ScriptCall("MapDataRepo", "getTempEventByLevel", levelNum, evt);
+}
+
+function void saveFile(int file) {
+	ScriptCall("MapDataRepo", "saveFile", file);
+}
+
+function void loadFile(int file) {
+	ScriptCall("MapDataRepo", "loadFile", file);
+}
+
+function void queueSaveEvent(int levelNum, int evt) {
+	ScriptCall("MapDataRepo", "queueSaveEvent", levelNum, evt);
+}
+
+function void loadMapEvents(int levelNum) {
+	ScriptCall("MapDataRepo", "loadMapEvents", levelNum);
+}
+
+// function void setSaveEvent(int mId, int type, int evt, int val) {
+// 	str cvar = -1;
+// 	str flags = -1;
+
+// 	if(type == 0) { // map event
+
+// 		cvar = StrParam(s:cvarList[mId][0], s:"_", s:STR_EVENT, s:"_0");
+// 		flags = getCVarString(cvar);
+// 		flags = insertToStringPos(flags, val, evt);
+// 		SetCVarString(cvar, flags);
+		
+// 	} else if(type == 1) { // pickup event
+
+// 		cvar = StrParam(s:cvarList[mId][0], s:"_", s:STR_PICKUP, s:"_0");
+// 		flags = getCVarString(cvar);
+// 		flags = insertToStringPos(flags, val, evt);
+// 		SetCVarString(cvar, flags);
+// 	}
+// }
+
+// function void persistEvents(void) {
+// 	int saveId = global_saveId;
+// 	str cvar1 = -1;
+// 	str cvar2 = -1;
+// 	str flags = -1;
+
+// 	for(int i = 0; i < MAX_MAPS; i++) {
+// 		cvar1 = StrParam(s:cvarList[i][0], s:"_", s:STR_EVENT, s:"_0");
+// 		cvar1 = StrParam(s:cvarList[i][0], s:"_", s:STR_EVENT, s:"_", i:saveId);
+// 		flags = getCVarString(cvar1);
+// 		SetCVarString(cvar2, flags);
+
+// 		cvar1 = StrParam(s:cvarList[i][0], s:"_", s:STR_PICKUP, s:"_0");
+// 		cvar1 = StrParam(s:cvarList[i][0], s:"_", s:STR_PICKUP, s:"_", i:saveId);
+// 		flags = getCVarString(cvar1);
+// 		SetCVarString(cvar2, flags);
+// 	}
+// }
+
+// function str insertToStringPos(str in, int c, int pos) {
+// 	int len = StrLen(in);
+// 	str ret = StrParam(s:StrLeft(in, pos), i:c, s:StrRight(in, len-pos-1));
+// 	return ret;
+// }
 
 function void checkDroneTransform(int tid, int drone)
 {

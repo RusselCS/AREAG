@@ -1,0 +1,30 @@
+//-------------------------------------------------------------------------------------------
+//
+// The main menu. There's a lot of differences here between the games
+//
+//-------------------------------------------------------------------------------------------
+
+LISTMENU "MainMenu"
+{
+	IfGame(Doom, Chex)
+	{
+		StaticPatch 94, 2, "M_DOOM"
+		Position 97, 72
+		IfOption(ReadThis)
+		{
+			Position 97, 64
+		}
+	}
+
+	PatchItem "M_NGAME", "n", "PlayerclassMenu"
+	PatchItem "M_OPTION","o", "OptionsMenu"
+	PatchItem "M_LOADG", "l", "RealLoadMenu"
+	PatchItem "M_QUITG", "q", "QuitMenu"
+}
+
+OptionMenu "RealLoadMenu"
+{
+	Command "Load 1", "CMD_LOAD_1"
+	Command "Load 2", "CMD_LOAD_2"
+	Command "Load 3", "CMD_LOAD_3"
+}

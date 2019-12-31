@@ -1,0 +1,101 @@
+const SUB_KNIFE = 0;
+const SUB_DYNAMITE = 1;
+
+const HEALTH_MAX = -1;
+
+const MAP_TABLET_WRAP = 100;
+
+enum PickupTypes {
+	PICKTYPE_ARTIFICE,
+	PICKTYPE_WEAPON,
+	PICKTYPE_SUBWEAPON,
+	PICKTYPE_TREASURE
+}
+
+enum UpgradeTypes {
+	PICKMSG_GEAR,
+	PICKMSG_STEAM,
+	PICKMSG_KNIFE,
+	PICKMSG_HEALTHUP,
+	PICKMSG_DYNAMITE,
+	PICKMSG_NOVAPACK,
+
+	PICKMSG_SPIDERDRONE,
+	PICKMSG_BEEDRONE,
+	PICKMSG_STEELWHIP,
+    PICKMSG_TRIBALSHIELD,
+    PICKMSG_RUBYKEY,
+    PICKMSG_COBALTKEY,
+    PICKMSG_PERIDOTKEY,
+    PICKMSG_GOLDKEY,
+}
+
+// BASIC ACTORS //
+class Once : Inventory
+{
+    Default
+    {
+        inventory.amount 1;
+        inventory.maxamount 1;
+    }
+}
+
+class Counter : Inventory
+{
+    Default
+    {
+        inventory.amount 1;
+        inventory.maxamount 65536;
+    }
+}
+
+class BasicEffect : Actor
+{
+    Default
+    {
+        PROJECTILE;
+        +NOINTERACTION;
+        +THRUACTORS;
+        +NOGRAVITY;
+        renderstyle "translucent";
+        alpha 1.0;
+        height 1;
+        radius 1;
+    }
+}
+
+class ZSCStoneBody : Actor
+{
+    override int DamageMobj(Actor inflictor, Actor source, int damage, Name mod, int flags, double angle) {
+        int dmg = super.DamageMobj(inflictor, source, min(damage, 1), mod, flags, angle);
+        return dmg;
+    }
+}
+
+class BasicFastProjectile : FastProjectile
+{
+	States
+	{
+	Spawn:
+		TNT1 A 0;
+		TNT1 A 0 A_JumpIf(true, "SpawnLoop");
+		goto SpawnLoop;
+	SpawnLoop:
+		TNT1 A 0;
+		stop;
+	}
+}
+
+class BasicProjectile : Actor
+{
+	States
+	{
+	Spawn:
+		TNT1 A 0;
+		TNT1 A 0 A_JumpIf(true, "SpawnLoop");
+		goto SpawnLoop;
+	SpawnLoop:
+		TNT1 A 0;
+		stop;
+	}
+}

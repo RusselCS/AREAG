@@ -4,17 +4,22 @@ class KnifeMax : Counter {}
 
 class KnifePouchPickup : SubWeaponPickup
 {
+    Default
+    {
+        BasicInventory.PickupID PICKMSG_KNIFE;
+        BasicInventory.PickupType PICKTYPE_SUBWEAPON;
+        SubWeaponPickup.AmmoType "KnifeAmmo";
+        SubWeaponPickup.AmmoMax "KnifeMax";
+        SubWeaponPickup.AmmoAmount 10;
+        SubWeaponPickup.WeaponIndex SWEP_KNIFE;
+        Scale 2.0;
+    }
+
 	States
 	{
-	Spawn:
+	SpawnFrames:
 		SUBK A 1;
 		loop;
-	Pickup:
-		TNT1 A 0 ACS_NamedExecuteAlways("pickups_displayMessage", 0, PICKTYPE_SUBWEAPON, PICKMSG_KNIFE);
-		TNT1 A 0 A_AREAGSelectWeapon(SWEP_KNIFE);
-		TNT1 A 0 A_GiveInventory("KnifeMax", 10);
-		TNT1 A 0 A_GiveInventory("KnifeAmmo", 10);
-		stop;
 	}
 }
 

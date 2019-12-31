@@ -11,6 +11,8 @@ DoomEdNums
     10565 = AREAGPushBlockSmall
     10566 = DoorManager
     10567 = AreaGate
+    10568 = SavePoint
+    10569 = MapPickup
 
     20000 = JarSmall
     20001 = JarBig
@@ -39,4 +41,9 @@ skill normal
 cluster 1
 {
 	hub
+}
+
+GAMEINFO
+{
+    EventHandlers = "MapUtilInit"
 }

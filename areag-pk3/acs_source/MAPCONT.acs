@@ -74,15 +74,21 @@ script "map_door" (int tag, int top, int bottom) {
 // ARG1 - map: which arg the map abides by, as noted in the array.
 // ARG2 - door: which player spawn the player is intended to spawn, as noted by the value in its first special argument.
 
-script "map_switchto" (int ogmap, int door, int noSound)
+script "map_switchto" (int tomap, int door, int noSound)
 {
+	if(toMap == GetLevelInfo(LEVELINFO_LEVELNUM)) {
+		terminate;
+	}
+
 	SetPlayerProperty(true, true, PROP_INVULNERABILITY);
 	SetPlayerProperty(true, true, PROP_TOTALLYFROZEN);
 
-	int map = findMapRoute(ogmap);
+	int map = findMapRoute(tomap);
 
 	if(map == -1) {
-		PrintBold(s:"\cgMAP ", i:ogmap, s:" NOT FOUND! \cdMAP MAY BE IN DEVELOPMENT. PLEASE TRY AGAIN LATER.");
+		PrintBold(s:"\cgMAP ", i:tomap, s:" NOT FOUND! \cdMAP MAY BE IN DEVELOPMENT. PLEASE TRY AGAIN LATER.");
+		SetPlayerProperty(false, true, PROP_INVULNERABILITY);
+		SetPlayerProperty(false, true, PROP_TOTALLYFROZEN);
 		terminate;
 	}
 	
@@ -110,7 +116,7 @@ script "map_switchto" (int ogmap, int door, int noSound)
 	Delay(35);
 	
 	checkDroneTransform(ActivatorTID(), false);
-	ChangeLevel(mapList[map][MAPPROP_MAPCODE], door, CHANGELEVEL_NOINTERMISSION);
+	ChangeLevel(getMapCode(getMapByLevelNum(map)), door, CHANGELEVEL_NOINTERMISSION);
 	
 	// Because ENTER scripts are only executed once per map, gotta re-execute these here.
 	SetPlayerProperty(true, true, PROP_INVULNERABILITY);
@@ -166,12 +172,6 @@ script "map_startup" ENTER
 	SetPlayerProperty(true, false, PROP_TOTALLYFROZEN);
 }
 
-// TABLET HANDLE SCRIPT
-script MAP_TABLET_WRAP (int arg1, int arg2, int arg3)
-{
-	ACS_NamedExecuteAlways("map_tablet", 0, arg1, arg2, arg3);
-}
-
 script "map_tablet" (int tabletNum, int image)
 {
 	if(CheckInventory("MenuFreezer")>0)
@@ -194,10 +194,10 @@ script "map_tablet" (int tabletNum, int image)
 		terminate;
 	}
 
-	str langName = strParam(s:mapList[mapIndex][MAPPROP_LANGNAME], s:"_TABLET_", i:tabletNum);
+	str langName = strParam(s:getMapCode(mapIndex), s:"_TABLET_", i:tabletNum);
 	str tabletImage = -1;
 	if(image != 0) {
-		tabletImage = imageList[mapIndex][image-1];
+		tabletImage = getTabletImage(mapIndex, image-1);
 	}
 	int buttons = GetPlayerInput(-1, INPUT_BUTTONS);
 	int oldButtons = GetPlayerInput(-1, INPUT_OLDBUTTONS);
@@ -299,8 +299,9 @@ function void printTablet (str message, int alpha, int x, int y, str image)
 	}
 }
 
-script "movement_aircontrol" OPEN
+script "MAP_OPEN" OPEN
 {
+	global_saveId = 1;
 	Delay(1);
 	SetAirControl(0.65);
 	SpawnForced("MusicFader", 0, 0, 0, TID_MUSFADE);
@@ -339,4 +340,60 @@ script "tablet_distanceCheck" (void)
 		
 		Delay(5);
 	}
+}
+
+script "map_queueEvent" (int evt)
+{
+	int levelNum = GetLevelInfo(LEVELINFO_LEVELNUM);
+	queueSaveEvent(levelNum, evt);
+}
+
+script "map_checkEvent" (int evt)
+{
+	int levelNum = GetLevelInfo(LEVELINFO_LEVELNUM);
+	SetResultValue(getSaveEvent(levelNum, evt));
+}
+
+script "map_loadEvents" OPEN
+{
+	int levelNum = GetLevelInfo(LEVELINFO_LEVELNUM);
+	loadMapEvents(levelNum);
+}
+
+script "map_savepoint" (int doorNum)
+{
+	PrintBold(s:"Save Point Triggered", i:doorNum);
+
+	int save = GetCVar("SAVE_PICKER");
+	int levelNum = GetLevelInfo(LEVELINFO_LEVELNUM);
+
+	SetCVar(StrParam(s:"SAVE_MAP_", i:save), levelNum);
+	SetCVar(StrParam(s:"SAVE_DOOR_", i:save), doorNum);
+
+	saveFile(save);
+}
+
+script "map_loadGame" (int file)
+{
+	SetCVar("SAVE_PICKER", file);
+	int levelNum = GetCVar(StrParam(s:"SAVE_MAP_", i:file));
+	int doorNum = GetCVar(StrParam(s:"SAVE_DOOR_", i:file)) + 20;
+	loadFile(file);
+	delay(1);
+
+	int mapSize = ScriptCall("MapDataRepo", "getMapCount");
+	for(int i = 0; i < mapSize; i++)
+	{
+		str flags = GetCVarString(ScriptCall("MapDataRepo", "getTempPickup", i));
+		int len = strLen(flags);
+
+		for(int j = 0; j < len; j++) {
+			if(GetChar(flags, j) == '1') {
+				GiveInventory(ScriptCall("MapDataRepo", "getPickupFrom", i, j+1), 1);
+			}
+		}
+	}
+
+	ACS_NamedExecuteAlways("map_switchto", 100, levelNum, doorNum, true);
+	ACS_NamedExecuteAlways("map_switchto", 0, 100, 0);
 }

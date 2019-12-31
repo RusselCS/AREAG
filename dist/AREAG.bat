@@ -1,1 +1,1 @@
-"engine/gzdoom.exe" -iwad ../wads/megagame.wad -file ../wads/AREAG.pk3 -file ../wads/TESTMAP.wad -file ../wads/TESTMAP2.wad -file "../wads/Grand Gateway.wad" -file "../wads/Outskirts-Mechanics.wad" +sv_cheats true +logfile lastrun.log +map adv00
+"engine/gzdoom.exe" -iwad ../wads/megagame.wad -file ../wads/AREAG.pk3 -file ../wads/TESTMAP.wad -file ../wads/TESTMAP2.wad -file "../wads/Grand Gateway-Mechanics.wad" -file "../wads/Outskirts-Mechanics.wad" -file "../wads/colorblind_v1.pk3" +sv_cheats true +logfile lastrun.log

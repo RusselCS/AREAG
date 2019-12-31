@@ -2,26 +2,19 @@ class ZSCChainWhipPickup : BasicInventory
 {
     Default
     {
-        +INVENTORY.AUTOACTIVATE;
-        Inventory.Pickupmessage "";
-		+FLOATBOB;
-		+NOGRAVITY;
-		Height 64;
+        BasicInventory.PickupType PICKTYPE_WEAPON;
+        BasicInventory.PickupID PICKMSG_STEELWHIP;
+        BasicInventory.CheckItem "ZSCChainWhip";
     }
     States
     {
-    Spawn:
+    SpawnFrames:
         CHWP A 1;
         loop;
-    Pickup:
-        CHWP A 0 A_JumpIfInventory("ZSCChainWhip", 1, "PickupFail");
-		CHWP A 0 ACS_NamedExecuteAlways("pickups_displayMessage", 0, PICKTYPE_WEAPON, PICKMSG_STEELWHIP);
+    PickupEffect:
         CHWP A 0 A_GiveInventory("ZSCChainWhip", 1);
         CHWP A 0 A_SelectWeapon("ZSCChainWhip");
         stop;
-    PickupFail:
-		TNT1 A 0;
-		fail;
     }
 }
 

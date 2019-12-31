@@ -6,19 +6,20 @@ class DynamiteCratePickup : SubWeaponPickup
 {
 	Default
 	{
-		scale 1.0;
+        BasicInventory.PickupID PICKMSG_DYNAMITE;
+        BasicInventory.PickupType PICKTYPE_SUBWEAPON;
+        SubWeaponPickup.AmmoType "DynamiteAmmo";
+        SubWeaponPickup.AmmoMax "DynamiteMax";
+        SubWeaponPickup.AmmoAmount 10;
+        SubWeaponPickup.WeaponIndex SWEP_DYNAMITE;
+        Scale 1.0;
 	}
+    
 	States
 	{
-	Spawn:
+	SpawnFrames:
 		SUBD A 1;
 		loop;
-	Pickup:
-		TNT1 A 0 ACS_NamedExecuteAlways("pickups_displayMessage", 0, PICKTYPE_SUBWEAPON, PICKMSG_DYNAMITE);
-		TNT1 A 0 A_AREAGSelectWeapon(SWEP_DYNAMITE);
-		TNT1 A 0 A_GiveInventory("DynamiteMax", 10);
-		TNT1 A 0 A_GiveInventory("DynamiteAmmo", 10);
-		stop;
 	}
 }
 

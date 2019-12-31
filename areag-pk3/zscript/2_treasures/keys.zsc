@@ -31,7 +31,7 @@ class RubyKeyPickup : BasicInventory
     }
 	States
 	{
-	Spawn:
+	SpawnFrames:
         KEYS A 1;
         loop;
     PickupEffect:
@@ -56,7 +56,7 @@ class CobaltKeyPickup : BasicInventory
     }
 	States
 	{
-	Spawn:
+	SpawnFrames:
         KEYS B 1;
         loop;
     PickupEffect:
@@ -81,7 +81,7 @@ class PeridotKeyPickup : BasicInventory
     }
 	States
 	{
-	Spawn:
+	SpawnFrames:
         KEYS C 1;
         loop;
     PickupEffect:
@@ -106,7 +106,7 @@ class GoldKeyPickup : BasicInventory
     }
 	States
 	{
-	Spawn:
+	SpawnFrames:
         KEYS D 1;
         loop;
     PickupEffect:

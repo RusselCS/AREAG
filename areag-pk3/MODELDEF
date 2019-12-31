@@ -7,3 +7,23 @@ Model AREAGPushBlock
 
    FrameIndex PCBA B 0 0
 }
+
+Model SaveObelisk
+{
+   Path "models"
+   Model 0 "M_SAVOBX.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 -16.0
+
+   FrameIndex SAVE A 0 0
+}
+
+Model SaveBase
+{
+   Path "models"
+   Model 0 "M_SAVBAS.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+
+   FrameIndex SAVE B 0 0
+}

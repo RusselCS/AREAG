@@ -1,0 +1,13 @@
+material <flat|texture> <TEXTURENAME> || (uv map for the texture data, this defines the color of the object- color space works VERY differently in pbr so be sure to test often and adjust. this _needs_ lighting in order to operate correctly in 3d space.)
+{
+    normal <NORMALMAP> || baked lighting information (vital for making the shading work)
+    metallic <METALMAP> || reflective "gloss" information of the object - can have colored information in normal situations [and i don't know if gzdoom is "normal"], but operates on a 0.0-1.0 value in brightness for different areas of the texture- this is a greyscale image typically. 0 represents a more matte object while 1 represents a more reflective object.
+    roughness <ROUGHMAP> || this is also a greyscale image usually- normally defines a "scratchier" surface that mixes gloss with matte elements. this adds an extra perceived effect to the shading
+    ao <AMBIENTOCCLUSIONMAP> || ao bakes go here to add shadow highlights
+    brightmap <BRIGHTMAP> || brightmaps are brightmaps
+    [iwad] || last stuff works the same as GLDEFS
+    [thiswad]
+    [disablefullbright]
+}
+
+https://3wga6448744j404mpt11pbx4-wpengine.netdna-ssl.com/wp-content/uploads/2015/08/UnityMetallicChart.png

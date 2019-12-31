@@ -406,7 +406,6 @@ class AreaGate : SecActHitFloor
     //$Arg1 Door ID
 
     override void PostBeginPlay() {
-        A_Log("HELLO!!!");
         int id = args[0];
         int door = args[1];
 

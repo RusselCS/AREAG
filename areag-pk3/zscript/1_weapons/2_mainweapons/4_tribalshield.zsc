@@ -2,26 +2,19 @@ class ZSCTribalShieldPickup : BasicInventory
 {
     Default
     {
-        +INVENTORY.AUTOACTIVATE;
-        Inventory.Pickupmessage "";
-		+FLOATBOB;
-		+NOGRAVITY;
-		Height 64;
+        BasicInventory.PickupType PICKTYPE_WEAPON;
+        BasicInventory.PickupID PICKMSG_TRIBALSHIELD;
+        BasicInventory.CheckItem "ZSCTribalShield";
     }
     States
     {
-    Spawn:
+    SpawnFrames:
         TSHL A 1;
         loop;
-    Pickup:
-        TSHL A 0 A_JumpIfInventory("ZSCTribalShield", 1, "PickupFail");
-		TSHL A 0 ACS_NamedExecuteAlways("pickups_displayMessage", 0, PICKTYPE_WEAPON, PICKMSG_TRIBALSHIELD);
+    PickupEffect:
         TSHL A 0 A_GiveInventory("ZSCTribalShield", 1);
         TSHL A 0 A_SelectWeapon("ZSCTribalShield");
         stop;
-    PickupFail:
-		TSHL A 0;
-		fail;
     }
 }
 
