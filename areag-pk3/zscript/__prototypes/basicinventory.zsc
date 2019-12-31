@@ -54,6 +54,7 @@ class BasicInventory : CustomInventory
         +FLOATBOB;
         +NOGRAVITY;
         +FLOAT;
+        +MOVEWITHSECTOR;
         Height 64;
     }
  
@@ -93,6 +94,7 @@ class BasicItemTrail : BasicEffect
     Default
     {
         renderstyle "add";
+        +MOVEWITHSECTOR;
     }
 
     States
@@ -114,6 +116,7 @@ class BasicItemParticle : BasicEffect
         scale 0.25;
         renderstyle "add";
         reactiontime 70;
+        +MOVEWITHSECTOR;
     }
 
     States
@@ -135,6 +138,7 @@ class BasicItemParticleTrail : BasicEffect
         +ROLLSPRITE;
         renderstyle "add";
         scale 0.25;
+        +MOVEWITHSECTOR;
     }
 
     States

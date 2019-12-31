@@ -112,25 +112,29 @@ function void checkDroneTransform(int tid, int drone)
 	{
 		if(drone)
 		{
-			transformToDrone(tid);
+			transformToDrone(tid, true);
 		}
 		else
 		{
-			transformFromDrone(tid);
+			transformFromDrone(tid, true);
 		}
 	}
 }
 
-function void transformToDrone(int tid)
+function void transformToDrone(int tid, int noTakeBat)
 {
 	SetActorInventory(tid, "PlayerTempHealth", GetActorHealth(tid));
 	MorphActor(tid, "AREAGDrone", "", 0x7ffffff, MRF_NEWTIDBEHAVIOUR|MRF_UNDOALWAYS|MRF_WHENINVULNERABLE|MRF_UNDOBYDEATH|MRF_UNDOBYDEATHSAVES, "", "");
 	SetActorHealth(tid, CheckActorInventory(tid, "DroneBattery"));
 }
 
-function void transformFromDrone(int tid)
+function void transformFromDrone(int tid, int noTakeBat)
 {
-	SetActorInventory(tid, "DroneBattery", 0);
+	if(!noTakeBat) {
+		SetActorInventory(tid, "DroneBattery", 0);
+	} else {
+		SetActorInventory(tid, "DroneBattery", GetActorHealth(tid));
+	}
 	UnmorphActor(tid, true);
 	SetActorHealth(tid, CheckActorInventory(tid, "PlayerTempHealth"));
 }

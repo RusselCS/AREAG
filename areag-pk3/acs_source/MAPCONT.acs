@@ -80,6 +80,7 @@ script "map_switchto" (int tomap, int door, int noSound)
 		terminate;
 	}
 
+	GiveInventory("MapTransition", 1);
 	SetPlayerProperty(true, true, PROP_INVULNERABILITY);
 	SetPlayerProperty(true, true, PROP_TOTALLYFROZEN);
 
@@ -144,13 +145,10 @@ script "music_fade" (int del, int rate, int dest)
 
 script "map_startup" ENTER
 {
-	if(CheckInventory("DroneFlag")>0)
-	{
-		transformToDrone(ActivatorTID());
-	}
 	int baseVal = 640.0;
 	int fadeTime = 0.2;
 	int texWidth = 142.0;
+	TakeInventory("MapTransition", 1);
 	FadeTo(0, 0, 0, 1.0, 0.0);
 	SetHudSize(1, 1, false);
 	SetFont("BLACK");
@@ -166,6 +164,7 @@ script "map_startup" ENTER
 	}
 	HudMessage(s:"A"; HUDMSG_FADEINOUT, 100, CR_UNTRANSLATED, baseVal, 480.0, holdTime, 0.0, fadeTime);
 	HudMessage(s:""; HUDMSG_ALPHA, 120, CR_UNTRANSLATED, 0, 0, 0, 0);
+	checkDroneTransform(ActivatorTID(), true);
 	FadeTo(0, 0, 0, 0.2, fadeTime);
 	
 	SetPlayerProperty(true, false, PROP_INVULNERABILITY);

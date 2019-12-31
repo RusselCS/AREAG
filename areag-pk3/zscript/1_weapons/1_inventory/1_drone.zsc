@@ -114,7 +114,7 @@ class AREAGDrone : AREAGProtoPlayer
                 revertDrone();
             }
             iHpDrainTime = HP_TIME_MAX;
-        } else {
+        } else if(CountInv("MapTransition") == 0) {
             iHpDrainTime--;
         }
     }
@@ -230,6 +230,7 @@ class DronePlasmaGun : Weapon
 
 class DroneBattery : Counter { Default { inventory.maxamount 100; } }
 class PlayerTempHealth : Counter {}
+class MapTransition : Once {}
 
 class DronePickup : BasicInventory
 {
