@@ -99,3 +99,77 @@ class BasicProjectile : Actor
 		stop;
 	}
 }
+
+struct AREAG_Func {
+    static bool checkButtonReleased(int button, int buttons, int oldButtons)
+    {
+        if(!(buttons & button) && (oldButtons & button))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    static double Lerp(double a, double b, double t)
+	{
+		return (1 - t) * a + t * b;
+	}
+
+    static bool collidingBoxes(Actor a, Actor b, double rad) {
+        double diffX = abs(a.pos.x - b.pos.x) - rad;
+        double diffY = abs(a.pos.y - b.pos.y) - rad;
+
+        return diffX <= 0 && diffY <= 0;
+    }
+}
+
+// DEBUG FUNCTIONS
+class HitboxParticle : BasicEffect
+{
+    Default
+    {
+        +FORCEXYBILLBOARD;
+        translation "0:255=104:104";
+    }
+
+    States
+    {
+    Spawn:
+        CHWP BB 1 bright;
+        stop;
+    }
+}
+
+class HitboxDebug : Actor
+{
+    override void Tick() {
+        Super.Tick();
+
+		for(int i = 0; i < radius; i++) {
+			A_SpawnItemEx("HitboxParticle", radius, i, 1);
+			A_SpawnItemEx("HitboxParticle", radius, -i, 1);
+			A_SpawnItemEx("HitboxParticle", -radius, i, 1);
+			A_SpawnItemEx("HitboxParticle", -radius, -i, 1);
+			A_SpawnItemEx("HitboxParticle", i, radius, 1);
+			A_SpawnItemEx("HitboxParticle", -i, radius, 1);
+			A_SpawnItemEx("HitboxParticle", i, -radius, 1);
+			A_SpawnItemEx("HitboxParticle", -i, -radius, 1);
+
+			A_SpawnItemEx("HitboxParticle", radius, i, height);
+			A_SpawnItemEx("HitboxParticle", radius, -i, height);
+			A_SpawnItemEx("HitboxParticle", -radius, i, height);
+			A_SpawnItemEx("HitboxParticle", -radius, -i, height);
+			A_SpawnItemEx("HitboxParticle", i, radius, height);
+			A_SpawnItemEx("HitboxParticle", -i, radius, height);
+			A_SpawnItemEx("HitboxParticle", i, -radius, height);
+			A_SpawnItemEx("HitboxParticle", -i, -radius, height);
+		}
+
+		for(int i = 0; i < height; i++) {
+			A_SpawnItemEx("HitboxParticle", radius, radius, i);
+			A_SpawnItemEx("HitboxParticle", radius, -radius, i);
+			A_SpawnItemEx("HitboxParticle", -radius, radius, i);
+			A_SpawnItemEx("HitboxParticle", -radius, -radius, i);
+		}
+    } // End of Tick()
+}

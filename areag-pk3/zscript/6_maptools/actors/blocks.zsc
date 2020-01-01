@@ -1,0 +1,48 @@
+// PUSH BLOCKS, FLOOR SWITCHES
+class AREAGPushBlock : Actor
+{
+    //$Category AREAG-Map Tools
+    //$Title Large Stone Block
+	//$Sprite PCBAA0
+    //$NotAngled
+
+    Default
+    {
+        +SOLID;
+        +PUSHABLE;
+        +SLIDESONWALLS;
+        Height 64;
+        Radius 30;
+        maxstepheight 0;
+        Scale 2.0;
+    }
+
+    States
+    {
+    Spawn:
+        PCBA B 1;
+        loop;
+    }
+}
+
+class AREAGPushBlockSmall : AREAGPushBlock
+{
+    //$Category AREAG-Map Tools
+    //$Title Small Metal Block
+	//$Sprite PCBAA0
+    //$NotAngled
+
+    Default
+    {
+        Height 32;
+        Radius 16;
+        Scale 1.0;
+    }
+
+    States
+    {
+    Spawn:
+        PCBA A 1;
+        loop;
+    }
+}

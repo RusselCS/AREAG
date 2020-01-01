@@ -1,0 +1,21 @@
+// AREA TRANSITION GATES
+class AreaGate : SecActHitFloor
+{
+    //$Category AREAG-Map Tools
+    //$Title Area Gate
+	//$Sprite E0WAC0
+    //$Arg0 Map ID
+    //$Arg1 Door ID
+
+    override void PostBeginPlay() {
+        int id = args[0];
+        int door = args[1];
+
+        special = 226;
+        args[0] = -int(Name("map_switchto"));
+        args[1] = 0;
+        args[2] = id;
+        args[3] = door;
+        args[4] = false;
+    }
+}

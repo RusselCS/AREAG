@@ -1,0 +1,106 @@
+// DOORS
+class DoorManager : Actor
+{
+    //$Category AREAG-Map Tools
+    //$Title Door Controller
+	//$Sprite E0WAC0
+    //$Arg0 Key Number
+    //$Arg1 Front Room ID
+    //$Arg2 Back Room ID
+    //$Arg3 Open Height
+    //$Arg4 Closed Height
+
+    Sector sDoor;
+    array<Line> doorLines;
+    int time;
+    bool bApplyDoor;
+    bool bJammedDoor;
+
+    bool voidLine(Line ln) {
+        return ln.BackSector == null;
+    }
+
+    bool hasKey(int keyId) {
+        if(keyId == 0) {
+            return true;
+        } else {
+            return CountInv(KeyBase.keys[keyId-1], AAPTR_PLAYER1);
+        }
+    }
+
+    static void applyDoor(Line ln, int id, int maxHeight, int minHeight) {
+        ln.Activation |= 1<<1;
+        ln.Activation |= 1<<10;
+        ln.Flags |= 0x00000200; // ELineFlags.ML_REPEAT_SPECIAL;
+
+        ln.special = 226;
+        ln.args[0] = -int(Name("map_door"));
+        ln.args[1] = 0;
+        ln.args[2] = id;
+        ln.args[3] = maxHeight;
+        ln.args[4] = minHeight;
+    }
+
+    static void revokeDoor(Line ln, int id, int maxHeight, int minHeight) {
+        ln.special = 0;
+        ln.args[0] = 0;
+        ln.args[1] = 0;
+        ln.args[2] = 0;
+        ln.args[3] = 0;
+        ln.args[4] = 0;
+    }
+
+    override void PostBeginPlay() {
+        super.PostBeginPlay();
+
+        sDoor = CurSector;
+        bJammedDoor = score > 0;
+
+        time = 70;
+        bApplyDoor = !bJammedDoor;
+
+        if(args[3] == 0) {
+            args[3] = ceilingz;
+        }
+
+        if(args[4] == 0) {
+            args[4] = floorz;
+        }
+        
+        for(int i = 0; i < CurSector.Lines.size(); i++) {
+            if(voidLine(CurSector.Lines[i])) {
+                CurSector.Lines[i].Flags |= 0x00000010; // ELineFlags.ML_DONTPEGBOTTOM;
+            } else {
+                CurSector.Lines[i].Flags |= 0x00000002; // ELineFlags.ML_BLOCKMONSTERS;
+            }
+        }
+
+        Ceiling_MoveToValue(tid, 96, args[4]);
+    }
+
+    override void Tick() {
+        super.Tick();
+
+        if(hasKey(args[0]) && !bJammedDoor) {
+            if(bApplyDoor)
+            {
+                bApplyDoor = false;
+                for(int i = 0; i < CurSector.Lines.size(); i++) {
+                    if(!voidLine(CurSector.Lines[i])) {
+                        applyDoor(CurSector.Lines[i], tid, args[3], args[4]);
+                    }
+                }
+            }
+        } else if(!hasKey(args[0]) || bJammedDoor) {
+            if(!bApplyDoor)
+            {
+                bApplyDoor = true;
+                for(int i = 0; i < CurSector.Lines.size(); i++) {
+                    if(!voidLine(CurSector.Lines[i])) {
+                        revokeDoor(CurSector.Lines[i], tid, args[3], args[4]);
+                    }
+                }
+            }
+        }
+    }
+}

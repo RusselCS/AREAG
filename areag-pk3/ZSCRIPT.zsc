@@ -1,12 +1,17 @@
 version "2.4"
 
-#include "zscript/zsctools.zsc"
+#include "zscript/__prototypes/definitions.zsc"
 #include "zscript/6_maptools/0_mapdata/mapdata.entity.zsc"
 #include "zscript/6_maptools/0_mapdata/mapdata.data.zsc"
 #include "zscript/6_maptools/0_mapdata/mapdata.repo.zsc"
+#include "zscript/6_maptools/actors/areagate.zsc"
+#include "zscript/6_maptools/actors/blocks.zsc"
+#include "zscript/6_maptools/actors/doormanager.zsc"
 #include "zscript/6_maptools/actors/savepoint.zsc"
+#include "zscript/6_maptools/actors/shop.zsc"
+#include "zscript/6_maptools/actors/switches.zsc"
 #include "zscript/6_maptools/actors/tablet.zsc"
-#include "zscript/__prototypes/definitions.zsc"
+
 #include "zscript/__prototypes/currency.zsc"
 #include "zscript/__prototypes/basicinventory.zsc"
 
