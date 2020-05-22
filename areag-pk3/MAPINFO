@@ -48,3 +48,110 @@ GAMEINFO
 {
     EventHandlers = "MapUtilInit"
 }
+
+map ADV00 "Outskirts" 
+{ 
+	levelnum = 1
+	cluster = 1
+	pixelratio = 1.0
+	music = "M_BEACH" 
+	sky1 = "TESTSKY1"
+	forcenoskystretch 
+	clipmidtextures
+}
+
+map ADV01 "Grand Gateway" 
+{ 
+	levelnum = 2
+	cluster = 1
+	pixelratio = 1.0
+	music = "M_GATE"
+	sky1 = "BLACK", 0 
+	forcenoskystretch 
+	clipmidtextures
+	useplayerstartz
+}
+
+map ADV02 "Lost Impact" 
+{ 
+	levelnum = 3
+	cluster = 1
+	pixelratio = 1.0
+	music = "M_GATE"
+	sky1 = "BLACK", 0 
+	forcenoskystretch 
+	clipmidtextures
+	useplayerstartz
+}
+
+map ADV03 "Queen's Study" 
+{ 
+	levelnum = 4
+	cluster = 1
+	pixelratio = 1.0
+	music = "M_GATE"
+	sky1 = "BLACK", 0 
+	forcenoskystretch 
+	clipmidtextures
+	useplayerstartz
+}
+
+map ADV04 "King's Dungeon" 
+{ 
+	levelnum = 5
+	cluster = 1
+	pixelratio = 1.0
+	music = "M_GATE"
+	sky1 = "BLACK", 0 
+	forcenoskystretch 
+	clipmidtextures
+	useplayerstartz
+}
+
+map ADV05 "Realm of Shadows" 
+{ 
+	levelnum = 6
+	cluster = 1
+	pixelratio = 1.0
+	music = "M_GATE"
+	sky1 = "BLACK", 0 
+	forcenoskystretch 
+	clipmidtextures
+	useplayerstartz
+}
+
+map ADV06 "mech" 
+{ 
+	levelnum = 7
+	cluster = 1
+	pixelratio = 1.0
+	music = "M_GATE"
+	sky1 = "BLACK", 0 
+	forcenoskystretch 
+	clipmidtextures
+	useplayerstartz
+}
+
+map ADV07 "the artist formerly known as temporal tower" 
+{ 
+	levelnum = 8
+	cluster = 1
+	pixelratio = 1.0
+	music = "M_GATE"
+	sky1 = "BLACK", 0 
+	forcenoskystretch 
+	clipmidtextures
+	useplayerstartz
+}
+
+map ADV08 "temp placeholder" 
+{ 
+	levelnum = 9
+	cluster = 1
+	pixelratio = 1.0
+	music = "M_GATE"
+	sky1 = "BLACK", 0 
+	forcenoskystretch 
+	clipmidtextures
+	useplayerstartz
+}
