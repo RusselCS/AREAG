@@ -29,7 +29,7 @@ class BasicInventory : CustomInventory
     override void PostBeginPlay() {
         super.PostBeginPlay();
         inWorld = false;
-        itemId = args[0];
+        itemId = score;
     }
 
     override void Tick() {
@@ -181,11 +181,15 @@ class MapPickup : Actor
     override void PostBeginPlay() {
         super.PostBeginPlay();
 
-        int pickupId = args[0];
+        args[0] = score;
+        int pickupId = score;
         String pickup = MapDataRepo.getPickupFromHere(level.levelnum, pickupId);
 
         if(MapDataRepo.getTempPickupByLevel(level.levelnum, pickupId-1) == 0) {
-            A_SpawnItemEx(pickup, 0, 0, 16, 0, 0, 0, 0, SXF_TRANSFERSPECIAL);
+            bool spawned;
+            Actor child;
+            [spawned, child] = A_SpawnItemEx(pickup, 0, 0, 16, 0, 0, 0, 0, SXF_TRANSFERSPECIAL);
+            child.score = score;
         }
     }
 
