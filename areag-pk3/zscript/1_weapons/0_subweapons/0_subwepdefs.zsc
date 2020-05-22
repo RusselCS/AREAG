@@ -11,7 +11,7 @@ class SubWeaponPickup : BasicInventory
     property WeaponIndex: iWeaponIndex;
 
 	action void A_AREAGSelectWeapon(int wep) {
-		if(ZSCPlayerPawn(self).iSelectedWep == SWEP_NONE)
+		if(CountInv("DroneFlag")==0 && ZSCPlayerPawn(self).iSelectedWep == SWEP_NONE)
 			ZSCPlayerPawn(self).iSelectedWep = wep;
 	}
 
