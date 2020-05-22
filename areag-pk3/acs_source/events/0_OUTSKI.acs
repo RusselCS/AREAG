@@ -1,0 +1,101 @@
+/*============================================================*\
+||                          OUTSKIRTS                         ||
+\*============================================================*/
+
+script "outskirts_events" (int toggle, int action, int unused)
+{
+	bool loading = false;
+	
+	if(action == 0) {
+		if(ActivatorTID() >= 1000) {
+			terminate;
+		} else {
+			action = ActivatorTID()-100;
+		}
+	} else {
+		if(ActivatorTID() < 1000) {
+			loading = true;
+		}
+	}
+
+	int switchTag = 100+action;
+	int tag1 = 100+action;
+	int tag2 = 200+action;
+	int tag3 = 300+action;
+	int tag4 = 400+action;
+	int tag5 = 500+action;
+	int tag6 = 600+action;
+	int tag7 = 700+action;
+	int tag8 = 800+action;
+	int tag9 = 900+action;
+
+	switch(action)
+	{
+		case 1: // Destructible Wall
+			queueEventSave(action, loading);
+			break;
+		case 2: // Floor switch raises door in separate room - WILL NEED AN INDICATOR OF WHERE: THIS ROOM IS FAR OUT
+			queueEventSave(action, loading);
+			SetUserVariable(0, "bEndState", true);
+			Floor_LowerToLowest(tag1, 64);
+			Ceiling_MoveToValue(tag2, 64, 2016, false);
+			break;
+		case 3: // Endgame Horn Statue
+			queueEventSave(action, loading);
+			break;
+		case 4: // Shop
+			queueEventSave(action, loading);
+			break;
+		case 5: // Talk to elder to cause door to open (will be a switch)
+			queueEventSave(action, loading);
+			PrintBold(s:"[PLACEHOLDER] TALKED TO ELDER!", i:tag1);
+			Ceiling_MoveToValue(tag1, 64, 1440, false);
+			break;
+		case 6: // Destructible Wall
+			queueEventSave(action, loading);
+			break;
+		case 7: // Save Room
+			break;
+		case 8: // Horn lowers grave into ground
+            if(Toggle) {
+			    PrintBold(s:"[PLACEHOLDER] PLAYED HORN SONG!");
+		        setSwitchState(switchTag+1, "Loading", true);
+                setActorScore(switchTag+1, 175);
+                setActorScore(switchTag, 175);
+				Floor_MoveToValue(tag1+1, 20, 1568, 0);
+			} else {
+				Floor_MoveToValue(tag1+1, 20, 1824, 0);
+			}
+			break;
+        case 9:
+			if(Toggle) {
+		        setSwitchState(switchTag-1, "Loading", true);
+                setActorScore(switchTag-1, 175);
+                setActorScore(switchTag, 175);
+				Floor_MoveToValue(tag1, 20, 1568, 0);
+			} else {
+				Floor_MoveToValue(tag1, 20, 1824, 0);
+			}
+			break;
+		case 10: // "Bear" miniboss; locks room.
+			if(checkEventState(action+1) != 1) {
+				PrintBold(s:"[PLACEHOLDER] MINIBOSS SPAWNED!");
+				Ceiling_MoveToValue(tag1, 128, 1312, false);
+			}
+			break;
+		case 11: // Miniboss defeated. Unlocks room, lowers floor to reveal new path.
+			queueEventSave(action, loading);
+			PrintBold(s:"[PLACEHOLDER] MINIBOSS DEFEATED!");
+			Ceiling_MoveToValue(tag1, 64, 1472, false);
+			Floor_LowerToLowest(tag2, 64);
+			break;
+		case 12: // Area Gate - Grand Gateway
+			break;
+		case 13: // Area Gate - Grand Gateway
+			break;
+		case 14: // Mine shaft
+			break;
+		case 15: // Area Gate - Lost Impact
+			break;
+	}
+}

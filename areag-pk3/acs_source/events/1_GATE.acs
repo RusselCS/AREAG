@@ -1,0 +1,458 @@
+/*============================================================*\
+||                  G R A N D   G A T E W A Y                 ||
+\*============================================================*/
+
+
+/////////////////////////
+// DOOR IDS:           //
+// 0 - OUTSKIRTS       //
+// 1 - OUTSKIRTS       //
+// 2 - LOST IMPACT     //
+// 3 - TOWER OF THIRST //
+// 4 - QUEEN'S STUDY   //
+// 5 - KING'S DUNGEON  //
+// 6 - THRONE ROOM     //
+/////////////////////////
+
+#define GATE_MAX_EVENTS 2
+#define GATE_PEDESTAL 0
+#define GATE_MINIBOSS 1
+
+int gateEventStates[GATE_MAX_EVENTS] = {
+	0,
+	0
+};
+
+// TAG HELP
+// Event number format: #XX
+// # - Tag number affected by current event
+// XX - Event Number
+
+script "gateway_events" (int toggle, int action, int unused)
+{
+	bool loading = false;
+	
+	if(action == 0) {
+		if(ActivatorTID() >= 1000) {
+			terminate;
+		} else {
+			action = ActivatorTID()-100;
+		}
+	} else {
+		if(ActivatorTID() < 1000) {
+			loading = true;
+		}
+	}
+
+	int switchTag = 100+action;
+	int tag1 = 100+action;
+	int tag2 = 200+action;
+	int tag3 = 300+action;
+	int tag4 = 400+action;
+	int tag5 = 500+action;
+	int tag6 = 600+action;
+	int tag7 = 700+action;
+	int tag8 = 800+action;
+	int tag9 = 900+action;
+
+	switch(action)
+	{
+	case 1: // Jammed Door 1
+		queueEventSave(action, loading);
+		Floor_LowerToLowest(tag1, 64);
+		Ceiling_MoveToValue(tag2, 10, 992);
+		SetUserVariable(switchTag, "bEndState", true);
+		SetUserVariable(tag2, "bJammedDoor", false);
+		break;
+
+	case 2: // Jammed Door 2
+		queueEventSave(action, loading);
+		Floor_LowerToLowest(tag1, 64);
+		Ceiling_MoveToValue(tag2, 10, 992);
+		SetUserVariable(switchTag, "bEndState", true);
+		SetUserVariable(tag2, "bJammedDoor", false);
+		break;
+
+	case 3: // Crystal Switch lowers blocking bars (basement area)
+		queueEventSave(action, loading);
+		setSwitchState(switchTag, "Loading", loading);
+		Ceiling_MoveTOValue(tag1, 20, 908, 0);
+		Ceiling_MoveTOValue(tag2, 20, 984, 0);
+		break;
+
+	case 4: // Crystal Switch elevator (basement area)
+		if(Toggle) {
+			Floor_MoveToValue(tag1, 20, 1184, 0);
+			setActorScore(switchTag, 4*35);
+		} else {
+			Floor_MoveToValue(tag1, 20, 912, 0);
+		}
+		break;
+
+	case 5: // Knife Puzzle - Pedestal raises
+		queueEventSave(action, loading);
+		if(GetActorZ(0) < 960.0 && gateEventStates[GATE_PEDESTAL] == 0) {
+			gateEventStates[GATE_PEDESTAL] = 1;
+			Floor_MoveToValue(tag1, 40, 1312, 0);
+		}
+		break;
+
+	case 6: // Knife Puzzle - Lower pedestal
+		if(gateEventStates[GATE_PEDESTAL] & 2 && gateEventStates[GATE_PEDESTAL] & 4 && gateEventStates[GATE_PEDESTAL] & 8) {
+			queueEventSave(action, loading);
+			tagwait(tag1);
+			Floor_MoveToValue(tag1, 40, 1120, 0);
+			gateEventStates[GATE_PEDESTAL] |= 16;
+			Delay(35);
+			PrintBold(s:"PUZZLE IN THE CENTER HAS BEEN COMPLETED");
+		}
+		break;
+
+	case 7: // Knife Puzzle - Torch Lit
+		queueEventSave(action, loading);
+		setSwitchState(switchTag, "Loading", loading);
+		gateEventStates[GATE_PEDESTAL] |= 2;
+		PrintBold(s:"ONE THIRD OF THE PUZZLE HAS BEEN SOLVED");
+		ACS_NamedExecuteAlways("gateway_events", 0, 0, 6);
+		break;
+
+	case 8: // Knife Puzzle - Torch Lit
+		queueEventSave(action, loading);
+		setSwitchState(switchTag, "Loading", loading);
+		gateEventStates[GATE_PEDESTAL] |= 4;
+		PrintBold(s:"ONE THIRD OF THE PUZZLE HAS BEEN SOLVED");
+		ACS_NamedExecuteAlways("gateway_events", 0, 0, 6);
+		break;
+
+	case 9: // Knife Puzzle - Torch Lit
+		queueEventSave(action, loading);
+		setSwitchState(switchTag, "Loading", loading);
+		gateEventStates[GATE_PEDESTAL] |= 8;
+		PrintBold(s:"ONE THIRD OF THE PUZZLE HAS BEEN SOLVED");
+		ACS_NamedExecuteAlways("gateway_events", 0, 0, 6);
+		break;
+
+	case 10: // Four-switches puzzle - Top-right
+		queueEventSave(action, loading);
+		PrintBold(s:"WRONG! >:(");
+		Floor_LowerToLowest(tag1, 64);
+		SetUserVariable(switchTag, "bEndState", true);
+		break;
+
+	case 11: // Four-switches puzzle - Bottom-right
+		queueEventSave(action, loading);
+		PrintBold(s:"WRONG! >:(");
+		Ceiling_MoveToValue(tag1, 64, 992, 0);
+		SetUserVariable(switchTag, "bEndState", true);
+		break;
+
+	case 12: // Four-switches puzzle - Bottom-left
+		queueEventSave(action, loading);
+		PrintBold(s:"WRONG! >:(");
+		Ceiling_MoveToValue(tag1, 64, 992, 0);
+		SetUserVariable(switchTag, "bEndState", true);
+		break;
+
+	case 13: // Four-switches puzzle - top-left
+		queueEventSave(action, loading);
+		PrintBold(s:"CORRECT! :)");
+		Ceiling_MoveToValue(tag1, 64, 992, 0);
+		Ceiling_MoveToValue(tag2, 20, 1096, 0);
+		Ceiling_MoveToValue(tag3, 20, 1168, 0);
+		SetUserVariable(switchTag, "bEndState", true);
+		break;
+
+	case 14: // Statue Puzzle - Finish
+		break;
+
+	case 15: // Statue Puzzle - Part 1
+		break;
+
+	case 16: // Statue Puzzle - Part 2
+		break;
+
+	case 17: // Statue Puzzle - Part 3
+		break;
+
+	case 18: // Statue Puzzle - Part 4
+		break;
+
+	case 19: // Boss Defeated - Bars raise, door to Throne Room opens
+		break;
+
+	case 20: // Floor collapse
+		queueEventSave(action, loading);
+		SetUserVariable(switchTag, "bEndState", true);
+		Floor_LowerToLowest(tag1, 64);
+		Delay(35);
+		Radius_Quake(5, 70, 0, 4, 0);
+		Delay(20);
+		Floor_MoveToValue(tag1, 40, 800, 0);
+		Floor_MoveToValue(tag2, 40, 800, 0);
+		Floor_MoveToValue(tag3, 40, 896, 0);
+		break;
+
+	case 21: // Raises bars + waterfall side entrance.
+		queueEventSave(action, loading);
+		Floor_LowerToLowest(tag1, 64);
+		Ceiling_MoveToValue(tag2, 40, 808, 0);
+		Ceiling_MoveToValue(tag3, 40, 880, 0);
+		Ceiling_MoveToValue(tag4, 10, 1184, 0);
+		SetUserVariable(switchTag, "bEndState", true);
+		break;
+
+	case 22: // Area access - Melting Point.
+		break;
+
+	case 23: // Mine Shaft.
+		break;
+
+	case 24: // Switch 1 for Block Puzzle.
+		queueEventSave(action, loading);
+		SetUserVariable(switchTag, "bEndState", true);
+		Floor_LowerToLowest(tag1, 64);
+		Floor_LowerToLowest(tag2, 10);
+		tagWait(tag2);
+		ChangeFloor(tag2, "ANAWAT");
+		break;
+
+	case 25: // Switch 2 for Block Puzzle.
+		queueEventSave(action, loading);
+		SetUserVariable(switchTag, "bEndState", true);
+		Floor_LowerToLowest(tag1, 64);
+		Floor_LowerToLowest(tag2, 10);
+		tagWait(tag2);
+		ChangeFloor(tag2, "ANAWAT");
+		break;
+
+	case 26: // Spear Traps. No script needed.
+		break;
+
+	case 27: // Big Fucking Laser.
+		break;
+
+	case 28: // Disable laser + raise rails.
+		queueEventSave(action, loading);
+		SetUserVariable(switchTag, "bEndState", true);
+		Floor_LowerToLowest(tag1, 64);
+		Ceiling_MoveToValue(tag2, 40, 424, 0);
+		Ceiling_MoveToValue(tag3, 40, 504, 0);
+		SetActorState(tag1, "Deactivate");
+		break;
+
+	case 29: // Shop
+		break;
+
+	case 30: // Long dart trap
+		queueEventSave(action, loading);
+		PrintBold(s:"PEW PEW DART SHOOTY!");
+		SetUserVariable(switchTag, "bEndState", true);
+		Floor_MoveToValue(tag1, 40, 320, 0);
+		break;
+
+	case 31: // Waterfall entrance to invisible maze puzzle
+		queueEventSave(action, loading);
+		SetUserVariable(switchTag, "bEndState", true);
+		Floor_LowerToLowest(tag1, 64);
+		Floor_MoveToValue(tag2, 40, 384, 0);
+		break;
+
+	case 32: // Save room
+		break;
+
+	case 33: // Area Gate - Tower of Thirst
+		break;
+
+	case 34: // Looping elevator platform
+		queueEventSave(action, loading);
+		SetUserVariable(switchTag, "bEndState", true);
+		Ceiling_MoveToValue(tag1, 40, 1344, 0);
+
+		while(true) {
+			Delay(70);
+			Ceiling_MoveToValue(tag2, 20, 1512-616, 0);
+			Floor_MoveToValue(tag2, 20, 1480-616, 0);
+			Delay(70);
+			Ceiling_MoveToValue(tag2, 20, 1512, 0);
+			Floor_MoveToValue(tag2, 20, 1480, 0);
+		}
+		break;
+
+	case 35: // Pit Teleporter
+		bool ended = false;
+		until(ended) {
+			if(ThingCountSector(T_NONE, ActivatorTID(), tag1) <= 0) {
+				ended = true;
+			}
+
+			if(GetActorZ(0) <= 736.0) {
+				Teleport_NoFog(tag2, 0, 0);
+			}
+			delay(1);
+		}
+		break;
+
+	case 36: // Raises Rails in Red Key Room
+		queueEventSave(action, loading);
+		SetUserVariable(switchTag, "bEndState", true);
+		Floor_LowerToLowest(tag1, 64);
+		Ceiling_MoveToValue(tag2, 40, 1000, 0);
+		Ceiling_MoveToValue(tag3, 40, 1072, 0);
+		break;
+
+	case 37: // Spear Trap
+		break;
+
+	case 38: // Endgame Statue Puzzle
+		break;
+
+	case 39: // Endgame Statue Puzzle
+		break;
+
+	case 40: // Save Room
+		break;
+
+	case 41: // Crystal Switch temporary platform raise
+		if(Toggle) {
+			Floor_MoveToValue(tag1, 20, 896, 0);
+			setActorScore(switchTag, 700);
+		} else {
+			Floor_MoveToValue(tag1, 20, 712, 0);
+		}
+		break;
+
+	case 42: // Miniboss begin - Lower rails and spawn boss.
+		if(gateEventStates[GATE_MINIBOSS] == 0) {
+			PrintBold(s:"GIANT SPIDER AAAAAAAAAAH!!!!");
+			gateEventStates[GATE_MINIBOSS] = 1;
+			Ceiling_MOveToValue(tag1, 40, 1024, 0);
+			Ceiling_MOveToValue(tag2, 40, 1024, 0);
+		}
+		break;
+
+	case 43: // Miniboss end
+		queueEventSave(action, loading);
+		if(gateEventStates[GATE_MINIBOSS] == 1) {
+			PrintBold(s:"SPIDER DEAD! :)");
+			gateEventStates[GATE_MINIBOSS] = 2;
+			Ceiling_MOveToValue(tag1, 40, 1128, 0);
+			Ceiling_MOveToValue(tag2, 40, 1208, 0);
+			Floor_MoveToValue(tag3, 64, 1056, 0);
+		}
+		break;
+
+	case 44: // While Floor switch is pressed, raise a platform.
+		if(Toggle) {
+			Floor_MoveToValue(tag1, 64, 1088, 0);
+			Floor_MoveToValue(tag2, 96, 1184, 0);
+		} else {
+			Floor_MoveToValue(tag1, 64, 1096, 0);
+			Floor_MoveToValue(tag2, 96, 1040, 0);
+		}
+		break;
+
+	case 45: // Area Gate - Queen's Study
+		break;
+
+	case 46: // Crystal Switch raises elevator. Lowers after delay.
+		if(Toggle) {
+			Floor_MoveToValue(tag1, 64, 1120, 0);
+			setActorScore(switchTag, 70);
+		} else {
+			Floor_MoveToValue(tag1, 64, 704, 0);
+		}
+		break;
+
+	case 47: // Hallway Darts 1
+		if(Toggle && !getUserVariable(switchTag, "bEndState")) {
+			Floor_LowerToLowest(tag1, 64);
+			SetUserVariable(switchTag, "bEndState", true);
+			PrintBold(s:"PEW PEW DART SHOOTY - 1");
+		}
+		break;
+
+	case 48: // Hallway Darts 2
+		if(Toggle && !getUserVariable(switchTag, "bEndState")) {
+			Floor_LowerToLowest(tag1, 64);
+			SetUserVariable(switchTag, "bEndState", true);
+			PrintBold(s:"PEW PEW DART SHOOTY - 2");
+		}
+		break;
+
+	case 49: // Crystal Switch Raises platform, lowers after a moment.
+		if(Toggle) {
+			Floor_MoveToValue(tag1, 40, 1184, 0);
+			setActorScore(switchTag, 60);
+		} else {
+			Floor_MoveToValue(tag1, 40, 1000, 0);
+		}
+		break;
+
+	case 50: // Crystal Switch Raises platform, lowers after a moment.
+		if(Toggle) {
+			Floor_MoveToValue(tag1, 40, 1184, 0);
+			setActorScore(switchTag, 60);
+		} else {
+			Floor_MoveToValue(tag1, 40, 1000, 0);
+		}
+		break;
+
+	case 51: // Save Room
+		break;
+
+	case 52: // Floor Switch raises pillar (Permanent)
+		queueEventSave(action, loading);
+		SetUserVariable(switchTag, "bEndState", true);
+		Floor_LowerToLowest(tag1, 64);
+		Floor_MoveToValue(tag2, 40, 1088, 0);
+		break;
+
+	case 53: // Mine Shaft
+		break;
+
+	case 54: // Area Gate - King's Dungeon
+		break;
+
+	case 55: // Area Gate - Throne Room
+		break;
+
+	case 56: // Crystal Switch raises elevator. Lowers after a moment.
+		if(Toggle) {
+			Floor_MoveToValue(tag1, 40, 1280, 0);
+			setActorScore(switchTag, 140);
+		} else {
+			Floor_MoveToValue(tag1, 40, 992, 0);
+		}
+		break;
+
+	case 57: // Waterfall Actors
+		break;
+
+	case 58: // Waterfall Actors
+		break;
+
+	case 59: // Waterfall Actors
+		break;
+
+	case 60: // Waterfall Actors
+		break;
+
+	case 61: // Area Gate - Outskirts
+		break;
+	}
+}
+
+script "gateway_return" (void)
+{
+	if(getUserVariable(147, "bEndState")) {
+		SetUserVariable(147, "bEndState", false);
+		Floor_Stop(147);
+		Floor_MoveToValue(147, 64, 1064, 0);
+	}
+
+	if(getUserVariable(148, "bEndState")) {
+		SetUserVariable(148, "bEndState", false);
+		Floor_Stop(148);
+		Floor_MoveToValue(148, 64, 1032, 0);
+	}
+}

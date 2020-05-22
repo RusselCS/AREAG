@@ -172,3 +172,13 @@ function bool anyButtonPressed(int buttons, int oldButtons)
 		((buttons & BT_LOOKUP) && !(oldButtons & BT_LOOKUP)) ||
 		((buttons & BT_LOOKDOWN) && !(oldButtons & BT_LOOKDOWN));
 }
+
+function void setActorScore(int tid, int scr) {
+	if(GetActorScore(tid) != scr) {
+		SetActorProperty(tid, APROP_Score, scr);
+	}
+}
+
+function int getActorScore(int tid) {
+	return GetActorProperty(tid, APROP_Score);
+}

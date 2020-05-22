@@ -138,3 +138,19 @@ function void transformFromDrone(int tid, int noTakeBat)
 	UnmorphActor(tid, true);
 	SetActorHealth(tid, CheckActorInventory(tid, "PlayerTempHealth"));
 }
+
+function void setSwitchState(int tid, str state, int loading) {
+	if(loading) {
+		SetActorState(tid, state);
+	}
+}
+
+function void queueEventSave(int evt, bool loading) {
+	if(!loading) {
+		ACS_NamedExecuteAlways("map_queueEvent", 0, evt);
+	}
+}
+
+function int checkEventState(int evt) {
+	return ACS_NamedExecuteWithResult("map_checkEvent", evt);
+}

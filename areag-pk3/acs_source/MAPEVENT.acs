@@ -1,0 +1,20 @@
+#library "MAPEVENT"
+#nocompact
+#include "zcommon.acs"
+#include "commfunc.acs"
+#include "mapfunc.acs"
+
+// RESPAWN - Pretty sure does not execute *at all* in singleplayer.
+
+// OPEN scripts only trigger once per map.
+// ENTER scripts only trigger once per map.
+// RETURN scripts activate on every map change AFTER ENTER has been run at least once.
+// UNLOADING executes on every map change, on the map you're leaving.
+
+script "map_event_open" OPEN
+{
+    
+}
+
+#include "events/0_OUTSKI.acs"
+#include "events/1_GATE.acs"

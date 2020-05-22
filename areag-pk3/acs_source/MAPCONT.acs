@@ -1,6 +1,6 @@
 #library "mapcont"
-#include "zcommon.acs"
 #nocompact
+#include "zcommon.acs"
 #include "commfunc.acs"
 #include "mapfunc.acs"
 
