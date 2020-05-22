@@ -74,8 +74,10 @@ class DoorManager : Actor
                 CurSector.Lines[i].Flags |= 0x00000002; // ELineFlags.ML_BLOCKMONSTERS;
             }
         }
-
-        Ceiling_MoveToValue(tid, 96, args[4]);
+        
+        if(bApplyDoor) {
+            Ceiling_MoveToValue(tid, 96, args[4]);
+        }
     }
 
     override void Tick() {

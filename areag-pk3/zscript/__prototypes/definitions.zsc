@@ -136,40 +136,79 @@ class HitboxParticle : BasicEffect
     {
     Spawn:
         CHWP BB 1 bright;
-        stop;
+        wait;
     }
 }
 
 class HitboxDebug : Actor
 {
+	Array<Actor> items;
+
+	override void PostBeginPlay() {
+		Super.PostBeginPlay();
+		createHitbox();
+	}
+
     override void Tick() {
         Super.Tick();
+		updateHitbox();
+    }
 
-		for(int i = 0; i < radius; i++) {
-			A_SpawnItemEx("HitboxParticle", radius, i, 1);
-			A_SpawnItemEx("HitboxParticle", radius, -i, 1);
-			A_SpawnItemEx("HitboxParticle", -radius, i, 1);
-			A_SpawnItemEx("HitboxParticle", -radius, -i, 1);
-			A_SpawnItemEx("HitboxParticle", i, radius, 1);
-			A_SpawnItemEx("HitboxParticle", -i, radius, 1);
-			A_SpawnItemEx("HitboxParticle", i, -radius, 1);
-			A_SpawnItemEx("HitboxParticle", -i, -radius, 1);
+	override void OnDestroy() {
+		Super.OnDestroy();
+		destroyHitbox();
+	}
 
-			A_SpawnItemEx("HitboxParticle", radius, i, height);
-			A_SpawnItemEx("HitboxParticle", radius, -i, height);
-			A_SpawnItemEx("HitboxParticle", -radius, i, height);
-			A_SpawnItemEx("HitboxParticle", -radius, -i, height);
-			A_SpawnItemEx("HitboxParticle", i, radius, height);
-			A_SpawnItemEx("HitboxParticle", -i, radius, height);
-			A_SpawnItemEx("HitboxParticle", i, -radius, height);
-			A_SpawnItemEx("HitboxParticle", -i, -radius, height);
+	void createHitbox() {
+		for(int i = 0; i < radius; i+=2) {
+			addToItems("HitboxParticle", radius, i, 1);
+			addToItems("HitboxParticle", radius, -i, 1);
+			addToItems("HitboxParticle", -radius, i, 1);
+			addToItems("HitboxParticle", -radius, -i, 1);
+			addToItems("HitboxParticle", i, radius, 1);
+			addToItems("HitboxParticle", -i, radius, 1);
+			addToItems("HitboxParticle", i, -radius, 1);
+			addToItems("HitboxParticle", -i, -radius, 1);
+
+			addToItems("HitboxParticle", radius, i, height);
+			addToItems("HitboxParticle", radius, -i, height);
+			addToItems("HitboxParticle", -radius, i, height);
+			addToItems("HitboxParticle", -radius, -i, height);
+			addToItems("HitboxParticle", i, radius, height);
+			addToItems("HitboxParticle", -i, radius, height);
+			addToItems("HitboxParticle", i, -radius, height);
+			addToItems("HitboxParticle", -i, -radius, height);
 		}
 
-		for(int i = 0; i < height; i++) {
-			A_SpawnItemEx("HitboxParticle", radius, radius, i);
-			A_SpawnItemEx("HitboxParticle", radius, -radius, i);
-			A_SpawnItemEx("HitboxParticle", -radius, radius, i);
-			A_SpawnItemEx("HitboxParticle", -radius, -radius, i);
+		for(int i = 1; i <= height; i+=2) {
+			addToItems("HitboxParticle", radius, radius, i);
+			addToItems("HitboxParticle", radius, -radius, i);
+			addToItems("HitboxParticle", -radius, radius, i);
+			addToItems("HitboxParticle", -radius, -radius, i);
 		}
-    } // End of Tick()
+	}
+
+	void updateHitbox() {
+		for(int i = 0; i < items.size(); i++) {
+			items[i].A_Warp(AAPTR_MASTER, items[i].args[0], items[i].args[1], items[i].args[2], 0, WARPF_NOCHECKPOSITION|WARPF_INTERPOLATE|WARPF_ABSOLUTEOFFSET);
+		}
+	}
+
+	void destroyHitbox() {
+		for(int i = 0; i < items.size(); i++) {
+			items[i].Destroy();
+		}
+		items.clear();
+	}
+
+	void addToItems(String item, int posx, int posy, int posz) {
+		bool success;
+		Actor act;
+
+		[success, act] = A_SpawnItemEx(item, posx, posy, posz, 0, 0, 0, 0, SXF_SETMASTER);
+		act.args[0] = posx;
+		act.args[1] = posy;
+		act.args[2] = posz;
+		items.push(act);
+	}
 }
