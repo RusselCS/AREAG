@@ -13,6 +13,7 @@ DoomEdNums
     10567 = AreaGate
     10568 = SavePoint
     10569 = MapPickup
+    10570 = ZSCWallSwitch
 
     20000 = JarSmall
     20001 = JarBig
