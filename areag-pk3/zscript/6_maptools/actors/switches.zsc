@@ -108,8 +108,8 @@ class ZSCFloorSwitch : Actor
 
     static const String[] steps = {
         "AREAGPlayer",
-        "DronePlayerDummy",
         "AREAGDrone",
+        "DronePlayerDummy",
         "AREAGPushBlock",
         "AREAGPushBlockSmall"
     };
