@@ -1,0 +1,74 @@
+class RoomController : Actor
+{
+    AutomapRoom amRoom;
+    array<Line> checkedLines;
+
+    void traverseSectors(Sector sec) {
+
+        addToSet(sec);
+
+        for(int i = 0; i < sec.Lines.size(); i++) {
+            if(!lineInSet(sec.Lines[i]) && !(sec.Lines[i].Flags & 0x00000080) && !(sec.Lines[i].Flags & 0x00000001)) {
+                checkedLines.push(sec.Lines[i]);
+
+                Sector front = sec.Lines[i].FrontSector;
+                Sector back = sec.Lines[i].BackSector;
+                if(front && !sectorInSet(front)) {
+                    traverseSectors(front);
+                }
+
+                if(back && !sectorInSet(back)) {
+                    traverseSectors(back);
+                }
+            }
+        }
+    }
+
+    bool lineInSet(Line lin) {
+        bool found = false;
+
+        for(int i = 0; !found && i < checkedLines.size(); i++) {
+            if(checkedLines[i] == lin) {
+                found = true;
+            }
+        }
+
+        return found;
+    }
+
+    bool sectorInSet(Sector sec) {
+        bool found = false;
+
+        for(int i = 0; !found && i < amRoom.size(); i++) {
+            if(amRoom.get(i) == sec) {
+                found = true;
+            }
+        }
+
+        return found;
+    }
+
+    void addToSet(Sector sec) {
+        if(!sectorInSet(sec)) {
+            amRoom.addSector(sec);
+        }
+    }
+
+    override void PostBeginPlay() {
+        amRoom = new("AutomapRoom");
+        traverseSectors(CurSector);
+        A_Log(string.format("Sectors found: %d", amRoom.size()));
+
+        AutomapRepository repo = AutomapRepository(eventhandler.find("AutomapRepository"));
+        if(repo) {
+            repo.addRoom(amRoom);
+        }
+    }
+
+    states
+    {
+    Spawn:
+        TNT1 A 1;
+        wait;
+    }
+}

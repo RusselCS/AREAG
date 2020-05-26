@@ -1,5 +1,7 @@
 version "2.4"
 
+#include "zscript/7_HUD/AREAGStatusBar.zsc"
+
 #include "zscript/__prototypes/definitions.zsc"
 #include "zscript/6_maptools/0_mapdata/mapdata.entity.zsc"
 #include "zscript/6_maptools/0_mapdata/mapdata.data.zsc"
@@ -11,6 +13,9 @@ version "2.4"
 #include "zscript/6_maptools/actors/shop.zsc"
 #include "zscript/6_maptools/actors/switches.zsc"
 #include "zscript/6_maptools/actors/tablet.zsc"
+#include "zscript/6_maptools/1_sectorgraph/roomcontroller.zsc"
+#include "zscript/6_maptools/1_sectorgraph/automap.repo.zsc"
+#include "zscript/6_maptools/1_sectorgraph/automap.entity.zsc"
 
 #include "zscript/__prototypes/currency.zsc"
 #include "zscript/__prototypes/basicinventory.zsc"

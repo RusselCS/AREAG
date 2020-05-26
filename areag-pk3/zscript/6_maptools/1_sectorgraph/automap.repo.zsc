@@ -1,0 +1,8 @@
+class AutomapRepository : EventHandler
+{
+    Array<AutomapRoom> rooms;
+
+    void addRoom(AutomapRoom rm) {
+        rooms.push(rm);
+    }
+}

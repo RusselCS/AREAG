@@ -1,0 +1,16 @@
+class AutomapRoom
+{
+    private Array<Sector> room;
+
+    void addSector(Sector sec) {
+        room.push(sec);
+    }
+
+    int size() {
+        return room.size();
+    }
+
+    Sector get(int i) {
+        return room[i];
+    }
+}

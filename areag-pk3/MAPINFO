@@ -14,6 +14,7 @@ DoomEdNums
     10568 = SavePoint
     10569 = MapPickup
     10570 = ZSCWallSwitch
+	10571 = RoomController
 
     20000 = JarSmall
     20001 = JarBig
@@ -46,7 +47,8 @@ cluster 1
 
 GAMEINFO
 {
-    EventHandlers = "MapUtilInit"
+    EventHandlers = "MapUtilInit", "AutomapRepository"
+	statusbarclass = "AREAGStatusBar"
 }
 
 map ADV00 "Outskirts" 
