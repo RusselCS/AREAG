@@ -24,21 +24,15 @@ script "map_door" (int tag, int top, int bottom) {
 
     if(GetSectorCeilingZ(tag, 0, 0) == fixBottom) {
         int tid = ActivatorTID();
-        Radius_Quake(10, 4, 0, 5, tag);
-        Ceiling_RaiseByValue(tag, 96, 16);
+        Ceiling_RaiseByValue(tag, 60, 32);
         Tagwait(tag);
-        Delay(15);
-        Ceiling_RaiseByValue(tag, 20, 64);
-        Tagwait(tag);
-        Ceiling_MoveToValue(tag, 40, top);
+        Ceiling_MoveToValue(tag, 120, top);
         TagWait(tag);
-        Radius_Quake(5, 4, 0, 5, tag);
         Delay(70);
         while(actorInSector(tid, tag)) {
             Delay(1);
         }
-        Radius_Quake(5, 4, 0, 5, tag);
-        Ceiling_MoveToValue(tag, 32, bottom);
+        Ceiling_MoveToValue(tag, 64, bottom);
 
         bool movingUp = false;
 

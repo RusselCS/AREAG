@@ -14,7 +14,7 @@ actor AREAGPlayer : ZSCPlayerPawn
 	player.startitem "MaxHealthBars", 4
 	player.startitem "HealthBars", 4
     player.startitem "ShieldBars", 4
-	Player.FallingScreamSpeed 32.0, 1000.0
+	Player.FallingScreamSpeed 35.0, 1000.0
 	player.viewheight 48.0
 	mass 100
 	gravity 1.2

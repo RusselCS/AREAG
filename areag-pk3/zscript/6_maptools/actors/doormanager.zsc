@@ -1,5 +1,5 @@
 // DOORS
-class DoorManager : Actor
+class DoorController : Actor
 {
     //$Category AREAG-Map Tools
     //$Title Door Controller

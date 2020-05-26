@@ -9,7 +9,7 @@ DoomEdNums
 	10563 = ZSCFloorSwitch
 	10564 = AREAGPushBlock
     10565 = AREAGPushBlockSmall
-    10566 = DoorManager
+    10566 = DoorController
     10567 = AreaGate
     10568 = SavePoint
     10569 = MapPickup
