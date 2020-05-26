@@ -74,24 +74,24 @@ map ADV01 "Grand Gateway"
 	useplayerstartz
 }
 
-map ADV02 "Lost Impact" 
+map ADV02 "Queen's Study" 
 { 
 	levelnum = 3
 	cluster = 1
 	pixelratio = 1.0
-	music = "M_GATE"
+	music = "M_STUDY"
 	sky1 = "BLACK", 0 
 	forcenoskystretch 
 	clipmidtextures
 	useplayerstartz
 }
 
-map ADV03 "Queen's Study" 
+map ADV03 "Lost Impact" 
 { 
 	levelnum = 4
 	cluster = 1
 	pixelratio = 1.0
-	music = "M_GATE"
+	music = "M_IMPACT"
 	sky1 = "BLACK", 0 
 	forcenoskystretch 
 	clipmidtextures
