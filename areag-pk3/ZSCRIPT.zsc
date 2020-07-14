@@ -1,4 +1,4 @@
-version "2.4"
+version "3.7.0"
 
 #include "zscript/7_HUD/AREAGStatusBar.zsc"
 
@@ -13,6 +13,8 @@ version "2.4"
 #include "zscript/6_maptools/actors/shop.zsc"
 #include "zscript/6_maptools/actors/switches.zsc"
 #include "zscript/6_maptools/actors/tablet.zsc"
+#include "zscript/6_maptools/actors/pitsector.zsc"
+#include "zscript/6_maptools/actors/breakwall.zsc"
 #include "zscript/6_maptools/1_sectorgraph/roomcontroller.zsc"
 #include "zscript/6_maptools/1_sectorgraph/automap.repo.zsc"
 #include "zscript/6_maptools/1_sectorgraph/automap.entity.zsc"

@@ -27,3 +27,13 @@ Model SaveBase
 
    FrameIndex SAVE B 0 0
 }
+
+Model BreakableWall
+{
+   Path "models"
+   Model 0 "M_BWALL.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+
+   FrameIndex BWOS A 0 0
+}

@@ -1,5 +1,7 @@
 extend class ZSCPlayerPawn {
 
+    const COYOTE_TIME = 5;
+
     bool bJumpCancel;
     bool bLegsInWater;
     bool bHeadInWater;
@@ -18,7 +20,13 @@ extend class ZSCPlayerPawn {
     double prevBobYFracMult;
     double prevViewBob;
 
+    int airTime;
+    int jumpDelay;
+    int iBaseStepHeight;
+
     int iStepCD;
+
+    Actor aTPPoint;
 
     void AREAGMoveInit() {
         Thing_ChangeTID(0, PlayerNumber()+1000);
@@ -31,6 +39,8 @@ extend class ZSCPlayerPawn {
         bLegsInWater = false;
         bheadInWater = false;
         fBaseGravity = gravity;
+        airTime = 0;
+        jumpDelay = 0;
         
         iJumpInv = CountInv("BaseJumpSpeed");
         fBaseJump = float(iJumpInv) / 100.0;
@@ -64,6 +74,7 @@ extend class ZSCPlayerPawn {
 
     void AREAGMoveTick() {
 
+        // FALL STUN
         if(bOnGround && lastZVel < -FallingScreamMinSpeed) {
             A_GiveInventory("FallStunTime", 140);
             A_GiveInventory("ScreenShakeTime", 5);
@@ -71,8 +82,22 @@ extend class ZSCPlayerPawn {
             A_PlaySound("player/crashland", CHAN_BODY);
         }
 
-        // JUMP CANCEL
-        if(AREAG_Func.checkButtonReleased(BT_JUMP, iButtons, iOldButtons) && vel.z > 0 && bJumpCancel)
+        // JUMPING
+        if((bOnGround || airTime <= COYOTE_TIME) && (BT_JUMP & iButtons) && jumpDelay == 0 && CountInv("FallStunTime") == 0) {
+            jumpDelay = 10;
+            Vel.Z = JumpZ * 35 / TICRATE;
+            if(CountInv("DroneFlag")) {
+                A_PlaySound("*dronejump", CHAN_BODY);
+            } else {
+                if(CountInv("SteamGreavesFlag") == 0) {
+                    A_PlaySound("*jump", CHAN_BODY);
+                } else {
+                    A_PlaySound("*superjump", CHAN_BODY);
+                }
+            }
+        }
+
+        if(AREAG_Func.checkReleased(BT_JUMP, iButtons, iOldButtons) && vel.z > 0 && bJumpCancel)
 		{
 			ThrustThingZ(0, 0, 0, 0);
 			bJumpCancel = false;
@@ -124,7 +149,7 @@ extend class ZSCPlayerPawn {
 			bHeadInWater = false;
 		}
 
-
+        // JUMP SPEED MANIPULATION (eg. Steam Greaves)
         if(iJumpInv != CountInv("BaseJumpSpeed"))
 		{
             iJumpInv = CountInv("BaseJumpSpeed");
@@ -146,16 +171,48 @@ extend class ZSCPlayerPawn {
 			AREAGUpdateSpeeds();
 		}
 
-        if(!bOnGround && viewbob != 0.0 && pos.z - floorz > 16.0) {
-            viewbob = 0.0;
+        // GROUND CHECKS        
+        if(!bOnGround) {
+            if(viewbob != 0.0 && pos.z - floorz > 16.0) {
+                viewbob = 0.0;
+            }
+            airTime++;
         }
 
         if(bOnGround && viewbob != 1.0) {
             viewbob = 1.0;
         }
 
-        if(bOnGround && !bJumpCancel) {
-            bJumpCancel = true;
+        if(bOnGround) {
+            if(!bJumpCancel) {
+                bJumpCancel = true;
+            }
+            if(jumpDelay > 0) {
+                jumpDelay--;
+            }
+            if(airTime > 0) {
+                jumpDelay = min(jumpDelay, airTime);
+                airTime = 0;
+            }
+        }
+
+        // PIT TELEPORTER
+        if(!aTPPoint) {
+            bool spSuccess = false;
+            while(!spSuccess) {
+                [spSuccess, aTPPoint] = A_SpawnItemEx("AREAGPitReturnPoint");
+            }
+        } else {
+            if(bOnGround) {
+                if(CountInv("PitTeleport") == 0) {
+                    aTPPoint.A_Warp(AAPTR_PLAYER1, -VelX*4, VelY*4, -(z-floorz), 0, WARPF_NOCHECKPOSITION|WARPF_ABSOLUTEANGLE);
+                    aTPPoint.A_SetAngle(angle);
+                } else {
+                    A_Stop();
+                    aTPPoint.A_Warp(AAPTR_PLAYER1, 0, 0, -(z-floorz), 0, WARPF_NOCHECKPOSITION|WARPF_MOVEPTR);
+                    A_TakeInventory("PitTeleport", 999);
+                }
+            }
         }
     }
 
@@ -275,3 +332,21 @@ class AREAGLandSmokeRight : AREAGLandSmokeLeft
         A_SetAngle(angle-4);
     }
 }
+
+class AREAGPitReturnPoint : Actor
+{
+    Default
+    {
+        +NOINTERACTION;
+        +NOCLIP;
+        Renderstyle "None";
+    }
+    States
+    {
+    Spawn:
+        TROO A 1;
+        wait;
+    }
+}
+
+class PitTeleport : Once {}

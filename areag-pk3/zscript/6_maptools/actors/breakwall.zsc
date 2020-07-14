@@ -1,0 +1,66 @@
+class BreakableWall : BasicActor
+{
+    Default
+    {
+        //$Category AREAG-Map Tools
+        //$Title Breakable Wall
+        //$Sprite E0WAC0
+        //$Arg0 Model ID
+        +BasicActor.SHOWHITBOX;
+        +NOGRAVITY;
+        Height 32;
+        Radius 16;
+        Scale 2.5;
+    }
+
+    static const StateLabel[] waitStates = {
+        "Outskirts",
+        "Gateway",
+        "Study",
+        "Impact",
+        "Dungeon",
+        "Shadows"
+	};
+
+    override void postBeginPlay() {
+        super.postBeginPlay();
+
+        scale.x = 1.0;
+        scale.y = 1.0;
+
+        int lvl = level.levelnum-1;
+        if (lvl > -1 && lvl < waitStates.size()) {
+            ResolveState(waitStates[lvl]);
+        } else {
+            ResolveState("Spawn");
+        }
+        
+        self.frame = args[0];
+    }
+
+    States
+    {
+    Spawn:
+        TNT1 A 1;
+        wait;
+
+    Outskirts:
+        BWOS A 1;
+        wait;
+    Gateway:
+        BWGW A 1;
+        wait;
+    Study:
+        BWQS A 1;
+        wait;
+    Impact:
+        BWLI A 1;
+        wait;
+    Dungeon:
+        BWKD A 1;
+        wait;
+    Shadows:
+        BWRS A 1;
+        wait;
+    }
+}

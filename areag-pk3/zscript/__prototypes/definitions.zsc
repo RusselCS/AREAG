@@ -101,7 +101,26 @@ class BasicProjectile : Actor
 }
 
 struct AREAG_Func {
-    static bool checkButtonReleased(int button, int buttons, int oldButtons)
+	static bool getCvarBool(string cv)
+	{
+		let res = CVar.findCVar(cv);
+
+		if(res) {
+			return res.getBool();
+		}
+		return false;
+	}
+
+	static bool checkPressed(int button, int buttons, int oldButtons)
+    {
+        if((buttons & button) && !(oldButtons & button))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    static bool checkReleased(int button, int buttons, int oldButtons)
     {
         if(!(buttons & button) && (oldButtons & button))
         {
@@ -140,13 +159,18 @@ class HitboxParticle : BasicEffect
     }
 }
 
-class HitboxDebug : Actor
+class BasicActor : Actor
 {
+	int m_basicActorFlags;
+
+	flagdef SHOWHITBOX: m_basicActorFlags, 0;
+
 	Array<Actor> items;
+
+	bool bToggleHitbox;
 
 	override void PostBeginPlay() {
 		Super.PostBeginPlay();
-		createHitbox();
 	}
 
     override void Tick() {
@@ -156,7 +180,6 @@ class HitboxDebug : Actor
 
 	override void OnDestroy() {
 		Super.OnDestroy();
-		destroyHitbox();
 	}
 
 	void createHitbox() {
@@ -189,8 +212,23 @@ class HitboxDebug : Actor
 	}
 
 	void updateHitbox() {
-		for(int i = 0; i < items.size(); i++) {
-			items[i].A_Warp(AAPTR_MASTER, items[i].args[0], items[i].args[1], items[i].args[2], 0, WARPF_NOCHECKPOSITION|WARPF_INTERPOLATE|WARPF_ABSOLUTEOFFSET);
+
+		if(bSHOWHITBOX || AREAG_Func.getCvarBool("db_viewhitboxes")) {
+			if(!bToggleHitbox) {
+				bToggleHitbox = true;
+				createHitbox();
+			}
+		} else {
+			if(bToggleHitbox) {
+				bToggleHitbox = false;
+				destroyHitbox();
+			}
+		}
+
+		if(bToggleHitbox) {
+			for(int i = 0; i < items.size(); i++) {
+				items[i].A_Warp(AAPTR_MASTER, items[i].args[0], items[i].args[1], items[i].args[2], 0, WARPF_NOCHECKPOSITION|WARPF_INTERPOLATE|WARPF_ABSOLUTEOFFSET);
+			}
 		}
 	}
 
@@ -212,3 +250,5 @@ class HitboxDebug : Actor
 		items.push(act);
 	}
 }
+
+class HitboxDebug : BasicActor {}

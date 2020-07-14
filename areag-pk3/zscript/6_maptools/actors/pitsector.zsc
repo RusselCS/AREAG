@@ -1,0 +1,22 @@
+class PitSector : Actor
+{
+    default
+    {
+        +NOINTERACTION;
+    }
+
+    override void PostBeginPlay() {
+        super.PostBeginPlay();
+        
+        Cursector.damagetype = "Falling";
+        Cursector.damageamount = 25;
+        Cursector.damageinterval = 1;
+    }
+
+    States
+    {
+    Spawn:
+        TNT1 A 1;
+        stop;
+    }
+}

@@ -9,6 +9,7 @@ class AREAGProtoPlayer : PlayerPawn {
     double lastZVelLerp;
 
     bool bOnGround;
+    bool bOldOnGround;
 
     int iButtons, iOldButtons;
 
@@ -22,6 +23,7 @@ class AREAGProtoPlayer : PlayerPawn {
         lerpVelZ = 0.0;
         zVelLerp = 0.0;
         lastZVelLerp = 0.0;
+        bOldOnGround = false;
         bOnGround = true;
     }
 
@@ -33,7 +35,8 @@ class AREAGProtoPlayer : PlayerPawn {
     override void Tick() {
         Super.Tick();
 
-        // On Ground bool based on Marrub/Allie's Lithium code.
+        // On Ground bool based on Allie's Lithium code.
+        bOldOnGround = bOnGround;
         bOnGround = pos.z ~== floorz || bONMOBJ || bMBFBOUNCER;
 
         // This will be overridden by subclasses.
@@ -69,61 +72,35 @@ class AREAGProtoPlayer : PlayerPawn {
 
     // -----------------------------------------------------
 
-    // [Russ] This method is a near direct port from GZDoom.pk3.
-    // There's only a few additional lines added to the bottom for drone jump sounds.
+    // [Russ] Unused-- Jump code handled in 1_playermove.zsc
+
     override void CheckJump() {
-        let player = self.player;
-		// [RH] check for jump
-		if (player.cmd.buttons & BT_JUMP)
-		{
-			if (player.crouchoffset != 0)
-			{
-				// Jumping while crouching will force an un-crouch but not jump
-				player.crouching = 1;
-			}
-			else if (waterlevel >= 2)
-			{
-				Vel.Z = 4 * Speed;
-			}
-			else if (bNoGravity)
-			{
-				Vel.Z = 3.;
-			}
-			else if (level.IsJumpingAllowed() && player.onground && player.jumpTics == 0)
-			{
-				double jumpvelz = JumpZ * 35 / TICRATE;
-				double jumpfac = 0;
+        // let player = self.player;
+        // let coyoteTime = COYOTE_TIME;
 
-				// [BC] If the player has the high jump power, double his jump velocity.
-				// (actually, pick the best factors from all active items.)
-				for (let p = Inv; p != null; p = p.Inv)
-				{
-					let pp = PowerHighJump(p);
-					if (pp)
-					{
-						double f = pp.Strength;
-						if (f > jumpfac) jumpfac = f;
-					}
-				}
-				if (jumpfac > 0) jumpvelz *= jumpfac;
+		// if (player.cmd.buttons & BT_JUMP)
+		// {
+		// 	if (player.jumpTics <= 0 && player.jumpTics > -COYOTE_TIME)
+		// 	{
+		// 		double jumpvelz = JumpZ * 35 / TICRATE;
 
-				Vel.Z += jumpvelz;
-				bOnMobj = false;
-				player.jumpTics = -1;
-				if (!(player.cheats & CF_PREDICTING)) { // [Russ] The following bit was changed for AREAG...
+		// 		Vel.Z = jumpvelz;
+		// 		bOnMobj = false;
+		// 		player.jumpTics = -COYOTE_TIME;
+		// 		if (!(player.cheats & CF_PREDICTING)) { // [Russ] The following bit was changed for AREAG...
                     
-                    if(CountInv("DroneFlag")) {
-                        A_PlaySound("*dronejump", CHAN_BODY);
-                    } else {
-                        if(CountInv("SteamGreavesFlag") == 0) {
-                            A_PlaySound("*jump", CHAN_BODY);
-                        } else {
-                            A_PlaySound("*superjump", CHAN_BODY);
-                        }
-                    }
-                }
-			}
-		}
+        //             if(CountInv("DroneFlag")) {
+        //                 A_PlaySound("*dronejump", CHAN_BODY);
+        //             } else {
+        //                 if(CountInv("SteamGreavesFlag") == 0) {
+        //                     A_PlaySound("*jump", CHAN_BODY);
+        //                 } else {
+        //                     A_PlaySound("*superjump", CHAN_BODY);
+        //                 }
+        //             }
+        //         }
+		// 	}
+		// }
     }
 
 }
