@@ -8,33 +8,45 @@ class BreakableWall : BasicActor
         //$Arg0 Model ID
         +BasicActor.SHOWHITBOX;
         +NOGRAVITY;
+        +SOLID;
+        +SHOOTABLE;
+        +NOBLOOD;
+        +NOTARGETSWITCH;
+        +DONTFALL;
+        mass 99999999999999;
+        painchance "Normal", 0;
+        painchance "Explosive", 256;
         Height 32;
         Radius 16;
         Scale 2.5;
     }
 
-    static const StateLabel[] waitStates = {
-        "Outskirts",
-        "Gateway",
-        "Study",
-        "Impact",
-        "Dungeon",
-        "Shadows"
+    static const String[] waitStates = {
+        "NUM1", // None
+        "BWOS", // Outskirts
+        "BWGW", // Gateway
+        "BWQS", // Study
+        "BWLI", // Impact
+        "BWKD", // Dungeon
+        "BWRS" // Shadows
 	};
 
-    override void postBeginPlay() {
-        super.postBeginPlay();
-
+    override void BasicInit() {
+        Super.BasicInit();
         scale.x = 1.0;
         scale.y = 1.0;
 
-        int lvl = level.levelnum-1;
-        if (lvl > -1 && lvl < waitStates.size()) {
-            ResolveState(waitStates[lvl]);
-        } else {
-            ResolveState("Spawn");
+        int lvl = level.levelnum;
+        if (lvl < 0 || lvl >= waitStates.size()) {
+            lvl = 0;
         }
         
+        self.sprite = GetSpriteIndex(name(waitStates[lvl]));
+    }
+
+    override void BasicTick() {
+        super.BasicTick();
+
         self.frame = args[0];
     }
 
@@ -43,24 +55,21 @@ class BreakableWall : BasicActor
     Spawn:
         TNT1 A 1;
         wait;
-
-    Outskirts:
-        BWOS A 1;
+    Pain:
+        TNT1 A 0 Thing_Destroy(tid, false, 0);
+        TNT1 A 1;
         wait;
-    Gateway:
-        BWGW A 1;
-        wait;
-    Study:
-        BWQS A 1;
-        wait;
-    Impact:
-        BWLI A 1;
-        wait;
-    Dungeon:
-        BWKD A 1;
-        wait;
-    Shadows:
-        BWRS A 1;
-        wait;
+    Death:
+        TNT1 AAAAAAAAAAAAAAA 1 A_SpawnItemEx("TribalShieldPuff", frandom(-10, 10), frandom(-10, 10), 16+frandom(-10, 10));
+        stop;
+    
+    Placeholder:
+        BWOS A 0;
+        BWGW A 0;
+        BWQS A 0;
+        BWLI A 0;
+        BWKD A 0;
+        BWRS A 0;
+        stop;
     }
 }

@@ -2,6 +2,9 @@ class SavePoint : Actor
 {
     Default
     {
+        //$Category AREAG-Map Tools
+        //$Title Save Point
+        //$Sprite E0WCJ0
         radius 32;
         height 128;
         +NOINTERACTION;

@@ -82,6 +82,7 @@ class WhipProjectileL : BasicFastProjectile
         +NOTIMEFREEZE;
         +HITTRACER;
         +BLOODSPLATTER;
+		damagetype "Explosive";
         radius 4;
         radius 2;
     }

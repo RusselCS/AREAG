@@ -2,7 +2,7 @@ class LaserTrap : Actor
 {
     //$Category AREAG-Traps
     //$Title Laser Trap
-    //$Sprite E0WBA0 -- INCORRECT. FIX LATER.
+    //$Sprite E0WCA0
     //$NotAngled
 
     Default

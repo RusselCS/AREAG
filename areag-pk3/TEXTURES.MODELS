@@ -13,3 +13,11 @@ Texture "SAVEBASE", 32, 32
 	WorldPanning
 	Patch "P_SAVBAS", 0, 0
 }
+
+Texture CCBRCK1F, 32, 32
+{
+	XScale 1.000
+	YScale 1.000
+	WorldPanning
+	Patch CCBRCK1F, 0, 0
+}

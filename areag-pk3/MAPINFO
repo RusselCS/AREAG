@@ -14,8 +14,7 @@ DoomEdNums
     10568 = SavePoint
     10569 = MapPickup
     10570 = ZSCWallSwitch
-	10571 = RoomController
-	10572 = PitSector
+	10573 = BreakableWall
 
     20000 = JarSmall
     20001 = JarBig
@@ -24,10 +23,6 @@ DoomEdNums
     30002 = LaserTrap
 
     30100 = StoneGolem
-
-    31000 = RubyKeyPickup
-
-    31100 = KnifePouchPickup
 }
 
 episode TESTMAP

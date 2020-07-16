@@ -171,16 +171,24 @@ class BasicActor : Actor
 
 	override void PostBeginPlay() {
 		Super.PostBeginPlay();
+		BasicInit();
 	}
 
     override void Tick() {
         Super.Tick();
+		BasicTick();
 		updateHitbox();
     }
 
 	override void OnDestroy() {
 		Super.OnDestroy();
+		BasicDestroy();
+		destroyHitbox();
 	}
+
+	virtual void BasicInit() {}
+	virtual void BasicTick() {}
+	virtual void BasicDestroy() {}
 
 	void createHitbox() {
 		for(int i = 0; i < radius; i+=2) {

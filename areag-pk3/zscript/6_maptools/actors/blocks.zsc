@@ -3,7 +3,7 @@ class AREAGPushBlock : Actor
 {
     //$Category AREAG-Map Tools
     //$Title Large Stone Block
-	//$Sprite PCBAA0
+	//$Sprite E0WCF0
     //$NotAngled
 
     Default
@@ -29,7 +29,7 @@ class AREAGPushBlockSmall : AREAGPushBlock
 {
     //$Category AREAG-Map Tools
     //$Title Small Metal Block
-	//$Sprite PCBAA0
+	//$Sprite E0WCG0
     //$NotAngled
 
     Default

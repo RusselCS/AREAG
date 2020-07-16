@@ -3,7 +3,8 @@ class AreaGate : SecActHitFloor
 {
     //$Category AREAG-Map Tools
     //$Title Area Gate
-	//$Sprite E0WAC0
+    //$Sprite E0WCC0
+    //$NotAngled
     //$Arg0 Map ID
     //$Arg1 Door ID
 

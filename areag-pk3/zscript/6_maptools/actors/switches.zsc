@@ -175,7 +175,7 @@ class ZSCWallSwitch : Actor
 {
     //$Category AREAG-Map Tools
     //$Title Wall Switch
-	//$Sprite E0WAD0
+	//$Sprite E0WCI0
 
     bool bSwitchOn;
 

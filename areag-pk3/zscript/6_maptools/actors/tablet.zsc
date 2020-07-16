@@ -4,7 +4,7 @@ class TabletActivatable : SwitchingDecoration
 	{
 		//$Category AREAG-Map Tools
 		//$Title Tablet Marker
-		//$Sprite TBLTA0
+		//$Sprite E0WCH0
 		//$Arg0 Tablet Content
 		//$Arg0Type 11
 		//$Arg0Enum { 0 = "Lore"; 1 = "Puzzle"; }

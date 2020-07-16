@@ -175,6 +175,10 @@ class MapPickup : Actor
 {
     Default
     {
+        //$Category AREAG-Map Tools
+        //$Title Map Pickup
+        //$Sprite E0WCB0
+        //$NotAngled
         +NOGRAVITY;
     }
 
