@@ -4,7 +4,7 @@ class BreakableWall : BasicActor
     {
         //$Category AREAG-Map Tools
         //$Title Breakable Wall
-        //$Sprite E0WAC0
+        //$Sprite E0WCK0
         //$Arg0 Model ID
         +BasicActor.SHOWHITBOX;
         +NOGRAVITY;
