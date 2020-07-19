@@ -28,7 +28,7 @@ class BreakableWall : BasicActor
         "BWQS", // Study
         "BWLI", // Impact
         "BWKD", // Dungeon
-        "BWRS" // Shadows
+        "BWRS"  // Shadows
 	};
 
     override void BasicInit() {
