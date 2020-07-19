@@ -1,5 +1,6 @@
 extend class ZSCPlayerPawn {
-
+	mixin AREAG_Common;
+	
     const COYOTE_TIME = 5;
 
     bool bJumpCancel;
@@ -97,7 +98,7 @@ extend class ZSCPlayerPawn {
             }
         }
 
-        if(AREAG_Func.checkReleased(BT_JUMP, iButtons, iOldButtons) && vel.z > 0 && bJumpCancel)
+        if(checkReleased(BT_JUMP, iButtons, iOldButtons) && vel.z > 0 && bJumpCancel)
 		{
 			ThrustThingZ(0, 0, 0, 0);
 			bJumpCancel = false;
@@ -226,7 +227,7 @@ extend class ZSCPlayerPawn {
         vector2 p[2];
 
         double ang = wep.BobSpeed * 128 * Player.GetWBobSpeed() * (Level.Time) * 0.08;
-        prevViewBob = AREAG_Func.Lerp(prevViewBob, ViewBob, ticfrac/2);
+        prevViewBob = Lerp(prevViewBob, ViewBob, ticfrac/2);
         let xFracMult = cos(ang) * prevViewBob * 0.8;
         let yFracMult = 0.5-abs(sin(ang)) * prevViewBob * 0.5;
         double bobx = 0;
@@ -248,7 +249,7 @@ extend class ZSCPlayerPawn {
         prevBobYFracMult = yFracMult;
         
         vector2 interp = p[0] * (1 - 0.5) + p[1] * 0.5;
-        interp.y += AREAG_Func.Lerp(lerpVelZ, vel.z, 0.5);
+        interp.y += Lerp(lerpVelZ, vel.z, 0.5);
 
         // if(abs(sin(ang)) < 0.2 && bOnGround && AREAGIsWalking()) {
         //     if(iStepCD == 0) {

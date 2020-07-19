@@ -1,5 +1,7 @@
 class SpearTrap : Actor
 {
+    mixin AREAG_Common;
+	
     Default
     {
         //$Category AREAG-Traps
@@ -58,7 +60,7 @@ class SpearTrap : Actor
 
                 for(int i = 0; i < SpearTrap.steps.Size(); i++) {
                     if(CheckProximity(SpearTrap.steps[i], fCheckRadius, 1, CPXF_NOZ|CPXF_SETTARGET)) {
-                        bSwitchState = bSwitchState || (abs(target.pos.z - pos.z) < 32.0 && AREAG_Func.collidingBoxes(target, self, target.radius+fTrapRadius));
+                        bSwitchState = bSwitchState || (abs(target.pos.z - pos.z) < 32.0 && collidingBoxes(target, self, target.radius+fTrapRadius));
                     }
                 }
 

@@ -106,6 +106,8 @@ class ZSCFloorSwitch : Actor
 	//$Sprite E0WAB0
     //$NotAngled
 
+    mixin AREAG_Common;
+
     static const String[] steps = {
         "AREAGPlayer",
         "AREAGDrone",
@@ -134,7 +136,7 @@ class ZSCFloorSwitch : Actor
         if(!bEndState) {
             for(int i = 0; i < ZSCFloorSwitch.steps.Size(); i++) {
                 if(CheckProximity(ZSCFloorSwitch.steps[i], fCheckRadius, 1, CPXF_NOZ|CPXF_SETTARGET)) {
-                    bSwitchState = bSwitchState || (target.pos.z ~== pos.z && AREAG_Func.collidingBoxes(target, self, target.radius+self.radius+self.score));
+                    bSwitchState = bSwitchState || (target.pos.z ~== pos.z && collidingBoxes(target, self, target.radius+self.radius+self.score));
                 }
             }
 

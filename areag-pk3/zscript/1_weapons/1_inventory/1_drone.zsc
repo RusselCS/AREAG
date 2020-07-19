@@ -20,6 +20,8 @@ extend class AREAGProtoWeapon {
 
 class AREAGDrone : AREAGProtoPlayer
 {
+    mixin AREAG_Common;
+    
     const HP_TIME_MAX = 10;
     int iHpDrainTime;
 
@@ -151,7 +153,7 @@ class AREAGDrone : AREAGProtoPlayer
         vector2 p[2];
 
         double ang = wep.BobSpeed * 128 * Player.GetWBobSpeed() * (Level.Time) * 0.4;
-        prevViewBob = AREAG_Func.Lerp(prevViewBob, ViewBob, ticfrac/2);
+        prevViewBob = Lerp(prevViewBob, ViewBob, ticfrac/2);
         let yFracMult = 0.05-sin(ang) * prevViewBob * 0.05;
         double boby = 0;
 
@@ -166,7 +168,7 @@ class AREAGDrone : AREAGProtoPlayer
         prevBobYFracMult = yFracMult;
         
         vector2 interp = p[0] * (1 - 0.5) + p[1] * 0.5;
-        interp.y += AREAG_Func.Lerp(lerpVelZ, vel.z, 0.5);
+        interp.y += Lerp(lerpVelZ, vel.z, 0.5);
 
         // if(abs(sin(ang)) < 0.2 && bOnGround && AREAGIsWalking()) {
         //     if(iStepCD == 0) {

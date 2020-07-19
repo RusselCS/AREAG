@@ -1,5 +1,6 @@
 class AREAGProtoPlayer : PlayerPawn {
-
+	mixin AREAG_Common;
+	
     const WATER_GRAVITY_MULT = 0.2;
     const WATER_JUMP_MULT = 0.65;
 
@@ -54,11 +55,11 @@ class AREAGProtoPlayer : PlayerPawn {
             else              zVelLerp += 5 - lastZVel * 2;
         }
 
-        zVelLerp = AREAG_Func.Lerp(zVelLerp, 0, 0.277);
+        zVelLerp = Lerp(zVelLerp, 0, 0.277);
         lastZVel = Vel.Z;
 
         lastZVelLerp = lerpVelZ;
-        lerpVelZ = AREAG_Func.Lerp(lerpVelZ, zVelLerp, 0.42);
+        lerpVelZ = Lerp(lerpVelZ, zVelLerp, 0.42);
     }
 
     virtual void AREAGThink() {}

@@ -1,4 +1,4 @@
-version "3.7.0"
+version "4.3"
 
 #include "zscript/7_HUD/AREAGStatusBar.zsc"
 

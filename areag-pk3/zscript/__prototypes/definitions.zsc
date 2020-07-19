@@ -100,7 +100,8 @@ class BasicProjectile : Actor
 	}
 }
 
-struct AREAG_Func {
+mixin class AREAG_Common
+{
 	static bool getCvarBool(string cv)
 	{
 		let res = CVar.findCVar(cv);
@@ -161,6 +162,8 @@ class HitboxParticle : BasicEffect
 
 class BasicActor : Actor
 {
+	mixin AREAG_Common;
+
 	int m_basicActorFlags;
 
 	flagdef SHOWHITBOX: m_basicActorFlags, 0;
@@ -221,7 +224,7 @@ class BasicActor : Actor
 
 	void updateHitbox() {
 
-		if(bSHOWHITBOX || AREAG_Func.getCvarBool("db_viewhitboxes")) {
+		if(bSHOWHITBOX || getCvarBool("db_viewhitboxes")) {
 			if(!bToggleHitbox) {
 				bToggleHitbox = true;
 				createHitbox();
