@@ -105,3 +105,9 @@ seq/floorstop FLSTOP // Rayman 2: The Great Escape
 
 trap/spearlaunch STLAUNCH // Rayman 2: The Great Escape
 trap/speartwang STTWANG // Rayman 2: The Great Escape
+
+monster/glowfly/spawn   GF_SPAWN // Metroid Prime 2: Echoes
+monster/glowfly/death   GF_DIE // Metroid Prime 2: Echoes
+monster/glowfly/buzz    GF_BUZZ // Metroid Prime 2: Echoes
+$limit monster/glowfly/buzz 0
+monster/glowfly/hivedie GF_HIDIE // Metroid Prime 2: Echoes

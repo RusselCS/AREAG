@@ -1,4 +1,4 @@
-class BasicEnemy : Actor
+class BasicEnemy : BasicActor
 {
     Default
     {
@@ -17,8 +17,8 @@ class BasicEnemy : Actor
     bool bInDeathSequence;
     int iDamageTick;
 
-    override void PostBeginPlay() {
-        super.PostBeginPlay();
+    override void BasicInit() {
+        super.BasicInit();
         iDamageTick = 0;
 
         if(score > 0) {
@@ -40,7 +40,7 @@ class BasicEnemy : Actor
 
 		int ang = inflictor.angle % 360;
 
-        A_PlaySound("*pain", CHAN_VOICE);
+        A_StartSound("*pain", CHAN_VOICE);
         iDamageTick = 18;
 
 		if(mod == "SteelWhip" || mod == "LaserWhip") {
@@ -56,8 +56,8 @@ class BasicEnemy : Actor
 		return super.DamageMobj(inflictor, source, damage, mod, flags, angle);
 	}
 
-	override void Tick() {
-		super.Tick();
+	override void BasicTick() {
+		super.BasicTick();
 		tick_KnockBack();
         tick_DeathSequence();
         tick_DamageFlash();

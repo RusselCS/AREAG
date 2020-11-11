@@ -46,6 +46,7 @@ version "4.3"
 
 #include "zscript/5_monsters/0_basicenemy.zsc"
 #include "zscript/5_monsters/1_golem.zsc"
+#include "zscript/5_monsters/2_glowfly.zsc"
 #include "zscript/5_monsters/zsctempimp.zsc"
 
 class LevelFreezeOn : Actor
