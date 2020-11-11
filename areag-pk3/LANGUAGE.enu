@@ -44,6 +44,9 @@ PU_PERIDOTKEY = "Grants permanent access to \cdGreen Doors\c-.";
 AR_GOLDKEY = "GOLD KEY";
 PU_GOLDKEY = "Grants permanent access to \ckGold Doors\c-.";
 
+AR_RITUALHORN = "RITUAL HORN";
+PU_RITUALHORN = "Use to play songs.";
+
 // TABLETS
 
 TESTMAP_TABLET_0 = "This is a puzzle tablet. Read the other using nova pack.";

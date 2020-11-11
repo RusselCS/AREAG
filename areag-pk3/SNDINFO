@@ -111,3 +111,24 @@ monster/glowfly/death   GF_DIE // Metroid Prime 2: Echoes
 monster/glowfly/buzz    GF_BUZZ // Metroid Prime 2: Echoes
 $limit monster/glowfly/buzz 0
 monster/glowfly/hivedie GF_HIDIE // Metroid Prime 2: Echoes
+
+treasures/hornstart_c HORNS0
+treasures/hornstart_d HORNS1
+treasures/hornstart_e HORNS2
+treasures/hornstart_f HORNS3
+treasures/hornstart_g HORNS4
+treasures/hornstart_a HORNS5
+
+treasures/horn_c HORN0
+treasures/horn_d HORN1
+treasures/horn_e HORN2
+treasures/horn_f HORN3
+treasures/horn_g HORN4
+treasures/horn_a HORN5
+
+treasures/hornend_c HORNE0
+treasures/hornend_d HORNE1
+treasures/hornend_e HORNE2
+treasures/hornend_f HORNE3
+treasures/hornend_g HORNE4
+treasures/hornend_a HORNE5
