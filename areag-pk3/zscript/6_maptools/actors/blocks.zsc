@@ -1,15 +1,32 @@
 // PUSH BLOCKS, FLOOR SWITCHES
-class AREAGPushBlock : Actor
+class AREAGPushBlock : BasicActor
 {
     //$Category AREAG-Map Tools
     //$Title Large Stone Block
 	//$Sprite E0WCF0
     //$NotAngled
 
+    mixin AREAG_Common;
+
+    override void BasicTick() {
+        super.BasicTick();
+
+        double fCheckRadius = radius*3;
+
+        if(CheckProximity("AREAGPlayer", fCheckRadius, 1, CPXF_NOZ|CPXF_SETTARGET)) // If you aren't even in range, do nothing
+        {
+            if((target.pos.z ~== pos.z && collidingBoxes(target, self, target.radius+self.radius+self.score+0.8))) // if you ARE in range, but not within the colliding box, 
+            {
+                if(target.LineTrace(target.angle, 77.0, 0.0, TRF_SOLIDACTORS)) {
+                    A_Log("Hell 1");
+                }
+            }
+        }
+    }
+
     Default
     {
         +SOLID;
-        +PUSHABLE;
         +SLIDESONWALLS;
         Height 64;
         Radius 30;
