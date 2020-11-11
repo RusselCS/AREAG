@@ -87,7 +87,7 @@ extend class ZSCPlayerPawn {
             }
 
 			if(imhit) {
-				A_PlaySound("player/ouch", CHAN_VOICE);
+				A_StartSound("player/ouch", CHAN_VOICE);
 				ACS_NamedExecuteAlways("status_invuln", 0);
 			}
 			

@@ -72,7 +72,7 @@ class SpearTrap : Actor
             case 1: // Raising.
                 if(iHoldTime > 0) {
                     iHoldTime = 0;
-                    A_PlaySound("trap/spearlaunch", CHAN_VOICE);
+                    A_StartSound("trap/spearlaunch", CHAN_VOICE);
                 }
                 if(height < dTrapMaxHeight) {
                     height = min(height + dTrapMaxHeight/iTimeToRaise, dTrapMaxHeight);
@@ -84,7 +84,7 @@ class SpearTrap : Actor
                 break;
             case 2: // Shake.
                 if(iHoldTime == 10) {
-                    A_PlaySound("trap/speartwang", CHAN_VOICE);
+                    A_StartSound("trap/speartwang", CHAN_VOICE);
                 }
                 if(iHoldTime > 0) {
                     spearSprite.A_SetRoll(altAngle(iHoldTime)/2, SPF_INTERPOLATE);

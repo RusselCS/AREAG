@@ -44,7 +44,7 @@ class ZSCSwitchCrystal : Actor
 
         if(success) {
             if(!fake) {
-                A_PlaySound("misc/switchon", CHAN_BODY, 1.0, false, ATTN_NONE);
+                A_StartSound("misc/switchon", CHAN_BODY, 0, 1.0, ATTN_NONE);
                 runSpecial();
             }
         }
@@ -52,7 +52,7 @@ class ZSCSwitchCrystal : Actor
 
     void switchOff() {
         bSwitchOn = false;
-        A_PlaySound("misc/switchoff", CHAN_BODY, 1.0, false, ATTN_NONE);
+        A_StartSound("misc/switchoff", CHAN_BODY, 0, 1.0, ATTN_NONE);
         runSpecial();
     }
 
@@ -145,10 +145,10 @@ class ZSCFloorSwitch : Actor
                 ACS_ExecuteAlways(args[0], 0, bActive, args[3], args[4]);
 
                 if(bActive) {
-                    A_PlaySound("misc/floorswitchon", CHAN_BODY, 1.0, false, ATTN_NONE);
+                    A_StartSound("misc/floorswitchon", CHAN_BODY, 0, 1.0, ATTN_NONE);
                     SetState(ResolveState("SwitchOn"));
                 } else {
-                    A_PlaySound("misc/floorswitchoff", CHAN_BODY, 1.0, false, ATTN_NONE);
+                    A_StartSound("misc/floorswitchoff", CHAN_BODY, 0, 1.0, ATTN_NONE);
                     SetState(ResolveState("SwitchOff"));
                 }
             }
@@ -227,7 +227,7 @@ class ZSCWallSwitch : Actor
 
         if(success) {
             if(!fake) {
-                A_PlaySound("misc/switchon", CHAN_BODY, 1.0, false, ATTN_NONE);
+                A_StartSound("misc/switchon", CHAN_BODY, 0, 1.0, ATTN_NONE);
                 runSpecial();
             }
         }
@@ -235,7 +235,7 @@ class ZSCWallSwitch : Actor
 
     void switchOff() {
         bSwitchOn = false;
-        A_PlaySound("misc/switchoff", CHAN_BODY, 1.0, false, ATTN_NONE);
+        A_StartSound("misc/switchoff", CHAN_BODY, 0, 1.0, ATTN_NONE);
         runSpecial();
     }
 

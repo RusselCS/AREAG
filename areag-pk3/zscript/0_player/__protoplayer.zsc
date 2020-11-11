@@ -41,7 +41,7 @@ class AREAGProtoPlayer : PlayerPawn {
         bOnGround = pos.z ~== floorz || bONMOBJ || bMBFBOUNCER;
 
         // This will be overridden by subclasses.
-        if(!level.frozen && !bNOTIMEFREEZE) {
+        if(!Level.isFrozen() && !bNOTIMEFREEZE) {
             AREAGTick();
         }
 
@@ -104,4 +104,16 @@ class AREAGProtoPlayer : PlayerPawn {
 		// }
     }
 
+}
+
+class StringMidTest : Actor
+{
+    override void PostBeginPlay() {
+        super.PostBeginPlay();
+
+        String str = "Hello!!";
+        int num = 2;
+
+        A_Log(String.format("%dth characters in %s: %s", num, str, str.mid(num, 1)));
+    }
 }

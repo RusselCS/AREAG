@@ -8,7 +8,7 @@ extend class AREAGProtoWeapon {
 		// go away
 		TNT1 A 2;
 		WDRO ABC 1;
-		WDRO A 0 A_PlaySound("weapon/dynamitethrow", CHAN_WEAPON);
+		WDRO A 0 A_StartSound("weapon/dynamitethrow", CHAN_WEAPON);
 		WDRO E 0 A_FireProjectile("DroneTransitionMissile");
 		WDRO DE 1;
 		WDRO D 6;
@@ -67,13 +67,13 @@ class AREAGDrone : AREAGProtoPlayer
 
     override void AREAGTick() {
         if(bOnGround && lastZVel < -GruntSpeed) {
-            A_PlaySound("*droneland", CHAN_5);
+            A_StartSound("*droneland", CHAN_5);
             iWalkCooldown = 5;
         }
 
         if(bOnGround && AREAGIsWalking()) {
             if(iWalkCooldown == 0) {
-                A_PlaySound("*dronewalk", CHAN_5);
+                A_StartSound("*dronewalk", CHAN_5);
                 iWalkCooldown = 5;
             }
         }
@@ -219,7 +219,7 @@ class DronePlasmaGun : Weapon
 		SDRW A 1 A_Raise;
 		Loop;
 	Fire:
-		SDRW B 0 A_PlaySound("weapon/dronelaser", CHAN_WEAPON);
+		SDRW B 0 A_StartSound("weapon/dronelaser", CHAN_WEAPON);
 		SDRW B 0 A_FireProjectile("DroneActivator", 0, 0, 0, 0);
 		SDRW B 0 A_FireProjectile("DroneLaser", 0, 0, -8, 0);
 		SDRW B 0 A_FireProjectile("DroneLaser", 0, 0, 8, 0);

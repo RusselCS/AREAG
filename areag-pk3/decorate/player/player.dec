@@ -21,6 +21,7 @@ actor AREAGPlayer : ZSCPlayerPawn
 	+DONTBLAST
 	+NOBLOOD
 	+QUICKTORETALIATE
+	+GHOST
 	damagefactor "Dummy", 0.0
 	scale 1.0
 	States

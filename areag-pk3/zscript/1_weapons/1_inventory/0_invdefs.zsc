@@ -22,11 +22,13 @@ class BasicTreasureItem : BasicInventory
 struct TreasureItems {
 
     static const String[] itemFields = {
-		"Drone"
+		"Drone",
+		"Horn"
 	};
 
     static const StateLabel[] itemRaise = {
-		"DroneUse"
+		"DroneUse",
+		"HornSelect"
 	};
 
     static String activeItem(int it) {

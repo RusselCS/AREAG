@@ -1,7 +1,7 @@
 class MapDataRepo Abstract
 {
     static MapUtilInit getRepository() {
-        return MapUtilInit(EventHandler.Find("MapUtilInit"));
+        return MapUtilInit(StaticEventHandler.Find("MapUtilInit"));
     }
 
     static int getLevelNum(int index) {
@@ -106,7 +106,7 @@ class MapDataRepo Abstract
             CVar save = CVar.findCVar(name(evh.maps[id].getTempEvent()));
             if(save)
             {
-                return save.getString().charAt(evt).ToInt();
+                return save.getString().mid(evt, 1).ToInt();
             }
             return -2;
         }
@@ -121,7 +121,7 @@ class MapDataRepo Abstract
             CVar save = CVar.findCVar(name(evh.maps[id].getTempPickup()));
             if(save)
             {
-                return save.getString().charAt(evt).ToInt();
+                return save.getString().mid(evt, 1).ToInt();
             }
             return -2;
         }
@@ -204,7 +204,7 @@ class MapDataRepo Abstract
     }
 
     static int getChar(String st, int pos) {
-        return st.charAt(pos).toInt();
+        return st.mid(pos, 1).toInt();
     }
 
     static void loadMapEvents(int levelNum) {
