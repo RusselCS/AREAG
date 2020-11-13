@@ -1,0 +1,89 @@
+class SubWeaponPickup : BasicInventory
+{
+    String sAmmoType;
+    String sAmmoMax;
+    int iWeaponIndex;
+    int iAmmoAmount;
+ 
+    property AmmoType: sAmmoType;
+    property AmmoMax: sAmmoMax;
+    property AmmoAmount: iAmmoAmount;
+    property WeaponIndex: iWeaponIndex;
+
+	action void A_AREAGSelectWeapon(int wep) {
+		if(CountInv("DroneFlag")==0 && AREAGPlayerPawn(self).iSelectedWep == SWEP_NONE)
+			AREAGPlayerPawn(self).iSelectedWep = wep;
+	}
+
+    action void A_AREAGGiveSubWeapon() {
+        if(invoker.inWorld) {
+            A_AREAGSelectWeapon(invoker.iWeaponIndex);
+        }
+        A_GiveInventory(invoker.sAmmoMax, invoker.iAmmoAmount);
+        A_GiveInventory(invoker.sAmmoType, invoker.iAmmoAmount);
+    }
+
+    States
+    {
+    PickupEffect:
+        TNT1 A 0 A_AREAGGiveSubWeapon();
+        stop;
+    }
+}
+
+enum ESubWeapons {
+	SWEP_NONE = -1,
+	SWEP_KNIFE,
+	SWEP_DYNAMITE,
+    SWEP_END
+}
+
+struct SubWeapons {
+	static const String[] subFields = {
+		"Knife",
+		"Dynamite"
+	};
+
+    static const StateLabel[] subRaise = {
+		"KnifeRaise",
+		"DynamiteRaise"
+	};
+
+    static const StateLabel[] subRelease = {
+		"KnifeThrow",
+		"DynamiteThrow"
+	};
+
+    static String maxField(int i) {
+        return String.format("%s%s", SubWeapons.subFields[i], "Max");
+    }
+
+    static String ammoField(int i) {
+        return String.format("%s%s", SubWeapons.subFields[i], "Ammo");
+    }
+
+    static String equippedField(int i) {
+        return String.format("%s%s", SubWeapons.subFields[i], "Equipped");
+    }
+
+    static StateLabel raiseState(int i) {
+        return SubWeapons.subRaise[i];
+    }
+
+    static StateLabel releaseState(int i) {
+        return SubWeapons.subRelease[i];
+    }
+
+    static int subWepCount() {
+        return SubWeapons.subFields.Size();
+    }
+
+    static int nextSubCycle(int wep) {
+        return ++wep < SWEP_END ? wep : SWEP_NONE+1;
+    }
+
+    static int prevSubCycle(int wep) {
+        return --wep > SWEP_NONE ? wep : SWEP_END-1;
+    }
+   
+}

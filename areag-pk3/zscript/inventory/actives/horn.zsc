@@ -1,0 +1,202 @@
+class HornPickup : BasicInventory
+{
+    Default
+    {
+        inventory.pickupmessage "";
+        +INVENTORY.AUTOACTIVATE;
+        +FLOATBOB;
+        +NOGRAVITY;
+        Height 64; // tall
+        Scale 0.7;
+    }
+	States
+	{
+	SpawnFrames:
+		HRN1 A 1;
+		loop;
+	Pickup:
+		TNT1 A 0 ACS_NamedExecuteAlways("pickups_displayMessage", 0, PICKTYPE_TREASURE, PICKMSG_RITUALHORN);
+		TNT1 A 0 A_GiveInventory("HornTrigger", 1);
+		stop;
+	}
+}
+
+class HornUseAnim : Once {}
+class HornTrigger : BasicActiveTrigger
+{
+    Default
+    {
+        inventory.icon "HRN1A0";
+    }
+	States
+	{
+	TreasureUse:
+		TNT1 A 0 A_GiveInventory("HornUseAnim", 1);
+		fail;
+	}
+}
+
+extend class AREAGProtoWeapon {
+
+	int currentNote;
+	Actor noteHandler;
+
+	static const int hornInputs[] = {
+		BT_FORWARD,
+		BT_BACK,
+		BT_MOVELEFT,
+		BT_LEFT,
+		BT_MOVERIGHT,
+		BT_RIGHT,
+		BT_ATTACK,
+		BT_ALTATTACK
+	};
+
+	static const int hornMap[] = {
+		0, 1, 2, 2, 3, 3, 4, 5
+	};
+
+	action void A_InitHorn() {
+		SetPlayerProperty(0, 1, PROP_FROZEN);
+		invoker.currentNote = -1;
+		A_TakeInventory("HornUseAnim", 1);
+	}
+
+	bool inputHasNote(int buttons, int note)
+	{
+		if(note < 0) {
+			return false;
+		}
+		for(int i = 0; i < AREAGProtoWeapon.hornMap.size(); i++) {
+			if(AREAGProtoWeapon.hornMap[i] == note && (buttons & AREAGProtoWeapon.hornInputs[i])) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	int getNoteFromInput(int buttons) {
+		if(inputHasNote(buttons, currentNote)) {
+			return currentNote;
+		}
+
+		for(int i = 0; i < AREAGProtoWeapon.hornInputs.size(); i++) {
+			if((buttons & AREAGProtoWeapon.hornInputs[i])) {
+				return AREAGProtoWeapon.hornMap[i];
+			}
+		}
+		return -1;
+	}
+
+	void playHornSound(int which) {
+		if(noteHandler) {
+			noteHandler.A_Die();
+		}
+		if(which < 0 || which >= 6) {
+			
+		} else {
+			bool sp;
+			[sp, noteHandler] = A_SpawnItemEx("hornNoteHandler", 10);
+			noteHandler.mass = which;
+		}
+	}
+
+    action State A_HornReady() {
+		if(CountInv("HornUseAnim")) {
+			return ResolveState("HornDeselect");
+		}
+
+        int iButtons = AREAGProtoPlayer(self).iButtons;
+
+        if(invoker.currentNote != invoker.getNoteFromInput(iButtons)) {
+			invoker.currentNote = invoker.getNoteFromInput(iButtons);
+			invoker.playHornSound(invoker.currentNote);
+			if(invoker.currentNote >= 0) {
+				return ResolveState("HornUse");
+			}
+		}
+
+        return ResolveState(null);
+    }
+
+	action State A_HornHold() {
+		if(CountInv("HornUseAnim")) {
+			return ResolveState("HornDeselect");
+		}
+
+		int iButtons = AREAGProtoPlayer(self).iButtons;
+
+		if(invoker.inputHasNote(iButtons, invoker.currentNote)) {
+			return ResolveState(null);
+		} else {
+			invoker.currentNote = invoker.getNoteFromInput(iButtons);
+			invoker.playHornSound(invoker.currentNote);
+			if(invoker.currentNote >= 0) {
+				return ResolveState("HornUse");
+			}
+
+			return ResolveState("HornEnd");	
+		}
+	}
+
+	action void A_HornEnd() {
+		SetPlayerProperty(0, 0, PROP_FROZEN);
+		invoker.currentNote = -1;
+		invoker.playHornSound(invoker.currentNote);
+		A_TakeInventory("HornUseAnim", 1);
+	}
+
+    States
+    {
+    HornSelect:
+		TNT1 A 2 A_InitHorn();
+		HRN1 BCD 1;
+	HornReady:
+        HRN1 E 1 A_HornReady();
+        wait;
+	HornUse:
+		HRN1 EFG 2 A_HornHold();
+		wait;
+	HornEnd:
+		HRN1 GF 1;
+		goto HornReady;
+	HornDeselect:
+		HRN1 A 0 A_HornEnd();
+		HRN1 HIJ 1;
+		TNT1 A 4;
+		TNT1 A 1 A_JumpIf(true, "Ready");
+		wait;
+    }
+}
+
+class hornNoteHandler : Actor
+{
+	static const String hornSounds[] = {
+		"c", "d", "e", "f", "g", "a"
+	};
+
+	Default
+	{
+		height 2;
+		radius 2;
+		+NOINTERACTION;
+		+NOCLIP;
+		+SHOOTABLE;
+	}
+
+	States
+	{
+	Spawn:
+		TNT1 A 1;
+		TNT1 A 0 A_StartSound(String.format("treasures/hornstart_%s", hornNoteHandler.hornSounds[mass]), CHAN_BODY, CHANF_DEFAULT, 1.0, ATTN_NONE);
+		TNT1 A 2;
+		TNT1 A 0 A_StartSound(String.format("treasures/horn_%s", hornNoteHandler.hornSounds[mass]), CHAN_BODY, CHANF_LOOPING, 1.0, ATTN_NONE);
+		TNT1 A 1;
+		wait;
+	Death:
+		TNT1 A 0;
+		TNT1 A 0 A_StartSound(String.format("treasures/hornend_%s", hornNoteHandler.hornSounds[mass]), CHAN_BODY, CHANF_DEFAULT, 1.0, ATTN_NONE);
+		TNT1 A 10;
+		stop;
+	}
+}

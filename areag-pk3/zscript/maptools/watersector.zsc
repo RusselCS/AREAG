@@ -1,0 +1,29 @@
+class WaterSector : SoundEnvironment
+{
+	//$Category AREAG-Map Tools
+	//$Title Water Sector
+	//$Sprite E0WAA0
+	//$ClearArgs
+	//$NotAngled
+    Default
+    {
+        height 3;
+        radius 3;
+        +DORMANT;
+        -NOSECTOR;
+        -NOBLOCKMAP;
+        +THRUACTORS;
+        +CANPASS;
+        renderstyle "none";
+    }
+	States
+	{
+	Spawn:
+		TNT1 A 0;
+		TNT1 A 0 ACS_NamedExecuteAlways("movement_water_map", 0);
+		TNT1 A 0 A_SetArg(0, 255); // Water Reverb args
+		TNT1 A 0 A_SetArg(1, 255);
+		TNT1 A 1;
+		goto Super::Spawn;
+	}
+}

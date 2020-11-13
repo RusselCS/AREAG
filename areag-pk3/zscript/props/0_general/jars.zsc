@@ -1,0 +1,89 @@
+class JarSmall : ZSCStoneBody
+{
+    //$Category AREAG-Map Tools
+    //$Title Jar Small
+    //$Sprite E0WCE0
+    //$NotAngled
+    Default
+    {
+        Health 3;
+        scale 2.5;
+        radius 14;
+        height 26;
+        +SOLID;
+        +SHOOTABLE;
+        +NOBLOOD;
+        +CANPASS;
+    }
+	states
+	{
+		spawn:
+			JAR1 A -1;
+			loop;
+		death:
+			JAR1 A 0 A_PlaySoundEx ("misc/jarbreak", "voice");
+			JAR1 A 0 A_SpawnDebris ("JarPieceSmall", 1, 1.0, 0.55);
+			JAR1 A 0 A_NoBlocking;
+			stop;
+	}
+}
+
+class JarBig : JarSmall
+{
+    //$Category AREAG-Map Tools
+    //$Title Jar Large
+	//$Sprite E0WCD0
+    //$NotAngled
+    Default
+    {
+        radius 18;
+        height 36;
+    }
+	states
+	{
+		spawn:
+			JAR2 A -1;
+			loop;
+		death:
+			JAR2 A 0 A_PlaySoundEx ("misc/jarbreak", "voice");
+			JAR2 A 0 A_SpawnDebris ("JarPieceBig", 1, 0.9, 0.7);
+			JAR2 A 0 A_NoBlocking;
+			stop;
+	}
+}
+
+class JarPieceSmall : Actor
+{
+    Default
+    {
+        health 3;
+        scale 2.5;
+        +MISSILE;
+    }
+	states
+	{
+		spawn:
+			JPIE A -1;
+			JPIE C -1;
+			JPIE D -1;
+	}
+}
+
+class JarPieceBig : Actor
+{
+    Default
+    {
+        health 5;
+        scale 2.5;
+        +MISSILE;
+    }
+	states
+	{
+		spawn:
+			JPIE A -1;
+			JPIE B -1;
+			JPIE C -1;
+			JPIE D -1;
+			JPIE E -1;
+	}
+}

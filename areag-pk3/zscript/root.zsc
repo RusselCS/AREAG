@@ -1,0 +1,71 @@
+#include "zscript/definitions.zsc"
+
+// DATABASE SYSTEM DEFINITIONS
+#include "zscript/database/mapdata.zsc"
+
+// GRAPHIC EFFECTS
+#include "zscript/effects/splashes.zsc"
+
+// PLAYER SYSTEM DEFINITIONS
+#include "zscript/player/__protoplayer.zsc"
+#include "zscript/player/0_playerbase.zsc"
+#include "zscript/player/1_playermove.zsc"
+#include "zscript/player/2_playerhealth.zsc"
+#include "zscript/player/3_playerstatus.zsc"
+
+// WEAPONS
+#include "zscript/inventory/actives/__baseactivetrigger.zsc"
+#include "zscript/inventory/subweapons/__subwepdefs.zsc"
+
+#include "zscript/inventory/__weaponbase.zsc"
+#include "zscript/inventory/mainweapons/1_whip.zsc"
+#include "zscript/inventory/mainweapons/2_steeltyrant.zsc"
+#include "zscript/inventory/mainweapons/3_capitalpunishment.zsc"
+#include "zscript/inventory/mainweapons/4_tribalshield.zsc"
+#include "zscript/inventory/mainweapons/5_kinderlun.zsc"
+#include "zscript/inventory/mainweapons/6_gravgloves.zsc"
+
+#include "zscript/inventory/subweapons/dynamite.zsc"
+#include "zscript/inventory/subweapons/knives.zsc"
+
+// ACTIVE ITEMS
+#include "zscript/inventory/actives/drone.zsc"
+#include "zscript/inventory/actives/horn.zsc"
+
+// PASSIVE ITEMS
+#include "zscript/inventory/passives/boots.zsc"
+#include "zscript/inventory/passives/keys.zsc"
+
+#include "zscript/inventory/basicinventory.zsc"
+#include "zscript/inventory/currency.zsc"
+
+// MAP TOOLS
+#include "zscript/maptools/automap/automap.entity.zsc"
+#include "zscript/maptools/automap/automap.repo.zsc"
+#include "zscript/maptools/areagate.zsc"
+#include "zscript/maptools/breakwall.zsc"
+#include "zscript/maptools/doormanager.zsc"
+#include "zscript/maptools/pitsector.zsc"
+#include "zscript/maptools/roomcontroller.zsc"
+#include "zscript/maptools/savepoint.zsc"
+#include "zscript/maptools/shop.zsc"
+#include "zscript/maptools/switches.zsc"
+#include "zscript/maptools/tablet.zsc"
+#include "zscript/maptools/watersector.zsc"
+
+// MONSTERS
+#include "zscript/monsters/__monsterbase.zsc"
+#include "zscript/monsters/1_golem.zsc"
+#include "zscript/monsters/2_glowfly.zsc"
+#include "zscript/monsters/zsctempimp.zsc"
+
+// PROPS
+#include "zscript/props/0_general/jars.zsc"
+#include "zscript/props/0_general/blocks.zsc"
+#include "zscript/props/1_gateway/darttrap.zsc"
+#include "zscript/props/1_gateway/lasertrap.zsc"
+#include "zscript/props/1_gateway/speartrap.zsc"
+
+// STATUS BARS AND MENUS
+#include "zscript/sbar/AREAGStatusBar.zsc"
+#include "zscript/sbar/menutools.zsc"

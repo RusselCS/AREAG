@@ -1,0 +1,3 @@
+#include "zscript/database/mapdata/mapdata.data.zsc"
+#include "zscript/database/mapdata/mapdata.entity.zsc"
+#include "zscript/database/mapdata/mapdata.repo.zsc"

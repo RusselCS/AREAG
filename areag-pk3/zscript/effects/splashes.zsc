@@ -1,0 +1,127 @@
+class InSplash : Actor
+{
+    Default
+    {
+        +NOGRAVITY;
+        +NOINTERACTION;
+        +NOCLIP;
+        Scale 2.5;
+    }
+	States
+	{
+	Spawn:
+		DOLP B 0;
+		DOLP B 0 A_StartSound("misc/HeavySplash",CHAN_VOICE);
+		DOLP BCDE 6;
+		stop;
+	}
+}
+
+class OutSplashLight : Actor
+{
+    Default
+    {
+        +NOGRAVITY;
+        +NOINTERACTION;
+        +NOCLIP;
+        Scale 2.5;
+    }
+	States
+	{
+	Spawn:
+		DOLP B 0;
+		DOLP B 0 A_StartSound("misc/WaterEnd",CHAN_VOICE);
+		DOLP BCDE 5;
+		stop;
+	}
+}
+
+class OutSplashHeavy : Actor
+{
+    Default
+    {
+        +NOGRAVITY;
+        +NOINTERACTION;
+        +NOCLIP;
+        Scale 2.5;
+    }
+	States
+	{
+	Spawn:
+		DOLP B 0;
+		DOLP B 0 A_StartSound("misc/JumpSplash",CHAN_VOICE);
+		DOLP BCDE 5;
+		stop;
+	}
+}
+
+class UnderwaterSound : CustomInventory
+{
+    Default
+    {
+        +INVENTORY.AUTOACTIVATE;
+    }
+	States
+	{
+	Use:
+		TNT1 A 0;
+		TNT1 A 0 A_StartSound("misc/waterloop", CHAN_AUTO, CHANF_LOOP, 0.5);
+		stop;
+	}
+}
+
+class UnderwaterSoundStop : CustomInventory
+{
+	Default
+    {
+        +INVENTORY.AUTOACTIVATE;
+    }
+	States
+	{
+	Use:
+		TNT1 A 0;
+		TNT1 A 0 A_StopSound(CHAN_AUTO);
+		stop;
+	}
+}
+
+class WaterSpeed : PowerSpeed
+{
+    Default
+    {
+        speed 0.8;
+	    powerup.duration 0x7ffffff;
+    }
+}
+
+class SplashCooldown : PowerUp
+{
+    Default
+    {
+        powerup.duration 13;
+    }
+}
+
+class UnderwaterSoundPlaying : Powerup
+{
+    Default
+    {
+        powerup.duration 53;
+    }
+}
+
+class BreathTime : Counter
+{
+    Default
+    {
+        inventory.maxamount 100;
+    }
+}
+
+class BreathCooldown : Powerup
+{
+    Default
+    {
+        powerup.duration 20;
+    }
+}

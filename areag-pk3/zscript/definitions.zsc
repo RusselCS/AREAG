@@ -1,0 +1,285 @@
+const SUB_KNIFE = 0;
+const SUB_DYNAMITE = 1;
+
+const HEALTH_MAX = -1;
+
+const MAP_TABLET_WRAP = 100;
+
+enum PickupTypes {
+	PICKTYPE_ARTIFICE,
+	PICKTYPE_WEAPON,
+	PICKTYPE_SUBWEAPON,
+	PICKTYPE_TREASURE
+}
+
+enum UpgradeTypes {
+	PICKMSG_GEAR,
+	PICKMSG_STEAM,
+	PICKMSG_KNIFE,
+	PICKMSG_HEALTHUP,
+	PICKMSG_DYNAMITE,
+	PICKMSG_NOVAPACK,
+
+	PICKMSG_SPIDERDRONE,
+	PICKMSG_BEEDRONE,
+	PICKMSG_STEELWHIP,
+    PICKMSG_TRIBALSHIELD,
+    PICKMSG_RUBYKEY,
+    PICKMSG_COBALTKEY,
+    PICKMSG_PERIDOTKEY,
+    PICKMSG_GOLDKEY,
+	PICKMSG_RITUALHORN,
+}
+
+// BASIC ACTORS //
+class Once : Inventory
+{
+    Default
+    {
+        inventory.amount 1;
+        inventory.maxamount 1;
+    }
+}
+
+class Counter : Inventory
+{
+    Default
+    {
+        inventory.amount 1;
+        inventory.maxamount 65536;
+    }
+}
+
+class BasicEffect : Actor
+{
+    Default
+    {
+        PROJECTILE;
+        +NOINTERACTION;
+        +THRUACTORS;
+        +NOGRAVITY;
+        renderstyle "translucent";
+        alpha 1.0;
+        height 1;
+        radius 1;
+    }
+}
+
+class ZSCStoneBody : Actor
+{
+    override int DamageMobj(Actor inflictor, Actor source, int damage, Name mod, int flags, double angle) {
+        int dmg = super.DamageMobj(inflictor, source, min(damage, 1), mod, flags, angle);
+        return dmg;
+    }
+}
+
+class BasicFastProjectile : FastProjectile
+{
+	States
+	{
+	Spawn:
+		TNT1 A 0;
+		TNT1 A 0 A_JumpIf(true, "SpawnLoop");
+		goto SpawnLoop;
+	SpawnLoop:
+		TNT1 A 0;
+		stop;
+	}
+}
+
+class BasicProjectile : Actor
+{
+	States
+	{
+	Spawn:
+		TNT1 A 0;
+		TNT1 A 0 A_JumpIf(true, "SpawnLoop");
+		goto SpawnLoop;
+	SpawnLoop:
+		TNT1 A 0;
+		stop;
+	}
+}
+
+mixin class AREAG_Common
+{
+	static bool getCvarBool(string cv)
+	{
+		let res = CVar.findCVar(cv);
+
+		if(res) {
+			return res.getBool();
+		}
+		return false;
+	}
+
+	static bool checkPressed(int button, int buttons, int oldButtons)
+    {
+        if((buttons & button) && !(oldButtons & button))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    static bool checkReleased(int button, int buttons, int oldButtons)
+    {
+        if(!(buttons & button) && (oldButtons & button))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    static double Lerp(double a, double b, double t)
+	{
+		return (1 - t) * a + t * b;
+	}
+
+    static bool collidingBoxes(Actor a, Actor b, double rad) {
+        double diffX = abs(a.pos.x - b.pos.x) - rad;
+        double diffY = abs(a.pos.y - b.pos.y) - rad;
+
+        return diffX <= 0 && diffY <= 0;
+    }
+}
+
+// DEBUG FUNCTIONS
+class HitboxParticle : BasicEffect
+{
+    Default
+    {
+        +FORCEXYBILLBOARD;
+        translation "0:255=104:104";
+    }
+
+    States
+    {
+    Spawn:
+        CHWP BB 1 bright;
+        wait;
+    }
+}
+
+class BasicActor : Actor
+{
+	mixin AREAG_Common;
+
+	int m_basicActorFlags;
+
+	flagdef SHOWHITBOX: m_basicActorFlags, 0;
+
+	Array<Actor> items;
+
+	bool bToggleHitbox;
+
+	override void PostBeginPlay() {
+		Super.PostBeginPlay();
+		BasicInit();
+	}
+
+    override void Tick() {
+        Super.Tick();
+		BasicTick();
+		updateHitbox();
+    }
+
+	override void OnDestroy() {
+		Super.OnDestroy();
+		BasicDestroy();
+		destroyHitbox();
+	}
+
+	virtual void BasicInit() {}
+	virtual void BasicTick() {}
+	virtual void BasicDestroy() {}
+
+	void createHitbox() {
+		for(int i = 0; i < radius; i+=2) {
+			addToItems("HitboxParticle", radius, i, 1);
+			addToItems("HitboxParticle", radius, -i, 1);
+			addToItems("HitboxParticle", -radius, i, 1);
+			addToItems("HitboxParticle", -radius, -i, 1);
+			addToItems("HitboxParticle", i, radius, 1);
+			addToItems("HitboxParticle", -i, radius, 1);
+			addToItems("HitboxParticle", i, -radius, 1);
+			addToItems("HitboxParticle", -i, -radius, 1);
+
+			addToItems("HitboxParticle", radius, i, height);
+			addToItems("HitboxParticle", radius, -i, height);
+			addToItems("HitboxParticle", -radius, i, height);
+			addToItems("HitboxParticle", -radius, -i, height);
+			addToItems("HitboxParticle", i, radius, height);
+			addToItems("HitboxParticle", -i, radius, height);
+			addToItems("HitboxParticle", i, -radius, height);
+			addToItems("HitboxParticle", -i, -radius, height);
+		}
+
+		for(int i = 1; i <= height; i+=2) {
+			addToItems("HitboxParticle", radius, radius, i);
+			addToItems("HitboxParticle", radius, -radius, i);
+			addToItems("HitboxParticle", -radius, radius, i);
+			addToItems("HitboxParticle", -radius, -radius, i);
+		}
+	}
+
+	void updateHitbox() {
+
+		if(bSHOWHITBOX || getCvarBool("db_viewhitboxes")) {
+			if(!bToggleHitbox) {
+				bToggleHitbox = true;
+				createHitbox();
+			}
+		} else {
+			if(bToggleHitbox) {
+				bToggleHitbox = false;
+				destroyHitbox();
+			}
+		}
+
+		if(bToggleHitbox) {
+			for(int i = 0; i < items.size(); i++) {
+				items[i].A_Warp(AAPTR_MASTER, items[i].args[0], items[i].args[1], items[i].args[2], 0, WARPF_NOCHECKPOSITION|WARPF_INTERPOLATE|WARPF_ABSOLUTEOFFSET);
+			}
+		}
+	}
+
+	void destroyHitbox() {
+		for(int i = 0; i < items.size(); i++) {
+			items[i].Destroy();
+		}
+		items.clear();
+	}
+
+	void addToItems(String item, int posx, int posy, int posz) {
+		bool success;
+		Actor act;
+
+		[success, act] = A_SpawnItemEx(item, posx, posy, posz, 0, 0, 0, 0, SXF_SETMASTER);
+		act.args[0] = posx;
+		act.args[1] = posy;
+		act.args[2] = posz;
+		items.push(act);
+	}
+}
+
+class HitboxDebug : BasicActor {}
+
+// MOVEMENT FLAGS //
+class OnGround : Once {}
+class JumpCancel : Once {}
+class HeadUnderwater : Once {}
+class LegsUnderwater : Once {}
+
+class NoItem : BasicInventory {}
+
+class MenuFreezer : Once {}
+class TimeFreezer : PowerTimeFreezerSound
+{
+	Default
+	{
+		powerup.duration 0x7ffffff;
+	}
+}
+
+class LevelNumTracker : Counter {}
