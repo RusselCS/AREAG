@@ -1,87 +1,115 @@
 Class AREAGStatusBar : BaseStatusBar {
-    bool drewPoints;
-    override void Init() {	
+
+    AREAGPlayerPawn pl;
+
+    HUDFont sBarFont;
+
+    override void Init() {
 		Super.Init();
-		drewPoints = false;
-        // this has to be done, even if the HUD is fullscreen, it prevents a crash
-		SetSize(0, 320, 200);
+		SetSize(0, 160, 100);
+        Font fnt = "INDEXFONT";
+        sBarFont = HUDFont.Create(fnt, fnt.GetCharWidth("0"), Mono_CellLeft);
 	}
+
+    override void Tick() {
+        Super.Tick();
+
+        if(!pl) {
+            pl = AREAGPlayerPawn(CPlayer.mo);
+        }
+    }
 
     override void Draw(int state, double TicFrac) {
         Super.Draw(state, TicFrac);
         
-        AutomapRepository repo = AutomapRepository(eventhandler.find("AutomapRepository"));
-
-        if(repo && repo.rooms.size() > 0) {
-            DrawAutomap(repo, TicFrac);
+        if (pl && (state == HUD_StatusBar || state == HUD_Fullscreen))
+        {
+            BeginHUD();
+            AREAGDrawHud(TicFrac);
         }
     }
 
-    void DrawAutomap(AutomapRepository repo, double TicFrac) {
-        int w = Screen.GetWidth();
-        int h = Screen.GetHeight();
-        int cx = w/2;
-        int cy = h/2;
-        int cOffsX = 0;
-        int cOffsY = 0;
-        Color cr1 = Color(0xFF, 0x00, 0x00, 0x00);
-        Color cr2 = Color(0xFF, 0xFF, 0xFF, 0xFF);
-        double scaleDiv = 8;
+    void AREAGDrawHud(double TicFrac) {
 
-        AutomapRoom room = repo.rooms[0];
-        int mx, my, nx, ny;
-        [mx, my, nx, ny] = maximalPoints(room);
-        cOffsX = -(mx+nx)/2;
-        cOffsY = -(my+ny)/2;
+        double yOffsDiff = 14.0;
+        double yOffs = (5*yOffsDiff + yOffsDiff/2);
+        double xOffs = 12.0;
+        double barYOffs = 2.0;
+        double barXOffs = 30.5;
 
-        if(!drewPoints) {
-            drewPoints = true;
-            Console.printf("XDiffs: %d, %d::%d -- YDiffs: %d, %d::%d", mx, nx, cOffsX, my, ny, cOffsY);
+        double hpXOffs = 12.0;
+
+        double numXOffs = 23.0;
+        double numYOffs = 7.0;
+
+        double subXOffs = 14.0;
+
+        double subCXOffs = 8.0;
+        double subCYOffs = 4.0;
+
+        int amt, maxamt;
+
+        DrawImage("ICOCSH",  (xOffs, -yOffs));
+        [amt, maxamt] = GetAmount("AGCoin");
+        DrawString(sBarFont, FormatNumber(amt, 4), (xOffs + numXOffs, -yOffs-numYOffs), DI_TEXT_ALIGN_RIGHT);
+
+        yOffs -= yOffsDiff;
+
+        DrawInventoryIcon(pl.InvSel, (xOffs, -yOffs));
+
+        String icn;
+
+        if(pl.countInv("KnifeEquipped") > 0)
+        {
+            amt = pl.countInv("KnifeAmmo");
+            icn = "ICOSW1";
         }
 
-        for(int i = 0; i < room.size(); i++) {
-            Sector sc = room.get(i);
+        if(pl.countInv("DynamiteEquipped") > 0)
+        {
+            amt = pl.countInv("DynamiteAmmo");
+            icn = "ICOSW2";
+        }
 
-            for(int j = 0; j < sc.lines.size(); j++) {
-                int vx1 = cx + (sc.lines[j].V1.P.x + cOffsX) / scaleDiv;
-                int vy1 = cy + (sc.lines[j].V1.P.y + cOffsY) / scaleDiv;
-                int vx2 = cx + (sc.lines[j].V2.P.x + cOffsX) / scaleDiv;
-                int vy2 = cy + (sc.lines[j].V2.P.y + cOffsY) / scaleDiv;
+        if(icn) {
+            DrawImage(icn,  (xOffs + subXOffs, -yOffs));
+            DrawString(sBarFont, FormatNumber(amt, 3), (xOffs + subXOffs + subCXOffs, -yOffs-subCYOffs), DI_TEXT_ALIGN_RIGHT);
+        }
 
-                Screen.DrawThickLine(vx1, vy1, vx2, vy2, 5.0, cr1, 255);
-                Screen.DrawThickLine(vx1, vy1, vx2, vy2, 2.0, cr2, 255);
+        yOffs -= yOffsDiff;
+
+        DrawImage("ICOHP",  (xOffs, -yOffs));
+        for(int i = 1; i <= 10; i++) {
+            if(pl.countInv("MaxHealthBars") >= i) {
+                DrawImage("BAREHP", (xOffs + hpXOffs*i, -yOffs - barYOffs));
+            }
+
+            if(pl.countInv("HealthBars") >= i) {
+                if(i > 1) {
+                    DrawImage("BARSHP", (xOffs + hpXOffs*(i-1), -yOffs - barYOffs));
+                }
+
+                String fullBar;
+				[amt, maxamt] = GetAmount("HealthCounter");
+
+                if(pl.countInv("ShieldBars") >= i) {
+                    fullBar = "BARSHP";
+                } else {
+                    fullBar = "BARVHP";
+                }
+
+                DrawBar(fullBar, "", amt, maxamt, (xOffs + hpXOffs*i, -yOffs - barYOffs), 0, SHADER_HORZ);
             }
         }
-    }
 
-    int, int, int, int maximalPoints(AutomapRoom rm) {
-        int maxX = -99999999;
-        int minX =  99999999;
-        int maxY = -99999999;
-        int minY =  99999999;
+        yOffs -= yOffsDiff;
+		[amt, maxamt] = GetAmount("BreathTime");
+        DrawImage("ICOBUB",  (xOffs, -yOffs));
+        DrawBar("BARBUB", "BAREMP", amt, maxamt, (xOffs + barXOffs, -yOffs - barYOffs), 0, SHADER_HORZ);
 
-        for(int i = 0; i < rm.size(); i++) {
-            Sector sc = rm.get(i);
-            for(int j = 0; j < sc.lines.size(); j++) {
-                maxX = max(maxX, sc.lines[j].V1.p.x);
-                maxX = max(maxX, sc.lines[j].V2.p.x);
-                maxY = max(maxY, sc.lines[j].V1.p.y);
-                maxY = max(maxY, sc.lines[j].V2.p.y);
-
-                minX = min(minX, sc.lines[j].V1.p.x);
-                minX = min(minX, sc.lines[j].V2.p.x);
-                minY = min(minY, sc.lines[j].V1.p.y);
-                minY = min(minY, sc.lines[j].V2.p.y);
-            }
-        }
-        return maxX, maxY, minX, minY;
-    }
-
-    int maxVal(int x, int y) {
-        return x > y ? x : y;
-    }
-
-    int minVal(int x, int y) {
-        return x < y ? x : y;
+        yOffs -= yOffsDiff;
+		[amt, maxamt] = GetAmount("DroneBattery");
+        DrawImage("ICOBAT",  (xOffs, -yOffs));
+        DrawBar("BARBAT", "BAREMP", amt, maxamt, (xOffs + barXOffs, -yOffs - barYOffs), 0, SHADER_HORZ);
     }
 }

@@ -27,7 +27,7 @@ class DroneTrigger : BasicActiveTrigger
 {
     Default
     {
-        inventory.icon "INICSPID";
+        inventory.icon "ICOIN1";
     }
 	States
 	{

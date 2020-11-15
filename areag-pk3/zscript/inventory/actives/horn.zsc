@@ -26,7 +26,7 @@ class HornTrigger : BasicActiveTrigger
 {
     Default
     {
-        inventory.icon "HRN1A0";
+        inventory.icon "ICOIN2";
     }
 	States
 	{
