@@ -49,9 +49,9 @@ PU_RITUALHORN = "Use to play songs.";
 
 // TABLETS
 
-TESTMAP_TABLET_0 = "This is a puzzle tablet. Read the other using nova pack.";
+TABLET_TESTMAP_0 = "This is a puzzle tablet. Read the other using nova pack.";
 
-TESTMAP_TABLET_1 = "Due to extensive research done by the University of Pittsburgh, diamond has been confirmed as the hardest metal known to man. The research is as follows:\n"
+TABLET_TESTMAP_1 = "Due to extensive research done by the University of Pittsburgh, diamond has been confirmed as the hardest metal known to man. The research is as follows:\n"
 "\n"
 "Pocket-protected scientists built a wall made of iron and crashed a diamond car into it at 400 miles per hour, and the car was unharmed. They then built a wall out of diamond "
 "and crashed a car made of iron moving at 400 miles an hour into the wall, and the wall came out fine. They then crashed a diamond car made of 400 miles per hour into a wall, "
@@ -62,18 +62,18 @@ TESTMAP_TABLET_1 = "Due to extensive research done by the University of Pittsbur
 "into iron per wall. The results were inconclusive. Finally, they placed 400 diamonds per hour in front of a car made of wall travelling at miles per iron, and the result proved "
 "with out a doubt that diamonds were the hardest metal of all time, if not just the hardest metal known to man.";
 
-TESTMAP_TABLET_2 = "The land far above is a path of two crystals.";
+TABLET_TESTMAP_2 = "The land far above is a path of two crystals.";
 
-TESTMAP_TABLET_3 = "Water. The realm of fish.\n"
+TABLET_TESTMAP_3 = "Water. The realm of fish.\n"
 "\n"
 "Long ago, there was once a lone angler. He pulled a fish to the beach.\n"
 "A great fish of gargantuan size.\n"
 "\n"
 "This lone angler was henceforth called... \"Beach Boy\"";
 
-TESTMAP_TABLET_4 = "You are now underwater. You can drown, so be careful!";
+TABLET_TESTMAP_4 = "You are now underwater. You can drown, so be careful!";
 
-TESTMAP2_TABLET_0 =
+TABLET_TESTMAP2_0 =
 "The following is lyrics to a song I've been listening to a while. The other tablet has useful information.\n\n"
 "Every time that I look into the mirror\n"
 "All these lines in my face getting clearer\n"
@@ -98,4 +98,4 @@ TESTMAP2_TABLET_0 =
 "Hey-hey-hey\n";
 
 
-TESTMAP2_TABLET_1 = "Beware of monsters. Make too much noise and they will attack.";
+TABLET_TESTMAP2_1 = "Beware of monsters. Make too much noise and they will attack.";

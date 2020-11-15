@@ -5,11 +5,8 @@ class TabletActivatable : SwitchingDecoration
 		//$Category AREAG-Map Tools
 		//$Title Tablet Marker
 		//$Sprite E0WCH0
-		//$Arg0 Tablet Content
-		//$Arg0Type 11
-		//$Arg0Enum { 0 = "Lore"; 1 = "Puzzle"; }
-		//$Arg1 Tablet Index
-		//$Arg2 Picture Index (Optional)
+		//$Arg0 Tablet Index
+		//$Arg1 Event Index
 		Height 64;
 		Radius 16;
 		Activation THINGSPEC_TriggerActs|THINGSPEC_Switch;
@@ -19,24 +16,16 @@ class TabletActivatable : SwitchingDecoration
 
 	override void PostBeginPlay() {
 		super.PostBeginPlay();
-        int tabletNum = args[1];
-		int imageNum = args[2];
-        bool tabletType = args[0] == 0;
 
-        if(tabletType)
-        {
-            A_SpawnItemEx("TabletFXL", 15);
-        }
-        else
-        {
-            A_SpawnItemEx("TabletFXP", 15);
-        }
+        int tabletNum = args[0];
+		int eventNum = args[1];
+        A_SpawnItemEx("TabletFXP", 15);
 
 		special = 226;
         args[0] = -int(Name("map_tablet"));
         args[1] = 0;
 		args[2] = tabletNum;
-		args[3] = imageNum;
+		args[3] = eventNum;
         ACS_NamedExecuteAlways("tablet_distanceCheck", 0);
 	}
 

@@ -5,26 +5,19 @@ class AREAGMapData : Object
     private String runeName;
     private String langName;
     private String cvar;
-    private Array<String> tabletImages;
+    private String tabletImage;
     private int route;
     private Array<String> pickups;
 
-    AREAGMapData Init(int lnum, String cd, String rn, String ln, String cv) {
+    AREAGMapData Init(int lnum, String cd, String rn, String ln, String ti, String cv) {
         levelNum = lnum;
         code = cd;
         runeName = rn;
         langName = ln;
+        tabletImage = ti;
         cvar = cv;
         route = lnum;
         return self;
-    }
-
-    void addTabletImage(String st) {
-        tabletImages.push(st);
-    }
-
-    void clearTabletImages() {
-        tabletImages.clear();
     }
 
     void addPickup(String pk) {
@@ -71,12 +64,8 @@ class AREAGMapData : Object
         return String.format("%s_PICKUP_%d", cvar, save);
     }
 
-    String getTabletImage(int index) {
-        if(index >= tabletImages.size()) {
-            return "";
-        } else {
-            return tabletImages[index];
-        }
+    String getTabletImage() {
+        return tabletImage;
     }    
 
     void setRoute(int rt) {

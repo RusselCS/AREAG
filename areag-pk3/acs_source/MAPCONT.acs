@@ -165,7 +165,7 @@ script "map_startup" ENTER
 	SetPlayerProperty(true, false, PROP_TOTALLYFROZEN);
 }
 
-script "map_tablet" (int tabletNum, int image)
+script "map_tablet" (int tabletNum, int eventNum)
 {
 	if(CheckInventory("MenuFreezer")>0)
 	{
@@ -187,11 +187,9 @@ script "map_tablet" (int tabletNum, int image)
 		terminate;
 	}
 
-	str langName = strParam(s:getMapCode(mapIndex), s:"_TABLET_", i:tabletNum);
-	str tabletImage = -1;
-	if(image != 0) {
-		tabletImage = getTabletImage(mapIndex, image-1);
-	}
+	str langName = strParam(s:"TABLET_", s:getMapCode(mapIndex), s:"_", i:tabletNum);
+	str tabletImage = strParam(s:getTabletImage(mapIndex), s:"_", i:tabletNum);
+	
 	int buttons = GetPlayerInput(-1, INPUT_BUTTONS);
 	int oldButtons = GetPlayerInput(-1, INPUT_OLDBUTTONS);
 	str message = strParam(l:langName);
@@ -243,6 +241,10 @@ script "map_tablet" (int tabletNum, int image)
 		printTablet(message, msgAlpha, msgX, msgY, tabletImage);
 		delay(1);
 	}
+
+	if(eventNum > 0) {
+		ACS_NamedExecuteAlways("map_events", 0, 0, eventNum);
+	}
 }
 
 function void printTablet (str message, int alpha, int x, int y, str image)
@@ -285,7 +287,7 @@ function void printTablet (str message, int alpha, int x, int y, str image)
 		SetHudClipRect(140, 0, 1000, 960, 1000, true);
 		SetFont("TABLFONT");
 		HudMessage(s:message; HUDMSG_ALPHA, 201, CR_UNTRANSLATED, x, y, hold, fixedmul(0.9, alpha));
-		if(image != -1) {
+		if(CheckFont(image)) {
 			SetFont(image);
 			HudMessage(s:"A"; HUDMSG_ALPHA, 200, CR_UNTRANSLATED, x+500.0, y+500.0, hold, fixedmul(0.9, alpha));
 		}

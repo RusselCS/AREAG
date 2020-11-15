@@ -35,9 +35,9 @@ function str getMapCode(int mapIndex)
 	return ScriptCall("MapDataRepo", "getCode", mapIndex);
 }
 
-function str getTabletImage(int mapIndex, int tabletIndex)
+function str getTabletImage(int mapIndex)
 {
-	return ScriptCall("MapDataRepo", "getTabletImage", mapIndex, tabletIndex);
+	return ScriptCall("MapDataRepo", "getTabletImage", mapIndex);
 }
 
 function int getSaveEvent(int levelNum, int evt)

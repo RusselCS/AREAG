@@ -73,10 +73,10 @@ class MapDataRepo Abstract
         return -1;
     }
 
-    static String getTabletImage(int mapIndex, int imgIndex) {
+    static String getTabletImage(int mapIndex) {
         let evh = getRepository();
         if(evh) {
-            return evh.maps[mapIndex].getTabletImage(imgIndex);
+            return evh.maps[mapIndex].getTabletImage();
         }
         return "";
     }
