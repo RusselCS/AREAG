@@ -1,5 +1,3 @@
-#include "decorate/player/player.dec"
-
 #include "decorate/pickups/jetpack.dec"
 #include "decorate/pickups/health.dec"
 

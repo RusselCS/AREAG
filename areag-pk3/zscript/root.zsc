@@ -12,6 +12,7 @@
 #include "zscript/player/1_playermove.zsc"
 #include "zscript/player/2_playerhealth.zsc"
 #include "zscript/player/3_playerstatus.zsc"
+#include "zscript/player/4_playerproperties.zsc"
 
 // WEAPONS
 #include "zscript/inventory/actives/__baseactivetrigger.zsc"
