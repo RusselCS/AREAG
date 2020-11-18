@@ -49,7 +49,7 @@ weapon/knifewall	KNIFMISS // Steamworld Dig
 weapon/knifehit		KNIFHIT  // Virtua Fighter
 
 weapon/dynamitethrow	DYNTHROW // Mega Man Star Force
-weapon/dynamiteexplode1 DYNEXPL1 // LA-MULANA
+weapon/dynamiteexplode1 DYNEXPL1 // Gunstar Heroes
 
 weapon/shieldswing SHLDSWIN // THE KING OF FIGHTERS XIV
 weapon/shieldsmack SHLDHIT // Garou: Mark of the Wolves
