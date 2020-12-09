@@ -59,17 +59,17 @@ Class AREAGStatusBar : BaseStatusBar {
 
         String icn;
 
-        if(pl.countInv("KnifeEquipped") > 0)
-        {
-            amt = pl.countInv("KnifeAmmo");
-            icn = "ICOSW1";
-        }
+        // if(pl.countInv("KnifeEquipped") > 0)
+        // {
+        //     amt = pl.countInv("KnifeAmmo");
+        //     icn = "ICOSW1";
+        // }
 
-        if(pl.countInv("DynamiteEquipped") > 0)
-        {
-            amt = pl.countInv("DynamiteAmmo");
-            icn = "ICOSW2";
-        }
+        // if(pl.countInv("DynamiteEquipped") > 0)
+        // {
+        //     amt = pl.countInv("DynamiteAmmo");
+        //     icn = "ICOSW2";
+        // }
 
         if(icn) {
             DrawImage(icn,  (xOffs + subXOffs, -yOffs));

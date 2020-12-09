@@ -4,7 +4,7 @@ class ZSCAdventureWhip : AREAGProtoWeapon
     Default
     {
         Weapon.SlotNumber 1;
-        Obituary "%o was whipped into shape by %k's Adventurer's Whip.";
+        Obituary "%o was whipped into shape by %k's Whip.";
         Inventory.Pickupmessage "Retrieved your trusty whip!";
     }
 
@@ -25,42 +25,84 @@ class ZSCAdventureWhip : AREAGProtoWeapon
 
 	States
 	{
-    Deselect:
-        WHP1 A 0 A_AREAGLowerSub();
-		WHP1 AABCD 1;
-        goto Super::DeselectReal;
-	Ready:
-		TNT1 A 0 A_ReadySubWeapons();
-	ReadyRaise:
-		TNT1 A 0 A_AREAGRaiseSub();
+	MainRaise:
 		WHP1 DCBA 1;
-		goto ReadyLoop;
-	ReadyLoop:
-		WHP1 A 1 A_AREAGWeaponReady();
-		loop;
-	Fire:
-		WHP1 A 0 A_AREAGLowerSub();
-	MainLower:
+		goto MainReady;
+	MainReady:
+		WHP1 A 1 A_MainWeaponReady();
+		wait;
+	MainWindup:
 		WHP1 AABCD 1;
-        goto Hold;
-	MainRelease:
+		goto MainHold;
+	MainHold:
+		TNT1 A 1;
+		TNT1 A 0 A_MainHoldCheck("MainHold");
+		goto MainFire;
+	MainFire:
 		WHPL A 0 A_StartSound("weapon/whipswing", CHAN_WEAPON);
 		TNT1 A 0 A_SwingWhip();
 	SwingLeft:
 		WHPL ABC 1 A_SetAngle(angle+0.2);
 		WHPL A 0 A_FireProjectile("WhipProjectileL", 0, 0, 0);
 		WHPL DEZ 1 A_SetAngle(angle+0.2);
-		TNT1 A 6;
 		goto FireEnd;
 	SwingRight:
 		WHPL FGH 1 A_SetAngle(angle-0.2);
 		WHPL A 0 A_FireProjectile("WhipProjectileR", 0, 0, 0);
 		WHPL IJK 1 A_SetAngle(angle-0.2);
-		TNT1 A 6;
 		goto FireEnd;
-	AltLower:
+	FireEnd:
+		TNT1 A 6;
+		TNT1 A 0 A_MainRefire("MainHold", "MainWait");
+		goto MainRaise;
+	MainOffWindup:
 		WHP1 AABCD 1;
-		goto AltHold;
+		goto MainWait;
+	MainWait:
+		TNT1 A 1;
+		TNT1 A 0 A_CheckSubStatus("MainHold", "MainWait");
+		goto MainRaise;
+	MainLower:
+		WHP1 AABCD 1;
+		TNT1 A 1 A_MainDeselect;
+		wait;
+	
+    // Deselect:
+    //     WHP1 A 0 A_AREAGLowerSub();
+	// 	WHP1 AABCD 1;
+    //     goto Super::DeselectReal;
+	// Ready:
+	// 	TNT1 A 0 A_ReadySubWeapons();
+	// ReadyRaise:
+	// 	TNT1 A 0 A_AREAGRaiseSub();
+	// 	WHP1 DCBA 1;
+	// 	goto ReadyLoop;
+	// ReadyLoop:
+	// 	WHP1 A 1 A_AREAGWeaponReady();
+	// 	loop;
+	// Fire:
+	// 	WHP1 A 0 A_AREAGLowerSub();
+	// MainLower:
+	// 	WHP1 AABCD 1;
+    //     goto Hold;
+	// MainRelease:
+	// 	WHPL A 0 A_StartSound("weapon/whipswing", CHAN_WEAPON);
+	// 	TNT1 A 0 A_SwingWhip();
+	// SwingLeft:
+	// 	WHPL ABC 1 A_SetAngle(angle+0.2);
+	// 	WHPL A 0 A_FireProjectile("WhipProjectileL", 0, 0, 0);
+	// 	WHPL DEZ 1 A_SetAngle(angle+0.2);
+	// 	TNT1 A 6;
+	// 	goto FireEnd;
+	// SwingRight:
+	// 	WHPL FGH 1 A_SetAngle(angle-0.2);
+	// 	WHPL A 0 A_FireProjectile("WhipProjectileR", 0, 0, 0);
+	// 	WHPL IJK 1 A_SetAngle(angle-0.2);
+	// 	TNT1 A 6;
+	// 	goto FireEnd;
+	// AltLower:
+	// 	WHP1 AABCD 1;
+	// 	goto AltHold;
 	}
 }
 

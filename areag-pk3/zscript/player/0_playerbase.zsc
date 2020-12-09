@@ -5,6 +5,8 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
     int iSelectedWep;
     int iPrevSelect;
 
+    Array<SubWeapon> subs;
+
     override void AREAGThink() {
         AREAGMoveThink();
     }
@@ -17,13 +19,44 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
 
         if(iSelectedWep != iPrevSelect) {
             iPrevSelect = iSelectedWep;
-            if(iSelectedWep > SWEP_NONE && iSelectedWep < SubWeapons.subWepCount())
+            if(iSelectedWep > SWEP_NONE && iSelectedWep < subs.size())
             {
-                for(int i = 0; i < SubWeapons.subWepCount(); i++) {
-                    TakeInventory(SubWeapons.equippedField(i), 1);
-                }
-                GiveInventory(SubWeapons.equippedField(iSelectedWep), 1);
+                A_Log(subs[iSelectedWep].weaponName);
             }
+        }
+    }
+
+    void pushSubWeapon(SubWeapon wep) {
+        subs.push(wep);
+        if(iSelectedWep == SWEP_NONE) {
+            iSelectedWep = 0;
+        }
+    }
+
+    SubWeapon getCurrentSubweapon() {
+        if(iSelectedWep == SWEP_NONE) {
+            return null;
+        }
+        return subs[iSelectedWep];
+    }
+
+    SubWeapon selectNextSubweapon() {
+        if(iSelectedWep == SWEP_NONE) {
+            return null;
+        } else {
+            iSelectedWep = iSelectedWep + 1 >= subs.size() ? 0 : iSelectedWep + 1;
+            A_Log(String.Format("NEXT SUB WEAPON!! RESULT IS %d", iSelectedWep));
+            return subs[iSelectedWep];
+        }
+    }
+
+    SubWeapon selectPrevSubweapon() {
+        if(iSelectedWep == SWEP_NONE) {
+            return null;
+        } else {
+            iSelectedWep = iSelectedWep - 1 < 0 ? subs.size()-1 : iSelectedWep - 1;
+            A_Log(String.Format("PREVIOUS SUB WEAPON!! RESULT IS %d", iSelectedWep));
+            return subs[iSelectedWep];
         }
     }
     

@@ -1,26 +1,38 @@
 class SubWeaponPickup : BasicInventory
 {
-    String sAmmoType;
-    String sAmmoMax;
-    int iWeaponIndex;
-    int iAmmoAmount;
+    class<Ammo> cAmmoType;
+    int iAmmoGive;
+    String sWeaponName;
  
-    property AmmoType: sAmmoType;
-    property AmmoMax: sAmmoMax;
-    property AmmoAmount: iAmmoAmount;
-    property WeaponIndex: iWeaponIndex;
-
-	action void A_AREAGSelectWeapon(int wep) {
-		if(CountInv("DroneFlag")==0 && AREAGPlayerPawn(self).iSelectedWep == SWEP_NONE)
-			AREAGPlayerPawn(self).iSelectedWep = wep;
-	}
+    property AmmoType: cAmmoType;
+    property AmmoGive: iAmmoGive;
+    property WeaponName: sWeaponName;
 
     action void A_AREAGGiveSubWeapon() {
         if(invoker.inWorld) {
-            A_AREAGSelectWeapon(invoker.iWeaponIndex);
+            SubWeapon wep = invoker.subStateBuilder();
+            AREAGPlayerPawn plr = AREAGPlayerPawn(self);
+            plr.pushSubWeapon(wep);
+        } else {
+            A_Log("PICKUP FAILED!!");
         }
-        A_GiveInventory(invoker.sAmmoMax, invoker.iAmmoAmount);
-        A_GiveInventory(invoker.sAmmoType, invoker.iAmmoAmount);
+    }
+
+    virtual SubWeapon subStateBuilder() {
+        StateLabel rS = "Raise";
+        StateLabel lS = "Lower";
+        StateLabel reS = "Ready";
+        StateLabel wS = "Windup";
+        StateLabel oS = "OffWindup";
+        StateLabel hS = "Hold";
+        StateLabel tS = "Throw";
+
+        return buildSubWeapon(rS, lS, reS, wS, oS, hS, tS);
+    }
+
+    SubWeapon buildSubWeapon(StateLabel rS, StateLabel lS, StateLabel reS, StateLabel wS, StateLabel oS, StateLabel hS, StateLabel tS)
+    {
+        return new("SubWeapon").Init(cAmmoType, sWeaponName, rS, lS, reS, wS, oS, hS, tS);
     }
 
     States
@@ -36,6 +48,68 @@ enum ESubWeapons {
 	SWEP_KNIFE,
 	SWEP_DYNAMITE,
     SWEP_END
+}
+
+class SubWeapon
+{
+    class<Ammo> ammoType;
+    String weaponName;
+    StateLabel raiseState;
+    StateLabel lowerState;
+    StateLabel readyState;
+    StateLabel windupState;
+    StateLabel offWindupState;
+    StateLabel holdState;
+    StateLabel throwState;
+
+    SubWeapon Init(class<Ammo> aT, String sN, StateLabel rS, StateLabel lS, StateLabel reS, StateLabel wS, StateLabel oS, StateLabel hS, StateLabel tS) {
+        ammoType = aT;
+        weaponName = sN;
+        raiseState = rS;
+        lowerState = lS;
+        readyState = reS;
+        windupState = wS;
+        offWindupState = oS;
+        holdState = hS;
+        throwState = tS;
+        return self;
+    }
+
+    String getWeaponName() {
+        return weaponName;
+    }
+
+    class<Ammo> getAmmoType() {
+        return ammoType;
+    }
+
+    StateLabel getRaiseState() {
+        return raiseState;
+    }
+
+    StateLabel getLowerState() {
+        return lowerState;
+    }
+
+    StateLabel getReadyState() {
+        return readyState;
+    }
+
+    StateLabel getWindupState() {
+        return windupState;
+    }
+
+    StateLabel getOffWindupState() {
+        return offWindupState;
+    }
+    
+    StateLabel getHoldState() {
+        return holdState;
+    }
+
+    StateLabel getThrowState() {
+        return throwState;
+    }
 }
 
 struct SubWeapons {

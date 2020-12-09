@@ -5,6 +5,9 @@ const HEALTH_MAX = -1;
 
 const MAP_TABLET_WRAP = 100;
 
+const BT_SUBNEXT = BT_USER1;
+const BT_SUBPREV = BT_USER2;
+
 enum PickupTypes {
 	PICKTYPE_ARTIFICE,
 	PICKTYPE_WEAPON,

@@ -1,6 +1,9 @@
-class KnifeEquipped : Once {}
-class KnifeAmmo : Counter {}
-class KnifeMax : Counter {}
+class KnifeAmmo : Ammo {
+    Default {
+        inventory.amount 1;
+        inventory.maxamount 10;
+    }
+}
 
 class KnifePouchPickup : SubWeaponPickup
 {
@@ -9,10 +12,22 @@ class KnifePouchPickup : SubWeaponPickup
         BasicInventory.PickupID PICKMSG_KNIFE;
         BasicInventory.PickupType PICKTYPE_SUBWEAPON;
         SubWeaponPickup.AmmoType "KnifeAmmo";
-        SubWeaponPickup.AmmoMax "KnifeMax";
-        SubWeaponPickup.AmmoAmount 10;
-        SubWeaponPickup.WeaponIndex SWEP_KNIFE;
+        SubWeaponPickup.AmmoGive 10;
+        SubWeaponPickup.WeaponName "Knife";
+
         Scale 2.0;
+    }
+
+    override SubWeapon subStateBuilder() {
+        StateLabel rS = "KnifeRaise";
+        StateLabel lS = "KnifeLower";
+        StateLabel reS = "KnifeReady";
+        StateLabel wS = "KnifeWindup";
+        StateLabel oS = "KnifeOffWindup";
+        StateLabel hS = "KnifeHold";
+        StateLabel tS = "KnifeThrow";
+
+        return buildSubWeapon(rS, lS, reS, wS, oS, hS, tS);
     }
 
 	States
@@ -29,30 +44,26 @@ extend class AREAGProtoWeapon {
 
 		int wep = AREAGPlayerPawn(self).iSelectedWep;
 
-		if(invoker.bLowerSub || (wep != SWEP_KNIFE || CountInv("KnifeAmmo") == 0)) {
-		return ResolveState("KnifeLower");
-		}
-
 		return ResolveState(null);
 	}
 
 	States
 	{
-		KnifeRaise:
-		    SKHD DCBA 1;
-		KnifeReady:
-		    SKHD A 1 A_AREAGKnifeActive();
-			loop;
-		KnifeThrow:
-            HBMA A 0 A_StartSound("weapon/knifethrow", CHAN_WEAPON);
-            HBMA A 0 A_TakeInventory("KnifeAmmo", 1);
-            HBMA A 0 A_FireProjectile("ThrowKnife");
-            HBMA ABCDE 1;
-			TNT1 A 6;
-		    goto AltFireEnd;
-		KnifeLower:
-            SKHD ABCD 1;
-            goto Flash;
+		// KnifeRaise:
+		//     SKHD DCBA 1;
+		// KnifeReady:
+		//     SKHD A 1 A_AREAGKnifeActive();
+		// 	loop;
+		// KnifeThrow:
+        //     HBMA A 0 A_StartSound("weapon/knifethrow", CHAN_WEAPON);
+        //     HBMA A 0 A_TakeInventory("KnifeAmmo", 1);
+        //     HBMA A 0 A_FireProjectile("ThrowKnife");
+        //     HBMA ABCDE 1;
+		// 	TNT1 A 6;
+		//     goto AltFireEnd;
+		// KnifeLower:
+        //     SKHD ABCD 1;
+        //     goto Flash;
 	}
 }
 
