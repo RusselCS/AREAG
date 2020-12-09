@@ -20,14 +20,8 @@ class DynamiteCratePickup : SubWeaponPickup
 
     override SubWeapon subStateBuilder() {
         StateLabel rS = "DynamiteRaise";
-        StateLabel lS = "DynamiteLower";
-        StateLabel reS = "DynamiteReady";
-        StateLabel wS = "DynamiteWindup";
-        StateLabel oS = "DynamiteOffWindup";
-        StateLabel hS = "DynamiteHold";
-        StateLabel tS = "DynamiteThrow";
 
-        return buildSubWeapon(rS, lS, reS, wS, oS, hS, tS);
+        return buildSubWeapon(rS);
     }
 
     
@@ -50,21 +44,49 @@ extend class AREAGProtoWeapon {
 
     States
     {
-        // DynamiteRaise:
-        //     SDHD DCBA 1;
-        // DynamiteReady:
-        //     SDHD A 1 A_AREAGDynamiteActive();
-        //     loop;
-        // DynamiteThrow:
-        //     HBMA A 0 A_StartSound("weapon/dynamitethrow", CHAN_WEAPON);
-        //     HBMA A 0 A_TakeInventory("DynamiteAmmo", 1);
-        //     HBMA A 0 A_FireProjectile("DynamiteProjectile", 0, 0, 0, 0);
-        //     HBMA ABCDE 1;
-        //     TNT1 A 6;
-        //     goto AltFireEnd;
-        // DynamiteLower:
-        //     SDHD ABCD 1;
-        //     goto Flash;
+        DynamiteRaise:
+            SDHD DCBA 1;
+            goto DynamiteReady;
+        DynamiteReady:
+            SDHD A 1 A_SubWeaponReady("DynamiteWindup", "DynamiteOffWindup", "DynamiteLower");
+            wait;
+        DynamiteWindup:
+            SDHD A 0 A_StartSubFiringSequence();
+            SDHD EFGH 1;
+            goto DynamiteHold;
+        DynamiteHold:
+            SHDH H 0 A_Overlay(1001, "DynamiteFuse");
+        DynamiteHoldLoop:
+            SDHD H 1;
+            TNT1 A 0 A_SubHoldCheck("DynamiteHoldLoop");
+            goto DynamiteFire;
+        DynamiteFire:
+            HBMA A 0 A_StartSound("weapon/dynamitethrow", CHAN_WEAPON);
+            HBMA A 0 A_TakeInventory("DynamiteAmmo", 1);
+            HBMA A 0 A_FireProjectile("DynamiteProjectile", 0, 0, 0, 0);
+            HBMA ABCDE 1;
+            TNT1 A 6;
+            TNT1 A 0 A_FinishSubFiringSequence();
+            TNT1 AAAAAAAAAAAAAAAAAAAAA 1 A_SubRefire("DynamiteHoldRefire", "DynamiteWait");
+            goto DynamiteRaise;
+        DynamiteOffWindup:
+            SDHD ABCD 1;
+            goto DynamiteWait;
+        DynamiteWait:
+            TNT1 A 1;
+            TNT1 AAAAAAAAAAAAAAAAAAAA 1 A_CheckMainStatus("DynamiteHoldRefire", "DynamiteWait");
+            goto DynamiteRaise;
+        DynamiteHoldRefire:
+            SDHD A 0 A_StartSubFiringSequence();
+            SDHD DH 2;
+            goto DynamiteHold;
+        DynamiteLower:
+            SDHD ABCD 1;
+            goto AltRaise;
+
+        DynamiteFuse:
+            SDHD IJK 1;
+            loop;
     }
 }
 

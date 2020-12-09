@@ -4,6 +4,7 @@ class AREAGProtoWeapon : Weapon {
 
     bool bMainInProgress;
     bool bSubInProgress;
+    int iLastSubWeapon;
     mixin AREAG_Common;
 
     AREAGPlayerPawn plr;
@@ -24,157 +25,14 @@ class AREAGProtoWeapon : Weapon {
         invoker.bMainInProgress = true;
         invoker.bSubInProgress = true;
         invoker.plr = AREAGPlayerPawn(self);
-    }
-
-    // Main weapon functions
-    action State A_MainWeaponReady() {
-
-        int iButtons = invoker.plr.iButtons;
-        int iOldButtons = invoker.plr.iOldButtons;
-
-        // for(int i = 0; i < TreasureItems.itemFields.Size(); i++) {
-        //     if(countInv(TreasureItems.activeItem(i))) {
-        //         return ResolveState("Fire");
-        //     }
-        // }
-
-        if(checkPressed(BT_SUBNEXT, iButtons, iOldButtons)) {
-            invoker.plr.selectNextSubweapon();
-        } else if(checkPressed(BT_SUBPREV, iButtons, iOldButtons)) {
-            invoker.plr.selectPrevSubweapon();
-        }
-
-        if(iButtons & BT_ALTATTACK || invoker.bSubInProgress) {
-            return ResolveState("MainOffWindup");
-        }
-
-        if(iButtons & BT_ATTACK) {
-            invoker.bMainInProgress = true;
-            return ResolveState("MainWindup");
-        }
-
-        A_WeaponReady(WRF_NOFIRE); // Literally just here to allow you to swap weapons.
-        return ResolveState(null);
-    }
-
-    action State A_MainHoldCheck(StateLabel st) {
-        if(invoker.plr.iButtons & BT_ATTACK) {
-            return ResolveState(st);
-        }
-        return ResolveState(null);
-    }
-
-    action State A_MainRefire(StateLabel rst, StateLabel wst) {
-        if(invoker.plr.iButtons & BT_ATTACK) {
-            return ResolveState(rst);
-        }
-
-        invoker.bMainInProgress = false;
-        if(invoker.plr.iButtons & BT_ALTATTACK) {
-            invoker.bSubInProgress = true;
-            return ResolveState(wst);
-        }
-        
-        return ResolveState(null);
-    }
-
-    action State A_CheckSubStatus(StateLabel rst, StateLabel wst) {
-        if(invoker.bSubInProgress) {
-            return ResolveState(wst);
-        }
-
-        if(invoker.bMainInProgress) {
-            return ResolveState(rst);
-        }
-        return ResolveState(null);
-    }
-
-    // Sub functions
-    action State A_SubWeaponReady(StateLabel windUp, StateLabel offWindUp) {
-
-        int iButtons = invoker.plr.iButtons;
-        int iOldButtons = invoker.plr.iOldButtons;
-
-        // for(int i = 0; i < TreasureItems.itemFields.Size(); i++) {
-        //     if(countInv(TreasureItems.activeItem(i))) {
-        //         return ResolveState("Fire");
-        //     }
-        // }
-
-        if(iButtons & BT_ATTACK || invoker.bMainInProgress) {
-            return ResolveState(offWindUp);
-        }
-
-        if(iButtons & BT_ALTATTACK) {
-            invoker.bSubInProgress = true;
-            return ResolveState(windUp);
-        }
-
-        return ResolveState(null);
-    }
-
-    action State A_SubHoldCheck(StateLabel st) {
-        if(invoker.plr.iButtons & BT_ALTATTACK) {
-            return ResolveState(st);
-        }
-        return ResolveState(null);
-    }
-
-    action State A_SubRefire(StateLabel rst, StateLabel wst) {
-        if(invoker.plr.iButtons & BT_ALTATTACK) {
-            return ResolveState(rst);
-        }
-
-        invoker.bSubInProgress = false;
-        if(invoker.plr.iButtons & BT_ATTACK) {
-            invoker.bMainInProgress = true;
-            return ResolveState(wst);
-        }
-        
-        return ResolveState(null);
-    }
-
-    action State A_CheckMainStatus(StateLabel rst, StateLabel wst) {
-        if(invoker.bMainInProgress) {
-            return ResolveState(wst);
-        }
-
-        if(invoker.bSubInProgress) {
-            return ResolveState(rst);
-        }
-
-        return ResolveState(null);
+        invoker.iLastSubWeapon = invoker.plr.iSelectedWep;
+        A_GunFlash();
     }
 
     // Control functions
-    action State A_MainDeselect() {
-        return ResolveState("LowerToDeselect");
-    }
-
-    action void A_StartMainFiringSequence() {
-        invoker.bMainInProgress = true;
-    }
-
-    action void A_StartSubFiringSequence() {
-        invoker.bSubInProgress = true;
-    }
-
-    action void A_FinishMainFiringSequence() {
-        invoker.bMainInProgress = false;
-    }
-
-    action void A_FinishSubFiringSequence() {
-        invoker.bSubInProgress = false;
-    }
-
     action void A_LowerBothHands() {
         invoker.bMainInProgress = true;
         invoker.bSubInProgress = true;
-    }
-
-    action void A_SubRaise() {
-        A_GunFlash(); // creates subweapon hand
-        invoker.bSubInProgress = false;
     }
 
     action State A_MainRaise() {
@@ -184,103 +42,45 @@ class AREAGProtoWeapon : Weapon {
 
     States
     {
-        // Base weapon states (map to other states automatically)
-        Deselect:
-            TNT1 A 0;
-            goto Lower;
-        Select:
-            TNT1 A 8;
-            TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 0 A_Raise;
-            TNT1 A 1 A_Raise;
-            loop; // goes to Ready after enough calls to A_Raise
-        Ready:
-            NULL A 0;
-            goto Init;
-        Fire:
-            TNT1 A 0;
-            wait;
-        AltFire:
-            TNT1 A 0;
-            wait;
-        Flash: // A_GunFlash called by A_SubRaise
-            TNT1 A 1 A_JumpIf(true, "SubRaise");
-            wait;
+    // Base weapon states (map to other states automatically)
+    Deselect:
+        TNT1 A 0;
+        goto Lower;
+    Select:
+        TNT1 A 8;
+        TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 0 A_Raise;
+        TNT1 A 1 A_Raise;
+        loop; // goes to Ready after enough calls to A_Raise
+    Ready:
+        NULL A 0;
+        goto Init;
+    Fire:
+        TNT1 A 0;
+        wait;
+    AltFire:
+        TNT1 A 0;
+        wait;
+    Flash: // A_GunFlash called by A_InitWeap
+        TNT1 A 0;
+        goto AltRaise;
 
-        // Shared states, weapons shouldn't override these
-        Init:
-            TNT1 A 0 A_InitWeap();
-            goto Raise;
-        Lower:
-            TNT1 A 0 A_LowerBothHands();
-            TNT1 A 1 A_JumpIf(true, "MainLower");
-            wait;
-        LowerToDeselect:
-            TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 0 A_Lower;
-            TNT1 A 1 A_Lower;
-            loop;
-        Raise:
-            TNT1 A 0 A_SubRaise();
-            TNT1 A 0 A_MainRaise();
-            wait;
-
-        // These states should be overridden by the main weapon
-        MainRaise:
-            TNT1 A 1;
-            goto MainReady;
-        MainReady:
-            TNT1 A 1 A_MainWeaponReady();
-            wait;
-        MainWindup:
-            TNT1 A 1;
-            goto MainHold;
-        MainHold:
-            TNT1 A 1;
-            TNT1 A 0 A_MainHoldCheck("MainHold");
-            goto MainFire;
-        MainFire:
-            TNT1 A 1; 
-            TNT1 A 0 A_MainRefire("MainHold", "MainWait");
-            goto MainRaise;
-        MainOffWindup:
-            TNT1 A 1;
-            goto MainWait;
-        MainWait:
-            TNT1 A 1;
-            TNT1 A 0 A_CheckSubStatus("MainHold", "MainWait");
-            goto MainRaise;
-        MainLower:
-            TNT1 A 1 A_MainDeselect;
-            wait;
-        
-        // These states are used by the SubWeapon, each sub weapon should extend
-        // this class to add its own
-        SubRaise:
-            HBM2 DCBA 1;
-            goto SubReady;
-        SubReady:
-            HBM2 A 1 A_SubWeaponReady("SubWindup", "SubOffWindup");
-            wait;
-        SubWindup:
-            HBM2 ABCD 1;
-            goto SubHold;
-        SubHold:
-            TNT1 A 1;
-            TNT1 A 0 A_SubHoldCheck("SubHold");
-            goto SubFire;
-        SubFire:
-            HBMA ABCDE 1;
-            TNT1 A 6; 
-            TNT1 A 0 A_SubRefire("SubHold", "SubWait");
-            goto SubRaise;
-        SubOffWindup:
-            HBM2 ABCD 1;
-            goto SubWait;
-        SubWait:
-            TNT1 A 1;
-            TNT1 A 0 A_CheckMainStatus("SubHold", "SubWait");
-            goto SubRaise;
-        SubLower:
-            TNT1 A 1; // A_SubDeselect;
-            stop;
+    // Shared states, weapons shouldn't override these
+    Init:
+        TNT1 A 0 A_InitWeap();
+        goto Raise;
+    Lower:
+        TNT1 A 0 A_LowerBothHands();
+        TNT1 A 1 A_JumpIf(true, "MainLower");
+        wait;
+    LowerToDeselect:
+        TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 0 A_Lower;
+        TNT1 A 1 A_Lower;
+        loop;
+    Raise:
+        TNT1 A 1 A_MainRaise();
+        wait;
+    AltRaise:
+        TNT1 A 1 A_SubRaise();
+        wait;
     }
 }

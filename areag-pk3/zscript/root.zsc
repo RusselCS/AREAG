@@ -19,6 +19,8 @@
 #include "zscript/inventory/subweapons/__subwepdefs.zsc"
 
 #include "zscript/inventory/__weaponbase.zsc"
+#include "zscript/inventory/_subweaponbase.zsc"
+#include "zscript/inventory/_mainweaponbase.zsc"
 #include "zscript/inventory/mainweapons/1_whip.zsc"
 // #include "zscript/inventory/mainweapons/2_steeltyrant.zsc"
 // #include "zscript/inventory/mainweapons/3_capitalpunishment.zsc"
@@ -26,6 +28,7 @@
 // #include "zscript/inventory/mainweapons/5_kinderlun.zsc"
 // #include "zscript/inventory/mainweapons/6_gravgloves.zsc"
 
+#include "zscript/inventory/subweapons/_empty.zsc"
 #include "zscript/inventory/subweapons/knives.zsc"
 #include "zscript/inventory/subweapons/dynamite.zsc"
 

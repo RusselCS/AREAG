@@ -20,14 +20,8 @@ class KnifePouchPickup : SubWeaponPickup
 
     override SubWeapon subStateBuilder() {
         StateLabel rS = "KnifeRaise";
-        StateLabel lS = "KnifeLower";
-        StateLabel reS = "KnifeReady";
-        StateLabel wS = "KnifeWindup";
-        StateLabel oS = "KnifeOffWindup";
-        StateLabel hS = "KnifeHold";
-        StateLabel tS = "KnifeThrow";
 
-        return buildSubWeapon(rS, lS, reS, wS, oS, hS, tS);
+        return buildSubWeapon(rS);
     }
 
 	States
@@ -48,22 +42,43 @@ extend class AREAGProtoWeapon {
 	}
 
 	States
-	{
-		// KnifeRaise:
-		//     SKHD DCBA 1;
-		// KnifeReady:
-		//     SKHD A 1 A_AREAGKnifeActive();
-		// 	loop;
-		// KnifeThrow:
-        //     HBMA A 0 A_StartSound("weapon/knifethrow", CHAN_WEAPON);
-        //     HBMA A 0 A_TakeInventory("KnifeAmmo", 1);
-        //     HBMA A 0 A_FireProjectile("ThrowKnife");
-        //     HBMA ABCDE 1;
-		// 	TNT1 A 6;
-		//     goto AltFireEnd;
-		// KnifeLower:
-        //     SKHD ABCD 1;
-        //     goto Flash;
+    {
+        KnifeRaise:
+            SKHD DCBA 1;
+            goto KnifeReady;
+        KnifeReady:
+            SKHD A 1 A_SubWeaponReady("KnifeWindup", "KnifeOffWindup", "KnifeLower");
+            wait;
+        KnifeWindup:
+            SKHD A 0 A_StartSubFiringSequence();
+            SKHD AABCD 1;
+            goto KnifeHold;
+        KnifeHold:
+            TNT1 A 1;
+            TNT1 A 0 A_SubHoldCheck("KnifeHold");
+            goto KnifeFire;
+        KnifeFire:
+            HBMA A 0 A_StartSound("weapon/knifethrow", CHAN_WEAPON);
+            HBMA A 0 A_TakeInventory("KnifeAmmo", 1);
+            HBMA A 0 A_FireProjectile("ThrowKnife");
+            HBMA ABCDE 1;
+            TNT1 A 6;
+            TNT1 A 0 A_FinishSubFiringSequence();
+            TNT1 AAAAAAAAAAAAAAAAAAAAA 1 A_SubRefire("KnifeHoldRefire", "KnifeWait");
+            goto KnifeRaise;
+        KnifeOffWindup:
+            SKHD ABCD 1;
+            goto KnifeWait;
+        KnifeWait:
+            TNT1 A 1;
+            TNT1 AAAAAAAAAAAAAAAAAAAA 1 A_CheckMainStatus("KnifeHoldRefire", "KnifeWait");
+            goto KnifeRaise;
+        KnifeHoldRefire:
+            HBM2 A 0 A_StartSubFiringSequence();
+            goto KnifeHold;
+        KnifeLower:
+            SKHD ABCD 1;
+            goto AltRaise;
 	}
 }
 

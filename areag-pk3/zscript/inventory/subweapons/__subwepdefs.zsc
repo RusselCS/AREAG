@@ -20,19 +20,13 @@ class SubWeaponPickup : BasicInventory
 
     virtual SubWeapon subStateBuilder() {
         StateLabel rS = "Raise";
-        StateLabel lS = "Lower";
-        StateLabel reS = "Ready";
-        StateLabel wS = "Windup";
-        StateLabel oS = "OffWindup";
-        StateLabel hS = "Hold";
-        StateLabel tS = "Throw";
 
-        return buildSubWeapon(rS, lS, reS, wS, oS, hS, tS);
+        return buildSubWeapon(rS);
     }
 
-    SubWeapon buildSubWeapon(StateLabel rS, StateLabel lS, StateLabel reS, StateLabel wS, StateLabel oS, StateLabel hS, StateLabel tS)
+    SubWeapon buildSubWeapon(StateLabel rS)
     {
-        return new("SubWeapon").Init(cAmmoType, sWeaponName, rS, lS, reS, wS, oS, hS, tS);
+        return new("SubWeapon").Init(cAmmoType, sWeaponName, rS);
     }
 
     States
@@ -55,23 +49,11 @@ class SubWeapon
     class<Ammo> ammoType;
     String weaponName;
     StateLabel raiseState;
-    StateLabel lowerState;
-    StateLabel readyState;
-    StateLabel windupState;
-    StateLabel offWindupState;
-    StateLabel holdState;
-    StateLabel throwState;
 
-    SubWeapon Init(class<Ammo> aT, String sN, StateLabel rS, StateLabel lS, StateLabel reS, StateLabel wS, StateLabel oS, StateLabel hS, StateLabel tS) {
+    SubWeapon Init(class<Ammo> aT, String sN, StateLabel rS) {
         ammoType = aT;
         weaponName = sN;
         raiseState = rS;
-        lowerState = lS;
-        readyState = reS;
-        windupState = wS;
-        offWindupState = oS;
-        holdState = hS;
-        throwState = tS;
         return self;
     }
 
@@ -85,30 +67,6 @@ class SubWeapon
 
     StateLabel getRaiseState() {
         return raiseState;
-    }
-
-    StateLabel getLowerState() {
-        return lowerState;
-    }
-
-    StateLabel getReadyState() {
-        return readyState;
-    }
-
-    StateLabel getWindupState() {
-        return windupState;
-    }
-
-    StateLabel getOffWindupState() {
-        return offWindupState;
-    }
-    
-    StateLabel getHoldState() {
-        return holdState;
-    }
-
-    StateLabel getThrowState() {
-        return throwState;
     }
 }
 

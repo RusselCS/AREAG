@@ -1,0 +1,37 @@
+extend class AREAGProtoWeapon
+{
+    action State A_CheckEmptySubWeapon() {
+        SubWeapon s = invoker.plr.getCurrentSubweapon();
+
+        if(s) {
+            return ResolveState("EmptyLower");
+        }
+
+        if(invoker.bMainInProgress) {
+            return ResolveState("EmptyOffWindup");
+        }
+
+        return ResolveState(null);
+    }
+
+    States
+    {
+        EmptyRaise:
+            TNT1 A 1;
+            HBM2 DCBA 1;
+            goto EmptyReady;
+        EmptyReady:
+            HBM2 A 1 A_CheckEmptySubWeapon();
+            wait;
+        EmptyOffWindup:
+            HBM2 ABCD 1;
+            goto EmptyWait;
+        EmptyWait:
+            TNT1 A 1;
+            TNT1 AAAAAAAAAAAAAAAAAAAA 1 A_CheckMainStatus(null, "EmptyWait");
+            goto EmptyRaise;
+        EmptyLower:
+            HBM2 ABCD 1;
+            goto AltRaise;
+    }
+}
