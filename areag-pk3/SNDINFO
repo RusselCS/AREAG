@@ -48,6 +48,7 @@ $volume weapon/knifethrow 0.6
 weapon/knifewall	KNIFMISS // Steamworld Dig
 weapon/knifehit		KNIFHIT  // Virtua Fighter
 
+weapon/dynamitelit      DYNLIT // -------------------------------------- FIND THIS LATER. IT IS TEMP.
 weapon/dynamitethrow	DYNTHROW // Mega Man Star Force
 weapon/dynamiteexplode1 DYNEXPL1 // Gunstar Heroes
 

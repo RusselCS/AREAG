@@ -33,13 +33,66 @@ class DynamiteCratePickup : SubWeaponPickup
 	}
 }
 
+const FUSE_LENGTH = 70;
+const FUSE_LAYER = 1001;
+const FUSE_PX_X = 23;
+
 extend class AREAGProtoWeapon {
 
-    action State A_AREAGDynamiteActive() {
+    int iDynamiteFuse;
 
-            int wep = AREAGPlayerPawn(self).iSelectedWep;
+    action State A_BurnFuse() {
+        invoker.iDynamiteFuse++;
 
-            return ResolveState(null);
+        if(invoker.iDynamiteFuse == 1) {
+            A_Overlay(FUSE_LAYER, "DynamiteFuse");
+            A_StartSound("weapon/dynamitelit", CHAN_WEAPON, CHANF_LOOP, 1.0, ATTN_NORM);
+        }
+        
+        Vector2 fusePs = invoker.fusePosition();
+        A_OverlayOffset(FUSE_LAYER, fusePs.x, fusePs.y);
+
+        if(invoker.iDynamiteFuse == FUSE_LENGTH+1) {
+            return ResolveState("DynamiteExplode");
+        }
+
+        return ResolveState(null);
+    }
+
+    action void A_FireDynamite(bool sound = true) {
+        A_Overlay(FUSE_LAYER, "DynamiteFuseEnd");
+        A_StopSound(CHAN_WEAPON);
+        if(sound)
+            A_StartSound("weapon/dynamitethrow", CHAN_WEAPON);
+        A_TakeInventory("DynamiteAmmo", 1);
+        Actor prj = A_FireProjectile("DynamiteProjectile", 0, 0, 0, 0);
+        prj.reactiontime = max(0, FUSE_LENGTH - invoker.iDynamiteFuse);
+        invoker.iDynamiteFuse = 0;
+    }
+
+    Vector2 fusePosition() {
+        double dFuse, dFuseLength, dFusePixels;
+        double retXd, pct;
+        int retX, retY;
+
+        dFuse = iDynamiteFuse;
+        dFuseLength = FUSE_LENGTH;
+        dFusePixels = FUSE_PX_X;
+        pct = dFuse / dFuseLength;
+        retXd = dFusePixels * pct;
+        retX = retXd;
+
+        if(pct < 0.500) {
+            retY = 0;
+        } else if(pct < 0.750) {
+            retY = 1;
+        } else if(pct < 0.850) {
+            retY = 2;
+        } else {
+            retY = 2 + retX - 20;
+        }
+
+        return (-retX, retY);
     }
 
     States
@@ -55,15 +108,11 @@ extend class AREAGProtoWeapon {
             SDHD EFGH 1;
             goto DynamiteHold;
         DynamiteHold:
-            SHDH H 0 A_Overlay(1001, "DynamiteFuse");
-        DynamiteHoldLoop:
-            SDHD H 1;
-            TNT1 A 0 A_SubHoldCheck("DynamiteHoldLoop");
+            SDHD H 1 A_BurnFuse();
+            TNT1 A 0 A_SubHoldCheck("DynamiteHold");
             goto DynamiteFire;
         DynamiteFire:
-            HBMA A 0 A_StartSound("weapon/dynamitethrow", CHAN_WEAPON);
-            HBMA A 0 A_TakeInventory("DynamiteAmmo", 1);
-            HBMA A 0 A_FireProjectile("DynamiteProjectile", 0, 0, 0, 0);
+            HBMA A 0 A_FireDynamite();
             HBMA ABCDE 1;
             TNT1 A 6;
             TNT1 A 0 A_FinishSubFiringSequence();
@@ -83,10 +132,19 @@ extend class AREAGProtoWeapon {
         DynamiteLower:
             SDHD ABCD 1;
             goto AltRaise;
-
+        DynamiteExplode:
+            HBMA A 0 A_FireDynamite(false);
+            HBMA DCBA 2;
+            TNT1 A 35;
+            TNT1 A 0 A_FinishSubFiringSequence();
+            TNT1 AAAAAAAAAAAAAAAAAAAAA 1 A_SubRefire("DynamiteHoldRefire", "DynamiteWait");
+            goto DynamiteRaise;
         DynamiteFuse:
             SDHD IJK 1;
             loop;
+        DynamiteFuseEnd:
+            TNT1 A 0;
+            stop;
     }
 }
 
@@ -95,24 +153,54 @@ class DynamiteProjectile : BasicProjectile
     Default
     {
         PROJECTILE;
-        +RIPPER;
+        +USEBOUNCESTATE;
         -NOGRAVITY;
         gravity 1.2;
-        wallbouncefactor 0.8;
-        bouncefactor 0.4;
-        bouncecount 3;
+        bouncefactor 0.8;
         height 10;
         radius 5;
         speed 40;
         bouncetype "doom";
     }
+
+    int iBounceCount;
+
+    action State A_DynamiteBounce() {
+        invoker.iBounceCount--;
+
+        if(invoker.iBounceCount <= 0) {
+            return ResolveState("Death");
+        }
+
+        return ResolveState(null);
+    }
+
+    action void A_DynamiteDeath() {
+        bool chk;
+        Actor ct;
+
+        [chk, ct] = A_SpawnItemEx("DynamiteMine");
+
+        ct.reactiontime = reactiontime;
+    }
+
+    override void BasicInit() {
+        iBounceCount = 3;
+    }
+
 	States
 	{
 	Spawn:
-		SUBD BCDEFGHI 1;
-		loop;
+        SUBD B 0;
+        SUBD B 0 A_StartSound("weapon/dynamitelit", CHAN_BODY, CHANF_LOOP, 1.0, ATTN_NORM);
+		SUBD BCDEFGHI 1 A_CountDown;
+		goto Spawn+2;
+    Bounce:
+        SUBD B 0 A_DynamiteBounce();
+        goto Spawn;
 	Death:
-		SUBD B 0 A_SpawnItemEx("DynamiteMine");
+        SUBD B 0 A_StopSound(CHAN_BODY);
+		SUBD B 0 A_DynamiteDeath();
 		stop;
 	}
 }
@@ -134,15 +222,17 @@ class DynamiteMine : BasicProjectile
         damagefactor "Normal", 0.0;
         damagefactor "Explosive", 1.0;
         damagetype "Explosive";
-        reactiontime 105;
     }
 	States
 	{
 	Spawn:
+        SUBD B 0;
+        SUBD B 0 A_StartSound("weapon/dynamitelit", CHAN_BODY, CHANF_LOOP, 1.0, ATTN_NORM);
 		SUBD JKL 1 A_CountDown;
-		loop;
+		goto Spawn+2;
 	Death:
-		SUBD A 0 A_StartSound("weapon/dynamiteexplode1", CHAN_BODY);
+        SUBD A 0 A_StopSound(CHAN_BODY);
+		SUBD A 0 A_StartSound("weapon/dynamiteexplode1", CHAN_BODY, CHANF_OVERLAP);
 		SUBD A 0 A_Explode(25, 128, XF_HURTSOURCE, true, 128);
 		SUBD A 0 A_SpawnItemEx("DynamiteBoom");
 		SUBD AA 0 A_SpawnItemEx("DynamiteBoom", random(-16, 16), random(-16, 16), random(-16, 16));
@@ -156,6 +246,7 @@ class DynamiteBoom : BasicEffect
 {
     Default
     {
+        +FORCEXYBILLBOARD;
         Scale 2.5;
     }
 	States

@@ -90,7 +90,7 @@ class BasicFastProjectile : FastProjectile
 	}
 }
 
-class BasicProjectile : Actor
+class BasicProjectile : BasicActor
 {
 	States
 	{
