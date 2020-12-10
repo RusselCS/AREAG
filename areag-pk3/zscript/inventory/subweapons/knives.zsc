@@ -34,13 +34,6 @@ class KnifePouchPickup : SubWeaponPickup
 
 extend class AREAGProtoWeapon {
 
-	action State A_AREAGKnifeActive() {
-
-		int wep = AREAGPlayerPawn(self).iSelectedWep;
-
-		return ResolveState(null);
-	}
-
 	States
     {
         KnifeRaise:
