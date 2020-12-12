@@ -1,8 +1,11 @@
+const SWEP_NONE = -1;
+
 class SubWeaponPickup : BasicInventory
 {
     class<Ammo> cAmmoType;
     int iAmmoGive;
     String sWeaponName;
+    Ammo aAmmo;
  
     property AmmoType: cAmmoType;
     property AmmoGive: iAmmoGive;
@@ -10,8 +13,10 @@ class SubWeaponPickup : BasicInventory
 
     action void A_AREAGGiveSubWeapon() {
         if(invoker.inWorld) {
-            SubWeapon wep = invoker.subStateBuilder();
             AREAGPlayerPawn plr = AREAGPlayerPawn(self);
+            GiveInventory(invoker.cAmmoType, invoker.iAmmoGive);
+            invoker.aAmmo = Ammo(self.FindInventory(invoker.cAmmoType));
+            SubWeapon wep = invoker.subStateBuilder();
             plr.pushSubWeapon(wep);
         } else {
             A_Log("PICKUP FAILED!!");
@@ -26,7 +31,7 @@ class SubWeaponPickup : BasicInventory
 
     SubWeapon buildSubWeapon(StateLabel rS)
     {
-        return new("SubWeapon").Init(cAmmoType, sWeaponName, rS);
+        return new("SubWeapon").Init(cAmmoType, sWeaponName, rS, aAmmo);
     }
 
     States
@@ -37,23 +42,18 @@ class SubWeaponPickup : BasicInventory
     }
 }
 
-enum ESubWeapons {
-	SWEP_NONE = -1,
-	SWEP_KNIFE,
-	SWEP_DYNAMITE,
-    SWEP_END
-}
-
 class SubWeapon
 {
     class<Ammo> ammoType;
     String weaponName;
     StateLabel raiseState;
+    Ammo invAmmo;
 
-    SubWeapon Init(class<Ammo> aT, String sN, StateLabel rS) {
+    SubWeapon Init(class<Ammo> aT, String sN, StateLabel rS, Ammo iA) {
         ammoType = aT;
         weaponName = sN;
         raiseState = rS;
+        invAmmo = iA;
         return self;
     }
 
@@ -65,57 +65,11 @@ class SubWeapon
         return ammoType;
     }
 
+    Ammo getInvAmmo() {
+        return invAmmo;
+    }
+
     StateLabel getRaiseState() {
         return raiseState;
     }
-}
-
-struct SubWeapons {
-	static const String[] subFields = {
-		"Knife",
-		"Dynamite"
-	};
-
-    static const StateLabel[] subRaise = {
-		"KnifeRaise",
-		"DynamiteRaise"
-	};
-
-    static const StateLabel[] subRelease = {
-		"KnifeThrow",
-		"DynamiteThrow"
-	};
-
-    static String maxField(int i) {
-        return String.format("%s%s", SubWeapons.subFields[i], "Max");
-    }
-
-    static String ammoField(int i) {
-        return String.format("%s%s", SubWeapons.subFields[i], "Ammo");
-    }
-
-    static String equippedField(int i) {
-        return String.format("%s%s", SubWeapons.subFields[i], "Equipped");
-    }
-
-    static StateLabel raiseState(int i) {
-        return SubWeapons.subRaise[i];
-    }
-
-    static StateLabel releaseState(int i) {
-        return SubWeapons.subRelease[i];
-    }
-
-    static int subWepCount() {
-        return SubWeapons.subFields.Size();
-    }
-
-    static int nextSubCycle(int wep) {
-        return ++wep < SWEP_END ? wep : SWEP_NONE+1;
-    }
-
-    static int prevSubCycle(int wep) {
-        return --wep > SWEP_NONE ? wep : SWEP_END-1;
-    }
-   
 }

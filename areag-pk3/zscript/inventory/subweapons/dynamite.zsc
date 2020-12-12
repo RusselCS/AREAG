@@ -1,7 +1,8 @@
 class DynamiteAmmo : Ammo {
     Default {
+        inventory.icon "ICOSW2";
         inventory.amount 1;
-        inventory.maxamount 10;
+        inventory.maxamount 5;
     }
 }
 
@@ -12,7 +13,7 @@ class DynamiteCratePickup : SubWeaponPickup
         BasicInventory.PickupID PICKMSG_DYNAMITE;
         BasicInventory.PickupType PICKTYPE_SUBWEAPON;
         SubWeaponPickup.AmmoType "DynamiteAmmo";
-        SubWeaponPickup.AmmoGive 10;
+        SubWeaponPickup.AmmoGive 5;
         SubWeaponPickup.WeaponName "Dynamite";
 
         Scale 1.0;

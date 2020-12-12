@@ -1,5 +1,6 @@
 class KnifeAmmo : Ammo {
     Default {
+        inventory.icon "ICOSW1";
         inventory.amount 1;
         inventory.maxamount 10;
     }

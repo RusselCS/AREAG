@@ -36,7 +36,6 @@ class AREAGProtoPlayer : PlayerPawn {
     override void Tick() {
         Super.Tick();
 
-        // On Ground bool based on Allie's Lithium code.
         bOldOnGround = bOnGround;
         bOnGround = pos.z ~== floorz || bONMOBJ || bMBFBOUNCER;
 

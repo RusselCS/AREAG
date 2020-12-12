@@ -57,32 +57,20 @@ Class AREAGStatusBar : BaseStatusBar {
 
         DrawInventoryIcon(pl.InvSel, (xOffs, -yOffs));
 
-        String icn;
-
-        // if(pl.countInv("KnifeEquipped") > 0)
-        // {
-        //     amt = pl.countInv("KnifeAmmo");
-        //     icn = "ICOSW1";
-        // }
-
-        // if(pl.countInv("DynamiteEquipped") > 0)
-        // {
-        //     amt = pl.countInv("DynamiteAmmo");
-        //     icn = "ICOSW2";
-        // }
-
-        if(icn) {
-            DrawImage(icn,  (xOffs + subXOffs, -yOffs));
+        if(pl.iSelectedWep >= 0) {
+            let swep = pl.subs[pl.iSelectedWep];
+            [amt, maxamt] = GetAmount(swep.getAmmoType());
+            DrawInventoryIcon(swep.getInvAmmo(),  (xOffs + subXOffs, -yOffs));
             DrawString(sBarFont, FormatNumber(amt, 3), (xOffs + subXOffs + subCXOffs, -yOffs-subCYOffs), DI_TEXT_ALIGN_RIGHT);
+            DrawString(sBarFont, "/", (xOffs + subXOffs + subCXOffs*2, -yOffs-subCYOffs), DI_TEXT_ALIGN_RIGHT);
+            DrawString(sBarFont, FormatNumber(maxamt, 3), (xOffs + subXOffs + subCXOffs*3, -yOffs-subCYOffs), DI_TEXT_ALIGN_LEFT);
         }
 
         yOffs -= yOffsDiff;
 
         DrawImage("ICOHP",  (xOffs, -yOffs));
-        for(int i = 1; i <= 10; i++) {
-            if(pl.countInv("MaxHealthBars") >= i) {
-                DrawImage("BAREHP", (xOffs + hpXOffs*i, -yOffs - barYOffs));
-            }
+        for(int i = 1; i <= pl.countInv("MaxHealthBars"); i++) {
+            DrawImage("BAREHP", (xOffs + hpXOffs*i, -yOffs - barYOffs));
 
             if(pl.countInv("HealthBars") >= i) {
                 if(i > 1) {

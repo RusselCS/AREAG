@@ -21,7 +21,7 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
             iPrevSelect = iSelectedWep;
             if(iSelectedWep > SWEP_NONE && iSelectedWep < subs.size())
             {
-                A_Log(subs[iSelectedWep].weaponName);
+                // A_Log(subs[iSelectedWep].weaponName);
             }
         }
     }
@@ -45,7 +45,6 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
             return null;
         } else {
             iSelectedWep = iSelectedWep + 1 >= subs.size() ? 0 : iSelectedWep + 1;
-            A_Log(String.Format("NEXT SUB WEAPON!! RESULT IS %d", iSelectedWep));
             return subs[iSelectedWep];
         }
     }
@@ -55,7 +54,6 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
             return null;
         } else {
             iSelectedWep = iSelectedWep - 1 < 0 ? subs.size()-1 : iSelectedWep - 1;
-            A_Log(String.Format("PREVIOUS SUB WEAPON!! RESULT IS %d", iSelectedWep));
             return subs[iSelectedWep];
         }
     }
