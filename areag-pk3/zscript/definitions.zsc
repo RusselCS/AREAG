@@ -116,6 +116,16 @@ mixin class AREAG_Common
 		return false;
 	}
 
+	static int getCvarInt(string cv)
+	{
+		let res = CVar.findCVar(cv);
+
+		if(res) {
+			return res.getInt();
+		}
+		return -1;
+	}
+
 	static bool checkPressed(int button, int buttons, int oldButtons)
     {
         if((buttons & button) && !(oldButtons & button))

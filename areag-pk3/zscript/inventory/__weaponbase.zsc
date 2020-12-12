@@ -1,5 +1,9 @@
 // The root of it all. Contains the essential features that get wrapped into all other weapons.
 
+const LAYER_MAIN = 1;
+const LAYER_SUB = 1000;
+const FUSE_LAYER = 1001;
+
 class AREAGProtoWeapon : Weapon {
 
     bool bMainInProgress;
@@ -27,6 +31,15 @@ class AREAGProtoWeapon : Weapon {
         invoker.plr = AREAGPlayerPawn(self);
         invoker.iLastSubWeapon = invoker.plr.iSelectedWep;
         A_GunFlash();
+
+        A_SetHandedness(LAYER_MAIN);
+        A_SetHandedness(LAYER_SUB);
+    }
+
+    action void A_SetHandedness(int layer) {
+        if(GetCVarBool("cl_handedness")) {
+            A_OverlayFlags(layer, PSPF_FLIP|PSPF_MIRROR, true);
+        }
     }
 
     // Control functions
