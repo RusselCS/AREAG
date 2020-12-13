@@ -1,0 +1,3 @@
+startuptitle = "AREAG"
+startupcolors = "FF FF 00", "59 2D 00"
+iwad = "megagame.wad"
