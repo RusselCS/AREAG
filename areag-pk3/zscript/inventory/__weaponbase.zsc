@@ -50,7 +50,7 @@ class AREAGProtoWeapon : Weapon {
 
     action State A_MainRaise() {
         invoker.bMainInProgress = false;
-        return ResolveState("MainWait");
+        return ResolveState("MainRaise");
     }
 
     States

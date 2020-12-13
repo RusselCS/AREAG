@@ -19,14 +19,16 @@ floor TESTBRK6 Stone*/
 
 splash InSplash
 {
-	
+	baseclass	InSplash
 }
 
-terrain templewat
+terrain advwater
 {
- splash InSplash
- liquid
- footclip 12
+	splash InSplash
+	liquid
 }
 
-floor ANAWAT templewat
+floor ANAWAT advwater
+floor FCWATX advwater
+floor LIWATX advwater
+floor CCBBWAT0 advwater

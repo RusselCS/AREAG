@@ -52,7 +52,7 @@ map ADV00 "Outskirts"
 	levelnum = 1
 	cluster = 1
 	pixelratio = 1.0
-	music = "M_BEACH" // Necros / FM - Tangerine Fascination
+	music = "M_BEACH" // Planet Tallon IV - Kenji Yamamoto
 	sky1 = "TESTSKY1"
 	forcenoskystretch 
 	clipmidtextures
@@ -63,7 +63,7 @@ map ADV01 "Grand Gateway"
 	levelnum = 2
 	cluster = 1
 	pixelratio = 1.0
-	music = "M_GATE" // Anvil - Path to Nowhere
+	music = "M_GATE" // Purple Motion - Starshine
 	sky1 = "BLACK", 0 
 	forcenoskystretch 
 	clipmidtextures
@@ -87,7 +87,7 @@ map ADV03 "Lost Impact"
 	levelnum = 4
 	cluster = 1
 	pixelratio = 1.0
-	music = "M_IMPACT" // Skaven - Cannon Angel
+	music = "M_IMPACT" // Inferno (Sega Genesis Remix) - The Spoony Bard
 	sky1 = "BLACK", 0 
 	forcenoskystretch 
 	clipmidtextures

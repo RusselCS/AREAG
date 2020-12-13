@@ -17,7 +17,6 @@ extend class AREAGProtoWeapon
     States
     {
         EmptyRaise:
-            TNT1 A 1;
             HBM2 DCBA 1;
             goto EmptyReady;
         EmptyReady:

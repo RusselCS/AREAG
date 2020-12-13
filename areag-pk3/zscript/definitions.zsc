@@ -61,6 +61,7 @@ class BasicEffect : Actor
         +NOINTERACTION;
         +THRUACTORS;
         +NOGRAVITY;
+		+DONTSPLASH;
         renderstyle "translucent";
         alpha 1.0;
         height 1;
