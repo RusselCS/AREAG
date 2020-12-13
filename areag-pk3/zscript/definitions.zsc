@@ -155,6 +155,25 @@ mixin class AREAG_Common
 
         return diffX <= 0 && diffY <= 0;
     }
+
+	static double roundToNearest(double x, double y) {
+		double md = x % y;
+
+		if(md < y / 2) {
+			return x - md;
+		} else {
+			return x - md + y;
+		}
+	}
+
+	static double ceilingToNearest(double x, double y) {
+		double md = x % y;
+
+		if(md != 0.0) {
+			return x - md + y;
+		}
+		return x;
+	}
 }
 
 // DEBUG FUNCTIONS

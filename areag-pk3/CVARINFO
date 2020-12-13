@@ -3,8 +3,6 @@ user bool cl_handedness = false;
 
 user noarchive bool db_viewhitboxes = false;
 
-user noarchive int Debug_FuseTime = 3;
-
 user noarchive string SAVE_OUTSKIRTS_EVENT_0 = "000000000000000";
 user noarchive string SAVE_OUTSKIRTS_PICKUP_0 = "00000000000";
 user noarchive string SAVE_GATEWAY_EVENT_0 = "0000000000000000000000000000000000000000000000000000000000000";
