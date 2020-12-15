@@ -6,11 +6,10 @@ extend class AREAGProtoWeapon
         int iButtons = invoker.plr.iButtons;
         int iOldButtons = invoker.plr.iOldButtons;
 
-        // for(int i = 0; i < TreasureItems.itemFields.Size(); i++) {
-        //     if(countInv(TreasureItems.activeItem(i))) {
-        //         return ResolveState("Fire");
-        //     }
-        // }
+        if(invoker.plr.getInterruptState()) {
+            invoker.bMainInProgress = true;
+            return ResolveState("MainOffWindup");
+        }
 
         if(checkPressed(BT_SUBNEXT, iButtons, iOldButtons)) {
             invoker.plr.selectNextSubweapon();
@@ -51,6 +50,10 @@ extend class AREAGProtoWeapon
     }
 
     action State A_CheckSubStatus(StateLabel rst, StateLabel wst) {
+        if(invoker.plr.getInterruptState()) {
+            return ResolveState(invoker.plr.getInterruptState());
+        }
+
         if(invoker.bSubInProgress) {
             return ResolveState(wst);
         }
@@ -72,6 +75,12 @@ extend class AREAGProtoWeapon
 
     action void A_FinishMainFiringSequence() {
         invoker.bMainInProgress = false;
+    }
+
+    action void A_ClearInterruptState() {
+        if(invoker.plr) {
+			invoker.plr.clearInterruptState();
+		}
     }
 
     States

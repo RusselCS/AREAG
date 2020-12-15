@@ -22,8 +22,7 @@ class DronePickup : BasicInventory
 	}
 }
 
-class DroneUseAnim : Once {}
-class DroneTrigger : BasicActiveTrigger
+class DroneTrigger : BasicActiveInventory
 {
     Default
     {
@@ -32,7 +31,7 @@ class DroneTrigger : BasicActiveTrigger
 	States
 	{
 	TreasureUse:
-		TNT1 A 0 A_GiveInventory("DroneUseAnim", 1);
+		TNT1 A 0 A_SetInterruptState("DroneUse");
 		fail;
 	}
 }
@@ -51,7 +50,7 @@ extend class AREAGProtoWeapon {
 		WDRO E 0 A_FireProjectile("DroneTransitionMissile");
 		WDRO DE 1;
 		WDRO D 6;
-		TNT1 A 0 A_TakeInventory("DroneUseAnim", 1);
+        TNT1 A 0 A_ClearInterruptState();
 		TNT1 A 0 A_GiveInventory("DroneActivate", 1);
 		goto Ready;
     }

@@ -5,6 +5,8 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
     int iSelectedWep;
     int iPrevSelect;
 
+    StateLabel slInterruptState;
+
     Array<SubWeapon> subs;
 
     override void AREAGThink() {
@@ -57,6 +59,18 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
             return subs[iSelectedWep];
         }
     }
+
+    StateLabel getInterruptState() {
+        return slInterruptState;
+    }
+
+    void setInterruptState(StateLabel target) {
+        slInterruptState = target;
+    }
+
+    void clearInterruptState() {
+        setInterruptState(null);
+    }
     
     override void AREAGInit() {
 
@@ -64,5 +78,6 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
 		AREAGHealthInit();
         AREAGStatusInit();
 		iSelectedWep = SWEP_NONE;
+        slInterruptState = null;
 	}
 }

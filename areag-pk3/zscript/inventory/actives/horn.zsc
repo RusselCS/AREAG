@@ -21,17 +21,25 @@ class HornPickup : BasicInventory
 	}
 }
 
-class HornUseAnim : Once {}
-class HornTrigger : BasicActiveTrigger
+class HornTrigger : BasicActiveInventory
 {
     Default
     {
         inventory.icon "ICOIN2";
     }
+
+	action void A_ToggleHorn() {
+		if(invoker.plr.getInterruptState()) {
+			invoker.plr.clearInterruptState();
+		} else {
+			invoker.plr.setInterruptState("HornSelect");
+		}
+	}
+
 	States
 	{
 	TreasureUse:
-		TNT1 A 0 A_GiveInventory("HornUseAnim", 1);
+		TNT1 A 0 A_ToggleHorn();
 		fail;
 	}
 }
@@ -59,7 +67,6 @@ extend class AREAGProtoWeapon {
 	action void A_InitHorn() {
 		SetPlayerProperty(0, 1, PROP_FROZEN);
 		invoker.currentNote = -1;
-		A_TakeInventory("HornUseAnim", 1);
 	}
 
 	bool inputHasNote(int buttons, int note)
@@ -102,7 +109,7 @@ extend class AREAGProtoWeapon {
 	}
 
     action State A_HornReady() {
-		if(CountInv("HornUseAnim")) {
+		if(!invoker.plr.getInterruptState()) {
 			return ResolveState("HornDeselect");
 		}
 
@@ -120,7 +127,7 @@ extend class AREAGProtoWeapon {
     }
 
 	action State A_HornHold() {
-		if(CountInv("HornUseAnim")) {
+		if(!invoker.plr.getInterruptState()) {
 			return ResolveState("HornDeselect");
 		}
 
@@ -143,7 +150,6 @@ extend class AREAGProtoWeapon {
 		SetPlayerProperty(0, 0, PROP_FROZEN);
 		invoker.currentNote = -1;
 		invoker.playHornSound(invoker.currentNote);
-		A_TakeInventory("HornUseAnim", 1);
 	}
 
     States
