@@ -8,6 +8,7 @@ class AREAGProtoWeapon : Weapon {
 
     bool bMainInProgress;
     bool bSubInProgress;
+    bool bLoweringWeapons;
     int iLastSubWeapon;
     mixin AREAG_Common;
 
@@ -26,6 +27,7 @@ class AREAGProtoWeapon : Weapon {
     }
 
     action void A_InitWeap() {
+        invoker.bLoweringWeapons = false;
         invoker.bMainInProgress = true;
         invoker.bSubInProgress = true;
         invoker.plr = AREAGPlayerPawn(self);
@@ -44,6 +46,7 @@ class AREAGProtoWeapon : Weapon {
 
     // Control functions
     action void A_LowerBothHands() {
+        invoker.bLoweringWeapons = true;
         invoker.bMainInProgress = true;
         invoker.bSubInProgress = true;
     }

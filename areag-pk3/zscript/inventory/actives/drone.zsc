@@ -22,12 +22,28 @@ class DronePickup : BasicInventory
 	}
 }
 
+extend class BasicActiveInventory
+{
+    action void A_TransformFromDrone()
+    {
+        AREAGPlayerPawn(self).transformFromDrone();
+    }
+
+    States
+    {
+    DroneUse:
+		TNT1 A 0 A_TransformFromDrone();
+		fail;
+    }
+}
+
 class DroneTrigger : BasicActiveInventory
 {
     Default
     {
         inventory.icon "ICOIN1";
     }
+
 	States
 	{
 	TreasureUse:
@@ -36,7 +52,23 @@ class DroneTrigger : BasicActiveInventory
 	}
 }
 
+const DRONESIZE_RADIUS = 12;
+const DRONESIZE_HEIGHT = 24;
+const DRONESIZE_VIEWHEIGHT = 20;
+
 extend class AREAGProtoWeapon {
+
+    Actor dronePoint;
+
+    action void A_TransformToDrone() {
+        invoker.plr.transformToDrone(invoker.dronePoint);
+    }
+
+    action void A_FireDroneMissile() {
+        A_StartSound("weapon/dynamitethrow", CHAN_WEAPON);
+        invoker.dronePoint = A_FireProjectile("DroneTransitionMissile");
+    }
+
     States
     {
     DroneUse:
@@ -46,148 +78,75 @@ extend class AREAGProtoWeapon {
 		// go away
 		TNT1 A 2;
 		WDRO ABC 1;
-		WDRO A 0 A_StartSound("weapon/dynamitethrow", CHAN_WEAPON);
-		WDRO E 0 A_FireProjectile("DroneTransitionMissile");
+		WDRO E 0 A_FireDroneMissile();
 		WDRO DE 1;
 		WDRO D 6;
         TNT1 A 0 A_ClearInterruptState();
-		TNT1 A 0 A_GiveInventory("DroneActivate", 1);
-		goto Ready;
+		TNT1 A 0 A_TransformToDrone();
+		WDRO D 1 A_WeaponReady(WRF_NOFIRE);
+		wait;
     }
 }
 
-class AREAGDrone : AREAGProtoPlayer
-{
-    mixin AREAG_Common;
-    
-    const HP_TIME_MAX = 10;
-    int iHpDrainTime;
+extend class AREAGPlayerPawn {
 
     int iWalkCooldown;
-    double prevBobYFracMult;
-    double prevViewBob;
-    bool bLegsInWater;
-    
-    double fBaseSpeed;
-    double fStrafeSpeed;
-    double fSR50Speed;
-    double fBaseJump;
-    double fBaseGravity;
 
-    Default
-    {
-        Height 24;
-        Radius 12;
-        player.viewheight 20;
-        player.morphweapon "DronePlasmaGun";
-        Player.AttackZOffset 5; // 41 - view height
-        player.gruntspeed 8;
-        player.soundclass "clyde";
-        speed 0.85;
-	    player.jumpz 10;
-        gravity 1.2;
-        friction 1.0;
-        maxstepheight 16;
-    }
+    Actor returnPoint;
 
-    override void AREAGInit() {
+    void transformToDrone(Actor who) {
+        A_GiveInventory("DronePlasmaGun");
+        A_SelectWeapon("DronePlasmaGun");
+		A_GiveInventory("DroneFlag", 1);
+        A_StartSound("drone/activate", CHAN_BODY);
+        ACS_NamedExecuteAlways("drone_curtain", 0, true);
+        A_ChangeVelocity(who.vel.x, who.vel.y, who.vel.z, CVF_REPLACE);
+
+        bool trash;
+        [trash, returnPoint] = A_SpawnItemEx("DronePlayerDummy");
+
         iWalkCooldown = 0;
-        prevBobYFracMult = 0.0;
-        prevViewBob = 0.0;
-        fBaseSpeed = speed;
-        fStrafeSpeed = fBaseSpeed * 0.78089;
-        fSR50Speed = fBaseSpeed * 0.7071;
-        bLegsInWater = false;
-        fBaseJump = jumpz;
-        fBaseGravity = gravity;
-        iHpDrainTime = HP_TIME_MAX;
+
+        A_SetSize(DRONESIZE_RADIUS, DRONESIZE_HEIGHT);
+        ViewHeight = DRONESIZE_VIEWHEIGHT;
+        
+        Warp(who);
+        who.Destroy();
     }
 
-    override void AREAGTick() {
-        if(bOnGround && lastZVel < -GruntSpeed) {
-            A_StartSound("*droneland", CHAN_5);
-            iWalkCooldown = 5;
-        }
+    void transformFromDrone() {
+        A_TakeInventory("DronePlasmaGun", 1);
+		A_TakeInventory("DroneFlag", 1);
+        A_StartSound("drone/disengage", CHAN_BODY);
+        ACS_NamedExecuteAlways("drone_curtain", 0, false);
+        A_ChangeVelocity(0, 0, 0, CVF_REPLACE);
+
+        Warp(returnPoint);
+        returnPoint.Destroy();
+        returnPoint = null;
+
+        iWalkCooldown = 0;
+
+        A_SetSize(dBaseRadius, dBaseHeight);
+        ViewHeight = dBaseViewHeight;
+    }
+
+    void AREAGDroneTick() {
 
         if(bOnGround && AREAGIsWalking()) {
             if(iWalkCooldown == 0) {
                 A_StartSound("*dronewalk", CHAN_5);
                 iWalkCooldown = 5;
             }
-        }
 
-        // WATER
-		if(CountInv("LegsUnderwater")>0)
-		{
-			if(!bLegsInWater) {
-				gravity = fBaseGravity * WATER_GRAVITY_MULT;
-				jumpz = fBaseJump * WATER_JUMP_MULT;
-				A_GiveInventory("WaterSpeed", 1);
-				bLegsInWater = true;
-			}
-		}
-		else
-		{
-			if(bLegsInWater) {
-				gravity = fBaseGravity;
-				jumpz = fBaseJump;
-				A_TakeInventory("WaterSpeed", 1);
-				bLegsInWater = false;
-			}
-		}
-
-        if(iWalkCooldown > 0) {
-            iWalkCooldown--;
-        }
-
-        if(!bOnGround && viewbob != 0.0 && pos.z - floorz > 16.0) {
-            viewbob = 0.0;
-        }
-
-        if(bOnGround && viewbob != 1.0) {
-            viewbob = 1.0;
-        }
-
-        if(iHpDrainTime == 0) {
-            health--;
-            if(health <= 0) {
-                revertDrone();
+            if(iWalkCooldown > 0) {
+                iWalkCooldown--;
             }
-            iHpDrainTime = HP_TIME_MAX;
-        } else if(CountInv("MapTransition") == 0) {
-            iHpDrainTime--;
         }
     }
 
-    override void AREAGThink() {
-        int SR = checkSR(iButtons);
-        if(SR > 0)
-		{  
-            if(SR == 40 && !(speed ~== fStrafeSpeed)) {
-                speed = fStrafeSpeed;
-            } else if(SR == 50 && !(speed ~== fSR50Speed)) {
-                speed = fSR50Speed;
-            }
-		}
-		else
-		{
-            if(!(speed ~== fBaseSpeed)) {
-                speed = fBaseSpeed;
-            }
-		}
-    }
-
-    void revertDrone() {
-        ACS_NamedExecuteAlways("drone_disengage", 0);
-    }
-
-    override vector2 BobWeapon(double ticfrac)
+    vector2 droneWeaponBob(Weapon wep, double ticfrac)
     {
-        if(!Player) return (0, 0);
-        let wep = Player.ReadyWeapon;
-
-        if(!wep || wep.bDONTBOB) return (0, 0);
-
         vector2 p[2];
 
         double ang = wep.BobSpeed * 128 * Player.GetWBobSpeed() * (Level.Time) * 0.4;
@@ -219,69 +178,6 @@ class AREAGDrone : AREAGProtoPlayer
 
         return interp;
     }
-
-    override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {
-        revertDrone();
-        super.Die(source, inflictor, dmgflags, MeansOfDeath);
-    }
-
-    static int checkSR(int iButtons) {
-        if(iButtons & BT_MOVELEFT || iButtons & BT_MOVERIGHT) {
-            if(iButtons & BT_FORWARD || iButtons & BT_BACK) { // Pressing forward / back
-                if((iButtons & BT_LEFT || iButtons & BT_RIGHT) && iButtons & BT_STRAFE) {
-                    return 50;
-                }
-                return 40;
-            }
-            return 0;
-        }
-        return 0;
-    }
-}
-
-class DronePlasmaGun : Weapon
-{
-    Default
-    {
-        +WEAPON.WIMPY_WEAPON;
-    }
-	States
-	{
-	Ready:
-		SDRW A 1 A_WeaponReady;
-		Loop;
-	Deselect:
-		SDRW A 1 A_Lower;
-		Loop;
-	Select:
-		SDRW A 1 A_Raise;
-		Loop;
-	Fire:
-		SDRW B 0 A_StartSound("weapon/dronelaser", CHAN_WEAPON);
-		SDRW B 0 A_FireProjectile("DroneActivator", 0, 0, 0, 0);
-		SDRW B 0 A_FireProjectile("DroneLaser", 0, 0, -8, 0);
-		SDRW B 0 A_FireProjectile("DroneLaser", 0, 0, 8, 0);
-		SDRW B 2 BRIGHT;
-		SDRW CD 4;
-		SDRW A 8;
-		Goto Ready;
-	}
-}
-
-class DroneBattery : Counter { Default { inventory.maxamount 100; } }
-class PlayerTempHealth : Counter {}
-class MapTransition : Once {}
-
-class DroneFlag : Once {}
-class DroneActivate : CustomInventory
-{
-	States
-	{
-	Pickup:
-		TNT1 A 0 A_GiveInventory("DroneFlag", 1);
-		TNT1 A 0 ACS_NamedExecuteAlways("drone_activate", 0);
-		stop;
-	}
 }
 
 class DroneTransitionMissile : BasicProjectile
@@ -304,12 +200,48 @@ class DroneTransitionMissile : BasicProjectile
 	Spawn:
 		TNT1 A 0;
 		TNT1 A 0 ThrustThingZ(0, 30, 0, 0);
-		TNT1 A 0 A_TransferPointer(AAPTR_DEFAULT, AAPTR_TARGET, AAPTR_DEFAULT, AAPTR_MASTER);
 		SDRO A 4;
 		SDRO B 1;
 		wait;
 	}
 }
+
+class DronePlasmaGun : Weapon
+{
+    Default
+    {
+        +WEAPON.WIMPY_WEAPON;
+    }
+	States
+	{
+	Ready:
+		SDRW A 1 A_WeaponReady;
+		Loop;
+	Deselect:
+        TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 0 A_Lower;
+        TNT1 A 1 A_Lower;
+        loop;
+	Select:
+        TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 0 A_Raise;
+        TNT1 A 1 A_Raise;
+        loop;
+	Fire:
+		SDRW B 0 A_StartSound("weapon/dronelaser", CHAN_WEAPON);
+		SDRW B 0 A_FireProjectile("DroneActivator", 0, 0, 0, 0);
+		SDRW B 0 A_FireProjectile("DroneLaser", 0, 0, -8, 0);
+		SDRW B 0 A_FireProjectile("DroneLaser", 0, 0, 8, 0);
+		SDRW B 2 BRIGHT;
+		SDRW CD 4;
+		SDRW A 8;
+		Goto Ready;
+	}
+}
+
+class DroneBattery : Counter { Default { inventory.maxamount 100; } }
+class PlayerTempHealth : Counter {}
+class MapTransition : Once {}
+
+class DroneFlag : Once {}
 
 class DroneLaser : BasicFastProjectile
 {

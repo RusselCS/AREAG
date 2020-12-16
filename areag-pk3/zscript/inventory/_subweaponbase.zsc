@@ -47,6 +47,10 @@ extend class AREAGProtoWeapon
     }
 
     action State A_CheckMainStatus(StateLabel rst, StateLabel wst) {
+        if(invoker.bLoweringWeapons) {
+            return ResolveState("SubDeselect");
+        }
+
         if(invoker.bMainInProgress) {
             return ResolveState(wst);
         }
@@ -110,6 +114,9 @@ extend class AREAGProtoWeapon
         SubLower:
             HBM2 ABCD 1;
             goto AltRaise;
+        SubDeselect:
+            TNT1 A 0;
+            stop;
         
         SubWepRaise:
             HBM2 DCBA 1;

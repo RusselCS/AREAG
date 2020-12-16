@@ -21,6 +21,10 @@ extend class AREAGPlayerPawn {
     double prevBobYFracMult;
     double prevViewBob;
 
+    double dBaseRadius;
+	double dBaseHeight;
+    double dBaseViewHeight;
+
     int airTime;
     int jumpDelay;
     int iBaseStepHeight;
@@ -35,6 +39,10 @@ extend class AREAGPlayerPawn {
         prevBobYFracMult = 0.0;
         prevViewBob = ViewBob;
         iStepCD = 0;
+
+        dBaseRadius = radius;
+	    dBaseHeight = height;
+        dBaseViewHeight = viewHeight;
 
         bJumpCancel = true;
         bLegsInWater = false;
@@ -74,6 +82,10 @@ extend class AREAGPlayerPawn {
     }
 
     void AREAGMoveTick() {
+
+        if(CountInv("DroneFlag") > 0) {
+            AREAGDroneTick();
+        }
 
         // FALL STUN
         if(bOnGround && lastZVel < -FallingScreamMinSpeed) {
@@ -221,11 +233,19 @@ extend class AREAGPlayerPawn {
     {
         if(!Player) return (0, 0);
         let wep = Player.ReadyWeapon;
+        if(!wep || wep.bDONTBOB) return (0, 0); 
 
-        if(!wep || wep.bDONTBOB) return (0, 0);
+        if(CountInv("DroneFlag") == 0) {
+            return humanWeaponBob(wep, ticfrac);
+        } else {
+            return droneWeaponBob(wep, ticfrac);
+        }
+    }
 
+    vector2 humanWeaponBob(Weapon wep, double ticfrac)
+    {
         vector2 p[2];
-
+        
         double ang = wep.BobSpeed * 128 * Player.GetWBobSpeed() * (Level.Time) * 0.08;
         prevViewBob = Lerp(prevViewBob, ViewBob, ticfrac/2);
         let xFracMult = cos(ang) * prevViewBob * 0.8;

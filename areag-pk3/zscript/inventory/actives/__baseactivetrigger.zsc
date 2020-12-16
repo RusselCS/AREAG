@@ -37,9 +37,6 @@ class BasicActiveInventory : BasicInventory
 	Use:
 		TNT1 A 0 A_ActiveItemCheck();
 		fail;
-	DroneUse:
-		TNT1 A 0 ACS_NamedExecuteAlways("drone_disengage", 0);
-		fail;
 	TreasureUse:
 		TNT1 A 0 A_SetInterruptState(null);
 		fail;
