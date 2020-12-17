@@ -21,25 +21,25 @@ class HornPickup : BasicInventory
 	}
 }
 
-class HornTrigger : BasicActiveInventory
+class HornTrigger : BasicActiveTrigger
 {
     Default
     {
         inventory.icon "ICOIN2";
     }
 
-	action void A_ToggleHorn() {
-		if(invoker.plr.getInterruptState()) {
-			invoker.plr.clearInterruptState();
-		} else {
-			invoker.plr.setInterruptState("HornSelect");
-		}
-	}
+	// action void A_ToggleHorn() {
+	// 	if(invoker.plr.getInterruptState()) {
+	// 		invoker.plr.clearInterruptState();
+	// 	} else {
+	// 		invoker.plr.setInterruptState("HornSelect");
+	// 	}
+	// }
 
 	States
 	{
 	TreasureUse:
-		TNT1 A 0 A_ToggleHorn();
+		TNT1 A 0;// A_ToggleHorn();
 		fail;
 	}
 }

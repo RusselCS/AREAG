@@ -1,35 +1,47 @@
 class BasicActiveInventory : BasicInventory
 {
+    
+	action void A_GiveActiveTrigger() {
+		let plr = AREAGPlayerPawn(self);
+		invoker.giveItemTrigger(plr);
+	}
+
+	virtual void giveItemTrigger(AREAGPlayerPawn plr) {
+		// A_GiveInventory("BasicItemTrigger", 1);
+		// plr.pushToggleTrigger(new("ToggleStateMap").Init(null, null));
+	}
+
+	States
+	{
+	PickupEffect:
+		TNT1 A 0 A_GiveActiveTrigger();
+		stop;
+	}
+}
+
+class BasicActiveTrigger : BasicInventory
+{
     Default
     {
         +INVENTORY.INVBAR;
     }
 
-	AREAGPlayerPawn plr;
-
 	action state A_ActiveItemCheck() {
-		if(CountInv("DroneFlag") > 0) {
-			return ResolveState("DroneUse");
+		let plr = AREAGPlayerPawn(self);
+		
+		if(plr.getToggleState()) {
+			return ResolveState(plr.getToggleState());
 		}
 
-        invoker.plr = AREAGPlayerPawn(self);
-		if(invoker.plr && !invoker.plr.getInterruptState()) {
-			return ResolveState("TreasureUse");
-		}
-
-		return ResolveState(null);
+		return ResolveState("TreasureUse");
 	}
 
 	action void A_SetInterruptState(StateLabel input) {
-		if(invoker.plr) {
-			invoker.plr.setInterruptState(input);
-		}
+		AREAGPlayerPawn(self).setInterruptState(input);
 	}
 
 	action void A_ClearInterruptState() {
-		if(invoker.plr) {
-			invoker.plr.clearInterruptState();
-		}
+		AREAGPlayerPawn(self).clearInterruptState();
 	}
 
 	States
@@ -41,4 +53,27 @@ class BasicActiveInventory : BasicInventory
 		TNT1 A 0 A_SetInterruptState(null);
 		fail;
 	}
+}
+
+class ToggleStateMap
+{
+	String sInventory;
+	StateLabel slTarget;
+
+	ToggleStateMap Init(String sIn, StateLabel slT) {
+		if(!sIn || !slT) {
+			return null;
+		}
+        sInventory = sIn;
+        slTarget = slT;
+        return self;
+    }
+
+    String getInventory() {
+        return sInventory;
+    }
+
+    StateLabel getToggleState() {
+        return slTarget;
+    }
 }

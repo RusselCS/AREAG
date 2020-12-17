@@ -1,4 +1,4 @@
-class DronePickup : BasicInventory
+class DronePickup : BasicActiveInventory
 {
     Default
     {
@@ -8,21 +8,25 @@ class DronePickup : BasicInventory
         +NOGRAVITY;
         Height 64; // tall
         Scale 1.0;
+        BasicInventory.PickupType PICKTYPE_TREASURE;
+        BasicInventory.PickupID PICKMSG_SPIDERDRONE;
     }
+
+    override void giveItemTrigger(AREAGPlayerPawn plr) {
+		plr.A_GiveInventory("DroneBattery", 100);
+		plr.A_GiveInventory("DroneTrigger", 1);
+		plr.pushToggleTrigger(new("ToggleStateMap").Init("DroneFlag", "DroneOff"));
+	}
+
 	States
 	{
 	SpawnFrames:
 		SDRO C 1;
 		loop;
-	Pickup:
-		TNT1 A 0 ACS_NamedExecuteAlways("pickups_displayMessage", 0, PICKTYPE_TREASURE, PICKMSG_SPIDERDRONE);
-		TNT1 A 0 A_GiveInventory("DroneBattery", 100);
-		TNT1 A 0 A_GiveInventory("DroneTrigger", 1);
-		stop;
 	}
 }
 
-extend class BasicActiveInventory
+extend class BasicActiveTrigger
 {
     action void A_TransformFromDrone()
     {
@@ -31,13 +35,13 @@ extend class BasicActiveInventory
 
     States
     {
-    DroneUse:
+    DroneOff:
 		TNT1 A 0 A_TransformFromDrone();
 		fail;
     }
 }
 
-class DroneTrigger : BasicActiveInventory
+class DroneTrigger : BasicActiveTrigger
 {
     Default
     {
@@ -94,6 +98,10 @@ extend class AREAGPlayerPawn {
 
     Actor returnPoint;
 
+    Name getDroneSoundClass() {
+        return "drone";
+    }
+
     void transformToDrone(Actor who) {
         A_GiveInventory("DronePlasmaGun");
         A_SelectWeapon("DronePlasmaGun");
@@ -101,6 +109,9 @@ extend class AREAGPlayerPawn {
         A_StartSound("drone/activate", CHAN_BODY);
         ACS_NamedExecuteAlways("drone_curtain", 0, true);
         A_ChangeVelocity(who.vel.x, who.vel.y, who.vel.z, CVF_REPLACE);
+        soundclass = getDroneSoundClass();
+        updateJumpSpeed();
+        maxstepheight = 16;
 
         bool trash;
         [trash, returnPoint] = A_SpawnItemEx("DronePlayerDummy");
@@ -120,6 +131,9 @@ extend class AREAGPlayerPawn {
         A_StartSound("drone/disengage", CHAN_BODY);
         ACS_NamedExecuteAlways("drone_curtain", 0, false);
         A_ChangeVelocity(0, 0, 0, CVF_REPLACE);
+        soundclass = getClydeSoundClass();
+        updateJumpSpeed();
+        maxstepheight = dBaseStepHeight;
 
         Warp(returnPoint);
         returnPoint.Destroy();
@@ -131,11 +145,11 @@ extend class AREAGPlayerPawn {
         ViewHeight = dBaseViewHeight;
     }
 
-    void AREAGDroneTick() {
+    override void AREAGDroneTick() {
 
         if(bOnGround && AREAGIsWalking()) {
             if(iWalkCooldown == 0) {
-                A_StartSound("*dronewalk", CHAN_5);
+                A_StartSound("*footstep", CHAN_5);
                 iWalkCooldown = 5;
             }
 

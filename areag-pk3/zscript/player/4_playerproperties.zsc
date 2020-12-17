@@ -7,10 +7,8 @@ class AREAGPlayer : AREAGPlayerPawn
         player.damagescreencolor "yellow";
         player.forwardmove 1.0, 1.0;
         player.sidemove 1.0, 1.0;
-        speed 0.85;
-        player.jumpz 15;
-        player.startitem "BaseJumpSpeed", 1500;
-        player.startitem "BaseMoveSpeed", 85;
+        AREAGPlayerPawn.RunSpeed 0.85;
+        AREAGPlayerPawn.JumpSpeed 15.0;
         player.startitem "ZSCAdventureWhip";
         player.startitem "BreathTime", 100;
         player.startitem "MaxHealthBars", 4;

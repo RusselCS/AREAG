@@ -7,15 +7,16 @@ extend class AREAGPlayerPawn {
     bool bLegsInWater;
     bool bHeadInWater;
 
-    int iSpeedInv;
-    int iJumpInv;
+    double dBaseSpeed;
+    double dBaseJump;
 
-    float fBaseSpeed;
-    float fBaseJump;
-    float fStrafeSpeed;
-    float fSR50Speed;
+    property RunSpeed: dBaseSpeed;
+    property JumpSpeed: dBaseJump;
 
-    float fBaseGravity;
+    double dStrafeSpeed;
+    double dSR50Speed;
+
+    double dBaseGravity;
 
     double prevBobXFracMult;
     double prevBobYFracMult;
@@ -24,6 +25,7 @@ extend class AREAGPlayerPawn {
     double dBaseRadius;
 	double dBaseHeight;
     double dBaseViewHeight;
+    double dBaseStepHeight;
 
     int airTime;
     int jumpDelay;
@@ -43,49 +45,43 @@ extend class AREAGPlayerPawn {
         dBaseRadius = radius;
 	    dBaseHeight = height;
         dBaseViewHeight = viewHeight;
+        dBaseStepHeight = maxstepheight;
+        
+        setBaseJumpSpeed(dBaseJump);
+        setBaseWalkSpeed(dBaseSpeed);
 
         bJumpCancel = true;
         bLegsInWater = false;
         bheadInWater = false;
-        fBaseGravity = gravity;
+        dBaseGravity = gravity;
         airTime = 0;
         jumpDelay = 0;
-        
-        iJumpInv = CountInv("BaseJumpSpeed");
-        fBaseJump = float(iJumpInv) / 100.0;
-        AREAGUpdateSpeeds();
     }
 
     void AREAGUpdateSpeeds() {
-        iSpeedInv = CountInv("BaseMoveSpeed");
-        fBaseSpeed = float(iSpeedInv) / 100.0;
-        fStrafeSpeed = fBaseSpeed * 0.78087;
-        fSR50Speed = fBaseSpeed * 0.7071;
+        dStrafeSpeed = dBaseSpeed * 0.78087;
+        dSR50Speed = dBaseSpeed * 0.7071;
     }
 
     void AREAGMoveThink() {
         int SR = checkSR(iButtons);
         if(SR > 0)
 		{  
-            if(SR == 40 && !(speed ~== fStrafeSpeed)) {
-                speed = fStrafeSpeed;
-            } else if(SR == 50 && !(speed ~== fSR50Speed)) {
-                speed = fSR50Speed;
+            if(SR == 40 && !(speed ~== dStrafeSpeed)) {
+                speed = dStrafeSpeed;
+            } else if(SR == 50 && !(speed ~== dSR50Speed)) {
+                speed = dSR50Speed;
             }
 		}
 		else
 		{
-            if(!(speed ~== fBaseSpeed)) {
-                speed = fBaseSpeed;
+            if(!(speed ~== dBaseSpeed)) {
+                speed = dBaseSpeed;
             }
 		}
     }
 
     void AREAGMoveTick() {
-
-        if(CountInv("DroneFlag") > 0) {
-            AREAGDroneTick();
-        }
 
         // FALL STUN
         if(bOnGround && lastZVel < -FallingScreamMinSpeed) {
@@ -99,15 +95,7 @@ extend class AREAGPlayerPawn {
         if((bOnGround || airTime <= COYOTE_TIME) && (BT_JUMP & iButtons) && jumpDelay == 0 && CountInv("FallStunTime") == 0) {
             jumpDelay = 10;
             Vel.Z = JumpZ * 35 / TICRATE;
-            if(CountInv("DroneFlag")) {
-                A_StartSound("*dronejump", CHAN_BODY);
-            } else {
-                if(CountInv("SteamGreavesFlag") == 0) {
-                    A_StartSound("*jump", CHAN_BODY);
-                } else {
-                    A_StartSound("*superjump", CHAN_BODY);
-                }
-            }
+            A_StartSound("*jump", CHAN_BODY);
         }
 
         if(checkReleased(BT_JUMP, iButtons, iOldButtons) && vel.z > 0 && bJumpCancel)
@@ -120,8 +108,8 @@ extend class AREAGPlayerPawn {
 		if(CountInv("LegsUnderwater")>0)
 		{
 			if(!bLegsInWater) {
-				gravity = fBaseGravity * WATER_GRAVITY_MULT;
-				jumpz = fBaseJump * WATER_JUMP_MULT;
+				gravity = dBaseGravity * WATER_GRAVITY_MULT;
+				updateJumpSpeed();
 				A_GiveInventory("WaterSpeed", 1);
 				bLegsInWater = true;
 			}
@@ -129,8 +117,8 @@ extend class AREAGPlayerPawn {
 		else
 		{
 			if(bLegsInWater) {
-				gravity = fBaseGravity;
-				jumpz = fBaseJump;
+                gravity = dBaseGravity;
+				updateJumpSpeed();
 				A_TakeInventory("WaterSpeed", 1);
 				bLegsInWater = false;
 			}
@@ -160,28 +148,6 @@ extend class AREAGPlayerPawn {
 		{
 			GiveInventory("BreathTime", 100);
 			bHeadInWater = false;
-		}
-
-        // JUMP SPEED MANIPULATION (eg. Steam Greaves)
-        if(iJumpInv != CountInv("BaseJumpSpeed"))
-		{
-            iJumpInv = CountInv("BaseJumpSpeed");
-            fBaseJump = float(iJumpInv) / 100.0;
-            AREAGUpdateSpeeds();
-			if(blegsInWater)
-			{
-				jumpz = fBaseJump * WATER_JUMP_MULT;
-			}
-			else
-			{
-				jumpz = fBaseJump;
-			}
-		}
-		
-		// SPEED MANIPULATION (eg. Gear Greaves)
-		if(iSpeedInv != CountInv("BaseMoveSpeed"))
-		{
-			AREAGUpdateSpeeds();
 		}
 
         // GROUND CHECKS        
@@ -294,6 +260,40 @@ extend class AREAGPlayerPawn {
             return 0;
         }
         return 0;
+    }
+
+    Name getClydeSoundClass() {
+        if(CountInv("SteamGreavesFlag") > 0) {
+            return "steamclyde";
+        } else {
+            return "clyde";
+        }
+    }
+
+    void setBaseJumpSpeed(double which) {
+        A_Log(String.format("Incoming speed: %d; Current speed: %d", which, dBaseJump));
+        dBaseJump = which;
+        updateJumpSpeed();
+    }
+
+    void updateJumpSpeed() {
+        if(CountInv("DroneFlag") == 0) {
+            if(CountInv("LegsUnderwater"))
+            {
+                jumpz = dBaseJump * WATER_JUMP_MULT;
+            }
+            else
+            {
+                jumpz = dBaseJump;
+            }
+        } else {
+            jumpz = 10.0;
+        }
+    }
+
+    void setBaseWalkSpeed(double which) {
+        dBaseSpeed = which;
+        AREAGUpdateSpeeds();
     }
 }
 

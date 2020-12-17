@@ -65,6 +65,8 @@ class AREAGProtoPlayer : PlayerPawn {
     virtual void AREAGInit() {}
     virtual void AREAGTick() {}
 
+    virtual void AREAGDroneTick() {}
+
     bool AREAGIsWalking() {
         return (abs(vel.x) > 0.0 || abs(vel.y)) > 0.0 && 
             ((iButtons & BT_FORWARD) || (iButtons & BT_BACK) || (iButtons & BT_MOVELEFT) || (iButtons & BT_MOVERIGHT));

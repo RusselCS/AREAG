@@ -138,14 +138,21 @@ class SteamGreavesPickup : GearGreavesPickup
         BasicInventory.CheckItem "SteamGreavesFlag";
 	    Scale 2.5;
     }
+
+	action void A_GiveSteamBoots() {
+		A_GiveInventory("SteamGreavesFlag", 1);
+		let plr = AREAGPlayerPawn(self);
+		plr.soundclass = plr.getClydeSoundClass();
+		plr.setBaseJumpSpeed(plr.dBaseJump + 2.5);
+	}
+
 	States
 	{
 	SpawnFrames:
 		BOOT H 1;
 		loop;
 	PickupEffect:
-		TNT1 A 0 A_GiveInventory("SteamGreavesFlag", 1);
-		TNT1 A 0 A_GiveInventory("BaseJumpSpeed", 250);
+		TNT1 A 0 A_GiveSteamBoots();
 		stop;
 	}
 }

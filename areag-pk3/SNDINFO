@@ -1,20 +1,47 @@
 $playersound	clyde	male	*death		PLDEATH // LA-MULANA
 $playersound	clyde	male	*xdeath		PLDEATH // LA-MULANA
 $playersound	clyde	male	*gibbed		PLDEATH // LA-MULANA
-$playersound	clyde	male	*pain100	dsnone
-$playersound	clyde	male	*pain75		dsnone
-$playersound	clyde	male	*pain50		dsnone
-$playersound	clyde	male	*pain25		dsnone
+$playersound	clyde	male	*pain100	dsempty
+$playersound	clyde	male	*pain75		dsempty
+$playersound	clyde	male	*pain50		dsempty
+$playersound	clyde	male	*pain25		dsempty
 $playersound	clyde	male	*grunt		PLLAND // LA-MULANA
 $playersound	clyde	male	*land		PLLAND // LA-MULANA
 $playersound	clyde	male	*jump		PLJUMP // LA-MULANA
-$playersound	clyde	male	*superjump	SPJUMP // THE KING OF FIGHTERS XIV
-$playersound	clyde	male	*dronejump	DRJUMP // Fatal Fury 2
-$playersound	clyde	male	*droneland	DRLAND // Fatal Fury 2
-$playersound	clyde	male	*dronewalk	SPWALK // STRIFE: QUEST FOR THE SIGIL
-$playersound	clyde	male	*footstep	FTSTONE1 // Mega Man ZX
-$playersound	clyde	male	*fist		dsnone
+$playersound	clyde	male	*fist		dsempty
 $playersound	clyde	male	*usefail	PLLAND // LA-MULANA
+$playersound	clyde	male	*taunt		dsempty
+
+$playersound	steamclyde	male	*death		PLDEATH // LA-MULANA
+$playersound	steamclyde	male	*xdeath		PLDEATH // LA-MULANA
+$playersound	steamclyde	male	*gibbed		PLDEATH // LA-MULANA
+$playersound	steamclyde	male	*pain100	dsempty
+$playersound	steamclyde	male	*pain75		dsempty
+$playersound	steamclyde	male	*pain50		dsempty
+$playersound	steamclyde	male	*pain25		dsempty
+$playersound	steamclyde	male	*grunt		PLLAND // LA-MULANA
+$playersound	steamclyde	male	*land		PLLAND // LA-MULANA
+$playersound	steamclyde	male	*jump		SPJUMP // THE KING OF FIGHTERS XIV
+$playersound	steamclyde	male	*fist		dsempty
+$playersound	steamclyde	male	*usefail	PLLAND // LA-MULANA
+$playersound	steamclyde	male	*taunt		dsempty
+
+$playersound	drone	other	*death		dsempty
+$playersound	drone	other	*xdeath		dsempty
+$playersound	drone	other	*gibbed		dsempty
+$playersound	drone	other	*pain100	dsempty
+$playersound	drone	other	*pain75		dsempty
+$playersound	drone	other	*pain50		dsempty
+$playersound	drone	other	*pain25		dsempty
+$playersound	drone	other	*grunt		DRLAND // Fatal Fury 2
+$playersound	drone	other	*land		DRLAND // Fatal Fury 2
+$playersound	drone	other	*jump		DRJUMP // Fatal Fury 2
+$playersound	drone	other	*fist		dsempty
+$playersound	drone	other	*usefail	dsempty
+$playersound	drone	other	*taunt		dsempty
+$playersound	drone	other	*critpain	dsempty
+$playersound	drone	other	*critdeth	dsempty
+$playersound	drone	other	*footstep	SPWALK // STRIFE: QUEST FOR THE SIGIL
 
 misc/switch SWITCH // Virtua Fighter
 

@@ -8,6 +8,7 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
     StateLabel slInterruptState;
 
     Array<SubWeapon> subs;
+    Array<ToggleStateMap> toggles;
 
     override void AREAGThink() {
         AREAGMoveThink();
@@ -18,6 +19,10 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
         AREAGHealthTick();
         AREAGMoveTick();
         AREAGStatusTick();
+
+        if(CountInv("DroneFlag") > 0) {
+            AREAGDroneTick();
+        }
 
         if(iSelectedWep != iPrevSelect) {
             iPrevSelect = iSelectedWep;
@@ -70,6 +75,21 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
 
     void clearInterruptState() {
         setInterruptState(null);
+    }
+
+    void pushToggleTrigger(ToggleStateMap map) {
+        if(map) {
+            toggles.push(map);
+        }
+    }
+
+    StateLabel getToggleState() {
+        for(int i = 0; i < toggles.size(); i++) {
+            if(CountInv(toggles[i].getInventory()) > 0) {
+                return toggles[i].getToggleState();
+            }
+        }
+        return null;
     }
     
     override void AREAGInit() {
