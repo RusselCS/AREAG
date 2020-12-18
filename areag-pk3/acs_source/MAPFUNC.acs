@@ -108,17 +108,17 @@ function void loadMapEvents(int levelNum) {
 
 function void checkDroneTransform(int tid, int drone)
 {
-	if(CheckActorInventory(tid, "DroneFlag")>0)
-	{
-		if(drone)
-		{
-			transformToDrone(tid, true);
-		}
-		else
-		{
-			transformFromDrone(tid, true);
-		}
-	}
+	// if(CheckActorInventory(tid, "DroneFlag")>0)
+	// {
+	// 	if(drone)
+	// 	{
+	// 		transformToDrone(tid, true);
+	// 	}
+	// 	else
+	// 	{
+	// 		transformFromDrone(tid, true);
+	// 	}
+	// }
 }
 
 function void transformToDrone(int tid, int noTakeBat)

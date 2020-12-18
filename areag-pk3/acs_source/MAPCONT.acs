@@ -27,8 +27,10 @@ script "map_switchto" (int tomap, int door, int noSound)
 		terminate;
 	}
 	
-	ACS_NamedExecuteAlways("map_transition", 0, false, noSound);
-	Delay(35);
+	ACS_NamedExecuteAlways("map_transition", 0, false, noSound, GetUserVariable(0, "bDroneChangingLevel"));
+	if(!GetUserVariable(0, "bDroneChangingLevel")) {
+		Delay(35);
+	}
 	ChangeLevel(getMapCode(getMapByLevelNum(map)), door, CHANGELEVEL_NOINTERMISSION);
 }
 
@@ -52,42 +54,57 @@ script "music_fade" (int del, int rate, int dest)
 
 script "map_startup" ENTER
 {
-	transitionVeil();
-	ACS_NamedExecuteAlways("map_transition", 0, true, false);
-	checkDroneTransform(ActivatorTID(), true);
+	mapStartUp(GetUserVariable(0, "bDroneChangingLevel"));
 }
 
 script "map_return" RETURN
 {
-	ACS_NamedExecuteAlways("map_startup", 0);
+	mapStartUp(GetUserVariable(0, "bDroneChangingLevel"));
 }
 
-function void transitionVeil(void) {
-	FadeTo(0, 0, 0, 1.0, 0.0);
-	SetHudSize(1, 1, false);
-	SetFont("BLACK");
-	HudMessage(s:"A"; HUDMSG_ALPHA, 120, CR_UNTRANSLATED, 0, 0, 0, 1.0);
+function void mapStartUp(int droneRevert) {
+	clearMapCurtain();
+	transitionVeil(droneRevert);
+	ACS_NamedExecuteAlways("map_transition", 0, true, false, droneRevert);
+	if(droneRevert) {
+		GiveInventory("DroneRevertFunc", 1);
+	}
 }
 
-script "map_transition" (int ent, int noSound) {
+function void transitionVeil(int droneRevert) {
+	if(!droneRevert) {
+		FadeTo(0, 0, 0, 1.0, 0.0);
+		SetHudSize(1, 1, false);
+		SetFont("BLACK");
+		HudMessage(s:"A"; HUDMSG_ALPHA, 120, CR_UNTRANSLATED, 0, 0, 0, 1.0);
+	} else {
+		FadeTo(0.0, 0.4, 0.0, 1.0, 0.0);
+	}
+}
+
+script "map_transition" (int ent, int noSound, int droneRevert) {
 	
 	int baseVal = 640.0;
 	int fadeTime = 0.2;
 	int texWidth = 142.0;
 	if(ent) {
-		SetHudSize(1280, 960, 0);
-		SetFont("MAPTRANS");
-		int holdTime = 0.6;
-		for(int o = 6; o > 0; o--)
-		{
-			HudMessage(s:"A"; HUDMSG_FADEINOUT, 100+o, CR_UNTRANSLATED, baseVal + o * texWidth, 480.0, holdTime, 0.0, fadeTime);
-			HudMessage(s:"A"; HUDMSG_FADEINOUT, 110+o, CR_UNTRANSLATED, baseVal - o * texWidth, 480.0, holdTime, 0.0, fadeTime);
+		if(!droneRevert) {
+			SetHudSize(1280, 960, 0);
+			SetFont("MAPTRANS");
+			int holdTime = 0.6;
+			for(int o = 6; o > 0; o--)
+			{
+				HudMessage(s:"A"; HUDMSG_FADEINOUT, 100+o, CR_UNTRANSLATED, baseVal + o * texWidth, 480.0, holdTime, 0.0, fadeTime);
+				HudMessage(s:"A"; HUDMSG_FADEINOUT, 110+o, CR_UNTRANSLATED, baseVal - o * texWidth, 480.0, holdTime, 0.0, fadeTime);
+				Delay(2);
+			}
+			HudMessage(s:"A"; HUDMSG_FADEINOUT, 100, CR_UNTRANSLATED, baseVal, 480.0, holdTime, 0.0, fadeTime);
+			HudMessage(s:""; HUDMSG_ALPHA, 120, CR_UNTRANSLATED, 0, 0, 0, 0);
+			FadeTo(0, 0, 0, 0.2, fadeTime);
+		} else {
 			Delay(2);
+			ACS_NamedExecuteAlways("drone_curtain", 0, false);
 		}
-		HudMessage(s:"A"; HUDMSG_FADEINOUT, 100, CR_UNTRANSLATED, baseVal, 480.0, holdTime, 0.0, fadeTime);
-		HudMessage(s:""; HUDMSG_ALPHA, 120, CR_UNTRANSLATED, 0, 0, 0, 0);
-		FadeTo(0, 0, 0, 0.2, fadeTime);
-
 		TakeInventory("MapTransition", 1);
 		SetPlayerProperty(true, false, PROP_INVULNERABILITY);
 		SetPlayerProperty(true, false, PROP_TOTALLYFROZEN);
@@ -96,19 +113,33 @@ script "map_transition" (int ent, int noSound) {
 		SetPlayerProperty(true, true, PROP_INVULNERABILITY);
 		SetPlayerProperty(true, true, PROP_TOTALLYFROZEN);
 
-		if(!noSound)
-			AmbientSound("misc/mapchange", 255);
-		SetHudSize(1280, 960, 0);
-		SetFont("MAPTRANS");
-		HudMessageBold(s:"A"; HUDMSG_FADEINOUT, 100, CR_UNTRANSLATED, baseVal, 480.0, 30.0, fadeTime, 0.0);
-		Delay(2);
-		for(int i = 1; i < 7; i++)
-		{
-			HudMessageBold(s:"A"; HUDMSG_FADEINOUT, 100+i, CR_UNTRANSLATED, baseVal + i * texWidth, 480.0, 30.0, fadeTime, 0.0);
-			HudMessageBold(s:"A"; HUDMSG_FADEINOUT, 110+i, CR_UNTRANSLATED, baseVal - i * texWidth, 480.0, 30.0, fadeTime, 0.0);
+		if(!droneRevert) {
+			if(!noSound)
+				AmbientSound("misc/mapchange", 255);
+			SetHudSize(1280, 960, 0);
+			SetFont("MAPTRANS");
+			HudMessageBold(s:"A"; HUDMSG_FADEINOUT, 100, CR_UNTRANSLATED, baseVal, 480.0, 30.0, fadeTime, 0.0);
 			Delay(2);
+			for(int i = 1; i < 7; i++)
+			{
+				HudMessageBold(s:"A"; HUDMSG_FADEINOUT, 100+i, CR_UNTRANSLATED, baseVal + i * texWidth, 480.0, 30.0, fadeTime, 0.0);
+				HudMessageBold(s:"A"; HUDMSG_FADEINOUT, 110+i, CR_UNTRANSLATED, baseVal - i * texWidth, 480.0, 30.0, fadeTime, 0.0);
+				Delay(2);
+			}
+			FadeTo(0, 0, 0, 1.0, fadeTime);
+		} else {
+			
 		}
-		FadeTo(0, 0, 0, 1.0, fadeTime);
+	}
+}
+
+function void clearMapCurtain(void) {
+	HudMessageBold(s:""; HUDMSG_FADEINOUT, 100, CR_UNTRANSLATED, 0.0, 0.0, 0.0, 0.0, 0.0);
+	HudMessageBold(s:""; HUDMSG_ALPHA, 120, CR_UNTRANSLATED, 0, 0, 0, 0);
+	for(int i = 1; i < 7; i++)
+	{
+		HudMessageBold(s:""; HUDMSG_FADEINOUT, 100+i, CR_UNTRANSLATED, 0.0, 0.0, 0.0, 0.0, 0.0);
+		HudMessageBold(s:""; HUDMSG_FADEINOUT, 110+i, CR_UNTRANSLATED, 0.0, 0.0, 0.0, 0.0, 0.0);
 	}
 }
 

@@ -95,14 +95,18 @@ extend class AREAGProtoWeapon {
 extend class AREAGPlayerPawn {
 
     int iWalkCooldown;
+    int iLevelNum;
+    bool bDroneChangingLevel;
+    double dAngle;
 
-    Actor returnPoint;
+    Vector3 returnPoint;
 
     Name getDroneSoundClass() {
         return "drone";
     }
 
     void transformToDrone(Actor who) {
+        A_SpawnItemEx("DronePlayerDummy");
         A_GiveInventory("DronePlasmaGun");
         A_SelectWeapon("DronePlasmaGun");
 		A_GiveInventory("DroneFlag", 1);
@@ -113,13 +117,15 @@ extend class AREAGPlayerPawn {
         updateJumpSpeed();
         maxstepheight = 16;
 
-        bool trash;
-        [trash, returnPoint] = A_SpawnItemEx("DronePlayerDummy");
+        returnPoint = (pos.x, pos.y, floorz);
+        dAngle = angle;
 
         iWalkCooldown = 0;
 
         A_SetSize(DRONESIZE_RADIUS, DRONESIZE_HEIGHT);
         ViewHeight = DRONESIZE_VIEWHEIGHT;
+
+        iLevelNum = level.levelnum;
         
         Warp(who);
         who.Destroy();
@@ -135,10 +141,18 @@ extend class AREAGPlayerPawn {
         updateJumpSpeed();
         maxstepheight = dBaseStepHeight;
 
-        Warp(returnPoint);
-        returnPoint.Destroy();
-        returnPoint = null;
+        if(iLevelNum != level.levelnum) {
+            bDroneChangingLevel = true;
+            ACS_NamedExecuteAlways("map_switchto", 0, iLevelNum, 1, true);
+        } else {
+            finishDroneRevert();
+        }
+    }
 
+    void finishDroneRevert() {
+        A_Log(String.format("Running finishDroneRevert on map %d", level.levelnum));
+        Warp(self, returnPoint.x, returnPoint.y, returnPoint.z, dAngle, WARPF_ABSOLUTEPOSITION|WARPF_ABSOLUTEANGLE);
+        bDroneChangingLevel = false;
         iWalkCooldown = 0;
 
         A_SetSize(dBaseRadius, dBaseHeight);
@@ -191,6 +205,25 @@ extend class AREAGPlayerPawn {
         // }
 
         return interp;
+    }
+}
+
+class DroneRevertFunc : CustomInventory
+{
+    Default
+    {
+        +INVENTORY.AUTOACTIVATE;
+    }
+
+    action void A_FinishDroneRevert() {
+        AREAGPlayerPawn(self).finishDroneRevert();
+    }
+
+	States
+	{
+	Use:
+		TNT1 A 0 A_FinishDroneRevert();
+        stop;
     }
 }
 
@@ -316,13 +349,17 @@ class DronePlayerDummy : Actor
     {
         -SOLID;
         +NOCLIP;
+        +MISSILE;
         renderstyle "translucent";
         Alpha 1.0;
     }
 	States
 	{
 	Spawn:
-		PLAY A 1;
+		PLAY A 1 A_JumpIf(CountInv("DroneFlag", AAPTR_TARGET) == 0, "Death");
 		loop;
+    Death:
+        TNT1 A 0;
+        stop;
 	}
 }
