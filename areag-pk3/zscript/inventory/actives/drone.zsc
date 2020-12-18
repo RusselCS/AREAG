@@ -10,6 +10,7 @@ class DronePickup : BasicActiveInventory
         Scale 1.0;
         BasicInventory.PickupType PICKTYPE_TREASURE;
         BasicInventory.PickupID PICKMSG_SPIDERDRONE;
+        BasicInventory.Checkitem "DroneTrigger";
     }
 
     override void giveItemTrigger(AREAGPlayerPawn plr) {
@@ -66,6 +67,7 @@ extend class AREAGProtoWeapon {
 
     action void A_TransformToDrone() {
         invoker.plr.transformToDrone(invoker.dronePoint);
+        invoker.dronePoint = null;
     }
 
     action void A_FireDroneMissile() {
@@ -112,7 +114,6 @@ extend class AREAGPlayerPawn {
 		A_GiveInventory("DroneFlag", 1);
         A_StartSound("drone/activate", CHAN_BODY);
         ACS_NamedExecuteAlways("drone_curtain", 0, true);
-        A_ChangeVelocity(who.vel.x, who.vel.y, who.vel.z, CVF_REPLACE);
         soundclass = getDroneSoundClass();
         updateJumpSpeed();
         maxstepheight = 16;
@@ -126,9 +127,12 @@ extend class AREAGPlayerPawn {
         ViewHeight = DRONESIZE_VIEWHEIGHT;
 
         iLevelNum = level.levelnum;
-        
-        Warp(who);
-        who.Destroy();
+
+        if(who) {
+            A_ChangeVelocity(who.vel.x, who.vel.y, who.vel.z, CVF_REPLACE);
+            Warp(who);
+            who.Destroy();
+        }
     }
 
     void transformFromDrone() {
