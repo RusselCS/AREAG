@@ -10,60 +10,6 @@
 
 // MAP CONTROLLER SCRIPTS
 
-// KEY CHECK
-script "map_checkKey" (int keyId) {
-    str key = ScriptCall("KeyBase", "getKey", keyId);
-
-    SetActivator(0, AAPTR_PLAYER1);
-    SetResultValue(CheckInventory("getKey")>0);
-}
-
-// DOORS
-script "map_door" (int tag, int top, int bottom) {
-    int fixBottom = bottom << 16;
-
-    if(GetSectorCeilingZ(tag, 0, 0) == fixBottom) {
-        int tid = ActivatorTID();
-        Ceiling_RaiseByValue(tag, 60, 32);
-        Tagwait(tag);
-        Ceiling_MoveToValue(tag, 120, top);
-        TagWait(tag);
-        Delay(70);
-        while(actorInSector(tid, tag)) {
-            Delay(1);
-        }
-        Ceiling_MoveToValue(tag, 64, bottom);
-
-        bool movingUp = false;
-
-        int oldHeight = GetSectorCeilingZ(tag, 0, 0);
-
-        while(GetSectorCeilingZ(tag, 0, 0) > fixBottom) {
-            oldHeight = GetSectorCeilingZ(tag, 0, 0);
-            delay(1);
-
-            if(oldHeight == GetSectorCeilingZ(tag, 0, 0)) {
-                // TO DO: Push player out
-            }
-
-            if(actorInSector(tid, tag)) {
-                if(!movingUp) {
-                    movingUp = true;
-                    Ceiling_Stop(tag);
-                }
-            } else {
-                if(movingUp) {
-                    movingUp = false;
-                    Ceiling_Stop(tag);
-                    Delay(10);
-                    Ceiling_MoveToValue(tag, 32, bottom);
-                }
-            }
-        }
-        Radius_Quake(10, 4, 0, 5, tag);
-    }
-}
-
 // Script that actually handles map connections.
 // ARG1 - map: which arg the map abides by, as noted in the array.
 // ARG2 - door: which player spawn the player is intended to spawn, as noted by the value in its first special argument.
@@ -74,49 +20,16 @@ script "map_switchto" (int tomap, int door, int noSound)
 		terminate;
 	}
 
-	GiveInventory("MapTransition", 1);
-	SetPlayerProperty(true, true, PROP_INVULNERABILITY);
-	SetPlayerProperty(true, true, PROP_TOTALLYFROZEN);
-
 	int map = findMapRoute(tomap);
 
 	if(map == -1) {
 		PrintBold(s:"\cgMAP ", i:tomap, s:" NOT FOUND! \cdMAP MAY BE IN DEVELOPMENT. PLEASE TRY AGAIN LATER.");
-		SetPlayerProperty(false, true, PROP_INVULNERABILITY);
-		SetPlayerProperty(false, true, PROP_TOTALLYFROZEN);
 		terminate;
 	}
 	
-	// Map transition stuff
-	int baseVal = 640.0;
-	int fadeTime = 0.2;
-	int texWidth = 142.0;
-	SetActorState("MusicFader", "FadeOut");
-	if(!noSound)
-	{
-		AmbientSound("misc/mapchange", 255);
-	}
-	SetHudSize(1280, 960, 0);
-	SetFont("MAPTRANS");
-	HudMessageBold(s:"A"; HUDMSG_FADEINOUT, 100, CR_UNTRANSLATED, baseVal, 480.0, 30.0, fadeTime, 0.0);
-	Delay(2);
-	for(int i = 1; i < 7; i++)
-	{
-		HudMessageBold(s:"A"; HUDMSG_FADEINOUT, 100+i, CR_UNTRANSLATED, baseVal + i * texWidth, 480.0, 30.0, fadeTime, 0.0);
-		HudMessageBold(s:"A"; HUDMSG_FADEINOUT, 110+i, CR_UNTRANSLATED, baseVal - i * texWidth, 480.0, 30.0, fadeTime, 0.0);
-		Delay(2);
-	}
-	FadeTo(0, 0, 0, 1.0, fadeTime);
-	
+	ACS_NamedExecuteAlways("map_transition", 0, false, noSound);
 	Delay(35);
-	
-	checkDroneTransform(ActivatorTID(), false);
 	ChangeLevel(getMapCode(getMapByLevelNum(map)), door, CHANGELEVEL_NOINTERMISSION);
-	
-	// Because ENTER scripts are only executed once per map, gotta re-execute these here.
-	SetPlayerProperty(true, true, PROP_INVULNERABILITY);
-	SetPlayerProperty(true, true, PROP_TOTALLYFROZEN);
-	ACS_NamedExecuteAlways("map_startup", 0);
 }
 
 int musicVolume = 1.0;
@@ -139,30 +52,64 @@ script "music_fade" (int del, int rate, int dest)
 
 script "map_startup" ENTER
 {
-	int baseVal = 640.0;
-	int fadeTime = 0.2;
-	int texWidth = 142.0;
-	TakeInventory("MapTransition", 1);
+	transitionVeil();
+	ACS_NamedExecuteAlways("map_transition", 0, true, false);
+	checkDroneTransform(ActivatorTID(), true);
+}
+
+script "map_return" RETURN
+{
+	ACS_NamedExecuteAlways("map_startup", 0);
+}
+
+function void transitionVeil(void) {
 	FadeTo(0, 0, 0, 1.0, 0.0);
 	SetHudSize(1, 1, false);
 	SetFont("BLACK");
 	HudMessage(s:"A"; HUDMSG_ALPHA, 120, CR_UNTRANSLATED, 0, 0, 0, 1.0);
-	SetHudSize(1280, 960, 0);
-	SetFont("MAPTRANS");
-	int holdTime = 0.6;
-	for(int o = 6; o > 0; o--)
-	{
-		HudMessage(s:"A"; HUDMSG_FADEINOUT, 100+o, CR_UNTRANSLATED, baseVal + o * texWidth, 480.0, holdTime, 0.0, fadeTime);
-		HudMessage(s:"A"; HUDMSG_FADEINOUT, 110+o, CR_UNTRANSLATED, baseVal - o * texWidth, 480.0, holdTime, 0.0, fadeTime);
-		Delay(2);
-	}
-	HudMessage(s:"A"; HUDMSG_FADEINOUT, 100, CR_UNTRANSLATED, baseVal, 480.0, holdTime, 0.0, fadeTime);
-	HudMessage(s:""; HUDMSG_ALPHA, 120, CR_UNTRANSLATED, 0, 0, 0, 0);
-	checkDroneTransform(ActivatorTID(), true);
-	FadeTo(0, 0, 0, 0.2, fadeTime);
+}
+
+script "map_transition" (int ent, int noSound) {
 	
-	SetPlayerProperty(true, false, PROP_INVULNERABILITY);
-	SetPlayerProperty(true, false, PROP_TOTALLYFROZEN);
+	int baseVal = 640.0;
+	int fadeTime = 0.2;
+	int texWidth = 142.0;
+	if(ent) {
+		SetHudSize(1280, 960, 0);
+		SetFont("MAPTRANS");
+		int holdTime = 0.6;
+		for(int o = 6; o > 0; o--)
+		{
+			HudMessage(s:"A"; HUDMSG_FADEINOUT, 100+o, CR_UNTRANSLATED, baseVal + o * texWidth, 480.0, holdTime, 0.0, fadeTime);
+			HudMessage(s:"A"; HUDMSG_FADEINOUT, 110+o, CR_UNTRANSLATED, baseVal - o * texWidth, 480.0, holdTime, 0.0, fadeTime);
+			Delay(2);
+		}
+		HudMessage(s:"A"; HUDMSG_FADEINOUT, 100, CR_UNTRANSLATED, baseVal, 480.0, holdTime, 0.0, fadeTime);
+		HudMessage(s:""; HUDMSG_ALPHA, 120, CR_UNTRANSLATED, 0, 0, 0, 0);
+		FadeTo(0, 0, 0, 0.2, fadeTime);
+
+		TakeInventory("MapTransition", 1);
+		SetPlayerProperty(true, false, PROP_INVULNERABILITY);
+		SetPlayerProperty(true, false, PROP_TOTALLYFROZEN);
+	} else {
+		GiveInventory("MapTransition", 1);
+		SetPlayerProperty(true, true, PROP_INVULNERABILITY);
+		SetPlayerProperty(true, true, PROP_TOTALLYFROZEN);
+
+		if(!noSound)
+			AmbientSound("misc/mapchange", 255);
+		SetHudSize(1280, 960, 0);
+		SetFont("MAPTRANS");
+		HudMessageBold(s:"A"; HUDMSG_FADEINOUT, 100, CR_UNTRANSLATED, baseVal, 480.0, 30.0, fadeTime, 0.0);
+		Delay(2);
+		for(int i = 1; i < 7; i++)
+		{
+			HudMessageBold(s:"A"; HUDMSG_FADEINOUT, 100+i, CR_UNTRANSLATED, baseVal + i * texWidth, 480.0, 30.0, fadeTime, 0.0);
+			HudMessageBold(s:"A"; HUDMSG_FADEINOUT, 110+i, CR_UNTRANSLATED, baseVal - i * texWidth, 480.0, 30.0, fadeTime, 0.0);
+			Delay(2);
+		}
+		FadeTo(0, 0, 0, 1.0, fadeTime);
+	}
 }
 
 script "map_tablet" (int tabletNum, int eventNum)
@@ -300,6 +247,60 @@ script "MAP_OPEN" OPEN
 	Delay(1);
 	SetAirControl(0.65);
 	SpawnForced("MusicFader", 0, 0, 0, TID_MUSFADE);
+}
+
+// KEY CHECK
+script "map_checkKey" (int keyId) {
+    str key = ScriptCall("KeyBase", "getKey", keyId);
+
+    SetActivator(0, AAPTR_PLAYER1);
+    SetResultValue(CheckInventory("getKey")>0);
+}
+
+// DOORS
+script "map_door" (int tag, int top, int bottom) {
+    int fixBottom = bottom << 16;
+
+    if(GetSectorCeilingZ(tag, 0, 0) == fixBottom) {
+        int tid = ActivatorTID();
+        Ceiling_RaiseByValue(tag, 60, 32);
+        Tagwait(tag);
+        Ceiling_MoveToValue(tag, 120, top);
+        TagWait(tag);
+        Delay(70);
+        while(actorInSector(tid, tag)) {
+            Delay(1);
+        }
+        Ceiling_MoveToValue(tag, 64, bottom);
+
+        bool movingUp = false;
+
+        int oldHeight = GetSectorCeilingZ(tag, 0, 0);
+
+        while(GetSectorCeilingZ(tag, 0, 0) > fixBottom) {
+            oldHeight = GetSectorCeilingZ(tag, 0, 0);
+            delay(1);
+
+            if(oldHeight == GetSectorCeilingZ(tag, 0, 0)) {
+                // TO DO: Push player out
+            }
+
+            if(actorInSector(tid, tag)) {
+                if(!movingUp) {
+                    movingUp = true;
+                    Ceiling_Stop(tag);
+                }
+            } else {
+                if(movingUp) {
+                    movingUp = false;
+                    Ceiling_Stop(tag);
+                    Delay(10);
+                    Ceiling_MoveToValue(tag, 32, bottom);
+                }
+            }
+        }
+        Radius_Quake(10, 4, 0, 5, tag);
+    }
 }
 
 script "tablet_distanceCheck" (void)
