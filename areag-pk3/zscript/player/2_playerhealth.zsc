@@ -13,13 +13,15 @@ extend class AREAGPlayerPawn {
 
     void AREAGHealthTick() {
 
-        if(lastHealth != health) {
-			updateHealth();
-			lastHealth = health;
-		}
+		if(CountInv("DroneFlag") == 0) {
+			if(lastHealth != health) {
+				updateHealth();
+				lastHealth = health;
+			}
 
-		if(CountInv("MaxHealthBars") * HP_SEG_MAX != starthealth){
-			updateHealth();
+			if(CountInv("MaxHealthBars") * HP_SEG_MAX != starthealth){
+				updateHealth();
+			}
 		}
     }
 	
@@ -58,10 +60,18 @@ extend class AREAGPlayerPawn {
 	}
 
 	override int DamageMobj(Actor inflictor, Actor source, int damage, Name mod, int flags, double angle) {
-
-		if(bINVULNERABLE) {
+		
+		if(bINVULNERABLE || CountInv("DroneFlag")) {
 			return super.DamageMobj(inflictor, source, damage, mod, flags, angle);
         } else if(mod == "Drowning") {
+            if(damage >= health) {
+                bBUDDHA = false;
+            }
+            return super.DamageMobj(inflictor, source, damage, mod, flags, angle);
+        } else if(mod == "Slime") {
+			if(CountInv("DroneFlag") > 0) {
+				health = 1;
+			}
             if(damage >= health) {
                 bBUDDHA = false;
             }
