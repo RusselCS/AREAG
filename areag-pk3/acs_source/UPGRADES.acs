@@ -72,3 +72,18 @@ script "pickups_displayMessage" (int type, int which)
 		FadeTo(pickupColors[type][0], pickupColors[type][1], pickupColors[type][2], 0.0, 0.3);
 	}
 }
+
+script "drone_curtain" (int toDrone) {
+	if(toDrone) {
+		FadeTo(0.0, 0.4, 0.0, 1.0, 0.03);
+		Delay(1);
+		FadeTo(0.0, 0.4, 0.0, 0.0, 0.8);
+		SetHudSize(1024, 768, false);
+		SetFont("DRONETBG");
+		HudMessage(s:"A"; HUDMSG_FADEOUT, 202, CR_UNTRANSLATED, 512.0, 384.0, 0.4, 0.2);
+	} else {
+		FadeTo(0.0, 0.4, 0.0, 1.0, 0.03);
+		Delay(5);
+		FadeTo(0.33, 0.76, 0.07, 0.0, 0.8);
+	}
+}

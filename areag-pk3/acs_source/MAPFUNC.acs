@@ -106,39 +106,6 @@ function void loadMapEvents(int levelNum) {
 // 	return ret;
 // }
 
-function void checkDroneTransform(int tid, int drone)
-{
-	// if(CheckActorInventory(tid, "DroneFlag")>0)
-	// {
-	// 	if(drone)
-	// 	{
-	// 		transformToDrone(tid, true);
-	// 	}
-	// 	else
-	// 	{
-	// 		transformFromDrone(tid, true);
-	// 	}
-	// }
-}
-
-function void transformToDrone(int tid, int noTakeBat)
-{
-	SetActorInventory(tid, "PlayerTempHealth", GetActorHealth(tid));
-	MorphActor(tid, "AREAGDrone", "", 0x7ffffff, MRF_NEWTIDBEHAVIOUR|MRF_UNDOALWAYS|MRF_WHENINVULNERABLE|MRF_UNDOBYDEATH|MRF_UNDOBYDEATHSAVES, "", "");
-	SetActorHealth(tid, CheckActorInventory(tid, "DroneBattery"));
-}
-
-function void transformFromDrone(int tid, int noTakeBat)
-{
-	if(!noTakeBat) {
-		SetActorInventory(tid, "DroneBattery", 0);
-	} else {
-		SetActorInventory(tid, "DroneBattery", GetActorHealth(tid));
-	}
-	UnmorphActor(tid, true);
-	SetActorHealth(tid, CheckActorInventory(tid, "PlayerTempHealth"));
-}
-
 function void setSwitchState(int tid, str state, int loading) {
 	if(loading) {
 		SetActorState(tid, state);

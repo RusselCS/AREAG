@@ -271,7 +271,6 @@ extend class AREAGPlayerPawn {
     }
 
     void setBaseJumpSpeed(double which) {
-        A_Log(String.format("Incoming speed: %d; Current speed: %d", which, dBaseJump));
         dBaseJump = which;
         updateJumpSpeed();
     }

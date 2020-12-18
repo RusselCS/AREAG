@@ -134,7 +134,6 @@ extend class AREAGPlayerPawn {
     void transformFromDrone() {
         A_TakeInventory("DronePlasmaGun", 1);
 		A_TakeInventory("DroneFlag", 1);
-        A_StartSound("drone/disengage", CHAN_BODY);
         ACS_NamedExecuteAlways("drone_curtain", 0, false);
         A_ChangeVelocity(0, 0, 0, CVF_REPLACE);
         soundclass = getClydeSoundClass();
@@ -150,7 +149,7 @@ extend class AREAGPlayerPawn {
     }
 
     void finishDroneRevert() {
-        A_Log(String.format("Running finishDroneRevert on map %d", level.levelnum));
+        A_StartSound("drone/disengage", CHAN_BODY);
         Warp(self, returnPoint.x, returnPoint.y, returnPoint.z, dAngle, WARPF_ABSOLUTEPOSITION|WARPF_ABSOLUTEANGLE);
         bDroneChangingLevel = false;
         iWalkCooldown = 0;
