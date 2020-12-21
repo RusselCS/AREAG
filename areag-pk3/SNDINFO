@@ -140,7 +140,7 @@ monster/glowfly/buzz    GF_BUZZ // Metroid Prime 2: Echoes
 $limit monster/glowfly/buzz 0
 monster/glowfly/hivedie GF_HIDIE // Metroid Prime 2: Echoes
 
-treasures/hornstart_c HORNS0
+treasures/hornstart_c HORNS0 // Horn sounds custom
 treasures/hornstart_d HORNS1
 treasures/hornstart_e HORNS2
 treasures/hornstart_f HORNS3
@@ -160,3 +160,7 @@ treasures/hornend_e HORNE2
 treasures/hornend_f HORNE3
 treasures/hornend_g HORNE4
 treasures/hornend_a HORNE5
+
+props/blockrumble BLKRUMB // LA-MULANA
+
+world/quake dsempty

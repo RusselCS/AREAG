@@ -296,6 +296,43 @@ class BasicActor : Actor
 	}
 }
 
+class BasicActionProp : SwitchingDecoration
+{
+	Default
+	{
+		+USESPECIAL;
+		Activation THINGSPEC_TriggerActs|THINGSPEC_Switch;
+	}
+
+	override void PostBeginPlay() {
+		Super.PostBeginPlay();
+		BasicInit();
+	}
+
+    override void Tick() {
+        Super.Tick();
+		BasicTick();
+    }
+
+	override void OnDestroy() {
+		Super.OnDestroy();
+		BasicDestroy();
+	}
+
+	override void Activate(Actor activator) {
+		if(ActivateConditon())
+			BasicActivate(activator);
+	}
+
+	virtual void BasicInit() {}
+	virtual void BasicTick() {}
+	virtual void BasicDestroy() {}
+	virtual bool ActivateConditon() {
+		return true;
+	}
+	virtual void BasicActivate(Actor activator) {}
+}
+
 class HitboxDebug : BasicActor {}
 
 // MOVEMENT FLAGS //

@@ -10,6 +10,9 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
     Array<SubWeapon> subs;
     Array<ToggleStateMap> toggles;
 
+    bool isPushingBlock;
+    AREAGPushBlock block;
+
     override void AREAGThink() {
         AREAGMoveThink();
     }
@@ -100,4 +103,18 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
 		iSelectedWep = SWEP_NONE;
         slInterruptState = null;
 	}
+
+    void SetBlockPush(AREAGPushBlock blk) {
+        if(blk) {
+            block = blk;
+            isPushingBlock = true;
+        } else {
+            block = null;
+            isPushingBlock = false;
+        }
+    }
+
+    AREAGPushBlock GetBlockPush() {
+        return block;
+    }
 }
