@@ -1,8 +1,15 @@
 user bool cl_tapdash = true;
 user bool cl_handedness = false;
 
+// DEBUG SYSTEM
 user noarchive bool db_viewhitboxes = false;
+user int db_levelnum = 0;
+user int db_spawnposX;
+user int db_spawnposY;
+user int db_spawnposZ;
+user int db_spawnang;
 
+// SAVE SYSTEM
 user noarchive string SAVE_OUTSKIRTS_EVENT_0 = "000000000000000";
 user noarchive string SAVE_OUTSKIRTS_PICKUP_0 = "00000000000";
 user noarchive string SAVE_GATEWAY_EVENT_0 = "0000000000000000000000000000000000000000000000000000000000000";

@@ -1,0 +1,18 @@
+#library "debug"
+
+#include "zcommon.acs"
+
+script "debug_setspawnpos" (void) {
+    SetCVar("db_levelnum", GetLevelInfo(LEVELINFO_LEVELNUM));
+    SetCVar("db_spawnposX", GetActorX(0));
+    SetCVar("db_spawnposY", GetActorY(0));
+    SetCVar("db_spawnposZ", GetActorZ(0));
+    SetCVar("db_spawnang", GetActorAngle(0));
+}
+
+script "debug_spawn" ENTER {
+    if(GetCVar("db_levelnum") != 0 && GetCVar("db_levelnum") == GetLevelInfo(LEVELINFO_LEVELNUM)) {
+        SetActorPosition(0, GetCVar("db_spawnposX"), GetCVar("db_spawnposY"), GetCVar("db_spawnposZ"), false);
+        SetActorAngle(0, GetCVar("db_spawnang"));
+    }
+}
