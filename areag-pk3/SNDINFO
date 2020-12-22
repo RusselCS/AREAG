@@ -95,6 +95,25 @@ $random weapon/capitalsmack // Dengeki Bunko: Fighting Climax
 weapon/capitalsmack1 CAPPSMAK
 weapon/capitalsmack2 CAPPSMA2
 
+// SOURCES FOR THE GLOVES ARE UNCITED--THEY CAME FROM A PROTOTYPE MOD
+lightfist/swing LFSWING
+
+lightfist/dryhit lfdry
+$pitchshift lightfist/dryhit 7
+
+$random lightfist/smack {
+lightfist/smack01 lightfist/smack02 lightfist/smack03
+lightfist/smack04 lightfist/smack05 lightfist/smack06
+}
+
+lightfist/smack01 LFSMAK01
+lightfist/smack02 LFSMAK02
+lightfist/smack03 LFSMAK03
+lightfist/smack04 LFSMAK04
+lightfist/smack05 LFSMAK05
+lightfist/smack06 LFSMAK06
+// ------------------------------------------------------------------
+
 weapon/dronelaser DRONELAZ // LA-MULANA
 drone/activate DRONEON // THE KING OF FIGHTERS XIV
 drone/disengage DRONEOFF // THE KING OF FIGHTERS XIV

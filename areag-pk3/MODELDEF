@@ -8,6 +8,20 @@ Model AREAGPushBlock
    FrameIndex PCBA B 0 0
 }
 
+Model AREAGPushBlockSmall
+{
+   Path "models"
+   Model 0 "ROCKCUBE.obj"
+   Scale 1.0 1.0 1.0
+   Offset -16.0 16.0 0.0
+   USEACTORPITCH
+   USEACTORROLL
+   USEROTATIONCENTER
+   Rotation-Center 256.0 256.0 256.0
+
+   FrameIndex PCBA A 0 0
+}
+
 Model SaveObelisk
 {
    Path "models"

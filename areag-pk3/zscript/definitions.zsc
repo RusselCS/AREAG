@@ -22,7 +22,6 @@ enum UpgradeTypes {
 	PICKMSG_HEALTHUP,
 	PICKMSG_DYNAMITE,
 	PICKMSG_NOVAPACK,
-
 	PICKMSG_SPIDERDRONE,
 	PICKMSG_BEEDRONE,
 	PICKMSG_STEELWHIP,
@@ -32,6 +31,7 @@ enum UpgradeTypes {
     PICKMSG_PERIDOTKEY,
     PICKMSG_GOLDKEY,
 	PICKMSG_RITUALHORN,
+	PICKMSG_GRAVITYGLOVES
 }
 
 // BASIC ACTORS //
@@ -102,6 +102,13 @@ class BasicProjectile : BasicActor
 	SpawnLoop:
 		TNT1 A 0;
 		stop;
+	}
+}
+
+class PowerTime15 : PowerUp {
+	Default
+	{
+		powerup.duration 15;
 	}
 }
 
@@ -296,7 +303,7 @@ class BasicActor : Actor
 	}
 }
 
-class BasicActionProp : SwitchingDecoration
+class BasicActionProp : BasicActor
 {
 	Default
 	{
@@ -304,29 +311,11 @@ class BasicActionProp : SwitchingDecoration
 		Activation THINGSPEC_TriggerActs|THINGSPEC_Switch;
 	}
 
-	override void PostBeginPlay() {
-		Super.PostBeginPlay();
-		BasicInit();
-	}
-
-    override void Tick() {
-        Super.Tick();
-		BasicTick();
-    }
-
-	override void OnDestroy() {
-		Super.OnDestroy();
-		BasicDestroy();
-	}
-
 	override void Activate(Actor activator) {
 		if(ActivateConditon())
 			BasicActivate(activator);
 	}
 
-	virtual void BasicInit() {}
-	virtual void BasicTick() {}
-	virtual void BasicDestroy() {}
 	virtual bool ActivateConditon() {
 		return true;
 	}

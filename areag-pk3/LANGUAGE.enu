@@ -47,6 +47,9 @@ PU_GOLDKEY = "Grants permanent access to \ckGold Doors\c-.";
 AR_RITUALHORN = "RITUAL HORN";
 PU_RITUALHORN = "Use to play songs.";
 
+AR_GRAVITYGLOVES = "GRAVITON GAUNTLETS";
+PU_GRAVITYGLOVES = "Magnetic fists that move metal blocks and enemies.\nCannot use subs while active.";
+
 // TABLETS
 
 TABLET_TESTMAP_0 = "This is a puzzle tablet. Read the other using nova pack.";

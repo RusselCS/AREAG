@@ -6,6 +6,10 @@ extend class AREAGProtoWeapon
         int iButtons = invoker.plr.iButtons;
         int iOldButtons = invoker.plr.iOldButtons;
 
+        if(invoker.bLoweringWeapons) {
+            return ResolveState("SubWepLower");
+        }
+
         // for(int i = 0; i < TreasureItems.itemFields.Size(); i++) {
         //     if(countInv(TreasureItems.activeItem(i))) {
         //         return ResolveState("Fire");

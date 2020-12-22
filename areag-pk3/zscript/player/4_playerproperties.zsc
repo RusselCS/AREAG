@@ -16,6 +16,7 @@ class AREAGPlayer : AREAGPlayerPawn
         player.startitem "ShieldBars", 4;
         Player.FallingScreamSpeed 35.0, 1000.0;
         player.viewheight 60.0;
+		player.attackzoffset 20.0;
 		radius 16;
 		height 60;
         mass 0x7ffffff;
