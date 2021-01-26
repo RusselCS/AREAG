@@ -17,7 +17,35 @@ Model AREAGPushBlockSmall
    USEACTORPITCH
    USEACTORROLL
    USEROTATIONCENTER
-   Rotation-Center 256.0 256.0 256.0
+   Rotation-Center 0.0 0.0 16.0
+
+   FrameIndex PCBA A 0 0
+}
+
+Model BlockProjectile
+{
+   Path "models"
+   Model 0 "ROCKCUBE.obj"
+   Scale 1.0 1.0 1.0
+   Offset -16.0 16.0 0.0
+   USEACTORPITCH
+   USEACTORROLL
+   USEROTATIONCENTER
+   Rotation-Center 0.0 0.0 16.0
+
+   FrameIndex PCBA A 0 0
+}
+
+Model BlockProjectileTrail
+{
+   Path "models"
+   Model 0 "ROCKCUBE.obj"
+   Scale 1.0 1.0 1.0
+   Offset -16.0 16.0 0.0
+   USEACTORPITCH
+   USEACTORROLL
+   USEROTATIONCENTER
+   Rotation-Center 0.0 0.0 16.0
 
    FrameIndex PCBA A 0 0
 }

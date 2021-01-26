@@ -69,7 +69,7 @@ class BasicEffect : Actor
     }
 }
 
-class ZSCStoneBody : Actor
+class ZSCStoneBody : BasicActor
 {
     override int DamageMobj(Actor inflictor, Actor source, int damage, Name mod, int flags, double angle) {
         int dmg = super.DamageMobj(inflictor, source, min(damage, 1), mod, flags, angle);
@@ -204,6 +204,12 @@ class HitboxParticle : BasicEffect
 class BasicActor : Actor
 {
 	mixin AREAG_Common;
+
+	Default
+	{
+		+ROLLSPRITE;
+		+ROLLCENTER;
+	}
 
 	int m_basicActorFlags;
 
