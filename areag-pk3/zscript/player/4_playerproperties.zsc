@@ -26,7 +26,7 @@ class AREAGPlayer : AREAGPlayerPawn
         +QUICKTORETALIATE;
         +GHOST;
         damagefactor "Dummy", 0.0;
-        scale 1.0;
+        scale 1.2;
     }
 	States
 	{

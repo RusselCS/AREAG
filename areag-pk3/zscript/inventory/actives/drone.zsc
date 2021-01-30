@@ -317,7 +317,7 @@ class MapTransition : Once {}
 
 class DroneFlag : Once {}
 
-class DroneLaser : BasicFastProjectile
+class DroneLaser : BasicProjectile
 {
     Default
     {

@@ -22,7 +22,7 @@ DoomEdNums
     30000 = SpearTrap
     30002 = LaserTrap
 
-    30100 = StoneGolem
+    30100 = StoneGolemSpawner
 }
 
 episode TESTMAP

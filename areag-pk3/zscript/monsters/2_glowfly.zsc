@@ -3,7 +3,7 @@ class GlowflyHive : BasicEnemy
     Default
     {
         scale 2.0;
-        BasicEnemy.TrueHeight 80;
+        height 80;//BasicEnemy.TrueHeight 80;
         Radius 48;
         Health 100;
         mass 999999;
@@ -15,7 +15,7 @@ class GlowflyHive : BasicEnemy
 
     int maxBugs;
 
-    override void Init() {
+    override void monsterInit() {
         maxBugs = 16;
     }
 
@@ -66,7 +66,7 @@ class Glowfly : BasicEnemy
 {
     Default
     {
-        BasicEnemy.TrueHeight 10;
+        Height 10;//BasicEnemy.TrueHeight 10;
         Radius 5;
         Health 1;
         mass 1;
@@ -80,7 +80,7 @@ class Glowfly : BasicEnemy
 
     int moveTimer;
 
-    override void Init() {
+    override void monsterInit() {
         A_StartSound("monster/glowfly/buzz", CHAN_BODY);
         moveTimer = random(16, 48);
     }

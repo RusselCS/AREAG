@@ -2,20 +2,28 @@
 // EARTH ELEMENTAL FROM MIGHT & MAGIC 7
 // SPECIFIC RIPS OBTAINED FROM ARMAGEDDON 2
 //
+class StoneGolemSpawner : EnemySpawner
+{
+    Default
+    {
+        EnemySpawner.EnemyType "StoneGolem";
+        Height 80;
+        Radius 48;
+        Health 800;
+        Mass 800;
+    }
+}
+
 class StoneGolem : BasicEnemy
 {
     Default
     {
         scale 0.6;
-        BasicEnemy.TrueHeight 80;
-        Radius 48;
-        Health 800;
-        mass 800;
         Speed 15;
         reactiontime 30;
     }
 
-    override void init() {
+    override void monsterInit() {
         iInitReactionTime = reactiontime;
     }
 

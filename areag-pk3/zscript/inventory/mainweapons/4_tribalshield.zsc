@@ -163,7 +163,7 @@ class TribalShieldWall : HitboxDebug
     }
 }
 
-class TribalShieldProjectile : BasicFastProjectile
+class TribalShieldProjectile : BasicProjectile
 {
     Default
     {

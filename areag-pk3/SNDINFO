@@ -159,6 +159,15 @@ monster/glowfly/buzz    GF_BUZZ // Metroid Prime 2: Echoes
 $limit monster/glowfly/buzz 0
 monster/glowfly/hivedie GF_HIDIE // Metroid Prime 2: Echoes
 
+monster/brute/pain  SLAP // Castlevania: Bloodlines
+monster/brute/death  OBDIE // Castlevania: Bloodlines
+monster/brute/leap  OBLEAP
+monster/brute/land  OBLAND
+monster/brute/see   OBSEE
+monster/brute/swing OBLEAP
+monster/brute/smash OBSMASH
+monster/brute/dash  OBDASH // Fatal Fury 2
+
 treasures/hornstart_c HORNS0 // Horn sounds custom
 treasures/hornstart_d HORNS1
 treasures/hornstart_e HORNS2

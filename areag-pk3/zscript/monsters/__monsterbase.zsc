@@ -1,3 +1,91 @@
+class EnemySpawner : BasicActor
+{
+    Default
+    {
+        +NOINTERACTION;
+        +THRUACTORS;
+        +NOCLIP;
+    }
+
+    String sEnemyType;
+    int iRespawnTime;
+    int respawnCountdown;
+
+    property EnemyType: sEnemyType;
+    property RespawnTime: iRespawnTime;
+
+    Actor activeEnemy;
+    Actor player;
+    bool awaitingRespawn;
+
+    override void BasicInit() {
+        spawnEnemy();
+        player = GetPointer(AAPTR_PLAYER1);
+
+        if(iRespawnTime == 0) {
+            if(score == 0) {
+                iRespawnTime = 30 * 35;
+            } else {
+                iRespawnTime = score * 35;
+            }
+        }
+    }
+
+    bool canPlayerSee() {
+        return player.IsVisible(self, false);
+    }
+
+    void spawnEnemy() {
+        bool sp;
+        [sp, activeEnemy] = A_SpawnItemEx(sEnemyType);
+        if(sp) {
+            if(!bSTANDSTILL) {
+                activeEnemy.score = score;
+            }
+            activeEnemy.bSTANDSTILL = bSTANDSTILL;
+            activeEnemy.bDORMANT = bDORMANT;
+            awaitingRespawn = false;
+        } else {
+            A_Log("[EnemySpawner] Enemy Spawn Failed!");
+        }
+    }
+
+    override void BasicTick() {
+        if(bDROPPED) {
+            Destroy();
+        }
+        if(!bSTANDSTILL) {
+            if(!awaitingRespawn) {
+                if(!activeEnemy) {
+                    respawnCountdown = iRespawnTime;
+                    awaitingRespawn = true;
+                }
+            } else {
+                if(!canPlayerSee()) {
+                    respawnCountdown--;
+                    if(respawnCountdown == 0) {
+                        spawnEnemy();
+                    }
+                }
+            }
+        }
+    }
+
+    States
+    {
+    Spawn:
+        TNT1 A 1;
+        wait;
+    ForceRespawn:
+        TNT1 A 0 {
+            if(!activeEnemy) {
+                spawnEnemy();
+            }
+        }
+        goto Spawn;
+    }
+}
+
 class BasicEnemy : BasicActor
 {
     Default
@@ -6,42 +94,49 @@ class BasicEnemy : BasicActor
         +FLOORCLIP;
         +SLIDESONWALLS;
         height 10;
+        radius 5;
         renderstyle "translucent";
         alpha 1.0;
     }
-
-    int iTrueHeight;
-    property TrueHeight: iTrueHeight;
     
     int kbTime;
     bool bInDeathSequence;
     int iDamageTick;
+    int iDeathTick;
+    int iDeathSequenceType;
+
+    EnemyPatrolNode nextPatrol;
+
+    Vector2 BaseScale;
+    Vector2 BaseDimensions;
 
     override void BasicInit() {
         super.BasicInit();
         iDamageTick = 0;
+        iDeathTick = 0;
+        iDeathSequenceType = 0;
 
-        if(score > 0) {
+        if(bSTANDSTILL) {
             scale = scale * 0.5;
             SetState(ResolveState("TestSpawn"));
             bINVULNERABLE = true;
             bSHOOTABLE = false;
             bNOBLOOD = true;
-        } else {
-            height = iTrueHeight;
         }
 
-        init();
+        BaseScale = scale;
+        BaseDimensions = (radius, height);
+
+        monsterInit();
     }
 
-    virtual void init() {}
+    virtual void monsterInit() {}
 
 	override int DamageMobj(Actor inflictor, Actor source, int damage, Name mod, int flags, double angle) {
-
 		int ang = inflictor.angle % 360;
 
-        A_StartSound("*pain", CHAN_VOICE);
-        iDamageTick = 18;
+        monsterPainSound(mod);
+        iDamageTick = 4;
 
 		if(mod == "SteelWhip" || mod == "LaserWhip") {
 			A_SpawnItemEx("KnockBackTrail", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERSPRITEFRAME);
@@ -56,14 +151,31 @@ class BasicEnemy : BasicActor
 		return super.DamageMobj(inflictor, source, damage, mod, flags, angle);
 	}
 
+    override void Die(Actor source, Actor inflictor, int dmgflags, Name mod) {
+        monsterPainSound(mod);
+        monsterDeathSound(mod);
+        super.Die(source, inflictor, dmgflags, mod);
+    }
+
+    virtual void monsterPainSound(Name mod) {}
+    virtual void monsterDeathSound(Name mod) {}
+
 	override void BasicTick() {
 		super.BasicTick();
 		tick_KnockBack();
         tick_DeathSequence();
-        tick_DamageFlash();
         
         monsterTick();
 	}
+
+    // Enemies freeze after a hit.
+    override void Tick() {
+        if(iDamageTick == 0) {
+            super.tick();
+        } else {
+            tick_DamageFlash();
+        }
+    }
 
     virtual void monsterTick() {}
 
@@ -80,24 +192,75 @@ class BasicEnemy : BasicActor
 
     void tick_DamageFlash() {
         if(health > 0) {
-            int div = 3;
-            if(iDamageTick > 0 && iDamageTick % div == 0) {
-                
-            } else if(iDamageTick == 0) {
-                
+            if(iDamageTick > 1) {
+                switch((iDamageTick-1) % 4) {
+                    case 0:
+                        A_SetTranslation("RedMap1");
+                        break;
+                    case 1:
+                        A_SetTranslation("RedMap2");
+                        break;
+                    case 2:
+                        A_SetTranslation("RedMap3");
+                        break;
+                    case 3:
+                        A_SetTranslation("RedMap4");
+                        break;
+                }
+            } else {
+                A_SetTranslation("Def");
             }
+            
             iDamageTick--;
+            
+        } else {
+            iDamageTick = 0;
         }
     }
 
-    action void A_DeathSequence() {
+    action void A_DeathSequence(int type = EDS_FadeBurn) {
+        A_ChangeFlag("NOINTERACTION", true);
+        A_Stop();
         invoker.bInDeathSequence = true;
+        invoker.iDeathSequenceType = type;
     }
 
-    void tick_DeathSequence() {
+    virtual void tick_DeathSequence() {
         if(bInDeathSequence) {
-            A_SpawnItemEx("EnemyDeathSmoke", frandom(-radius, radius), frandom(-radius, radius), frandom(0, iTrueHeight));
-            A_FadeOut(0.03);
+            switch(iDeathSequenceType) {
+                default:
+                case EDS_FadeBurn:
+                    A_SpawnItemEx("EnemyDeathSmoke", frandom(-radius, radius), frandom(-radius, radius), frandom(0, height));
+                    A_FadeOut(0.03);
+                break;
+                case EDS_VerticalSquash:
+                    if(iDeathTick == 0) {
+                        let fx = A_SpawnBasicEffect("EnemyDeathShadow", -0.1, 0, 0, 0, 0, 0, 0, SXF_TRANSFERSPRITEFRAME|SXF_TRANSFERSCALE);
+                        fx.tracer = self;
+
+                    }
+
+                    A_FaceTarget();
+                    A_Warp(AAPTR_DEFAULT, 0, SignModTwo(iDeathTick) * 5, SignModTwo(iDeathTick) * 5, 0, WARPF_INTERPOLATE);
+                    if(iDeathTick > 5) {
+                        double fadeScale = 0.06;
+                        A_SetScale(max(scale.x - BaseScale.x * fadeScale, 0.0), scale.y + BaseScale.y * fadeScale/2);
+
+                        A_FadeOut(fadeScale);
+                    }
+                    double xScaleFactor = scale.x / BaseScale.x;
+                    double yScaleFactor = scale.y / BaseScale.y;
+                    
+                    A_SpawnBasicEffect("EnemyDeathSmoke", fRandRange(BaseDimensions.x * xScaleFactor), fRandRange(BaseDimensions.x * xScaleFactor), fRandom(0, BaseDimensions.y * yScaleFactor));
+                break;
+            }
+            iDeathTick++;
+        }
+    }
+
+    void StopLedgeFall() {
+        if(abs(GetZAt(pos.x + vel.x, pos.y + vel.y, 0, GZF_ABSOLUTEPOS|GZF_ABSOLUTEANG) - floorz) > maxstepheight * 2) {
+            A_Stop();
         }
     }
 
@@ -110,6 +273,17 @@ class BasicEnemy : BasicActor
         "----" "#" 1;
         loop;
     }
+}
+
+enum EnemyDeathSequences
+{
+    EDS_FadeBurn,
+    EDS_VerticalSquash
+}
+
+class EnemyPatrolNode : Actor
+{
+    // To fill in later
 }
 
 class EnemyDeathSmoke : BasicEffect
@@ -148,65 +322,17 @@ class BasicTrackingPoint : Actor
     }
 }
 
-class DamageFlashEffect : BasicEffect
+class EnemyDeathShadow : BasicEffect
 {
     Default
     {
-        renderstyle "AddStencil";
+        +BASICEFFECT.MATCHTRACERSCALE;
+        +BASICACTOR.DIEWITHTRACER;
+        Renderstyle "Stencil";
+        StencilColor "00 00 00";
     }
 
-    States
-    {
-    Spawn:
-        "----" "#" 4;
-        stop;
-    }
-}
-
-class DamageFlashEffect1 : DamageFlashEffect
-{
-    Default
-    {
-        StencilColor "99 00 FF";
-    }
-}
-
-class DamageFlashEffect2 : DamageFlashEffect
-{
-    Default
-    {
-        StencilColor "FF 00 00";
-    }
-}
-
-class DamageFlashEffect3 : DamageFlashEffect
-{
-    Default
-    {
-        StencilColor "FF 99 00";
-    }
-}
-
-class DamageFlashEffect4 : DamageFlashEffect
-{
-    Default
-    {
-        StencilColor "FF FF 00";
-    }
-}
-
-class DamageFlashEffect5 : DamageFlashEffect
-{
-    Default
-    {
-        StencilColor "00 FF 00";
-    }
-}
-
-class DamageFlashEffect6 : DamageFlashEffect
-{
-    Default
-    {
-        StencilColor "00 00 FF";
+    override void BasicTick() {
+        A_Warp(AAPTR_TRACER, -0.1, 0, 0, 0, WARPF_INTERPOLATE);
     }
 }

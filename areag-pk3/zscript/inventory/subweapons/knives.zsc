@@ -76,7 +76,7 @@ extend class AREAGProtoWeapon {
 	}
 }
 
-class ThrowKnife : BasicFastProjectile
+class ThrowKnife : BasicProjectile
 {
     Default
     {
@@ -87,7 +87,7 @@ class ThrowKnife : BasicFastProjectile
         missileheight 8;
         Radius 6;
         Height 7;
-        DamageFunction (15);
+        DamageFunction (8);
         speed 100;
         scale 2.0;
     }
