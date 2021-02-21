@@ -62,6 +62,7 @@
 #include "zscript/monsters/1_golem.zsc"
 #include "zscript/monsters/2_glowfly.zsc"
 #include "zscript/monsters/3_melee-rush.zsc"
+#include "zscript/monsters/4_ranged.zsc"
 #include "zscript/monsters/zsctempimp.zsc"
 
 // PROPS

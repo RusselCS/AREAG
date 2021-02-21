@@ -95,6 +95,7 @@ class BasicItemTrail : BasicEffect
     {
         renderstyle "add";
         +MOVEWITHSECTOR;
+        +BASICACTOR.DIEWITHTARGET;
     }
 
     States
@@ -104,6 +105,9 @@ class BasicItemTrail : BasicEffect
         "----" "#" 1 A_SetScale(scale.x*1.1);
         "----" "#" 0 A_FadeOut();
         loop;
+    Death:
+        TNT1 A 0;
+        stop;
     }
 }
 
@@ -117,6 +121,7 @@ class BasicItemParticle : BasicEffect
         renderstyle "add";
         reactiontime 70;
         +MOVEWITHSECTOR;
+        +BASICACTOR.DIEWITHTARGET;
     }
 
     States
@@ -127,6 +132,9 @@ class BasicItemParticle : BasicEffect
         SPRK A 1 A_SpawnItemEx("BasicItemParticleTrail", 0, 0, 0, 0, 0, -2, 0, SXF_TRANSFERROLL);
         SPRK A 0 A_CountDown();
         loop;
+    Death:
+        TNT1 A 0;
+        stop;
     }
 }
 
@@ -139,6 +147,7 @@ class BasicItemParticleTrail : BasicEffect
         renderstyle "add";
         scale 0.25;
         +MOVEWITHSECTOR;
+        +BASICACTOR.DIEWITHTARGET;
     }
 
     States
@@ -146,6 +155,9 @@ class BasicItemParticleTrail : BasicEffect
     Spawn:
         SPRK A 1 A_FadeOut();
         loop;
+    Death:
+        TNT1 A 0;
+        stop;
     }
 }
 

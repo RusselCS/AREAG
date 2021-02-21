@@ -153,3 +153,17 @@ actor TestMapJumpCheck : TestMapProp 12401
 		stop
 	}
 }
+
+actor TestMapEnemyTerrain : TestMapProp
+{
+	States
+	{
+	Spawn:
+	FlatSpawn:
+		E0WA B 1
+		wait
+	HighSpawn:
+		BOOT G 1
+		wait
+	}
+}

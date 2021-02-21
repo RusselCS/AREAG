@@ -242,16 +242,16 @@ class BasicEnemy : BasicActor
 
                     A_FaceTarget();
                     A_Warp(AAPTR_DEFAULT, 0, SignModTwo(iDeathTick) * 5, SignModTwo(iDeathTick) * 5, 0, WARPF_INTERPOLATE);
-                    if(iDeathTick > 5) {
-                        double fadeScale = 0.06;
+                    if(iDeathTick > 10) {
+                        double fadeScale = 0.12;
                         A_SetScale(max(scale.x - BaseScale.x * fadeScale, 0.0), scale.y + BaseScale.y * fadeScale/2);
 
                         A_FadeOut(fadeScale);
                     }
-                    double xScaleFactor = scale.x / BaseScale.x;
-                    double yScaleFactor = scale.y / BaseScale.y;
                     
-                    A_SpawnBasicEffect("EnemyDeathSmoke", fRandRange(BaseDimensions.x * xScaleFactor), fRandRange(BaseDimensions.x * xScaleFactor), fRandom(0, BaseDimensions.y * yScaleFactor));
+                    if(iDeathTick < 12) {
+                        A_SpawnBasicEffect("EnemyDeathSmoke", fRandRange(BaseDimensions.x), fRandRange(BaseDimensions.x), fRandom(0, BaseDimensions.y));
+                    }
                 break;
             }
             iDeathTick++;
@@ -291,11 +291,15 @@ class EnemyDeathSmoke : BasicEffect
     Default
     {
         +FORCEXYBILLBOARD;
+        +BASICACTOR.DIEWITHTARGET;
     }
     States
     {
     Spawn:
-        EDT0 ABCDEFG 1;
+        EFIR ABDB 1;
+        loop;
+    Death:
+        EFIR CDEFG 1;
         stop;
     }
 }

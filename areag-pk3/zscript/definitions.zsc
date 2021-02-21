@@ -136,6 +136,8 @@ class PowerTime15 : PowerUp {
 	}
 }
 
+const RADIUS_OFFS = 1.4142;
+
 mixin class AREAG_Common
 {
 	// Returns -1 if x is even, 1 if odd
@@ -147,9 +149,25 @@ mixin class AREAG_Common
 		}
 	}
 
+	// Returns -1 if x < 0, 1 if x > 0, or 0 if x = 0
+	static int SignFromInt(int x) {
+		if(x < 0) {
+			return -1;
+		}
+		if(x > 0) {
+			return 1;
+		}
+		return 0;
+	}
+
 	// returns a decimal between -x and x
 	static double fRandRange(float x) {
 		return frandom(-x, x);
+	}
+
+	static double getCvarFloat(string cv)
+	{
+		return CVar.findCVar(cv).getFloat();
 	}
 
 	static bool getCvarBool(string cv)
@@ -381,10 +399,43 @@ class BasicActor : Actor
 		return ResolveState(null);
 	}
 
+	bool XYLineTrace(double x, double y, double z, int flags = 0, double offsetforward = 0, double offsetside = 0) {
+		
+		double ang = VectorAngle(x, y);
+		if(flags & XYLF_RELATIVE) {
+			ang += angle;
+		}
+
+		if(flags & XYLF_ADDRADIUS) {
+			let radiusMod = radius * RADIUS_OFFS;
+			let radModX = SignFromInt(x) * radiusMod;
+			let radModY = SignFromInt(y) * radiusMod;
+
+			x += radModX;
+			y += radModY;
+		}
+
+		double dist = sqrt(x * x + y * y);
+		
+		FLineTraceData deets;
+		let ret = LineTrace(ang, dist, 0, TRF_SOLIDACTORS|TRF_THRUHITSCAN|TRF_BLOCKSELF, z, offsetforward, offsetside, deets);
+		A_SpawnItemEx("WhipPuff", deets.HitLocation.x-pos.x, deets.HitLocation.y-pos.y, deets.HitLocation.z-pos.z, 0, 0, 0, 0, SXF_ABSOLUTEPOSITION);
+
+		//A_Log(String.format("Angle: %f // In Dist: %f // Out Dist: %f", ang, dist, deets.distance));
+
+		return ret;
+	}
+
 	action void A_StopXY() {
 		A_ChangeVelocity(0, 0, vel.z, CVF_REPLACE);
 	}
 }
+
+enum EXYLineTraceFlags
+{
+	XYLF_RELATIVE = 1,
+	XYLF_ADDRADIUS = 2,
+};
 
 class BasicActionProp : BasicActor
 {

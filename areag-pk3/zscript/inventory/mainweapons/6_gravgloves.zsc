@@ -315,7 +315,7 @@ class LightFistImpactFX : LightFistSmackFX
 	}
 }
 
-class MagnetGrab : BasicProjectile
+class MagnetGrab : BasicFastProjectile
 {
     Default
     {

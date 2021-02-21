@@ -22,7 +22,8 @@ DoomEdNums
     30000 = SpearTrap
     30002 = LaserTrap
 
-    30100 = StoneGolemSpawner
+    30100 = ObArcherSpawner
+	30101 = ObBruteSpawner
 }
 
 episode TESTMAP

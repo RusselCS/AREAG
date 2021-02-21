@@ -1,6 +1,7 @@
 #library "debug"
 
 #include "zcommon.acs"
+#include "mapfunc.acs"
 
 script "debug_setspawnpos" (void) {
     SetCVar("db_levelnum", GetLevelInfo(LEVELINFO_LEVELNUM));
@@ -11,8 +12,14 @@ script "debug_setspawnpos" (void) {
 }
 
 script "debug_spawn" ENTER {
-    if(GetCVar("db_levelnum") != 0 && GetCVar("db_levelnum") == GetLevelInfo(LEVELINFO_LEVELNUM)) {
-        SetActorPosition(0, GetCVar("db_spawnposX"), GetCVar("db_spawnposY"), GetCVar("db_spawnposZ"), false);
-        SetActorAngle(0, GetCVar("db_spawnang"));
+    int map = GetCVar("db_levelnum");
+    if(map != 0) {
+        if(map == GetLevelInfo(LEVELINFO_LEVELNUM)) {
+            SetActorPosition(0, GetCVar("db_spawnposX"), GetCVar("db_spawnposY"), GetCVar("db_spawnposZ"), false);
+            SetActorAngle(0, GetCVar("db_spawnang"));
+        } else if(GetCVar("db_spawn_changemap")) {
+            SetCVar("db_spawn_changemap", false);
+            ChangeLevel(getMapCode(getMapByLevelNum(map)), 0, CHANGELEVEL_NOINTERMISSION);
+        }
     }
 }

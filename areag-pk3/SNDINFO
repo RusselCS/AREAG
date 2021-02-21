@@ -161,12 +161,20 @@ monster/glowfly/hivedie GF_HIDIE // Metroid Prime 2: Echoes
 
 monster/brute/pain  SLAP // Castlevania: Bloodlines
 monster/brute/death  OBDIE // Castlevania: Bloodlines
-monster/brute/leap  OBLEAP
-monster/brute/land  OBLAND
-monster/brute/see   OBSEE
-monster/brute/swing OBLEAP
-monster/brute/smash OBSMASH
+monster/brute/leap  OBLEAP // Castlevania: Bloodlines
+monster/brute/land  OBLAND // Castlevania: Bloodlines
+monster/brute/see   OBSEE // Castlevania: Bloodlines
+monster/brute/swing OBLEAP // Castlevania: Bloodlines
+monster/brute/smash OBSMASH // Castlevania: Bloodlines
 monster/brute/dash  OBDASH // Fatal Fury 2
+
+monster/archer/pain SLAP // Castlevania: Bloodlines
+monster/archer/death OADIE // Fatal Fury 2
+monster/archer/land  OBLAND // Fatal Fury 2
+monster/archer/leap OBLEAP // Fatal Fury 2
+monster/archer/draw OADRAW // Zelda: Twilight Princess
+monster/archer/shoot OALOOSE // Fatal Fury 2
+monster/archer/arrow OAARROW // Castlevania: Bloodlines
 
 treasures/hornstart_c HORNS0 // Horn sounds custom
 treasures/hornstart_d HORNS1
