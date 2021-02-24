@@ -150,8 +150,8 @@ extend class AREAGPlayerPawn {
 			bHeadInWater = false;
 		}
 
-        -- GROUND CHECKS --
-        STAIRS
+        // -- GROUND CHECKS --
+        // STAIRS
         if(!bOnGround && bOldOnGround) {
             if(pos.z - floorz <= maxstepheight && vel.z < 0) {
                 Warp(self, 0, 0, -(pos.z - floorz), 0, WARPF_INTERPOLATE);

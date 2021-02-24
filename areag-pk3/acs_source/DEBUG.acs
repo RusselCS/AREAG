@@ -18,8 +18,11 @@ script "debug_spawn" ENTER {
             SetActorPosition(0, GetCVar("db_spawnposX"), GetCVar("db_spawnposY"), GetCVar("db_spawnposZ"), false);
             SetActorAngle(0, GetCVar("db_spawnang"));
         } else if(GetCVar("db_spawn_changemap")) {
-            SetCVar("db_spawn_changemap", false);
             ChangeLevel(getMapCode(getMapByLevelNum(map)), 0, CHANGELEVEL_NOINTERMISSION);
         }
+    }
+
+    if(GetCVar("db_spawn_changemap")) {
+        SetCVar("db_spawn_changemap", false);
     }
 }

@@ -94,7 +94,7 @@ class ThrowKnife : BasicProjectile
 	States
 	{
 	Spawn:
-        SUBK W 1;
+        SUBK W 1 A_SpawnItemEx("KnifeTrail");
         loop;
 	Death:
         SUBK W 0 A_StartSound("weapon/knifewall", CHAN_WEAPON);
