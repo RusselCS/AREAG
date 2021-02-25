@@ -79,3 +79,17 @@ Model BreakableWall
 
    FrameIndex BWOS B 0 0
 }
+
+Model TabletModel
+{
+   Path "models"
+   Model 0 "M_TBLT01.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+   AngleOffset 270
+   USEACTORROLL
+   USEROTATIONCENTER
+   Rotation-Center 0.0 0.0 32.0
+
+   FrameIndex TBLT C 0 0
+}

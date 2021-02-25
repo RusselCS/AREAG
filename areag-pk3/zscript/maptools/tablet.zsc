@@ -20,6 +20,8 @@ class TabletActivatable : SwitchingDecoration
         int tabletNum = args[0];
 		int eventNum = args[1];
         A_SpawnItemEx("TabletFXP", 15);
+		A_SetRoll(score);
+		A_SpawnItemEx("TabletModel", 24, 0, 0, 0, 0, 0, 0, SXF_TRANSFERROLL);
 
 		special = 226;
         args[0] = -int(Name("map_tablet"));
@@ -113,6 +115,46 @@ class TabletFXP : TabletFXL
 		TBLT B 1 BRIGHT A_SetRoll(roll+1);
 		TBLT B 0 A_SetTranslucent(0.3, 1);
 		TBLT B 1 BRIGHT A_SetRoll(roll+1);
+		wait;
+	}
+}
+
+class TabletModel : BasicActor
+{
+	Default
+	{
+		+NOGRAVITY;
+        height 64;
+        radius 8;
+		+SOLID;
+	}
+
+	override void BasicInit() {
+		String act = "TabletHitbox";
+        A_SpawnItemEx(act, 0,  24);
+        A_SpawnItemEx(act, 0, -24);
+	}
+
+	States
+	{
+	Spawn:
+		TBLT C 1;
+		wait;
+	}
+}
+
+class TabletHitbox : TabletModel
+{
+	override void BasicInit() {
+		// just need to make it not call the parent's...
+
+		// otherwise it'll crash.....
+	}
+
+	States
+	{
+	Spawn:
+		TNT1 A 1;
 		wait;
 	}
 }
