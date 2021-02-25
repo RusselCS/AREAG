@@ -5,7 +5,7 @@
 // UPGRADE HANDLERS
 
 #define MAX_TYPES 4
-#define MAX_UPGRADES 16
+#define MAX_UPGRADES 17
 
 int pickupColors[MAX_TYPES][3] = {
 	{0.00, 0.28, 0.38}, // Artifice - Passive Permanent Upgrade
@@ -37,7 +37,8 @@ str pickupInfo[MAX_UPGRADES][2] = {
 {"AR_PERIDOTKEY", "PU_PERIDOTKEY"},
 {"AR_GOLDKEY", "PU_GOLDKEY"},
 {"AR_RITUALHORN", "PU_RITUALHORN"},
-{"AR_GRAVITYGLOVES", "PU_GRAVITYGLOVES"}
+{"AR_GRAVITYGLOVES", "PU_GRAVITYGLOVES"},
+{"AR_SEEDPOD", "PU_SEEDPOD"},
 };
 
 script "pickups_displayMessage" (int type, int which)

@@ -1,0 +1,230 @@
+class SeedAmmo : Ammo {
+    Default {
+        inventory.icon "ICOSW3";
+        inventory.amount 1;
+        inventory.maxamount 5;
+    }
+}
+
+class SeedPouchPickup : SubWeaponPickup
+{
+    Default
+    {
+        BasicInventory.PickupID PICKMSG_SEEDPOD;
+        BasicInventory.PickupType PICKTYPE_SUBWEAPON;
+        SubWeaponPickup.AmmoType "SeedAmmo";
+        SubWeaponPickup.AmmoGive 5;
+        SubWeaponPickup.WeaponName "Seed";
+
+        Scale 1.7;
+    }
+
+    override SubWeapon subStateBuilder() {
+        StateLabel rS = "SeedRaise";
+
+        return buildSubWeapon(rS);
+    }
+
+	States
+	{
+	SpawnFrames:
+		SUBS A 1;
+		loop;
+	}
+}
+
+extend class AREAGProtoWeapon {
+
+	States
+    {
+        SeedRaise:
+            SSHD DCBA 1;
+            goto SeedReady;
+        SeedReady:
+            SSHD A 1 A_SubWeaponReady("SeedWindup", "SeedOffWindup", "SeedLower");
+            wait;
+        SeedWindup:
+            SSHD A 0 A_StartSubFiringSequence();
+            SSHD AABCD 1;
+            goto SeedHold;
+        SeedHold:
+            TNT1 A 1;
+            TNT1 A 0 A_SubHoldCheck("SeedHold");
+            goto SeedFire;
+        SeedFire:
+            HBMA A 0 A_StartSound("weapon/knifethrow", CHAN_WEAPON);
+            HBMA A 0 A_TakeInventory("SeedAmmo", 1);
+            HBMA A 0 A_FireProjectile("ThrownSeed");
+            HBMA A 0 A_GiveInventory("SeedPlatformDisperse", 1);
+            HBMA AB 1;
+            HBMA A 0 A_TakeInventory("SeedPlatformDisperse", 1);
+            HBMA CDE 1;
+            TNT1 A 6;
+            TNT1 A 0 A_FinishSubFiringSequence();
+            TNT1 AAAAAAAAAAAAAAAAAAAAA 1 A_SubRefire("SeedHoldRefire", "SeedWait");
+            goto SeedRaise;
+        SeedOffWindup:
+            SSHD ABCD 1;
+            goto SeedWait;
+        SeedWait:
+            TNT1 A 1;
+            TNT1 AAAAAAAAAAAAAAAAAAAA 1 A_CheckMainStatus("SeedHoldRefire", "SeedWait");
+            goto SeedRaise;
+        SeedHoldRefire:
+            HBM2 A 0 A_StartSubFiringSequence();
+            goto SeedHold;
+        SeedLower:
+            SSHD ABCD 1;
+            goto AltRaise;
+	}
+}
+
+class SeedPlatformDisperse : Once {}
+
+class ThrownSeed : BasicProjectile
+{
+    Default
+    {
+        +RIPPER;
+        -NOGRAVITY;
+        gravity 1.2;
+        speed 40;
+        damagefunction(0);
+        maxstepheight 8;
+    }
+    States
+    {
+    SpawnLoop:
+        SUBS BCDEFGHIJKLMNOP 1;
+        loop;
+    Death:
+        SUBS B 0 A_SpawnItemEx("SeedExplosion");
+        SUBS Z 2;
+        SUBS B 0 A_JumpIf(z-floorz < maxstepheight, "DeathFloor");
+        SUBS B 0 A_JumpIf(ceilingz-(z+height) < maxstepheight, "DeathCeiling");
+        goto DeathWall;
+    DeathFloor:
+    DeathCeiling:
+    DeathWall:
+        SUBS B 0 A_SpawnItemEx("SeedPlatform", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERPOINTERS);
+        stop;
+    }
+}
+
+class SeedExplosion : BasicProjectile
+{
+    Default
+    {
+
+    }
+
+    States
+    {
+    SpawnLoop:
+        TNT1 A 0;
+        TNT1 A 0 A_Explode(15, 64, 0, false, 64);
+        TNT1 A 0; // thrust call here, need to figure that one out still.
+        stop;
+    }
+}
+
+class SeedPlatform : BasicActor
+{
+    Default
+    {
+        +SOLID;
+        +NOGRAVITY;
+        +BASICACTOR.SHOWHITBOX;
+        +THRUSPECIES;
+        species "Monster";
+        height 32;
+        radius 16;
+        Scale 2.0;
+        reactiontime 140;
+        mass 30;
+    }
+
+    double destScale;
+    double cycles;
+    double iterator;
+
+    override void BasicInit() {
+        cycles = 4.0;
+        iterator = 0.0;
+        destScale = scale.x;
+        A_SetScale(destScale/cycles, destScale/cycles);
+    }
+
+    override void BasicTick() {
+        if(CountInv("SeedPlatformDisperse", AAPTR_TARGET) > 0) {
+            Die(null, null, 0, "Null");
+        }
+    }
+
+    States
+    {
+    Spawn:
+        SUBS S 0;
+        SUBS ST 2 { 
+            if(iterator < cycles) {
+                iterator += 1.0;
+                A_SetScale(iterator / cycles * destScale, iterator / cycles * destScale);
+                return ResolveState(null);
+            }
+            return ResolveState("SpawnLoop");
+        }
+        loop;
+    SpawnLoop:
+        SUBS STSTST 2;
+        SUBS STST 4;
+        SUBS ST 6;
+        SUBS S 1 A_Countdown();
+        wait;
+    Death:
+        SUBS S 0 {
+            for(let i = 0; i < mass; i++) {
+                A_SpawnItemEx("SeedPlatformPuff", 0, 0, 0, fRandRange(radius * 0.75), fRandRange(radius * 0.75), fRandRange(radius * 0.75));
+            }
+        }
+        stop;
+    }
+}
+
+class SeedPlatformPuff : BasicEffect
+{
+    Default
+    {
+        renderstyle "Translucent";
+        reactiontime 10;
+    }
+
+    bool bFLASHING;
+
+    override void basicInit() {
+        bFLASHING = false;
+    }
+
+    override void basicTick() {
+        if(bFLASHING) {
+            if(GetAge() % 2) {
+                A_SetRenderStyle(1.0, STYLE_Translucent);
+            } else {
+                A_SetRenderStyle(0.0, STYLE_Translucent);
+            }
+        }   
+    }
+
+    States
+    {
+    Spawn:
+        SUBS U 0;
+        SUBS V 2;
+        SUBS U 0 { invoker.bFLASHING = true; }
+        SUBS U 0 A_ChangeVelocity(0, 0, -2, CVF_REPLACE);
+        SUBS UVWX 4 A_Countdown();
+        loop;
+    Death:
+        TNT1 A 0;
+        stop;
+    }
+}

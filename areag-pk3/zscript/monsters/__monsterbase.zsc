@@ -96,6 +96,7 @@ class BasicEnemy : BasicActor
         height 10;
         radius 5;
         renderstyle "translucent";
+        species "Monster";
         alpha 1.0;
     }
     

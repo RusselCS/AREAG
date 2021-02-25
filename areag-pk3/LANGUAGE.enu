@@ -50,6 +50,9 @@ PU_RITUALHORN = "Use to play songs.";
 AR_GRAVITYGLOVES = "GRAVITON GAUNTLETS";
 PU_GRAVITYGLOVES = "Magnetic fists that move metal blocks and enemies.\nCannot use subs while active.";
 
+AR_SEEDPOD = "SPRIGGINS BULB";
+PU_SEEDPOD = "Sub throws a large seed that erupts into a platform.";
+
 // TABLETS
 
 TABLET_TESTMAP_0 = "This is a puzzle tablet. Read the other using nova pack.";
