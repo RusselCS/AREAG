@@ -26,20 +26,30 @@ class AREAGProtoWeapon : Weapon {
         +WEAPON.CHEATNOTWEAPON;
     }
 
+    bool bHandedness;
+
     action void A_InitWeap() {
         invoker.bLoweringWeapons = false;
         invoker.bMainInProgress = true;
         invoker.bSubInProgress = true;
         invoker.plr = AREAGPlayerPawn(self);
         invoker.iLastSubWeapon = invoker.plr.iSelectedWep;
+        invoker.bHandedness = GetCVarBool("cl_handedness");
         A_GunFlash();
 
         A_SetHandedness(LAYER_MAIN);
         A_SetHandedness(LAYER_SUB);
     }
 
+    action void A_YawRecoil(double amt) {
+        if(invoker.bHandedness) {
+            amt = -amt;
+        }
+        A_SetAngle(angle + amt);
+    }
+
     action void A_SetHandedness(int layer) {
-        if(GetCVarBool("cl_handedness")) {
+        if(invoker.bHandedness) {
             A_OverlayFlags(layer, PSPF_FLIP|PSPF_MIRROR, true);
         }
     }
