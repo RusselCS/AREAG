@@ -20,122 +20,68 @@ class ZSCTribalShieldPickup : BasicInventory
 
 class ZSCTribalShield : AREAGProtoWeapon
 {
-	// bool swingLeft;
-    // Default
-    // {
-    //     Weapon.SlotNumber 1;
-    //     Obituary "%o was crushed by %k's smashing board.";
-    //     Inventory.Pickupmessage "";
-    // }
 
-	// override void postBeginPlay() {
-	// 	super.postBeginPlay();
-	// 	swingLeft = false;
-    // }
-    
-    // Array<TribalShieldWall> shields;
-    // const shieldDist = 40;
+    Default
+    {
+        Weapon.SlotNumber 1;
+        Obituary "%o was crushed by %k's smashing board.";
+        Inventory.Pickupmessage "";
+    }
 
-    // action void A_RaiseShield() {
-    //     invoker.addShield(-40, self);
-    //     invoker.addShield(-30, self);
-    //     invoker.addShield(-20, self);
-    //     invoker.addShield(-10, self);
-    //     invoker.addShield(  0, self);
-    //     invoker.addShield( 10, self);
-    //     invoker.addShield( 20, self);
-    //     invoker.addShield( 30, self);
-    //     invoker.addShield( 40, self);
-
-    //     for(int i = 0; i < invoker.shields.size(); i++) {
-    //         invoker.shields[i].args[1] = tid;
-    //     }
-    // }
-
-    // void addShield(int ang, Actor orig) {
-    //     bool success;
-    //     Actor shield;
-    //     [success, shield] = orig.A_SpawnItemEx("TribalShieldWall", shieldDist, 0, 0, 0, 0, 0, ang);
-    //     shield.args[0] = ang;
-    //     shields.push(TribalShieldWall(shield));
-    // }
-
-    // action void A_CarryShield() {
-    //     for(int i = 0; i < invoker.shields.size(); i++) {
-    //         invoker.shields[i].updatePosition(invoker.shieldDist, self.pos.z);
-    //     }
-    // }
-
-    // action void A_LowerShield() {
-    //     for(int i = 0; i < invoker.shields.size(); i++) {
-    //         invoker.shields[i].Destroy();
-    //     }
-    //     invoker.shields.Clear();
-    // }
-
-	// States
-	// {
-    // Deselect:
-    //     TSHL A 0 A_AREAGLowerSub();
-	// 	TSHL BBCDZ 1;
-    //     goto Super::DeselectReal;
-	// Ready:
-	// 	TSHL A 0 A_ReadySubWeapons();
-	// ReadyRaise:
-	// 	TSHL A 0 A_AREAGRaiseSub();
-	// 	TSHL ZDCB 1;
-	// 	goto ReadyLoop;
-	// ReadyLoop:
-	// 	TSHL B 1 A_AREAGWeaponReady();
-	// 	loop;
-    // MainLowerStart:
-	// 	TSHL DCBEF 1;
-    //     goto ShieldRaise;
-	// Fire:
-	// 	TSHL B 0 A_AREAGLowerSub();
-	// MainLower:
-	// 	TSHL BBEF 1;
-	// ShieldRaise:
-    //     TSHL G 1 A_RaiseShield();
-    // Hold:
-	// 	TSHL G 1 A_CarryShield();
-	// 	TSHL G 0 A_AREAGRefire();
-	// 	goto MainRelease;
-	// MainRelease:
-    //     TSHL B 0 A_LowerShield();
-	// 	TSHL B 0 A_StartSound("weapon/invoker.shieldswing", CHAN_WEAPON);
-	// 	TSHL H 1 A_SetAngle(angle-0.2);
-    //     TSHL B 0 A_FireProjectile("TribalShieldProjectile", 0, 8, 0, 0);
-    //     TSHL IJKZZZ 1 {
-    //         if(CountInv("TribalShieldHit") > 0) {
-    //             return ResolveState("MainRecoil");
-    //         }
-    //         A_SetAngle(angle-0.2);
-    //         return ResolveState(Null);
-    //     }
-	// 	TNT1 A 3;
-	// 	goto FireEnd;
-    // MainRecoil:
-    //     TSHL LMNOEBCD 1;
-    //     TNT1 A 6;
-	// 	goto FireEnd;
-    // AltLowerStart:
-	// 	TNT1 A 1;
-    //     goto AltHold;
-	// AltLower:
-	// 	TSHL BCD 1;
-    //     goto AltHold;
-    // AltRelease:
-    //     HBMA A 0 A_AREAGUseSub();
-    //     HBMA A 1 A_JumpIf(true, "FireEnd");
-    //     wait;
-    // FireEnd:
-    //     TNT1 AAAAA 1;
-    //     TNT1 AAAAAAAAAA 1 A_AREAGClearRefire();
-    //     TNT1 A 1 A_JumpIf(true, "ReadyRaise");
-    //     wait;
-	// }
+	States
+    {
+    MainRaise:
+		TSHL ZDCB 1;
+		goto MainReady;
+	MainReady:
+		TSHL B 1 A_MainWeaponReady();
+		wait;
+	MainWindup:
+		TSHL A 0 A_StartMainFiringSequence();
+		TSHL DCBEF 1;
+        TSHL B 0 A_GiveInventory("ShieldPower", 1);
+		goto MainHold;
+	MainHold:
+		TSHL G 1;
+		TNT1 A 0 A_MainHoldCheck("MainHold");
+		goto MainFire;
+	MainFire:
+        TSHL B 0 A_TakeInventory("ShieldPower", 1);
+		TSHL B 0 A_StartSound("weapon/invoker.shieldswing", CHAN_WEAPON);
+		TSHL H 1 A_YawRecoil(-0.2);
+        TSHL B 0 A_FireProjectile("TribalShieldProjectile", 0, 8, 0, 0);
+        TSHL IJKZZZ 1 {
+            if(CountInv("TribalShieldHit") > 0) {
+                return ResolveState("MainRecoil");
+            }
+            A_YawRecoil(-0.2);
+            return ResolveState(Null);
+        }
+		TNT1 A 3;
+		goto FireEnd;
+	FireEnd:
+		TNT1 A 6;
+		TNT1 A 0 A_FinishMainFiringSequence();
+		TNT1 AAAAAAAAAAAAAAAAAAAA 1 A_MainRefire("MainHoldRefire", "MainWait");
+		goto MainRaise;
+	MainOffWindup:
+		TSHL DCBEF 1;
+		goto MainWait;
+	MainWait:
+		TNT1 A 1;
+		TNT1 AAAAAAAAAAAAAAAAAAAA 1 A_CheckSubStatus("MainHoldRefire", "MainWait");
+		goto MainRaise;
+	MainHoldRefire:
+        TNT1 A 0 A_StartMainFiringSequence();
+        goto MainHold;
+	MainLower:
+		TSHL BCD 1;
+		TNT1 A 1 A_MainDeselect;
+		wait;
+    }
 }
+
+class ShieldPower : Once {}
 
 class TribalShieldWall : HitboxDebug
 {

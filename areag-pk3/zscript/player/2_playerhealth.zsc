@@ -59,15 +59,15 @@ extend class AREAGPlayerPawn {
 		return hp / HP_SEG_MAX;
 	}
 
-	override int DamageMobj(Actor inflictor, Actor source, int damage, Name mod, int flags, double angle) {
+	override int DamageMobj(Actor inflictor, Actor source, int dmg, Name mod, int flags, double ng) {
 		
 		if(bINVULNERABLE || CountInv("DroneFlag")) {
-			return super.DamageMobj(inflictor, source, damage, mod, flags, angle);
+			return super.DamageMobj(inflictor, source, dmg, mod, flags, ng);
         } else if(mod == "Drowning") {
             if(damage >= health) {
                 bBUDDHA = false;
             }
-            return super.DamageMobj(inflictor, source, damage, mod, flags, angle);
+            return super.DamageMobj(inflictor, source, dmg, mod, flags, ng);
         } else if(mod == "Slime") {
 			if(CountInv("DroneFlag") > 0) {
 				health = 1;
@@ -75,10 +75,19 @@ extend class AREAGPlayerPawn {
             if(damage >= health) {
                 bBUDDHA = false;
             }
-            return super.DamageMobj(inflictor, source, damage, mod, flags, angle);
+            return super.DamageMobj(inflictor, source, dmg, mod, flags, ng);
         } else {
+
+			if(CountInv("ShieldPower") > 0) {
+				double dmgAng = VectorAngle(inflictor.pos.x - pos.x, inflictor.pos.y - pos.y);
+				if(angleBetween(angle, dmgAng-30.0, dmgAng+30.0)) {
+					A_Log("Defend!!");
+					dmg = 0;
+				}
+			}
+
 			int currentShield = CountInv("ShieldBars");
-			int targetHP = health - damage;
+			int targetHP = health - dmg;
 			bool imhit = false;
 
 			if(areag_calcHPBars(targetHP) < currentShield) {
@@ -87,7 +96,7 @@ extend class AREAGPlayerPawn {
 			}
 			int trueDmg = health - targetHP;
 
-			trueDmg = super.DamageMobj(inflictor, source, trueDmg, mod, flags, angle);
+			trueDmg = super.DamageMobj(inflictor, source, trueDmg, mod, flags, ng);
 			updateHealth();
 
             if(health == 1) {
