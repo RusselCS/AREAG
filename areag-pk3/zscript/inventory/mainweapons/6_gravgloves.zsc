@@ -57,7 +57,7 @@ class GravityGloves : AREAGProtoWeapon
     }
 
     action State A_FistRotate(StateLabel jump, double at) {
-        A_SetAngle(angle + at);
+        A_YawRecoil(at);
         if(CountInv("LightFistStrike") > 0) {
             return ResolveState(jump);
         }

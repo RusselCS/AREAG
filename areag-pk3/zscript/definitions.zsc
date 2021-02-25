@@ -141,6 +141,32 @@ const RADIUS_OFFS = 1.4142;
 
 mixin class AREAG_Common
 {
+	// Convert an angle between 1 and 360
+	static double normalizeAngle(double ng){
+		ng = ng % 360;
+
+		if(ng > 0.0) {
+			return ng;
+		} else {
+			return ng + 360.0;
+		}
+	}
+
+	// Check an angle is between two other ones.
+	static bool angleBetween(double src, double min, double max) {
+		src = normalizeAngle(src);
+		min = normalizeAngle(min);
+		max = normalizeAngle(max);
+
+		Console.printf("Checking if angle %f is between %f and %f...", src, min, max);
+
+		if (min < max) {
+			return min <= src && src <= max;
+		} else {
+			return min <= src || src <= max;
+		}
+	}
+
 	// Returns -1 if x is even, 1 if odd
 	static int SignModTwo(int x) {
 		if(x % 2 == 0)  {

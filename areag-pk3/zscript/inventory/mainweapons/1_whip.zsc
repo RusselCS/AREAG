@@ -43,14 +43,14 @@ class ZSCAdventureWhip : AREAGProtoWeapon
 		WHPL A 0 A_StartSound("weapon/whipswing", CHAN_WEAPON);
 		TNT1 A 0 A_SwingWhip();
 	SwingLeft:
-		WHPL ABC 1 A_SetAngle(angle+0.2);
+		WHPL ABC 1 A_YawRecoil(0.2);
 		WHPL A 0 A_FireProjectile("WhipProjectileL", 0, 0, 0);
-		WHPL DEZ 1 A_SetAngle(angle+0.2);
+		WHPL DEZ 1 A_YawRecoil(0.2);
 		goto FireEnd;
 	SwingRight:
-		WHPL FGH 1 A_SetAngle(angle-0.2);
+		WHPL FGH 1 A_YawRecoil(-0.2);
 		WHPL A 0 A_FireProjectile("WhipProjectileR", 0, 0, 0);
-		WHPL IJK 1 A_SetAngle(angle-0.2);
+		WHPL IJK 1 A_YawRecoil(-0.2);
 		goto FireEnd;
 	FireEnd:
 		TNT1 A 6;

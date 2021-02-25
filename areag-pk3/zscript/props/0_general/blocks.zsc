@@ -68,7 +68,7 @@ extend class AREAGProtoWeapon {
         invoker.plr.block.Warp(invoker.plr, 64, 0, 0, tAng, WARPF_MOVEPTR|WARPF_ABSOLUTEANGLE|WARPF_NOCHECKPOSITION);
         A_SetAngle(tempAng);
         A_ChangeVelocity(0, 0, 0, CVF_REPLACE);
-        A_Face(invoker.plr.block, 0, 0, 0, 0, FAF_BOTTOM, 0);
+        A_Face(invoker.plr.block, 0, 0, 0, 0, FAF_MIDDLE, 0);
     }
 
     action void A_StopPush() {
