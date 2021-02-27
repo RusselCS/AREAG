@@ -1,51 +1,72 @@
-class TabletActivatable : SwitchingDecoration
+class TabletActivatable : BasicActionProp
 {
 	Default
 	{
 		//$Category AREAG-Map Tools
 		//$Title Tablet Marker
 		//$Sprite E0WCH0
-		//$Arg0 Tablet Index
-		//$Arg1 Event Index
 		Height 64;
-		Radius 16;
-		Activation THINGSPEC_TriggerActs|THINGSPEC_Switch;
+		Radius 32;
 		-SOLID;
-		scale 0.125;
+		+CANPASS;
+		scale 2.5;
 	}
 
-	override void PostBeginPlay() {
-		super.PostBeginPlay();
+	int tabletNum;
+	int eventNum;
 
-        int tabletNum = args[0];
-		int eventNum = args[1];
+	int spc;
+	int sargs[5];
+
+	bool isCloseEnough(Actor who) {
+        return Distance2D(who) - who.radius - self.radius < 48.0 && abs((who.pos.z + who.height/2) - (self.pos.z + self.height/2)) < self.height;
+    }
+
+    override void BasicInit() {
+        tabletNum = score;
+		spc = special;
+		sargs[0] = args[0];
+		sargs[1] = args[1];
+		sargs[2] = args[2];
+		sargs[3] = args[3];
+		sargs[4] = args[4];
+
+		special = 0;
+		args[0] = 0;
+		args[1] = 0;
+		args[2] = 0;
+		args[3] = 0;
+		args[4] = 0;
+
         A_SpawnItemEx("TabletFXP", 15);
-		A_SetRoll(score);
-		A_SpawnItemEx("TabletModel", 24, 0, 0, 0, 0, 0, 0, SXF_TRANSFERROLL);
+		A_SpawnItemEx("TabletModel", 24, 0, 0, 0, 0, 0, 0, SXF_TRANSFERROLL, 0, tid+100);
+    }
 
-		special = 226;
-        args[0] = -int(Name("map_tablet"));
-        args[1] = 0;
-		args[2] = tabletNum;
-		args[3] = eventNum;
-        ACS_NamedExecuteAlways("tablet_distanceCheck", 0);
-	}
+    override void BasicActivate(Actor activator) {
+        if(isCloseEnough(activator)) {
+			If(CountInv("Once") == 0)
+			{
+				A_GiveInventory("Once", 1);
+			}
+			master = activator;
+            activator.ACS_NamedExecuteAlways("map_tablet", 0, tabletNum, tid);
+        }
+    }
 
 	States
 	{
 	Spawn:
 		TNT1 A 1;
 		wait;
-	Active:
-		TNT1 A 1;
-		TNT1 A 0
-		{
-			If(CountInv("Once") == 0)
-			{
-				A_GiveInventory("Once", 1);
-			}
+	Trigger:
+		TNT1 A 0 { A_CallSpecial(spc, sargs[0], sargs[1], sargs[2], sargs[3], sargs[4]);
+			spc = 0;
+			sargs[0] = 0;
+			sargs[1] = 0;
+			sargs[2] = 0;
+			sargs[3] = 0;
+			sargs[4] = 0;
 		}
-		TNT1 A 0 Thing_Deactivate(0);
 		goto Spawn;
 	}
 }

@@ -24,7 +24,7 @@
 #include "zscript/inventory/mainweapons/1_whip.zsc"
 // #include "zscript/inventory/mainweapons/2_steeltyrant.zsc"
 // #include "zscript/inventory/mainweapons/3_capitalpunishment.zsc"
-#include "zscript/inventory/mainweapons/4_tribalshield.zsc"
+#include "zscript/inventory/mainweapons/4_ironshield.zsc"
 // #include "zscript/inventory/mainweapons/5_kinderlun.zsc"
 #include "zscript/inventory/mainweapons/6_gravgloves.zsc"
 
@@ -64,7 +64,6 @@
 #include "zscript/monsters/2_glowfly.zsc"
 #include "zscript/monsters/3_melee-rush.zsc"
 #include "zscript/monsters/4_ranged.zsc"
-#include "zscript/monsters/zsctempimp.zsc"
 
 // PROPS
 #include "zscript/props/0_general/jars.zsc"

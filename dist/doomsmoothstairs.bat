@@ -1,0 +1,1 @@
+"engine/gzdoom.exe" -iwad ../wads/doom2.wad -file ../wads/smoothstairs.pk3 -file ../wads/TESTMAP2.wad -file "../wads/AREAG_TEXTURES.wad" +sv_cheats true +logfile lastrun.log +map TESTMAP

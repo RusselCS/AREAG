@@ -25,7 +25,7 @@ enum UpgradeTypes {
 	PICKMSG_SPIDERDRONE,
 	PICKMSG_BEEDRONE,
 	PICKMSG_STEELWHIP,
-    PICKMSG_TRIBALSHIELD,
+    PICKMSG_IRONSHIELD,
     PICKMSG_RUBYKEY,
     PICKMSG_COBALTKEY,
     PICKMSG_PERIDOTKEY,
@@ -473,8 +473,9 @@ class BasicActionProp : BasicActor
 	}
 
 	override void Activate(Actor activator) {
-		if(ActivateConditon())
+		if(ActivateConditon()) {
 			BasicActivate(activator);
+		}
 	}
 
 	virtual bool ActivateConditon() {
@@ -490,8 +491,6 @@ class OnGround : Once {}
 class JumpCancel : Once {}
 class HeadUnderwater : Once {}
 class LegsUnderwater : Once {}
-
-class NoItem : BasicInventory {}
 
 class MenuFreezer : Once {}
 class TimeFreezer : PowerTimeFreezerSound

@@ -1,10 +1,10 @@
-class ZSCChainWhipPickup : BasicInventory
+class ChainWhipPickup : BasicInventory
 {
     Default
     {
         BasicInventory.PickupType PICKTYPE_WEAPON;
         BasicInventory.PickupID PICKMSG_STEELWHIP;
-        BasicInventory.CheckItem "ZSCChainWhip";
+        BasicInventory.CheckItem "ChainWhip";
     }
     States
     {
@@ -12,13 +12,13 @@ class ZSCChainWhipPickup : BasicInventory
         CHWP A 1;
         loop;
     PickupEffect:
-        CHWP A 0 A_GiveInventory("ZSCChainWhip", 1);
-        CHWP A 0 A_SelectWeapon("ZSCChainWhip");
+        CHWP A 0 A_GiveInventory("ChainWhip", 1);
+        CHWP A 0 A_SelectWeapon("ChainWhip");
         stop;
     }
 }
 
-class ZSCChainWhip : AREAGProtoWeapon
+class ChainWhip : AREAGProtoWeapon
 {
 	bool swingLeft;
     Default

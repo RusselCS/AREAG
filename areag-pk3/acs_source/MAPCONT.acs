@@ -143,7 +143,7 @@ function void clearMapCurtain(void) {
 	}
 }
 
-script "map_tablet" (int tabletNum, int eventNum)
+script "map_tablet" (int tabletNum, int tabletTid)
 {
 	if(CheckInventory("MenuFreezer")>0)
 	{
@@ -220,8 +220,8 @@ script "map_tablet" (int tabletNum, int eventNum)
 		delay(1);
 	}
 
-	if(eventNum > 0) {
-		ACS_NamedExecuteAlways("map_events", 0, 0, eventNum);
+	if(tabletTid > 0 && GetUserVariable(tabletTid, "spc") > 0) {
+		SetActorState(tabletTid, "Trigger");
 	}
 }
 

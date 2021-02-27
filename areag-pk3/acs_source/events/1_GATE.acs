@@ -91,8 +91,8 @@ script "gateway_events" (int toggle, int action, int unused)
 
 	case 5: // Knife Puzzle - Pedestal raises
 		queueEventSave(action, loading);
-		if(GetActorZ(0) < 960.0 && gateEventStates[GATE_PEDESTAL] == 0) {
-			gateEventStates[GATE_PEDESTAL] = 1;
+		if(GetActorZ(0) < 960.0 && !(gateEventStates[GATE_PEDESTAL] & 1)) {
+			gateEventStates[GATE_PEDESTAL] |= 1;
 			Floor_MoveToValue(tag1, 40, 1312, 0);
 		}
 		break;
@@ -225,7 +225,25 @@ script "gateway_events" (int toggle, int action, int unused)
 		ChangeFloor(tag2, "ANAWAT");
 		break;
 
-	case 26: // Spear Traps. No script needed.
+	case 26: // Spear Traps. No script needed - Utilizing slot to test a tablet thing.
+		queueEventSave(action, loading);
+		int startAngle = GetActorAngle(tag2);
+		int rotationGoal = 0.5;
+		int maxRotation = 8;
+		SetUserVariable(tag1, "spc", 0);
+		SetUserArray(tag1, "sargs", 0, 0);
+		SetUserArray(tag1, "sargs", 0, 1);
+		SetUserArray(tag1, "sargs", 0, 2);
+		SetUserArray(tag1, "sargs", 0, 3);
+		SetUserArray(tag1, "sargs", 0, 4);
+
+		for(int i = 1; i <= maxRotation; i++) {
+			int curAng = startAngle + FIxedMul(FixedDiv(i, maxRotation), rotationGoal);
+			SetActorAngle(tag2, curAng);
+			Delay(1);
+		}
+
+		SetUserVariable(tag1, "tabletNum", 1);
 		break;
 
 	case 27: // Big Fucking Laser.

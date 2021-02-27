@@ -29,8 +29,8 @@ PU_BEEDRONE = "Use to deploy bee drone\nNavigate small spaces\nJump in air to fl
 AR_STEELTYRANT = "STEEL TYRANT";
 PU_STEELTYRANT = "Whip Damage Increased\nWhip attacks knock enemies back.";
 
-AR_TRIBALSHIELD = "TRIBAL SHIELD";
-PU_TRIBALSHIELD = "Knock Close by targets away.\nHold to defend attacks from the front.";
+AR_IRONSHIELD = "IRON SHIELD";
+PU_IRONSHIELD = "Knock Close by targets away.\nHold to defend attacks from the front.";
 
 AR_RUBYKEY = "RUBY KEY";
 PU_RUBYKEY = "Grants permanent access to \cgRed Doors\c-.";
@@ -105,3 +105,6 @@ TABLET_TESTMAP2_0 =
 
 
 TABLET_TESTMAP2_1 = "Beware of monsters. Make too much noise and they will attack.";
+
+TABLET_ADV01_0 = "This tablet changes after the game loads!";
+TABLET_ADV01_1 = "~~ OOOHHH THERE'S A GHOST HEEEEERE!! ~~";
