@@ -11,16 +11,21 @@ class SubWeaponPickup : BasicInventory
     property AmmoGive: iAmmoGive;
     property WeaponName: sWeaponName;
 
-    action void A_AREAGGiveSubWeapon() {
-        if(invoker.inWorld) {
-            AREAGPlayerPawn plr = AREAGPlayerPawn(self);
-            GiveInventory(invoker.cAmmoType, invoker.iAmmoGive);
-            invoker.aAmmo = Ammo(self.FindInventory(invoker.cAmmoType));
-            SubWeapon wep = invoker.subStateBuilder();
-            plr.pushSubWeapon(wep);
-        } else {
-            A_Log("PICKUP FAILED!!");
+    override bool TryPickup(in out Actor toucher)
+    {
+        bool ret = super.TryPickup(toucher);
+        if(ret) {
+            queueSubWeapon(toucher);
         }
+        return ret;
+    }
+
+    void queueSubWeapon(Actor who) {
+        AREAGPlayerPawn plr = AREAGPlayerPawn(who);
+        who.GiveInventory(cAmmoType, iAmmoGive);
+        aAmmo = Ammo(plr.FindInventory(cAmmoType));
+        SubWeapon wep = subStateBuilder();
+        plr.pushSubWeapon(wep);
     }
 
     virtual SubWeapon subStateBuilder() {
@@ -32,13 +37,6 @@ class SubWeaponPickup : BasicInventory
     SubWeapon buildSubWeapon(StateLabel rS)
     {
         return new("SubWeapon").Init(cAmmoType, sWeaponName, rS, aAmmo);
-    }
-
-    States
-    {
-    PickupEffect:
-        TNT1 A 0 A_AREAGGiveSubWeapon();
-        stop;
     }
 }
 
