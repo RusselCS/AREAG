@@ -227,6 +227,7 @@ script "gateway_events" (int toggle, int action, int unused)
 
 	case 26: // Spear Traps. No script needed - Utilizing slot to test a tablet thing.
 		queueEventSave(action, loading);
+		Log(s:"[PLACEHOLDER] Executed event 26.");
 		int startAngle = GetActorAngle(tag2);
 		int rotationGoal = 0.5;
 		int maxRotation = 8;
@@ -319,6 +320,8 @@ script "gateway_events" (int toggle, int action, int unused)
 		break;
 
 	case 37: // Spear Trap
+		queueEventSave(action, loading);
+		Log(s:"[PLACEHOLDER] Executed event 37.");
 		break;
 
 	case 38: // Endgame Statue Puzzle
