@@ -32,7 +32,9 @@ enum UpgradeTypes {
     PICKMSG_GOLDKEY,
 	PICKMSG_RITUALHORN,
 	PICKMSG_GRAVITYGLOVES,
-	PICKMSG_SEEDPOD
+	PICKMSG_SEEDPOD,
+	PICKMSG_LEATHERWHIP,
+	PICKMSG_LASERWHIP,
 }
 
 // BASIC ACTORS //
@@ -92,9 +94,15 @@ class BasicEffect : BasicActor
 
 class ZSCStoneBody : BasicActor
 {
+	Actor lastHit;
+
     override int DamageMobj(Actor inflictor, Actor source, int damage, Name mod, int flags, double angle) {
-        int dmg = super.DamageMobj(inflictor, source, min(damage, 1), mod, flags, angle);
-        return dmg;
+		if(lastHit != inflictor) {
+			lastHit = inflictor;
+			return super.DamageMobj(inflictor, source, min(damage, 1), mod, flags, angle);
+		} else {
+			return super.DamageMobj(inflictor, source, 0, mod, flags, angle);
+		}
     }
 }
 

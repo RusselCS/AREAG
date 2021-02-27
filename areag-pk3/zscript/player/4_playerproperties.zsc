@@ -9,7 +9,7 @@ class AREAGPlayer : AREAGPlayerPawn
         player.sidemove 1.0, 1.0;
         AREAGPlayerPawn.RunSpeed 0.85;
         AREAGPlayerPawn.JumpSpeed 15.0;
-        player.startitem "ZSCAdventureWhip";
+        player.startitem "AdventureWhip";
         player.startitem "BreathTime", 100;
         player.startitem "MaxHealthBars", 4;
         player.startitem "HealthBars", 4;

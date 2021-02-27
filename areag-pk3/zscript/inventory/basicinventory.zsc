@@ -28,12 +28,14 @@ class BasicInventory : CustomInventory
 
     override void PostBeginPlay() {
         super.PostBeginPlay();
+        BasicInit();
         inWorld = false;
         itemId = score;
     }
 
     override void Tick() {
         super.Tick();
+        BasicTick();
 
         if(bFLOATBOB && bSPECIAL) {
             if(GetAge() == 1) {
@@ -47,6 +49,9 @@ class BasicInventory : CustomInventory
             }
         }
     }
+
+    virtual void BasicInit() {}
+    virtual void BasicTick() {}
  
     Default
     {

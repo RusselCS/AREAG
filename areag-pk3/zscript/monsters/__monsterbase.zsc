@@ -111,6 +111,8 @@ class BasicEnemy : BasicActor
     Vector2 BaseScale;
     Vector2 BaseDimensions;
 
+    Actor lastDamager;
+
     override void BasicInit() {
         super.BasicInit();
         iDamageTick = 0;
@@ -134,22 +136,37 @@ class BasicEnemy : BasicActor
     virtual void monsterInit() {}
 
 	override int DamageMobj(Actor inflictor, Actor source, int damage, Name mod, int flags, double angle) {
-		int ang = inflictor.angle % 360;
 
-        monsterPainSound(mod);
-        iDamageTick = 4;
+        if(lastDamager != inflictor) {
+            lastDamager = inflictor;
 
-		if(mod == "SteelWhip" || mod == "LaserWhip") {
-			A_SpawnItemEx("KnockBackTrail", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERSPRITEFRAME);
-			A_ChangeVelocity(cos(ang)*90, sin(ang)*90, 0, CVF_REPLACE);
-			kbTime = 2;
-		} else if(mod == "IronShield") {
-            A_SpawnItemEx("KnockBackTrail", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERSPRITEFRAME);
-			A_ChangeVelocity(cos(ang)*90, sin(ang)*90, 0, CVF_REPLACE);
-			kbTime = 4;
+            int ang = inflictor.angle % 360;
+
+            monsterPainSound(mod);
+            iDamageTick = 4;
+
+            if(mod == "SteelWhip" || mod == "LaserWhip") {
+                A_SpawnItemEx("KnockBackTrail", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERSPRITEFRAME);
+                A_ChangeVelocity(cos(ang)*90, sin(ang)*90, 0, CVF_REPLACE);
+                kbTime = 2;
+            } else if(mod == "IronShield") {
+                A_SpawnItemEx("KnockBackTrail", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERSPRITEFRAME);
+                A_ChangeVelocity(cos(ang)*90, sin(ang)*90, 0, CVF_REPLACE);
+                kbTime = 4;
+            }
+
+            int dmg = super.DamageMobj(inflictor, source, damage, mod, flags, angle);
+
+            if(mod == "LaserWhip") {
+                A_GiveInventory("LaserWhipProtection", 1);
+            }
+            
+            return dmg;
+
+        } else {
+
+            return super.DamageMobj(inflictor, source, 0, mod, flags, angle);
         }
-
-		return super.DamageMobj(inflictor, source, damage, mod, flags, angle);
 	}
 
     override void Die(Actor source, Actor inflictor, int dmgflags, Name mod) {

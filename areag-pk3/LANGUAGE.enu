@@ -53,6 +53,12 @@ PU_GRAVITYGLOVES = "Magnetic fists that move metal blocks and enemies.\nCannot u
 AR_SEEDPOD = "SPRIGGINS BULB";
 PU_SEEDPOD = "Sub throws a large seed that erupts into a platform.";
 
+AR_LEATHERWHIP = "LEATHER WHIP";
+PU_LEATHERWHIP = "Mid-Range Melee Weapon.";
+
+AR_LASERWHIP = "CAPITAL PUNISHMENT";
+PU_LASERWHIP = "Whip Range Increased\nAttacks phase through walls and burn through enemies.";
+
 // TABLETS
 
 TABLET_TESTMAP_0 = "This is a puzzle tablet. Read the other using nova pack.";

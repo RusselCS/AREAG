@@ -1,0 +1,215 @@
+class LaserWhipPickup : BasicInventory
+{
+    Default
+    {
+        BasicInventory.PickupType PICKTYPE_WEAPON;
+        BasicInventory.PickupID PICKMSG_LASERWHIP;
+        BasicInventory.CheckItem "LaserWhip";
+		Scale 2.0;
+    }
+
+    States
+    {
+    SpawnFrames:
+        LSWP A 1;
+        loop;
+    PickupEffect:
+        LSWP A 0 A_GiveInventory("LaserWhip", 1);
+        LSWP A 0 A_SelectWeapon("LaserWhip");
+        stop;
+    }
+}
+
+class LaserWhip : AREAGProtoWeapon
+{
+	bool swingLeft;
+    Default
+    {
+        Weapon.SlotNumber 1;
+        Obituary "%o spectacularly executed by %k's Capital Punishment.";
+    }
+
+	override void postBeginPlay() {
+		super.postBeginPlay();
+		swingLeft = false;
+	}
+
+	action State A_SwingWhip() {
+		invoker.swingLeft = !invoker.swingLeft;
+		if(invoker.swingLeft) {
+			return ResolveState("SwingLeft");
+		} else {
+			return ResolveState("SwingRight");
+		}
+		return ResolveState(Null);
+	}
+
+	States
+	{
+	MainRaise:
+		WHP3 DCBA 1;
+		goto MainReady;
+	MainReady:
+		WHP3 EFGH 1 A_MainWeaponReady();
+		loop;
+	MainWindup:
+		WHP3 A 0 A_StartMainFiringSequence();
+		WHP3 AABCD 1;
+		goto MainHold;
+	MainHold:
+		TNT1 A 1;
+		TNT1 A 0 A_MainHoldCheck("MainHold");
+		goto MainFire;
+	MainFire:
+		LWPL A 0 A_StartSound("weapon/capitalswing", CHAN_WEAPON);
+		TNT1 A 0 A_SwingWhip();
+	SwingLeft:
+		LWPL ABC 1 A_YawRecoil(0.2);
+		LWPL A 0 A_FireProjectile("LaserWhipProjectileL", 0, 0, 0);
+		LWPL A 0 A_FireProjectile("LaserWhipDamager", 0, 0, 0);
+		LWPL DEZ 1 A_YawRecoil(0.2);
+		goto FireEnd;
+	SwingRight:
+		LWPL FGH 1 A_YawRecoil(-0.2);
+		LWPL A 0 A_FireProjectile("LaserWhipProjectileR", 0, 0, 0);
+		LWPL A 0 A_FireProjectile("LaserWhipDamager", 0, 0, 0);
+		LWPL IJK 1 A_YawRecoil(-0.2);
+		goto FireEnd;
+	FireEnd:
+		TNT1 A 6;
+		TNT1 A 0 A_FinishMainFiringSequence();
+		TNT1 AAAAAAAAAAAAAAAAAAAA 1 A_MainRefire("MainHoldRefire", "MainWait");
+		goto MainRaise;
+	MainOffWindup:
+		WHP3 AABCD 1;
+		goto MainWait;
+	MainWait:
+		TNT1 A 1;
+		TNT1 AAAAAAAAAAAAAAAAAAAA 1 A_CheckSubStatus("MainHoldRefire", "MainWait");
+		goto MainRaise;
+	MainHoldRefire:
+        TNT1 A 0 A_StartMainFiringSequence();
+        goto MainHold;
+	MainLower:
+		WHP3 AABCD 1;
+		TNT1 A 1 A_MainDeselect;
+		wait;
+	
+    // Deselect:
+    //     WHP3 A 0 A_AREAGLowerSub();
+	// 	WHP3 AABCD 1;
+    //     goto Super::DeselectReal;
+	// Ready:
+	// 	TNT1 A 0 A_ReadySubWeapons();
+	// ReadyRaise:
+	// 	TNT1 A 0 A_AREAGRaiseSub();
+	// 	WHP3 DCBA 1;
+	// 	goto ReadyLoop;
+	// ReadyLoop:
+	// 	WHP3 A 1 A_AREAGWeaponReady();
+	// 	loop;
+	// Fire:
+	// 	WHP3 A 0 A_AREAGLowerSub();
+	// MainLower:
+	// 	WHP3 AABCD 1;
+    //     goto Hold;
+	// MainRelease:
+	// 	LWPL A 0 A_StartSound("weapon/whipswing", CHAN_WEAPON);
+	// 	TNT1 A 0 A_SwingWhip();
+	// SwingLeft:
+	// 	LWPL ABC 1 A_SetAngle(angle+0.2);
+	// 	LWPL A 0 A_FireProjectile("WhipProjectileL", 0, 0, 0);
+	// 	LWPL DEZ 1 A_SetAngle(angle+0.2);
+	// 	TNT1 A 6;
+	// 	goto FireEnd;
+	// SwingRight:
+	// 	LWPL FGH 1 A_SetAngle(angle-0.2);
+	// 	LWPL A 0 A_FireProjectile("WhipProjectileR", 0, 0, 0);
+	// 	LWPL IJK 1 A_SetAngle(angle-0.2);
+	// 	TNT1 A 6;
+	// 	goto FireEnd;
+	// AltLower:
+	// 	WHP3 AABCD 1;
+	// 	goto AltHold;
+	}
+}
+
+class LaserWhipProjectileL : BasicFastProjectile
+{
+    Default
+    {
+        +RIPPER;
+        Speed 80;
+        DamageFunction (0);
+        Damagetype "LaserWhip";
+        +NOTIMEFREEZE;
+        +HITTRACER;
+        +BLOODSPLATTER;
+        decal "WhipGash1L";
+        radius 4;
+        radius 2;
+    }
+	States
+	{
+	SpawnLoop:
+		TNT1 A 1;
+		TNT1 A 1;
+		TNT1 A 0 A_Stop();
+		TNT1 A 0 A_StartSound("weapon/capitalcrack", CHAN_BODY);
+		TNT1 A 0 A_AlertMonsters(512);
+		stop;
+	XDeath:
+		TNT1 A 0 A_StartSound("weapon/capitalsmack", CHAN_BODY);
+		TNT1 A 0 A_SpawnItemEx("ChainWhipQuake");
+		stop;
+	Crash:
+	Death:
+		TNT1 A 0 A_StartSound("weapon/whipwall", CHAN_BODY);
+		TNT1 AAA 0 A_SpawnItemEx("ChainWhipPuff", 0, 0, 0, frandom(0.4, 1.0), 0, frandom(-1.0, 1.0), frandom(0.0, 360.0));
+        TNT1 AAAAAAAAA 0 A_SpawnItemEx("ChainWhipChunks", -10, 0, 0, -frandom(8.0, 15.0), 0, frandom(-1.0, 1.0), frandom(-45, 45));
+		TNT1 A 0 A_SpawnItemEx("ChainWhipQuake");
+		stop;
+	}
+}
+
+class LaserWhipProjectileR : LaserWhipProjectileL
+{
+    Default
+    {
+        decal "WhipGash1R";
+    }
+}
+
+class LaserWhipDamager : BasicProjectile
+{
+	Default
+	{
+		+NOINTERACTION;
+        Damagetype "LaserWhip";
+		mass 256;
+		speed 16;
+		height 16;
+		radius 8;
+	}
+
+	States
+	{
+	Spawn:
+		TNT1 A 0;
+		TNT1 A 0 A_JumpIfCloser(mass, "Explode");
+		stop;
+	Explode:
+		TNT1 A 0 A_SpawnItemEx("LaserWhipDamager", vel.x, vel.y, vel.z, vel.x, vel.y, vel.z, 0, SXF_ABSOLUTEMOMENTUM|SXF_ABSOLUTEPOSITION|SXF_NOCHECKPOSITION);
+		TNT1 A 0 A_Explode(30, radius, 0, false, radius+1);
+		stop;
+	}
+}
+
+class LaserWhipProtection : PowerProtection
+{
+	Default
+	{
+		damagefactor "LaserWhip", 0.0;
+		powerup.duration 2;
+	}
+}
