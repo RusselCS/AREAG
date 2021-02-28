@@ -59,6 +59,9 @@ PU_LEATHERWHIP = "Mid-Range Melee Weapon.";
 AR_LASERWHIP = "CAPITAL PUNISHMENT";
 PU_LASERWHIP = "Whip Range Increased\nAttacks phase through walls and burn through enemies.";
 
+AR_CHAKRAMSHIELD = "KINDERLUN";
+PU_CHAKRAMSHIELD = "Shield can now be thrown by pressing sub while shield is held.";
+
 // TABLETS
 
 TABLET_TESTMAP_0 = "This is a puzzle tablet. Read the other using nova pack.";

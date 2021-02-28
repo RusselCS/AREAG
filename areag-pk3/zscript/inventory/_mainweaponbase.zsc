@@ -1,7 +1,7 @@
 extend class AREAGProtoWeapon
 {
     // Main weapon functions
-    action State A_MainWeaponReady() {
+    action State A_MainWeaponReady(int flags = 0) {
 
         int iButtons = invoker.plr.iButtons;
         int iOldButtons = invoker.plr.iOldButtons;
@@ -21,7 +21,7 @@ extend class AREAGProtoWeapon
             return ResolveState("MainOffWindup");
         }
 
-        if(iButtons & BT_ATTACK) {
+        if(!(flags & AWRF_NoFire) && (iButtons & BT_ATTACK)) {
             invoker.bMainInProgress = true;
             return ResolveState("MainWindup");
         }
@@ -114,4 +114,9 @@ extend class AREAGProtoWeapon
             TNT1 A 1 A_MainDeselect;
             wait;
     }
+}
+
+enum EAREAGWeaponFlags
+{
+    AWRF_NoFire = 1
 }

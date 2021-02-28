@@ -47,7 +47,7 @@ class IronShield : AREAGProtoWeapon
 		goto MainFire;
 	MainFire:
         TSHL B 0 A_TakeInventory("ShieldPower", 1);
-		TSHL B 0 A_StartSound("weapon/invoker.shieldswing", CHAN_WEAPON);
+		TSHL B 0 A_StartSound("weapon/shieldswing", CHAN_WEAPON);
 		TSHL H 1 A_YawRecoil(-0.2);
         TSHL B 0 A_FireProjectile("IronShieldProjectile", 0, 8, 0, 0);
         TSHL IJKZZZ 1 {
@@ -58,6 +58,10 @@ class IronShield : AREAGProtoWeapon
             return ResolveState(Null);
         }
 		TNT1 A 3;
+		goto FireEnd;
+    MainRecoil:
+        TSHL LMNOEBCD 1;
+        TNT1 A 6;
 		goto FireEnd;
 	FireEnd:
 		TNT1 A 6;
@@ -78,6 +82,69 @@ class IronShield : AREAGProtoWeapon
 		TSHL BCD 1;
 		TNT1 A 1 A_MainDeselect;
 		wait;
+
+	// States
+	// {
+    // Deselect:
+    //     TSHL A 0 A_AREAGLowerSub();
+	// 	TSHL BBCDZ 1;
+    //     goto Super::DeselectReal;
+	// Ready:
+	// 	TSHL A 0 A_ReadySubWeapons();
+	// ReadyRaise:
+	// 	TSHL A 0 A_AREAGRaiseSub();
+	// 	TSHL ZDCB 1;
+	// 	goto ReadyLoop;
+	// ReadyLoop:
+	// 	TSHL B 1 A_AREAGWeaponReady();
+	// 	loop;
+    // MainLowerStart:
+	// 	TSHL DCBEF 1;
+    //     goto ShieldRaise;
+	// Fire:
+	// 	TSHL B 0 A_AREAGLowerSub();
+	// MainLower:
+	// 	TSHL BBEF 1;
+	// ShieldRaise:
+    //     TSHL G 1 A_RaiseShield();
+    // Hold:
+	// 	TSHL G 1 A_CarryShield();
+	// 	TSHL G 0 A_AREAGRefire();
+	// 	goto MainRelease;
+	// MainRelease:
+    //     TSHL B 0 A_LowerShield();
+	// 	TSHL B 0 A_StartSound("weapon/invoker.shieldswing", CHAN_WEAPON);
+	// 	TSHL H 1 A_SetAngle(angle-0.2);
+    //     TSHL B 0 A_FireProjectile("TribalShieldProjectile", 0, 8, 0, 0);
+    //     TSHL IJKZZZ 1 {
+    //         if(CountInv("TribalShieldHit") > 0) {
+    //             return ResolveState("MainRecoil");
+    //         }
+    //         A_SetAngle(angle-0.2);
+    //         return ResolveState(Null);
+    //     }
+	// 	TNT1 A 3;
+	// 	goto FireEnd;
+    // MainRecoil:
+    //     TSHL LMNOEBCD 1;
+    //     TNT1 A 6;
+	// 	goto FireEnd;
+    // AltLowerStart:
+	// 	TNT1 A 1;
+    //     goto AltHold;
+	// AltLower:
+	// 	TSHL BCD 1;
+    //     goto AltHold;
+    // AltRelease:
+    //     HBMA A 0 A_AREAGUseSub();
+    //     HBMA A 1 A_JumpIf(true, "FireEnd");
+    //     wait;
+    // FireEnd:
+    //     TNT1 AAAAA 1;
+    //     TNT1 AAAAAAAAAA 1 A_AREAGClearRefire();
+    //     TNT1 A 1 A_JumpIf(true, "ReadyRaise");
+    //     wait;
+	// }
     }
 }
 

@@ -157,8 +157,13 @@ class BasicEnemy : BasicActor
 
             int dmg = super.DamageMobj(inflictor, source, damage, mod, flags, angle);
 
-            if(mod == "LaserWhip") {
-                A_GiveInventory("LaserWhipProtection", 1);
+            switch(mod) {
+                case Name("LaserWhip"):
+                    A_GiveInventory("LaserWhipProtection", 1);
+                    break;
+                case Name("Chakram"):
+                    A_GiveInventory("ChakramProtection", 1);
+                    break;
             }
             
             return dmg;

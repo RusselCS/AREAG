@@ -83,6 +83,11 @@ weapon/shieldswing SHLDSWIN // THE KING OF FIGHTERS XIV
 weapon/shieldsmack SHLDHIT // Garou: Mark of the Wolves
 weapon/shieldwall SHLDWALL // THE KING OF FIGHTERS XIV
 
+weapon/shieldclick SHLDCLIK // Castlevania: Bloodlines
+weapon/shieldthrow SHLDTOSS // Castlevania: Bloodlines
+weapon/shieldwhirr SHLDSPIN // Castlevania: Bloodlines
+weapon/shieldbounce SHLDTING // Castlevania: Bloodlines
+
 weapon/tyrantswing TYNTSWIN // King of Fighters 2002
 weapon/tyrantcrack TYNTCRAK // SNK vs Capcom: SVC Chaos
 weapon/tyrantsmack TYNTSMAK // Garou: Mark of the Wolves

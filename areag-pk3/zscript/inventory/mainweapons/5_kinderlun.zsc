@@ -1,0 +1,295 @@
+class ChakramShieldPickup : BasicInventory
+{
+    Default
+    {
+        BasicInventory.PickupType PICKTYPE_WEAPON;
+        BasicInventory.PickupID PICKMSG_CHAKRAMSHIELD;
+        BasicInventory.CheckItem "ChakramShield";
+        Scale 2.0;
+    }
+    States
+    {
+    SpawnFrames:
+        CSHL A 1;
+        loop;
+    PickupEffect:
+        CSHL A 0 A_GiveInventory("ChakramShield", 1);
+        CSHL A 0 A_GiveInventory("ChakramStock", 1);
+        CSHL A 0 A_SelectWeapon("ChakramShield");
+        stop;
+    }
+}
+
+class ChakramShield : AREAGProtoWeapon
+{
+
+    Default
+    {
+        Weapon.SlotNumber 1;
+        Obituary "%o was sliced by %k's Kinderlun.";
+        Inventory.Pickupmessage "";
+    }
+
+	States
+    {
+    MainRaise:
+        CSH1 A 0 A_JumpIfInventory("ChakramStock", 1, "FullRaise");
+    MainEmptyRaise:
+        CSH1 DCBA 1;
+		goto MainEmptyReady;
+    MainEmptyReady:
+        CSH1 A 0 A_JumpIfInventory("ChakramStock", 1, "RefillLower");
+        CSH1 A 1 A_MainWeaponReady(AWRF_NoFire);
+        loop;
+    
+    RefillLower:
+        CSHI A 0 A_StartSound("ammo/pickup", CHAN_WEAPON);
+        CSH1 ABCD 1;
+    FullRaise:
+		CSHL \DCB 1;
+		goto MainReady;
+	MainReady:
+		CSHL B 1 A_MainWeaponReady();
+		wait;
+	MainWindup:
+		CSHL A 0 A_StartMainFiringSequence();
+		CSHL DCBEF 1;
+        CSHL B 0 A_GiveInventory("ShieldPower", 1);
+		goto MainHold;
+	MainHold:
+		CSHL G 1 {
+            if(invoker.plr.iButtons & BT_ALTATTACK) {
+                return ResolveState("ThrowShieldWindup");
+            }
+            return ResolveState(null);
+        }
+		TNT1 A 0 A_MainHoldCheck("MainHold");
+		goto MainFire;
+	MainFire:
+        CSHL B 0 A_TakeInventory("ShieldPower", 1);
+		CSHL B 0 A_StartSound("weapon/shieldswing", CHAN_WEAPON);
+		CSHL H 1 A_YawRecoil(-0.2);
+        CSHL B 0 A_FireProjectile("IronShieldProjectile", 0, 8, 0, 0);
+        CSHL IJK\\\ 1 {
+            if(CountInv("IronShieldHit") > 0) {
+                return ResolveState("MainRecoil");
+            }
+            A_YawRecoil(-0.2);
+            return ResolveState(Null);
+        }
+		TNT1 A 3;
+		goto FireEnd;
+    MainRecoil:
+        CSHL LMNOEBCD 1;
+        TNT1 A 6;
+		goto FireEnd;
+	FireEnd:
+		TNT1 A 6;
+		TNT1 A 0 A_FinishMainFiringSequence();
+		TNT1 AAAAAAAAAAAAAAAAAAAA 1 A_MainRefire("MainHoldRefire", "MainWait");
+		goto MainRaise;
+	MainOffWindup:
+		CSHL DCBEF 1;
+		goto MainWait;
+	MainWait:
+		TNT1 A 1;
+		TNT1 AAAAAAAAAAAAAAAAAAAA 1 A_CheckSubStatus("MainHoldRefire", "MainWait");
+		goto MainRaise;
+	MainHoldRefire:
+        TNT1 A 0 A_StartMainFiringSequence();
+        goto MainHold;
+	MainLower:
+		CSHL BCD 1;
+		TNT1 A 1 A_MainDeselect;
+		wait;
+
+    ThrowShieldWindup:
+        CSHL P 0 A_StartSound("weapon/shieldclick", CHAN_WEAPON);
+        CSHL PQR 2;
+        CSHL S 20;
+        CSHL T 2;
+        CSHL UVW 1;
+        CSHL W 0 A_TakeInventory("ShieldPower", 1);
+    ThrowShieldWait:
+        TNT1 A 5;
+        TNT1 A 0 {
+            if(invoker.plr.iButtons & BT_ALTATTACK || invoker.plr.iButtons & BT_ATTACK) {
+                return ResolveState("ThrowShieldWait");
+            }
+            return ResolveState(null);
+        }
+        CSHL X 0 A_StartSound("weapon/shieldthrow", CHAN_WEAPON);
+        CSHL X 0 A_TakeInventory("ChakramStock", 1);
+        CSHL X 0 A_FireProjectile("ShieldShot");
+        CSHL XYZ[] 1;
+		TNT1 A 0 A_FinishMainFiringSequence();
+        TNT1 A 20;
+        goto MainRaise;
+
+	// States
+	// {
+    // Deselect:
+    //     CSHL A 0 A_AREAGLowerSub();
+	// 	CSHL BBCDZ 1;
+    //     goto Super::DeselectReal;
+	// Ready:
+	// 	CSHL A 0 A_ReadySubWeapons();
+	// ReadyRaise:
+	// 	CSHL A 0 A_AREAGRaiseSub();
+	// 	CSHL ZDCB 1;
+	// 	goto ReadyLoop;
+	// ReadyLoop:
+	// 	CSHL B 1 A_AREAGWeaponReady();
+	// 	loop;
+    // MainLowerStart:
+	// 	CSHL DCBEF 1;
+    //     goto ShieldRaise;
+	// Fire:
+	// 	CSHL B 0 A_AREAGLowerSub();
+	// MainLower:
+	// 	CSHL BBEF 1;
+	// ShieldRaise:
+    //     CSHL G 1 A_RaiseShield();
+    // Hold:
+	// 	CSHL G 1 A_CarryShield();
+	// 	CSHL G 0 A_AREAGRefire();
+	// 	goto MainRelease;
+	// MainRelease:
+    //     CSHL B 0 A_LowerShield();
+	// 	CSHL B 0 A_StartSound("weapon/invoker.shieldswing", CHAN_WEAPON);
+	// 	CSHL H 1 A_SetAngle(angle-0.2);
+    //     CSHL B 0 A_FireProjectile("TribalShieldProjectile", 0, 8, 0, 0);
+    //     CSHL IJKZZZ 1 {
+    //         if(CountInv("TribalShieldHit") > 0) {
+    //             return ResolveState("MainRecoil");
+    //         }
+    //         A_SetAngle(angle-0.2);
+    //         return ResolveState(Null);
+    //     }
+	// 	TNT1 A 3;
+	// 	goto FireEnd;
+    // MainRecoil:
+    //     CSHL LMNOEBCD 1;
+    //     TNT1 A 6;
+	// 	goto FireEnd;
+    // AltLowerStart:
+	// 	TNT1 A 1;
+    //     goto AltHold;
+	// AltLower:
+	// 	CSHL BCD 1;
+    //     goto AltHold;
+    // AltRelease:
+    //     HBMA A 0 A_AREAGUseSub();
+    //     HBMA A 1 A_JumpIf(true, "FireEnd");
+    //     wait;
+    // FireEnd:
+    //     TNT1 AAAAA 1;
+    //     TNT1 AAAAAAAAAA 1 A_AREAGClearRefire();
+    //     TNT1 A 1 A_JumpIf(true, "ReadyRaise");
+    //     wait;
+	// }
+    }
+}
+
+class ShieldShot : BasicProjectile
+{
+    Default
+    {
+        +SKYEXPLODE;
+        +USEBOUNCESTATE;
+        +THRUSPECIES;
+        species "Monster";
+        bouncetype "Hexen";
+        bouncesound "weapon/shieldbounce";
+        height 8;
+        radius 16;
+        Speed 40;
+        Damagefunction (0);
+        bouncecount 2;
+        reactiontime 8;
+    }
+
+    override void BasicInit() {
+        A_StartSound("weapon/shieldwhirr", CHAN_VOICE, CHANF_LOOP);
+    }
+
+    override void BasicTick() {
+        if(target.CountInv("ChakramStock") > 0) {
+            Die(null, null, 0, "");
+        }
+        A_SpawnItemEx("ChakramDamager");
+    }
+
+    States
+    {
+    Spawn:
+        CSH1 GFE 2;
+        loop;
+    Bounce:
+        CSH1 GFE 2 A_Countdown();
+        loop;
+    Death:
+        CSHI E 0 A_CustomMissile("ShieldShotReturn",0,0,0,0);
+        stop;
+    }
+}
+
+class ShieldShotReturn : ShieldShot
+{
+    Default
+    {
+        -SKYEXPLODE;
+        +NOINTERACTION;
+        +SEEKERMISSILE;
+    }
+
+    override void BasicInit() {
+        super.BasicInit();
+        tracer = target;
+    }
+
+    States
+    {
+    Spawn:
+        CSH1 GFE 2 {
+            A_SeekerMissile(30, 360, SMF_PRECISE|SMF_CURSPEED);
+            if(CheckIfCloser(tracer, 60)) {
+                return ResolveState("Death");
+            }
+            return ResolveState(null);
+        }
+        loop;
+    Death:
+        CSH1 G 0 A_GiveToTarget("ChakramStock", 1);
+        stop;
+    }
+}
+
+class ChakramDamager : BasicProjectile
+{
+    Default
+    {
+        Damagetype "Chakram";
+        DamageFunction(20);
+        height 8;
+        radius 16;
+    }
+
+    States
+    {
+    Spawn:
+        TNT1 A 2;
+        stop;
+    }
+}
+
+class ChakramStock : Once {}
+
+class ChakramProtection : PowerProtection
+{
+	Default
+	{
+		damagefactor "Chakram", 0.0;
+		powerup.duration 5;
+	}
+}
