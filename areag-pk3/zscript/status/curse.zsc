@@ -1,0 +1,54 @@
+extend class AREAGPlayerPawn
+{
+    bool curseActive;
+
+    void Status_CurseTick() {
+        if(CountInv("FallStunTime") > 0) {
+            if(CountInv("FallStunSlow") == 0) {
+                A_GiveInventory("FallStunSlow", 1);
+            }
+            if(CountInv("CurseTime") < CountInv("FallStunTime")) {
+                A_SetInventory("CurseTime", CountInv("FallStunTime"));
+            }
+            A_TakeInventory("FallStunTime", 1);
+        } else {
+            if(CountInv("FallStunSlow") > 0) {
+                A_TakeInventory("FallStunSlow", 1);
+            }
+        }
+
+        if(CountInv("CurseTime") > 0) {
+            if(!curseActive) {
+                curseActive = true;
+                setInterruptState("CurseLoop");
+            }
+            A_TakeInventory("CurseTime", 1);
+        } else {
+            if(curseActive) {
+                curseActive = false;
+            }
+        }
+    }
+}
+
+extend class AREAGProtoWeapon
+{
+    States
+    {
+    CurseLoop:
+        TNT1 A 1;
+        TNT1 A 0 A_JumpIfInventory("CurseTime", 1, "CurseLoop");
+    CurseEnd:
+        TNT1 A 0 A_ClearInterruptState();
+        goto Ready;
+    }
+}
+
+class CurseTime : Counter {}
+
+class FallStunTime : Counter {}
+class FallStunSlow : PowerSpeed {
+    Default {
+        speed 0.4;
+    }
+}

@@ -113,7 +113,7 @@ extend class AREAGPlayerPawn {
     }
 
     void transformToDrone(Actor who) {
-        A_SpawnItemEx("DronePlayerDummy");
+        A_SpawnItemEx("DronePlayerDummy", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERSCALE|SXF_TRANSFERSPRITEFRAME);
         A_GiveInventory("DronePlasmaGun");
         A_SelectWeapon("DronePlasmaGun");
 		A_GiveInventory("DroneFlag", 1);
@@ -383,7 +383,7 @@ class DronePlayerDummy : Actor
 	States
 	{
 	Spawn:
-		PLAY A 1 A_JumpIf(CountInv("DroneFlag", AAPTR_TARGET) == 0, "Death");
+		"####" A 1 A_JumpIf(CountInv("DroneFlag", AAPTR_TARGET) == 0, "Death");
 		loop;
     Death:
         TNT1 A 0;

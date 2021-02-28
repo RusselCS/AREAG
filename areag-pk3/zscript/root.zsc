@@ -44,6 +44,9 @@
 #include "zscript/inventory/basicinventory.zsc"
 #include "zscript/inventory/currency.zsc"
 
+// STATUS EFFECTS
+#include "zscript/status/curse.zsc"
+
 // MAP TOOLS
 #include "zscript/maptools/automap/automap.entity.zsc"
 #include "zscript/maptools/automap/automap.repo.zsc"

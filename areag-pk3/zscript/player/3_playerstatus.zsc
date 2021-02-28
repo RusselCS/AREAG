@@ -11,16 +11,7 @@ extend class AREAGPlayerPawn {
     }
 
     void AREAGStatusTick() {
-        if(CountInv("FallStunTime") > 0) {
-            if(CountInv("FallStunSlow") == 0) {
-                A_GiveInventory("FallStunSlow", 1);
-            }
-            A_TakeInventory("FallStunTime", 1);
-        } else {
-            if(CountInv("FallStunSlow") > 0) {
-                A_TakeInventory("FallStunSlow", 1);
-            }
-        }
+        Status_CurseTick();
 
         if(CountInv("ScreenShakeTime") > 0) {
             if(!shakeScreen) {
@@ -42,13 +33,6 @@ extend class AREAGPlayerPawn {
         if(iDroneRegenTime > 0) {
             iDroneRegenTime--;
         }
-    }
-}
-
-class FallStunTime : Counter {}
-class FallStunSlow : PowerSpeed {
-    Default {
-        speed 0.4;
     }
 }
 

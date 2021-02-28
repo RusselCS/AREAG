@@ -85,10 +85,16 @@ extend class AREAGPlayerPawn {
 
         // FALL STUN
         if(bOnGround && lastZVel < -FallingScreamMinSpeed) {
-            A_GiveInventory("FallStunTime", 140);
-            A_GiveInventory("ScreenShakeTime", 5);
-            A_SpawnItemEx("AREAGCrashLand");
-            A_StartSound("player/crashland", CHAN_BODY);
+            if(CountInv("DroneFlag") > 0) {
+                A_GiveInventory("ScreenShakeTime", 2);
+                A_SpawnItemEx("AREAGCrashLand");
+                A_StartSound("drone/crashland", CHAN_BODY);
+            } else {
+                A_GiveInventory("FallStunTime", 140);
+                A_GiveInventory("ScreenShakeTime", 5);
+                A_SpawnItemEx("AREAGCrashLand");
+                A_StartSound("player/crashland", CHAN_BODY);
+            }
         }
 
         // JUMPING

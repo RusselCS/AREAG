@@ -117,6 +117,7 @@ lightfist/smack06 LFSMAK06
 weapon/dronelaser DRONELAZ // LA-MULANA
 drone/activate DRONEON // THE KING OF FIGHTERS XIV
 drone/disengage DRONEOFF // THE KING OF FIGHTERS XIV
+drone/crashland DRCRLAND // Vector Man
 
 ammo/pickup AMMO // LA-MULANA
 
