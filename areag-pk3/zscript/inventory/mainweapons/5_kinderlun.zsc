@@ -210,7 +210,7 @@ class ShieldShot : BasicProjectile
     }
 
     override void BasicInit() {
-        A_StartSound("weapon/shieldwhirr", CHAN_VOICE, CHANF_LOOP);
+        A_StartSound("weapon/shieldwhirr", CHAN_BODY, CHANF_LOOP|CHANF_OVERLAP);
     }
 
     override void BasicTick() {
