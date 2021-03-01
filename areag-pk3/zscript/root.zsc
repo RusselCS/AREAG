@@ -29,9 +29,9 @@
 #include "zscript/inventory/mainweapons/6_gravgloves.zsc"
 
 #include "zscript/inventory/subweapons/_empty.zsc"
-#include "zscript/inventory/subweapons/knives.zsc"
-#include "zscript/inventory/subweapons/dynamite.zsc"
-#include "zscript/inventory/subweapons/seeds.zsc"
+#include "zscript/inventory/subweapons/1_knives.zsc"
+#include "zscript/inventory/subweapons/2_seeds.zsc"
+#include "zscript/inventory/subweapons/3_dynamite.zsc"
 
 // ACTIVE ITEMS
 #include "zscript/inventory/actives/drone.zsc"
