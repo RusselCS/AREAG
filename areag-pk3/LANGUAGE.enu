@@ -62,6 +62,9 @@ PU_LASERWHIP = "Whip Range Increased\nAttacks phase through walls and burn throu
 AR_CHAKRAMSHIELD = "KINDERLUN";
 PU_CHAKRAMSHIELD = "Shield can now be thrown by pressing sub while shield is held.";
 
+AR_SOULLAMP = "LAMP OF SHADES";
+PU_SOULLAMP = "Sub creates a damaging field that lasts a short while.";
+
 // TABLETS
 
 TABLET_TESTMAP_0 = "This is a puzzle tablet. Read the other using nova pack.";

@@ -1,0 +1,83 @@
+class SoulAmmo : Ammo {
+    Default {
+        inventory.icon "ICOSW4";
+        inventory.amount 1;
+        inventory.maxamount 10;
+    }
+}
+
+class SoulLampPickup : SubWeaponPickup
+{
+	Default
+	{
+        BasicInventory.PickupID PICKMSG_SOULLAMP;
+        BasicInventory.PickupType PICKTYPE_SUBWEAPON;
+        SubWeaponPickup.AmmoType "SoulAmmo";
+        SubWeaponPickup.AmmoGive 10;
+        SubWeaponPickup.WeaponName "SoulLamp";
+
+        Scale 1.0;
+	}
+
+    override SubWeapon subStateBuilder() {
+        StateLabel rS = "LampRaise";
+
+        return buildSubWeapon(rS);
+    }
+
+    
+	States
+	{
+	SpawnFrames:
+		SLMP A 1;
+		loop;
+	}
+}
+
+extend class AREAGProtoWeapon {
+
+	States
+    {
+        LampRaise:
+            SLHD ABCD 1;
+            goto LampReady;
+        LampReady:
+            SLHD DEFGH 2 A_SubWeaponReady("LampWindup", "LampOffWindup", "LampLower");
+            loop;
+        LampWindup:
+            SLHD A 0 A_StartSubFiringSequence();
+            SLHD DDDDIJKLMN 1;
+            SLHD N 10;
+            SLHD OPQR 1;
+            goto LampHold;
+        LampHold:
+            SLHD S 1;
+            TNT1 A 0 A_SubHoldCheck("LampHold");
+            goto LampFire;
+        LampFire:
+            SLHD A 0 A_StartSound("weapon/knifethrow", CHAN_WEAPON);
+            SLHD A 0 A_TakeInventory("SoulAmmo", 1);
+            SLHD A 0 A_FireProjectile("ThrowKnife");
+            SLHD TU 1;
+            SLHD V 6;
+            SLHD WXY 1;
+            TNT1 A 6;
+            TNT1 A 0 A_FinishSubFiringSequence();
+            TNT1 AAAAAAAAAAAAAAAAAAAAA 1 A_SubRefire("LampHoldRefire", "LampWait");
+            goto LampRaise;
+        LampOffWindup:
+            SLHD DCBA 1;
+            goto LampWait;
+        LampWait:
+            TNT1 A 1;
+            TNT1 AAAAAAAAAAAAAAAAAAAA 1 A_CheckMainStatus("LampHoldRefire", "LampWait");
+            goto LampRaise;
+        LampHoldRefire:
+            HBM2 A 0 A_StartSubFiringSequence();
+            SLHD AB 1;
+            goto LampWindup + 2;
+        LampLower:
+            SLHD DCBA 1;
+            goto AltRaise;
+	}
+}
