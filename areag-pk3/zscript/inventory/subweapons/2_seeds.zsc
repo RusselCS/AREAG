@@ -1,6 +1,6 @@
 class SeedAmmo : Ammo {
     Default {
-        inventory.icon "ICOSW3";
+        inventory.icon "ICOSW2";
         inventory.amount 1;
         inventory.maxamount 5;
     }

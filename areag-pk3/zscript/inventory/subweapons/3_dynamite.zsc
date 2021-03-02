@@ -1,6 +1,6 @@
 class DynamiteAmmo : Ammo {
     Default {
-        inventory.icon "ICOSW2";
+        inventory.icon "ICOSW3";
         inventory.amount 1;
         inventory.maxamount 5;
     }
