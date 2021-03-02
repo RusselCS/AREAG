@@ -27,6 +27,9 @@ script "map_switchto" (int tomap, int door, int noSound)
 		terminate;
 	}
 	
+	if(CheckInventory("ChakramShield") > 0 && Checkinventory("ChakramStock") == 0) {
+		GiveInventory("ChakramStock", 1);
+	}
 	ACS_NamedExecuteAlways("map_transition", 0, false, noSound, GetUserVariable(0, "bDroneChangingLevel"));
 	if(!GetUserVariable(0, "bDroneChangingLevel")) {
 		Delay(35);
