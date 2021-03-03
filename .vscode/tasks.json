@@ -1,0 +1,19 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "echo",
+            "type": "shell",
+            "command": ".\\dist\\engine\\gzdoom.exe -iwad \"../wads/megagame.wad\" -file ../wads/AREAG.pk3 -file ../wads/TESTMAP.wad -file ../wads/TESTMAP2.wad -file \"../wads/Outskirts-Mechanics.wad\" -file \"../wads/Grand Gateway-Mechanics.wad\" -file \"../wads/Lost Impact.wad\" -file \"../wads/Queen's Study.wad\" -file \"../wads/AREAG_TEXTURES.wad\" +sv_cheats true +logfile lastrun.log +map TESTMAP2",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "never"
+            }
+        }
+    ]
+}
