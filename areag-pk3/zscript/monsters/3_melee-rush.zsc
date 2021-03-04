@@ -331,8 +331,6 @@ class BruteStunStar : BasicEffect
         } else {
             A_Warp(AAPTR_TRACER, mass, 0, 0, 0, WARPF_INTERPOLATE|WARPF_USECALLERANGLE|WARPF_NOCHECKPOSITION);
         }
-        A_SetAngle(angle + rotationspeed);
-        A_SetRoll(roll + rollspeed);
     }
 
     States

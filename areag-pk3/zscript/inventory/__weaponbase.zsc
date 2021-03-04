@@ -48,10 +48,26 @@ class AREAGProtoWeapon : Weapon {
         A_SetAngle(angle + amt);
     }
 
+    action Actor A_FireHandedProjectile(String leftProj, String rightProj, double angle = 0, bool useammo = true, double spawnofs_xy = 0, double spawnheight = 0, int flags = 0, double pitch = 0)
+    {
+        if(invoker.bHandedness) {
+            return A_FireProjectile(leftProj, angle, useammo, spawnofs_xy, spawnheight, flags, pitch);
+        } else {
+            return A_FireProjectile(rightProj, angle, useammo, spawnofs_xy, spawnheight, flags, pitch);
+        }
+    }
+
     action void A_SetHandedness(int layer) {
         if(invoker.bHandedness) {
             A_OverlayFlags(layer, PSPF_FLIP|PSPF_MIRROR, true);
         }
+    }
+
+    double handedPos(double x) {
+        if(bHandedness) {
+            return -x;
+        }
+        return x;
     }
 
     // Control functions

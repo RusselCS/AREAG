@@ -79,6 +79,8 @@ weapon/dynamitelit      DYNLIT // -------------------------------------- FIND TH
 weapon/dynamitethrow	DYNTHROW // Mega Man Star Force
 weapon/dynamiteexplode1 DYNEXPL1 // Gunstar Heroes
 
+weapon/lampswing SOLPSWIN // Zelda: Twilight Princess
+
 weapon/shieldswing SHLDSWIN // THE KING OF FIGHTERS XIV
 weapon/shieldsmack SHLDHIT // Garou: Mark of the Wolves
 weapon/shieldwall SHLDWALL // THE KING OF FIGHTERS XIV
