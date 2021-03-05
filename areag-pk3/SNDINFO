@@ -90,6 +90,14 @@ weapon/shieldthrow SHLDTOSS // Castlevania: Bloodlines
 weapon/shieldwhirr SHLDSPIN // Castlevania: Bloodlines
 weapon/shieldbounce SHLDTING // Castlevania: Bloodlines
 
+weapon/bolathrow1 BLTHRO1 // League of Legends
+weapon/bolathrow2 BLTHRO2 // League of Legends
+weapon/bolathrow3 BLTHRO3 // League of Legends
+weapon/bolathrow4 BLTHRO4 // League of Legends
+$random weapon/bolathrow {
+    weapon/bolathrow1 weapon/bolathrow2 weapon/bolathrow3 weapon/bolathrow4
+}
+
 weapon/tyrantswing TYNTSWIN // King of Fighters 2002
 weapon/tyrantcrack TYNTCRAK // SNK vs Capcom: SVC Chaos
 weapon/tyrantsmack TYNTSMAK // Garou: Mark of the Wolves

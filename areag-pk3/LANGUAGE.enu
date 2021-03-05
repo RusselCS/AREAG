@@ -65,6 +65,9 @@ PU_CHAKRAMSHIELD = "Shield can now be thrown by pressing sub while shield is hel
 AR_SOULLAMP = "LAMP OF SHADES";
 PU_SOULLAMP = "Sub creates a damaging field that lasts a short while.";
 
+AR_BOLA = "BOLAS";
+PU_BOLA = "Sub temporarily locks enemies in place.";
+
 // TABLETS
 
 TABLET_TESTMAP_0 = "This is a puzzle tablet. Read the other using nova pack.";

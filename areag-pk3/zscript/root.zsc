@@ -33,6 +33,7 @@
 #include "zscript/inventory/subweapons/2_seeds.zsc"
 #include "zscript/inventory/subweapons/3_dynamite.zsc"
 #include "zscript/inventory/subweapons/4_soullamp.zsc"
+#include "zscript/inventory/subweapons/5_bola.zsc"
 
 // ACTIVE ITEMS
 #include "zscript/inventory/actives/drone.zsc"
