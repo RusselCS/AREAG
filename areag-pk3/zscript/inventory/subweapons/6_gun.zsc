@@ -1,0 +1,133 @@
+class RevolverAmmo : Ammo {
+    Default {
+        inventory.icon "ICOSW1";
+        inventory.amount 1;
+        inventory.maxamount 6;
+    }
+}
+
+class RevolverPickup : SubWeaponPickup
+{
+    Default
+    {
+        BasicInventory.PickupID PICKMSG_REVOLVER;
+        BasicInventory.PickupType PICKTYPE_SUBWEAPON;
+        SubWeaponPickup.AmmoType "RevolverAmmo";
+        SubWeaponPickup.AmmoGive 6;
+        SubWeaponPickup.WeaponName "Revolver";
+
+        Scale 1.5;
+    }
+
+    override SubWeapon subStateBuilder() {
+        StateLabel rS = "RevolverRaise";
+
+        return buildSubWeapon(rS);
+    }
+
+	States
+	{
+	SpawnFrames:
+		SGUN A 1;
+		loop;
+	}
+}
+
+extend class AREAGProtoWeapon {
+
+	States
+    {
+        RevolverRaise:
+            SGHD ABCD 1;
+            goto RevolverReady;
+        RevolverReady:
+            SGHD D 1 A_SubWeaponReady("RevolverFire", "RevolverOffWindup", "RevolverLower");
+            wait;
+        RevolverFire:
+            SGHD E 0 A_StartSubFiringSequence();
+            SGHD E 0 A_StartSound("weapon/gunfire", CHAN_WEAPON);
+            SGHD E 0 A_TakeInventory("RevolverAmmo", 1);
+            SGHD E 0 A_FireProjectile("RevolverShot", 0, 0, invoker.handedPos(-10), 10);
+            SGHD EFGHBC 1;
+            SGHD E 0 A_FinishSubFiringSequence();
+            SGHD DDDDDDDDDDDDDDDDDDDD 1 A_SubRefire("RevolverRefireWait", "RevolverWait");
+            goto RevolverReady;
+        RevolverRefireWait:
+            SGHD D 1;
+            SGHD D 0 A_SubRefire("RevolverRefireWait", "RevolverWait");
+            SGHD DDDDDDDDDDDDDDDDDDDD 1 A_SubRefire("RevolverFire", "RevolverWait");
+            goto RevolverReady;
+        RevolverOffWindup:
+            SGHD DCBA 1;
+            goto RevolverWait;
+        RevolverWait:
+            TNT1 A 1;
+            TNT1 AAAAAAAAAAAAAAAAAAAA 1 A_CheckMainStatus("RevolverFire", "RevolverWait");
+            goto RevolverRaise;
+        RevolverLower:
+            SGHD DCBA 1;
+            goto AltRaise;
+	}
+}
+
+class RevolverShot : BasicFastProjectile
+{
+    Default
+    {
+        missileheight 0;
+        missiletype "RevolverShotTrail";
+        height 6;
+        radius 3;
+        speed 400;
+        +RIPPER;
+        damagefunction (50);
+    }
+
+    States
+    {
+        Spawn:
+            TNT1 A 1;
+            wait;
+        Death:
+            TNT1 A 0 A_SpawnItemEx("RevolverRicochet");
+            stop;
+    }
+}
+
+class RevolverRicochet : BasicEffect
+{
+    Default 
+    {
+        scale 0.6;
+        +ROLLSPRITE;
+        +FORCEXYBILLBOARD;
+    }
+
+    States
+    {
+    Spawn:
+        TNT1 A 0;
+        TNT1 A 0 A_StartSound("weapon/gunricochet", CHAN_BODY);
+        TNT1 A 0 A_SetRoll(frandom(0, 360));
+        SGUN CDEF 1;
+        stop;
+    }
+}
+
+class RevolverShotTrail : BasicEffect
+{
+    Default
+    {
+        alpha 0.8;
+        scale 0.1;
+        +FORCEXYBILLBOARD;
+        renderstyle "add";
+    }
+
+    States
+    {
+    Spawn:
+        SGUN B 1 A_FadeOut(0.05);
+        wait;
+    }
+}

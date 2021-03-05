@@ -98,6 +98,19 @@ $random weapon/bolathrow {
     weapon/bolathrow1 weapon/bolathrow2 weapon/bolathrow3 weapon/bolathrow4
 }
 
+weapon/gunfire1 GUNFIR1 // High Noon Drifter
+weapon/gunfire2 GUNFIR2 // High Noon Drifter
+weapon/gunfire3 GUNFIR3 // High Noon Drifter
+$random weapon/gunfire {
+    weapon/gunfire1 weapon/gunfire2 weapon/gunfire3
+}
+
+weapon/gunricochet1 GUNRICO1 // Marathon
+weapon/gunricochet2 GUNRICO2 // Marathon
+$random weapon/gunricochet {
+    weapon/gunricochet1 weapon/gunricochet2
+}
+
 weapon/tyrantswing TYNTSWIN // King of Fighters 2002
 weapon/tyrantcrack TYNTCRAK // SNK vs Capcom: SVC Chaos
 weapon/tyrantsmack TYNTSMAK // Garou: Mark of the Wolves
