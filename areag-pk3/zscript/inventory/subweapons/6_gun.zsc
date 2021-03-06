@@ -1,6 +1,6 @@
 class RevolverAmmo : Ammo {
     Default {
-        inventory.icon "ICOSW1";
+        inventory.icon "ICOSW6";
         inventory.amount 1;
         inventory.maxamount 6;
     }
@@ -47,14 +47,17 @@ extend class AREAGProtoWeapon {
             SGHD E 0 A_StartSubFiringSequence();
             SGHD E 0 A_StartSound("weapon/gunfire", CHAN_WEAPON);
             SGHD E 0 A_TakeInventory("RevolverAmmo", 1);
-            SGHD E 0 A_FireProjectile("RevolverShot", 0, 0, invoker.handedPos(-10), 10);
+            SGHD E 0 A_FireProjectile("RevolverShot", 0, 0, invoker.handedPos(-20), 12);
             SGHD EFGHBC 1;
             SGHD E 0 A_FinishSubFiringSequence();
             SGHD DDDDDDDDDDDDDDDDDDDD 1 A_SubRefire("RevolverRefireWait", "RevolverWait");
             goto RevolverReady;
         RevolverRefireWait:
+            SGHD E 0 A_StartSubFiringSequence();
+        RevolverRefireWaitLoop:
             SGHD D 1;
-            SGHD D 0 A_SubRefire("RevolverRefireWait", "RevolverWait");
+            SGHD D 0 A_SubRefire("RevolverRefireWaitLoop", "RevolverWait");
+            SGHD E 0 A_FinishSubFiringSequence();
             SGHD DDDDDDDDDDDDDDDDDDDD 1 A_SubRefire("RevolverFire", "RevolverWait");
             goto RevolverReady;
         RevolverOffWindup:
