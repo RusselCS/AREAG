@@ -1,0 +1,18 @@
+class WardingPendantPickup : BasicInventory
+{
+    Default
+    {
+        BasicInventory.PickupType PICKTYPE_ARTIFICE;
+        BasicInventory.PickupID PICKMSG_PENDANT;
+        BasicInventory.CheckItem "PendantProtection";
+	    Scale 2.5;
+    }
+	States
+	{
+	SpawnFrames:
+		PSVE A 1;
+		loop;
+	}
+}
+
+class PendantProtection : Once {}

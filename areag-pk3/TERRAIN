@@ -28,7 +28,21 @@ terrain advwater
 	liquid
 }
 
+terrain advslime
+{
+	splash InSplash
+	liquid
+
+	friction 0.8
+
+	damagetype "Slime"
+	damageamount 1
+	damagetimemask 1
+}
+
 floor ANAWAT advwater
 floor FCWATX advwater
 floor LIWATX advwater
 floor CCBBWAT0 advwater
+
+floor LIWATX advslime

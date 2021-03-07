@@ -238,9 +238,10 @@ script "movement_standing" (void)
 int waterSectors[64];
 int sectorSlot = 0;
 
-script "movement_water_map" (int height)
+script "movement_water_map" (int unused)
 {
 	int tid = ActivatorTID();
+	SetThingSpecial(0, 0, 255, 255);
 	
 	if(tid == 0)
 	{
@@ -280,7 +281,8 @@ script "movement_water_player" (void)
 	
 	int pln = PlayerNumber();
 	int tid = pln+1000;
-	
+	int effectCooldown = 0;
+	bool waterActive = false;
 	int waterSlot = -1;
 	
 	Delay(1);
@@ -289,13 +291,29 @@ script "movement_water_player" (void)
 		int waterMode = getPlayerWaterLevel();
 		bool headUnderWater = waterMode >> 1;
 		bool legsUnderWater = waterMode - (headUnderWater << 1);
+
+		if(headUnderWater || legsUnderWater) {
+			if(!waterActive) {
+				waterActive = true;
+				waterSlot = getWaterSlot();
+			}
+			if(effectCooldown == 0) {
+				effectCooldown = ACS_NamedExecuteWithResult("map_water_function", GetActorProperty(waterSectors[waterSlot], APROP_Score), waterMode);
+			} else {
+				effectCooldown--;
+			}
+		} else {
+			if(waterActive) {
+				waterActive = false;
+				effectCooldown = 0;
+			}
+		}
 		
 		if(headUnderWater)
 		{
 			if(CheckInventory("HeadUnderwater")==0)
 			{
 				GiveInventory("HeadUnderwater", 1);
-				waterSlot = getWaterSlot();
 				PlaySound(tid, "misc/WaterLoop", CHAN_AUTO, 0.5, true);
 				Thing_Activate(waterSectors[waterSlot]);
 			}

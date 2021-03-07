@@ -372,6 +372,25 @@ script "tablet_distanceCheck" (void)
 	}
 }
 
+script "map_water_function" (int effect, int waterMode) {
+	int effectCooldown = 0;
+	int tid = ActivatorTID();
+	SetActivator(-1);
+
+	switch(effect) {
+		default:
+		case 0: // Basic water. Do nothing.
+			effectCooldown = 35;
+			break;
+		case 1: // Slime from Lost Impact.
+			Thing_Damage(tid, 1, MOD_SLIME);
+			effectCooldown = 1;
+			break;
+	}
+	
+	SetResultValue(effectCooldown);
+}
+
 script "map_queueEvent" (int evt)
 {
 	int levelNum = GetLevelInfo(LEVELINFO_LEVELNUM);

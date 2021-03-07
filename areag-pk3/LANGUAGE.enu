@@ -71,6 +71,9 @@ PU_BOLA = "Sub temporarily locks enemies in place.";
 AR_REVOLVER = "EVENING STAR";
 PU_REVOLVER = "Sub fires instantly, dealing critical damage to targets.";
 
+AR_PENDANT = "WARDING PENDANT";
+PU_PENDANT = "Grants immunity to damage from Luminite Sludge.";
+
 // TABLETS
 
 TABLET_TESTMAP_0 = "This is a puzzle tablet. Read the other using nova pack.";

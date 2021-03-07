@@ -21,8 +21,6 @@ class WaterSector : SoundEnvironment
 	Spawn:
 		TNT1 A 0;
 		TNT1 A 0 ACS_NamedExecuteAlways("movement_water_map", 0);
-		TNT1 A 0 A_SetArg(0, 255); // Water Reverb args
-		TNT1 A 0 A_SetArg(1, 255);
 		TNT1 A 1;
 		goto Super::Spawn;
 	}
