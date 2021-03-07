@@ -231,8 +231,6 @@ mixin class AREAG_Common
 		min = normalizeAngle(min);
 		max = normalizeAngle(max);
 
-		Console.printf("Checking if angle %f is between %f and %f...", src, min, max);
-
 		if (min < max) {
 			return min <= src && src <= max;
 		} else {

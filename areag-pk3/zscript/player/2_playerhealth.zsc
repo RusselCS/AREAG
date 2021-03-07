@@ -80,7 +80,6 @@ extend class AREAGPlayerPawn {
 			if(CountInv("ShieldPower") > 0) {
 				double dmgAng = VectorAngle(inflictor.pos.x - pos.x, inflictor.pos.y - pos.y);
 				if(angleBetween(angle, dmgAng-30.0, dmgAng+30.0)) {
-					A_Log("Defend!!");
 					dmg = 0;
 				}
 			}

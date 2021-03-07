@@ -149,32 +149,6 @@ class IronShield : AREAGProtoWeapon
 
 class ShieldPower : Once {}
 
-class IronShieldWall : HitboxDebug
-{
-    action void updatePosition(int dist, float zPos) {
-        A_Warp(args[1], dist, 0, 0, args[0], WARPF_NOCHECKPOSITION|WARPF_INTERPOLATE|WARPF_USETID);
-
-        A_Log(String.format("WHERE %d", abs(pos.z-zPos)));
-    }
-
-    Default
-    {
-        +SHOOTABLE;
-        -SOLID;
-        +GHOST;
-        +NOGRAVITY;
-        +SLIDESONWALLS;
-        Height 64;
-        Radius 7;
-    }
-    States
-    {
-    Spawn:
-        TNT1 A 2;
-        wait;
-    }
-}
-
 class IronShieldProjectile : BasicProjectile
 {
     Default

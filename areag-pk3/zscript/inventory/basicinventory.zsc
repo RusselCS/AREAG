@@ -23,7 +23,6 @@ class BasicInventory : CustomInventory
                 toucher.A_GiveInventory(sCheckItem, 1);
             }
         }
-        A_Log(String.format("Pickup for class %s %s", ret ? "true" : "false", getClassName()));
         return ret;
     }
 
