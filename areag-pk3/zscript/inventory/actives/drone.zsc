@@ -203,8 +203,11 @@ extend class AREAGPlayerPawn {
             }
         }
 
-        if(CountInv("LegsUnderwater") > 0 || CountInv("HeadUnderwater") > 0) {
+        if(CountInv("LegsUnderwater") > 0 ||
+           CountInv("HeadUnderwater") > 0 ||
+           CountInv("DroneRevertFlag") > 0) {
             transformFromDrone();
+            A_TakeInventory("DroneRevertFlag", 1);
         }
     }
 
@@ -315,6 +318,7 @@ class PlayerTempHealth : Counter {}
 class MapTransition : Once {}
 
 class DroneFlag : Once {}
+class DroneRevertFlag : Once {} // For reverting the drone form in something that isn't part of the Drone's core functions.
 
 class DroneLaser : BasicProjectile
 {
