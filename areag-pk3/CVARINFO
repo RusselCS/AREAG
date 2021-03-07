@@ -12,6 +12,7 @@ user noarchive bool db_spawn_changemap = true;
 
 // TEST MAP VARIABLES
 server int db_enemytestterrain = 0;
+server int db_mapexitdest = 0;
 
 // SAVE SYSTEM
 user noarchive string SAVE_OUTSKIRTS_EVENT_0 = "000000000000000";

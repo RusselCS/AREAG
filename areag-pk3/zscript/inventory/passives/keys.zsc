@@ -1,4 +1,4 @@
-class KeyBase : Inventory
+class KeyBase : Once
 {
     static const String[] keys = {
         "RubyGateKey",
@@ -6,13 +6,6 @@ class KeyBase : Inventory
         "PeridotGateKey",
         "GoldGateKey"
     };
-
-    // TO DO: ANY OTHER LOGIC NEEDED
-    Default
-    {
-        Inventory.maxamount 1;
-        inventory.amount 1;
-    }
 }
 
 class RubyGateKey : KeyBase {}

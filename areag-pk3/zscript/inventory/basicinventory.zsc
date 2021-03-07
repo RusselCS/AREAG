@@ -20,7 +20,7 @@ class BasicInventory : CustomInventory
         if(ret) {
             BasicPickup(toucher);
             if(sCheckItem) {
-                A_GiveInventory(sCheckItem, 1);
+                toucher.A_GiveInventory(sCheckItem, 1);
             }
         }
         A_Log(String.format("Pickup for class %s %s", ret ? "true" : "false", getClassName()));
