@@ -13,7 +13,6 @@ class ChakramShieldPickup : BasicInventory
         CSHL A 1;
         loop;
     PickupEffect:
-        CSHL A 0 A_GiveInventory("ChakramShield", 1);
         CSHL A 0 A_GiveInventory("ChakramStock", 1);
         CSHL A 0 A_SelectWeapon("ChakramShield");
         stop;

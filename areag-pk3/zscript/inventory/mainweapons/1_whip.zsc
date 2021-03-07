@@ -14,7 +14,6 @@ class LeatherWhipPickup : BasicInventory
         WHPZ A 1;
         loop;
     PickupEffect:
-        WHPZ A 0 A_GiveInventory("AdventureWhip", 1);
         WHPZ A 0 A_SelectWeapon("AdventureWhip");
         stop;
     }

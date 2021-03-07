@@ -11,13 +11,9 @@ class SubWeaponPickup : BasicInventory
     property AmmoGive: iAmmoGive;
     property WeaponName: sWeaponName;
 
-    override bool TryPickup(in out Actor toucher)
+    override void BasicPickup(Actor toucher)
     {
-        bool ret = super.TryPickup(toucher);
-        if(ret) {
-            queueSubWeapon(toucher);
-        }
-        return ret;
+        queueSubWeapon(toucher);
     }
 
     void queueSubWeapon(Actor who) {

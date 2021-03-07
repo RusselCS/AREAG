@@ -12,7 +12,6 @@ class IronShieldPickup : BasicInventory
         TSHL A 1;
         loop;
     PickupEffect:
-        TSHL A 0 A_GiveInventory("IronShield", 1);
         TSHL A 0 A_SelectWeapon("IronShield");
         stop;
     }

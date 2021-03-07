@@ -15,7 +15,6 @@ class DronePickup : BasicActiveInventory
 
     override void giveItemTrigger(AREAGPlayerPawn plr) {
 		plr.A_GiveInventory("DroneBattery", 100);
-		plr.A_GiveInventory("DroneTrigger", 1);
 		plr.pushToggleTrigger(new("ToggleStateMap").Init("DroneFlag", "DroneOff"));
 	}
 

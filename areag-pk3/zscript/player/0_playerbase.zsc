@@ -9,6 +9,7 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
 
     Array<SubWeapon> subs;
     Array<ToggleStateMap> toggles;
+    Array<PlayerPassive> passives;
 
     bool isPushingBlock;
     AREAGPushBlock block;
@@ -37,6 +38,10 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
             {
                 // A_Log(subs[iSelectedWep].weaponName);
             }
+        }
+
+        for(int i = 0; i < passives.size(); i++) {
+            passives[i].passiveTick(AREAGPlayerPawn(self));
         }
     }
 
@@ -97,6 +102,10 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
             }
         }
         return null;
+    }
+
+    void pushPassiveEffect(PlayerPassive pass) {
+        passives.push(pass);
     }
     
     override void AREAGInit() {

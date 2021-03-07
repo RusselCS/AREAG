@@ -1,0 +1,19 @@
+class BasicPassive : BasicInventory
+{
+    PlayerPassive cls;
+
+    virtual void definePickup() {}
+
+    override void BasicPickup(Actor toucher) {
+        A_log("pickup pushing now");
+        definePickup();
+        AREAGPlayerPawn plr = AREAGPlayerPawn(toucher);
+        plr.pushPassiveEffect(cls);
+    }
+}
+
+class PlayerPassive : Thinker
+{
+    mixin AREAG_Common;
+    virtual void passiveTick(AREAGPlayerPawn plr) {}
+}

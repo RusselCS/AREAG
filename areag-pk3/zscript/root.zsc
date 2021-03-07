@@ -41,6 +41,7 @@
 #include "zscript/inventory/actives/horn.zsc"
 
 // PASSIVE ITEMS
+#include "zscript/inventory/passives/_BasicPassive.zsc"
 #include "zscript/inventory/passives/boots.zsc"
 #include "zscript/inventory/passives/keys.zsc"
 

@@ -11,6 +11,24 @@ class BasicInventory : CustomInventory
     property PickupType: ptType;
     property CheckItem: sCheckitem;
 
+    override bool TryPickup(in out Actor toucher)
+    {
+        bool ret = super.TryPickup(toucher);
+        if(sCheckItem) {
+            ret = ret && toucher.CountInv(sCheckitem) == 0;
+        }
+        if(ret) {
+            BasicPickup(toucher);
+            if(sCheckItem) {
+                A_GiveInventory(sCheckItem, 1);
+            }
+        }
+        A_Log(String.format("Pickup for class %s %s", ret ? "true" : "false", getClassName()));
+        return ret;
+    }
+
+    virtual void BasicPickup(Actor toucher) {}
+
     action void A_PickupSequence() {
         if(invoker.inWorld) {
             ACS_NamedExecuteAlways("pickups_displayMessage", 0, invoker.ptType, invoker.iPickupId);
@@ -72,7 +90,6 @@ class BasicInventory : CustomInventory
         TNT1 A 0 A_JumpIf(true, "SpawnFrames");
         goto SpawnFrames;
     Pickup:
-        TNT1 A 0 A_JumpIfInventory(invoker.sCheckItem, 1, "PickupFail");
         TNT1 A 0 A_PickupSequence();
         TNT1 A 0 A_JumpIf(true, "PickupEffect");
         goto PickupEffect;

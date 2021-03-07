@@ -11,9 +11,6 @@ class GravityGlovesPickup : BasicInventory
     SpawnFrames:
         MAGG A 1;
         loop;
-    PickupEffect:
-        MAGG A 0 A_GiveInventory("GravityGloves", 1);
-        stop;
     }
 }
 
