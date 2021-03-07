@@ -77,38 +77,42 @@ extend class AREAGPlayerPawn {
             return super.DamageMobj(inflictor, source, dmg, mod, flags, ng);
         } else {
 
-			if(CountInv("ShieldPower") > 0) {
-				double dmgAng = VectorAngle(inflictor.pos.x - pos.x, inflictor.pos.y - pos.y);
-				if(angleBetween(angle, dmgAng-30.0, dmgAng+30.0)) {
-					dmg = 0;
+			if(CountInv("DroneFlag") > 0) {
+				return super.DamageMobj(inflictor, source, dmg, mod, flags, ng);
+			} else {
+				if(CountInv("ShieldPower") > 0) {
+					double dmgAng = VectorAngle(inflictor.pos.x - pos.x, inflictor.pos.y - pos.y);
+					if(angleBetween(angle, dmgAng-30.0, dmgAng+30.0)) {
+						dmg = 0;
+					}
 				}
+
+				int currentShield = CountInv("ArmorBars");
+				int targetHP = health - dmg;
+				bool imhit = false;
+
+				if(areag_calcHPBars(targetHP) < currentShield) {
+					targetHP = areag_calcHPBars(targetHP) * HP_SEG_MAX;
+					imhit = true;
+				}
+				int trueDmg = health - targetHP;
+
+				trueDmg = super.DamageMobj(inflictor, source, trueDmg, mod, flags, ng);
+				updateHealth();
+
+				if(health == 1) {
+					imhit = true;
+					bBUDDHA = false;
+					A_SetInventory("ArmorBars", 0);
+				}
+
+				if(imhit) {
+					A_StartSound("player/ouch", CHAN_VOICE);
+					ACS_NamedExecuteAlways("status_invuln", 0);
+				}
+				
+				return trueDmg;
 			}
-
-			int currentShield = CountInv("ArmorBars");
-			int targetHP = health - dmg;
-			bool imhit = false;
-
-			if(areag_calcHPBars(targetHP) < currentShield) {
-				targetHP = areag_calcHPBars(targetHP) * HP_SEG_MAX;
-				imhit = true;
-			}
-			int trueDmg = health - targetHP;
-
-			trueDmg = super.DamageMobj(inflictor, source, trueDmg, mod, flags, ng);
-			updateHealth();
-
-            if(health == 1) {
-                imhit = true;
-                bBUDDHA = false;
-                A_SetInventory("ArmorBars", 0);
-            }
-
-			if(imhit) {
-				A_StartSound("player/ouch", CHAN_VOICE);
-				ACS_NamedExecuteAlways("status_invuln", 0);
-			}
-			
-			return trueDmg;
 		}
 	}
 }

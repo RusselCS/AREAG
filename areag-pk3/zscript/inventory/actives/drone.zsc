@@ -169,6 +169,11 @@ extend class AREAGPlayerPawn {
 
         A_SetSize(dBaseRadius, dBaseHeight);
         ViewHeight = dBaseViewHeight;
+        if(CountInv("ArmorBars") > 0) {
+            bBUDDHA = true;
+        } else {
+            bBUDDHA = false;
+        }
     }
 
     override void AREAGDroneTick() {
