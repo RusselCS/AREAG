@@ -5,6 +5,7 @@ class SavePoint : Actor
         //$Category AREAG-Map Tools
         //$Title Save Point
         //$Sprite E0WCJ0
+        //$Arg0 Start Number
         radius 32;
         height 128;
         +NOINTERACTION;
