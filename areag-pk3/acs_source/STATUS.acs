@@ -45,7 +45,7 @@ script "status_enter" ENTER
 	// 	{
 	// 		int health = GetActorProperty(0, APROP_HEALTH);
 	// 		int bars = max(0, barCount(health));
-	// 		int shieldBars = CheckInventory("ShieldBars");
+	// 		int armorBars = CheckInventory("ArmorBars");
 	// 		int healthCount = health % HEALTH_PIECE;
 	// 		if(healthCount == 0)
 	// 		{
@@ -54,14 +54,14 @@ script "status_enter" ENTER
 			
 	// 		if(health < prevHealth && health == 1)
 	// 		{
-	// 			SetInventory("ShieldBars", 0);
+	// 			SetInventory("ArmorBars", 0);
 	// 			SetPlayerProperty(false, false, PROP_BUDDHA);
 	// 			ACS_NamedExecuteAlways("status_invuln", 0);
 	// 		}
 			
-	// 		if(shieldCount(health) > CheckInventory("shieldBars"))
+	// 		if(shieldCount(health) > CheckInventory("ArmorBars"))
 	// 		{
-	// 			SetInventory("ShieldBars", shieldCount(health));
+	// 			SetInventory("ArmorBars", shieldCount(health));
 	// 			SetPlayerProperty(false, true, PROP_BUDDHA);
 	// 		}
 			
@@ -70,9 +70,9 @@ script "status_enter" ENTER
 	// 		{
 	// 			if(bars < CheckInventory("healthBars"))
 	// 			{
-	// 				if(bars < shieldBars && health != 1)
+	// 				if(bars < ArmorBars && health != 1)
 	// 				{
-	// 					SetInventory("ShieldBars", bars);
+	// 					SetInventory("ArmorBars", bars);
 	// 					SetActorHealth(0, bars * HEALTH_PIECE);
 	// 					ACS_NamedExecuteAlways("status_invuln", 0);
 	// 				}
@@ -88,7 +88,7 @@ script "status_enter" ENTER
 	// 		if(maxHealthBars > CheckInventory("MaxHealthBars"))
 	// 		{
 	// 			maxHealthBars = CheckInventory("MaxHealthBars");
-	// 			setInventory("ShieldBars", min(maxHealthBars, CheckInventory("ShieldBars")));
+	// 			setInventory("ArmorBars", min(maxHealthBars, CheckInventory("ArmorBars")));
 	// 			setInventory("HealthBars", min(maxHealthBars, CheckInventory("HealthBars")));
 	// 			SetActorHealth(0, min(maxHealthBars*HEALTH_PIECE, GetActorHealth(0)));
 	// 			healthCount = GetActorHealth(0) % HEALTH_PIECE;

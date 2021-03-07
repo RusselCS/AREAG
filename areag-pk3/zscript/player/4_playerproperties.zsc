@@ -13,7 +13,6 @@ class AREAGPlayer : AREAGPlayerPawn
         player.startitem "BreathTime", 100;
         player.startitem "MaxHealthBars", 4;
         player.startitem "HealthBars", 4;
-        player.startitem "ShieldBars", 4;
         Player.FallingScreamSpeed 35.0, 1000.0;
         player.viewheight 60.0;
 		player.attackzoffset 20.0;
@@ -127,7 +126,7 @@ class BaseMoveSpeed : Counter {}
 
 class MaxHealthBars : Counter {}
 class HealthBars : Counter {}
-class ShieldBars : Counter {}
+class ArmorBars : Counter {}
 class HealthCounter : Counter
 {
     Default

@@ -73,20 +73,25 @@ Class AREAGStatusBar : BaseStatusBar {
             DrawImage("BAREHP", (xOffs + hpXOffs*i, -yOffs - barYOffs));
 
             if(pl.countInv("HealthBars") >= i) {
-                if(i > 1) {
-                    DrawImage("BARSHP", (xOffs + hpXOffs*(i-1), -yOffs - barYOffs));
-                }
 
                 String fullBar;
 				[amt, maxamt] = GetAmount("HealthCounter");
 
-                if(pl.countInv("ShieldBars") >= i) {
+                if(pl.countInv("ArmorBars") >= i) {
                     fullBar = "BARSHP";
                 } else {
                     fullBar = "BARVHP";
                 }
 
-                DrawBar(fullBar, "", amt, maxamt, (xOffs + hpXOffs*i, -yOffs - barYOffs), 0, SHADER_HORZ);
+                if(i == pl.countInv("HealthBars")) {
+                    DrawBar(fullBar, "", amt, maxamt, (xOffs + hpXOffs*i, -yOffs - barYOffs), 0, SHADER_HORZ);
+                } else {
+                    if(pl.countInv("ArmorBars") >= i) {
+                        DrawImage("BARSHP", (xOffs + hpXOffs*i, -yOffs - barYOffs));
+                    } else {
+                        DrawImage("BARVHP", (xOffs + hpXOffs*i, -yOffs - barYOffs));
+                    }
+                }
             }
         }
 
