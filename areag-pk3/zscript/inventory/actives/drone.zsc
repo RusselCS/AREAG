@@ -60,6 +60,7 @@ class DroneTrigger : BasicActiveTrigger
 const DRONESIZE_RADIUS = 12;
 const DRONESIZE_HEIGHT = 24;
 const DRONESIZE_VIEWHEIGHT = 20;
+const DRONESIZE_ATTACKZOFFSET = 5;
 const DRONEHP_COOLDOWN = 35;
 
 extend class AREAGProtoWeapon {
@@ -132,6 +133,7 @@ extend class AREAGPlayerPawn {
 
         A_SetSize(DRONESIZE_RADIUS, DRONESIZE_HEIGHT);
         ViewHeight = DRONESIZE_VIEWHEIGHT;
+        attackZOffset = DRONESIZE_ATTACKZOFFSET;
 
         iLevelNum = level.levelnum;
 
@@ -169,6 +171,7 @@ extend class AREAGPlayerPawn {
 
         A_SetSize(dBaseRadius, dBaseHeight);
         ViewHeight = dBaseViewHeight;
+        attackZOffset = dBaseAttackZOffset;
         if(CountInv("ArmorBars") > 0) {
             bBUDDHA = true;
         } else {
@@ -312,7 +315,7 @@ class DronePlasmaGun : Weapon
 		SDRW B 0 A_FireProjectile("DroneLaser", 0, 0, -8, 0);
 		SDRW B 0 A_FireProjectile("DroneLaser", 0, 0, 8, 0);
 		SDRW B 2 BRIGHT;
-		SDRW CD 4;
+		SDRW CDEFFGGH 1;
 		SDRW A 8;
 		Goto Ready;
 	}
@@ -325,7 +328,7 @@ class MapTransition : Once {}
 class DroneFlag : Once {}
 class DroneRevertFlag : Once {} // For reverting the drone form in something that isn't part of the Drone's core functions.
 
-class DroneLaser : BasicProjectile
+class DroneLaser : BasicFastProjectile
 {
     Default
     {

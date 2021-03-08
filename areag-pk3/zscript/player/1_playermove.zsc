@@ -26,6 +26,7 @@ extend class AREAGPlayerPawn {
 	double dBaseHeight;
     double dBaseViewHeight;
     double dBaseStepHeight;
+    double dBaseAttackZOffset;
 
     int airTime;
     int jumpDelay;
@@ -46,6 +47,7 @@ extend class AREAGPlayerPawn {
 	    dBaseHeight = height;
         dBaseViewHeight = viewHeight;
         dBaseStepHeight = maxstepheight;
+        dBaseAttackZOffset = attackZOffset;
         
         setBaseJumpSpeed(dBaseJump);
         setBaseWalkSpeed(dBaseSpeed);
