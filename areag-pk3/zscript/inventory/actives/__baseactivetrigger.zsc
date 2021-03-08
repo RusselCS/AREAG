@@ -36,6 +36,10 @@ class BasicActiveTrigger : BasicInventory
 		return ResolveState("TreasureUse");
 	}
 
+	StateLabel getInterruptState() {
+		return AREAGPlayerPawn(self).getInterruptState();
+	}
+
 	action void A_SetInterruptState(StateLabel input) {
 		AREAGPlayerPawn(self).setInterruptState(input);
 	}
