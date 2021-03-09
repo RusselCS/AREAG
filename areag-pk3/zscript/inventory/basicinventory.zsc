@@ -230,7 +230,14 @@ class MapPickup : Actor
             sTid = tid;
             Thing_ChangeTID(0, 0);
             [spawned, child] = A_SpawnItemEx(pickup, 0, 0, 16, 0, 0, 0, 0, SXF_TRANSFERSPECIAL, 0, sTid);
-            child.score = score;
+            if(spawned) {
+                if(bSTANDSTILL) {
+                    child.bFLOATBOB = false;
+                }
+                child.score = score;
+            } else {
+                A_Log(String.format("Failed to spawn Pickup %s", pickup));
+            }
         } else {
             A_CallSpecial(special, args[0], args[1], args[2], args[3], args[4]);
         }

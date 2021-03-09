@@ -38,8 +38,107 @@ class MapUtilInit : StaticEventHandler
         // addMap(new("AREAGMapData").Init(8, "ADV07", "MCRNE_07", "$NAME_ADV07", "TI07", "SAVE_SHADOWS"));
         // addMap(new("AREAGMapData").Init(9, "ADV08", "MCRNE_08", "$NAME_ADV08", "TI08", "SAVE_TEMPORAL"));
         // addMap(new("AREAGMapData").Init(10, "ADV09", "MCRNE_09", "$NAME_ADV09", "TI09", "SAVE_THRONE"));
-        addMap(new("AREAGMapData").Init(100, "TESTMAP", "MCRNE_09", "$NAME_ADV09", "TIX0", "SAVE_THRONE"));
-        addMap(new("AREAGMapData").Init(101, "TESTMAP2", "MCRNE_09", "$NAME_ADV09", "TIX1", "SAVE_THRONE"));
+        addMap(new("AREAGMapData").Init(100, "TESTMAP", "MCRNE_09", "$NAME_ADV09", "TIX0", "SAVE_TESTMAP_1"));
+        // Tier 1 Subweapons
+        latest.addPickup("KnifePouchPickup");
+        latest.addPickup("SeedPouchPickup");
+        latest.addPickup("DynamiteCratePickup");
+        latest.addPickup("SoulLampPickup");
+        latest.addPickup("BolaSackPickup");
+        latest.addPickup("RevolverPickup");
+        
+        // Tier 2 Subweapons
+        latest.addPickup("SparkKnifeUpgrade");
+        latest.addPickup("FertilizerUpgrade");
+        latest.addPickup("ClusterChargeUpgrade");
+        latest.addPickup("AnchorBeadsUpgrade");
+        latest.addPickup("CounterWeightUpgrade");
+        latest.addPickup("LaserGunUpgrade");
+
+        // Subweapon hats
+        latest.addPickup("KnifeHatPickup");
+        latest.addPickup("SeedHatPickup");
+        latest.addPickup("DynamiteHatPickup");
+        latest.addPickup("SoulHatPickup");
+        latest.addPickup("BolaHatPickup");
+        latest.addPickup("RevolverHatPickup");
+
+        // Subweapon super scrolls
+        latest.addPickup("DaggerDanceScroll");
+        latest.addPickup("FrenzyWaveScroll");
+        latest.addPickup("BigBangScroll");
+        latest.addPickup("SpectralEchoesScroll");
+        latest.addPickup("SpinCycleScroll");
+        latest.addPickup("PhotonEraserScroll");
+
+        // Mobility Upgrades
+        latest.addPickup("GearGreavesPickup");
+        latest.addPickup("SteamGreavesPickup");
+        latest.addPickup("NovaPackPickup");
+        latest.addPickup("DronePickup");
+        latest.addPickup("BeeDronePickup");
+
+        // Keys
+        latest.addPickup("RubyKeyPickup");
+        latest.addPickup("CobaltKeyPickup");
+        latest.addPickup("PeridotKeyPickup");
+        latest.addPickup("GoldKeyPickup");
+        latest.addPickup("DarkEyePickup");
+        latest.addPickup("HornPickup");
+        latest.addPickup("MinecartPassPickup");
+        latest.addPickup("MembershipCardPickup");
+
+        // Passive hats
+        latest.addPickup("TopHatPickup");
+        latest.addPickup("ExplorerHatPickup");
+        latest.addPickup("PirateHatPickup");
+        latest.addPickup("ChefToquePickup");
+        latest.addPickup("MiningHatPickup");
+        latest.addPickup("BatteryHatPickup");
+        latest.addPickup("BerserkerHelmetPickup");
+        latest.addPickup("PlagueMaskPickup");
+
+        // Melee weapons
+        latest.addPickup("LeatherWhipPickup");
+        latest.addPickup("ChainWhipPickup");
+        latest.addPickup("LaserWhipPickup");
+        latest.addPickup("IronShieldPickup");
+        latest.addPickup("ChakramShieldPickup");
+        latest.addPickup("GravityGlovesPickup");
+
+        // Passive scrolls
+        latest.addPickup("QuickReflexesScroll");
+        latest.addPickup("SwimmingLessonsScroll");
+        latest.addPickup("GripLashScroll");
+        latest.addPickup("EfficientVandalScroll");
+        latest.addPickup("MedicalRecordsScroll");
+        latest.addPickup("ShockAbsorberScroll");
+
+        // Passive upgrades
+        latest.addPickup("WardingPendantPickup");
+        latest.addPickup("ClockBeltPickup");
+        latest.addPickup("BadgePickup");
+
+        // Toggle items
+        latest.addPickup("TransceiverPickup");
+        latest.addPickup("MaskPickup");
+        latest.addPickup("GogglesPickup");
+        latest.addPickup("TimepiecePickup");
+        latest.addPickup("SpectreCloakPickup");
+        latest.addPickup("MonocleterPickup");
+        latest.addPickup("GhostWalkPickup");
+
+        // Consumables - Spawned by Shop in the TestMap
+        latest.addPickup("ArmorCrashPickup");
+        latest.addPickup("MaxAmmoUp");
+        latest.addPickup("MaxHealthUp");
+        latest.addPickup("AmmoPickup");
+        latest.addPickup("ArmorPickup");
+        latest.addPickup("FoodPickup");
+        latest.addPickup("DrinkPickup");
+        latest.addPickup("LuminiteOrbPickup");
+
+        addMap(new("AREAGMapData").Init(101, "TESTMAP2", "MCRNE_09", "$NAME_ADV09", "TIX1", "SAVE_TESTMAP_2"));
     }
 
     private void AddMap(AREAGMapData map)
