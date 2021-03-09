@@ -411,7 +411,7 @@ script "map_loadEvents" OPEN
 
 script "map_savepoint" (int doorNum)
 {
-	PrintBold(s:"Save Point Triggered", i:doorNum);
+	PrintBold(s:"Save Point Triggered: ", i:doorNum);
 
 	int save = GetCVar("SAVE_PICKER");
 	int levelNum = GetLevelInfo(LEVELINFO_LEVELNUM);

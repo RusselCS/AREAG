@@ -5,7 +5,6 @@ class BreakableWall : BasicActor
         //$Category AREAG-Map Tools
         //$Title Breakable Wall
         //$Sprite E0WCK0
-        //$Arg0 Model ID
         +BasicActor.SHOWHITBOX;
         +NOGRAVITY;
         +SOLID;
@@ -47,7 +46,7 @@ class BreakableWall : BasicActor
     override void BasicTick() {
         super.BasicTick();
 
-        self.frame = args[0];
+        self.frame = score;
     }
 
     States
