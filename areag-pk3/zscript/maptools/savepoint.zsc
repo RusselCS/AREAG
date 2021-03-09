@@ -6,6 +6,8 @@ class SavePoint : Actor
         //$Title Save Point
         //$Sprite E0WCJ0
         //$Arg0 Start Number
+        //$NotAngled
+        Scale 8.0;
         radius 32;
         height 128;
         +NOINTERACTION;

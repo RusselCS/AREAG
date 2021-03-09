@@ -1,8 +1,15 @@
 class ObArcherSpawner : EnemySpawner
 {
+    //$Category AREAG-Enemies
+    //$Title Ob Archer
+	//$Sprite KNIGA2A8
+
     Default
     {
         EnemySpawner.EnemyType "ObArcher";
+        Height 62;
+        Radius 16;
+        Scale 1.1;
     }
 }
 
@@ -60,7 +67,7 @@ class ObArcher : BasicEnemy
         if(CheckIfTargetInLOS(0, 0, 0, 0)) {
             if(Distance3D(invoker.target) < 1024) {
                 if(invoker.watchTime > 0) {
-                    invoker.watchTime -= invoker.maxWatchTime/2;//random(1, 3);
+                    invoker.watchTime -= random(1, 3);
                 } else {
                     invoker.watchTime = invoker.maxWatchTime;
                     return ResolveState("Draw");
@@ -81,7 +88,7 @@ class ObArcher : BasicEnemy
         A_FaceTarget();
 
         if(invoker.drawTime > 0) {
-            invoker.drawTime -= invoker.maxDrawTime/2;//random(1, 3);
+            invoker.drawTime -= random(1, 3);
             return ResolveState(null);
         } else {
             invoker.drawTime = invoker.maxDrawTime;

@@ -1,10 +1,10 @@
 // PUSH BLOCKS, FLOOR SWITCHES
 class AREAGPushBlock : BasicActionProp
 {
-    // //$Category AREAG-Map Tools
-    // //$Title Large Stone Block
-	// //$Sprite E0WCF0
-    // //$NotAngled
+    //$Category AREAG-Map Tools
+    //$Title Large Stone Block
+	//$Sprite E0WCF0
+    //$NotAngled
 
     mixin AREAG_Common;
     AREAGPlayerPawn plr;

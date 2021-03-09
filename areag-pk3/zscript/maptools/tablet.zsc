@@ -9,7 +9,7 @@ class TabletActivatable : BasicActionProp
 		Radius 32;
 		-SOLID;
 		+CANPASS;
-		scale 2.5;
+		scale 4.0;
 	}
 
 	int tabletNum;
