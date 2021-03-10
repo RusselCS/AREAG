@@ -7,6 +7,7 @@ class CoinPickup : CustomInventory
         +MISSILE;
         +THRUSPECIES;
         -NOGRAVITY;
+        +CANBOUNCEWATER;
         species "Monster";
         damagefunction (0);
         bouncetype "hexen";

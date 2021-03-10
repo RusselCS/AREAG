@@ -1,3 +1,93 @@
+class JarSpawner : BasicActor
+{
+    Default
+    {
+        +NOINTERACTION;
+        +THRUACTORS;
+        +NOCLIP;
+		JarSpawner.JarType "JarSmall";
+    }
+
+    String sJarType;
+    int iRespawnTime;
+    int respawnCountdown;
+
+    property JarType: sJarType;
+    property RespawnTime: iRespawnTime;
+
+    Actor activeJar;
+    Actor player;
+    bool awaitingRespawn;
+
+    override void BasicInit() {
+        spawnJar();
+        player = GetPointer(AAPTR_PLAYER1);
+
+        if(iRespawnTime == 0) {
+            if(score == 0) {
+                iRespawnTime = 30 * 35;
+            } else {
+                iRespawnTime = score * 35;
+            }
+        }
+    }
+
+    bool canPlayerSee() {
+        return player.IsVisible(self, false);
+    }
+
+    void spawnJar() {
+        bool sp;
+        [sp, activeJar] = A_SpawnItemEx(sJarType);
+        if(sp) {
+            awaitingRespawn = false;
+        } else {
+            A_Log("[JarSpawner] Jar Spawn Failed!");
+        }
+    }
+
+    vector3 jarPos;
+    vector3 orgPos;
+
+    override void BasicTick() {
+		if(!awaitingRespawn) {
+			if(!activeJar) {
+				respawnCountdown = iRespawnTime;
+				awaitingRespawn = true;
+                orgPos = pos;
+                Warp(self, jarPos.x, jarPos.y, jarPos.z, 0, WARPF_ABSOLUTEPOSITION);
+                A_CallSpecial(special, args[0], args[1], args[2], args[3], args[4]);
+			} else {
+                if(jarPos != activeJar.pos) {
+                    jarPos = activeJar.pos;
+                }
+            }
+		} else {
+			if(!canPlayerSee()) {
+				respawnCountdown--;
+				if(respawnCountdown == 0) {
+                    Warp(self, orgPos.x, orgPos.y, orgPos.z, 0, WARPF_ABSOLUTEPOSITION);
+					spawnJar();
+				}
+			}
+		}
+    }
+
+    States
+    {
+    Spawn:
+        TNT1 A 1;
+        wait;
+    ForceRespawn:
+        TNT1 A 0 {
+            if(!activeJar) {
+                spawnJar();
+            }
+        }
+        goto Spawn;
+    }
+}
+
 class JarSmall : ZSCStoneBody
 {
     //$Category AREAG-Map Tools
@@ -14,7 +104,9 @@ class JarSmall : ZSCStoneBody
         +SHOOTABLE;
         +NOBLOOD;
         +CANPASS;
+        +PUSHABLE;
     }
+
 	states
 	{
 		spawn:
@@ -25,6 +117,14 @@ class JarSmall : ZSCStoneBody
 			JAR1 A 0 A_SpawnDebris ("JarPieceSmall", 1, 1.0, 0.55);
 			JAR1 A 0 A_NoBlocking;
 			stop;
+	}
+}
+
+class BigJarSpawner : JarSpawner
+{
+	Default
+	{
+		JarSpawner.JarType "JarBig";
 	}
 }
 
@@ -45,6 +145,7 @@ class JarBig : JarSmall
 			JAR2 A -1;
 			loop;
 		death:
+			JAR1 A 1;
 			JAR2 A 0 A_PlaySoundEx ("misc/jarbreak", "voice");
 			JAR2 A 0 A_SpawnDebris ("JarPieceBig", 1, 0.9, 0.7);
 			JAR2 A 0 A_NoBlocking;

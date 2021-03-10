@@ -16,8 +16,8 @@ DoomEdNums
     10570 = ZSCWallSwitch
 	10573 = BreakableWall
 
-    20000 = JarSmall
-    20001 = JarBig
+    20000 = JarSpawner
+    20001 = BigJarSpawner
     
     30000 = SpearTrap
     30002 = LaserTrap

@@ -455,10 +455,23 @@ script "gateway_events" (int toggle, int action, int unused)
 	case 59: // Waterfall Actors
 		break;
 
-	case 60: // Waterfall Actors
-		break;
-
-	case 61: // Area Gate - Outskirts
+	case 60: // Jars of coins
+	case 61:
+	case 62:
+	case 63:
+	case 64:
+	case 65:
+	case 66:
+	case 67:
+	case 68:
+	case 69:
+		Log(s:"HELP ME");
+		SetThingSpecial(switchTag, 0, 0, 0, 0, 0, 0);
+		int succ = SpawnSpot("CoinDropper", 0, tag2, 0);
+		if(!succ) {
+			Log(s:"FUCK");
+		}
+		SetActorProperty(tag2, APROP_Score, 15);
 		break;
 	}
 }
