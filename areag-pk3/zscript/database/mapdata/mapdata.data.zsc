@@ -38,6 +38,7 @@ class MapUtilInit : StaticEventHandler
         // addMap(new("AREAGMapData").Init(8, "ADV07", "MCRNE_07", "$NAME_ADV07", "TI07", "SAVE_SHADOWS"));
         // addMap(new("AREAGMapData").Init(9, "ADV08", "MCRNE_08", "$NAME_ADV08", "TI08", "SAVE_TEMPORAL"));
         // addMap(new("AREAGMapData").Init(10, "ADV09", "MCRNE_09", "$NAME_ADV09", "TI09", "SAVE_THRONE"));
+        
         addMap(new("AREAGMapData").Init(100, "TESTMAP", "MCRNE_09", "$NAME_ADV09", "TIX0", "SAVE_TESTMAP_1"));
         // Tier 1 Subweapons
         latest.addPickup("KnifePouchPickup");
@@ -72,21 +73,21 @@ class MapUtilInit : StaticEventHandler
         latest.addPickup("PhotonEraserScroll");
 
         // Mobility Upgrades
+        latest.addPickup("BeeDronePickup");
+        latest.addPickup("DronePickup");
+        latest.addPickup("NovaPackPickup");
         latest.addPickup("GearGreavesPickup");
         latest.addPickup("SteamGreavesPickup");
-        latest.addPickup("NovaPackPickup");
-        latest.addPickup("DronePickup");
-        latest.addPickup("BeeDronePickup");
 
         // Keys
+        latest.addPickup("MembershipCardPickup");
+        latest.addPickup("MinecartPassPickup");
+        latest.addPickup("HornPickup");
+        latest.addPickup("DarkEyePickup");
         latest.addPickup("RubyKeyPickup");
         latest.addPickup("CobaltKeyPickup");
         latest.addPickup("PeridotKeyPickup");
         latest.addPickup("GoldKeyPickup");
-        latest.addPickup("DarkEyePickup");
-        latest.addPickup("HornPickup");
-        latest.addPickup("MinecartPassPickup");
-        latest.addPickup("MembershipCardPickup");
 
         // Passive hats
         latest.addPickup("TopHatPickup");
