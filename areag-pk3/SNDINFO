@@ -229,3 +229,11 @@ treasures/hornend_a HORNE5
 props/blockrumble BLKRUMB // LA-MULANA
 
 world/quake dsempty
+
+// --------------------------------------------------
+// MUSIC VOLUME
+// --------------------------------------------------
+$musicvolume M_BEACH 1.0
+$musicvolume M_GATE 1.0
+$musicvolume M_STUDY 0.7
+$musicvolume M_IMPACT 0.7

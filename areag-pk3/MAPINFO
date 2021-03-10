@@ -53,7 +53,7 @@ map ADV00 "Outskirts"
 	levelnum = 1
 	cluster = 1
 	pixelratio = 1.0
-	music = "M_BEACH" // Planet Tallon IV - Kenji Yamamoto
+	music = "M_BEACH" // Tallon Overworld - Kenji Yamamoto
 	sky1 = "TESTSKY1"
 	forcenoskystretch 
 	clipmidtextures
@@ -76,7 +76,7 @@ map ADV02 "Queen's Study"
 	levelnum = 3
 	cluster = 1
 	pixelratio = 1.0
-	music = "M_STUDY"
+	music = "M_STUDY" // Maze of Knowledge - Eiichiro Yanagi
 	sky1 = "BLACK", 0 
 	forcenoskystretch 
 	clipmidtextures
