@@ -4,7 +4,7 @@ class AREAGPlayer : AREAGPlayerPawn
     {
         player.displayname "Clyde";
         player.soundclass "clyde";
-        player.damagescreencolor "yellow";
+        player.damagescreencolor "0.0 0.0 0.0", 0.0;
         player.forwardmove 1.0, 1.0;
         player.sidemove 1.0, 1.0;
         AREAGPlayerPawn.RunSpeed 0.85;

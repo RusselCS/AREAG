@@ -242,3 +242,29 @@ script "status_smallpickup" (int which, int amount)
 			break;
 	}
 }
+
+// zdoom is supposed to be the engine without hacky workarounds for the simplest of things...
+// why does viewheight not increase unless you're going 2x the viewheight
+// this makes no fucking sense. i am very angry about this.
+// ALSO WHY IS IT SMOOTH FUCK UGH.
+script "status_updateviewheight" (int amt, int addset) {
+	//Log(s:"amt: ", i: amt, s:" || addset: ", i:addset);
+	int viewHeight = GetActorProperty(0, APROP_ViewHeight);
+	int goalHeight;
+	amt = amt << 16;
+
+	if(!addset) { // Add
+		goalHeight = viewHeight + amt;
+	} else { // Set
+		goalHeight = amt;
+	}
+
+	// if(goalHeight > viewHeight) {
+	// 	// int transitionHeight = viewHeight + viewHeight + 1.0;
+	// 	// SetActorProperty(0, APROP_ViewHeight, transitionHeight);
+	// 	// Log(s:"Delaying");
+	// 	// delay(1);
+	// }
+
+	SetActorProperty(0, APROP_ViewHeight, goalHeight);
+}

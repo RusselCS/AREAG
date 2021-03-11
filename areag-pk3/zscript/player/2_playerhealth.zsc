@@ -64,6 +64,7 @@ extend class AREAGPlayerPawn {
             }
             return super.DamageMobj(inflictor, source, dmg, mod, flags, ng);
         } else if(mod == "Slime") {
+			A_StartSound("misc/acidbubble", CHAN_7);
 			if(CountInv("DroneFlag") > 0) {
 				A_GiveInventory("DroneRevertFlag", 1);
 			} else {

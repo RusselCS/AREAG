@@ -36,18 +36,27 @@ extend class AREAGPlayerPawn {
 
     Actor aTPPoint;
 
+    double dViewHeightOffset;
+    double dOldViewHeightOffset;
+    int iStepCountdown;
+    const STEPCD_MAX = 5;
+    double dOldViewHeight;
+    bool eyesInit;
+
     void AREAGMoveInit() {
         Thing_ChangeTID(0, PlayerNumber()+1000);
         prevBobXFracMult = 0.0;
         prevBobYFracMult = 0.0;
         prevViewBob = ViewBob;
         iStepCD = 0;
+        eyesInit = false;
 
         dBaseRadius = radius;
 	    dBaseHeight = height;
         dBaseViewHeight = viewHeight;
         dBaseStepHeight = maxstepheight;
         dBaseAttackZOffset = attackZOffset;
+        dViewHeightOffset = 0.0;
         
         setBaseJumpSpeed(dBaseJump);
         setBaseWalkSpeed(dBaseSpeed);
@@ -117,6 +126,9 @@ extend class AREAGPlayerPawn {
 		{
 			if(!bLegsInWater) {
 				gravity = dBaseGravity * WATER_GRAVITY_MULT;
+                if(vel.z < 0) {
+                    A_ChangeVelocity(vel.x, vel.y, vel.z * (WATER_GRAVITY_MULT * 2), CVF_REPLACE);
+                }
 				updateJumpSpeed();
 				A_GiveInventory("WaterSpeed", 1);
 				bLegsInWater = true;
@@ -162,9 +174,33 @@ extend class AREAGPlayerPawn {
         // STAIRS
         if(!bOnGround && bOldOnGround) {
             if(pos.z - floorz <= maxstepheight && vel.z < 0) {
-                Warp(self, 0, 0, -(pos.z - floorz), 0, WARPF_INTERPOLATE);
+                double offs = pos.z - floorz;
+                iStepCountdown = STEPCD_MAX;
+                dViewHeightOffset += offs;
+                // player.ViewHeight += 0.1; - set this later on...
+                changeViewHeight(offs, false);
+                Warp(self, 0, 0, -offs, 0, WARPF_INTERPOLATE);
+
                 bOnGround = true;
             }
+        } else {
+            if(dViewHeightOffset > 0) {
+                double offs = dViewHeightOffset/iStepCountdown;
+                iStepCountdown--;
+                dOldViewHeightOffset = dViewHeightOffset;
+                dViewHeightOffset-=offs;
+                Viewheight -= offs;
+            } else if(dOldViewHeightOffset > 0) {
+                dViewHeightOffset = 0.0;
+                dOldViewHeightOffset = 0.0;
+                changeViewHeight(dBaseViewHeight, true);
+            }
+        }
+
+        if(dOldViewHeight != viewHeight || CountInv("ForceEyeZRefresh") > 0) {
+            //A_Log(String.format("Eyes Z: %f", pos.z + viewHeight));
+            dOldViewHeight = viewHeight;
+            A_TakeInventory("ForceEyeZRefresh", 1);
         }
 
         if(!bOnGround) {
@@ -209,6 +245,10 @@ extend class AREAGPlayerPawn {
                 }
             }
         }
+    }
+
+    void changeViewHeight(int amt, bool setoradd) {
+        ACS_NamedExecuteAlways("status_updateviewheight", 0, amt, setoradd);
     }
 
     override vector2 BobWeapon(double ticfrac)
@@ -339,6 +379,10 @@ class AREAGCrashLand : BasicEffect
 		stop;
 	}
 }
+
+class ForceEyeZRefresh : Once {}
+class IncreaseEyeHeight : Once {}
+class TransitionEyeHeight : Once {}
 
 class AREAGLandSmokeLeft : BasicEffect
 {

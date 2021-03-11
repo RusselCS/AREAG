@@ -8,6 +8,7 @@ $playersound	clyde	male	*pain25		dsempty
 $playersound	clyde	male	*grunt		PLLAND // LA-MULANA
 $playersound	clyde	male	*land		PLLAND // LA-MULANA
 $playersound	clyde	male	*jump		PLJUMP // LA-MULANA
+$playersound    clyde   male    *falling    PLSCREAM // Mortal Kombat X
 $playersound	clyde	male	*fist		dsempty
 $playersound	clyde	male	*usefail	PLLAND // LA-MULANA
 $playersound	clyde	male	*taunt		dsempty
@@ -60,6 +61,7 @@ misc/WaterLoop UNWATER1 // Mega Man ZX
 $volume misc/WaterLoop 0.5
 misc/WaterEnd OUTSPLAS // Steamworld Dig
 misc/JumpSplash JUMPSPLA // Mega Man Star Force
+misc/acidbubble ACIDIN // Metroid: Zero Mission
 
 player/stepdash TAPDASH // Garou: Mark of the Wolves
 player/jetpack jetpack // Catoon sound library- need to trace source. TEMP

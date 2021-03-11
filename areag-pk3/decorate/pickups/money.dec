@@ -1,4 +1,0 @@
-actor Coin1 : ZSCCoinPickup { inventory.amount 1 }
-actor Coin5 : ZSCCoinPickup { inventory.amount 5 }
-actor Coin10 : ZSCCoinPickup { inventory.amount 10 }
-actor Coin50 : ZSCCoinPickup { inventory.amount 50 }
