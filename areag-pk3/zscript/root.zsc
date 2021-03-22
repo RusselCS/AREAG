@@ -45,6 +45,7 @@
 #include "zscript/inventory/passives/boots.zsc"
 #include "zscript/inventory/passives/keys.zsc"
 #include "zscript/inventory/passives/amulet.zsc"
+#include "zscript/inventory/passives/jetpack.zsc"
 
 #include "zscript/inventory/basicinventory.zsc"
 #include "zscript/inventory/currency.zsc"

@@ -6,8 +6,11 @@ extend class AREAGPlayerPawn {
 
     bool shakeScreen;
 
+    int iBatteryRegenStack;
+
     void AREAGStatusInit() {
         shakeScreen = false;
+        iBatteryRegenStack = 0;
     }
 
     void AREAGStatusTick() {
@@ -26,7 +29,7 @@ extend class AREAGPlayerPawn {
             }
         }
         
-        if(CountMaxInv("Battery") > CountInv("Battery") && iDroneRegenTime == 0) {
+        if(iBatteryRegenStack == 0 && CountMaxInv("Battery") > CountInv("Battery") && iDroneRegenTime == 0) {
             iDroneRegenTime = DRONE_REGEN;
             A_GiveInventory("Battery", 1);
         }

@@ -18,8 +18,8 @@ class AREAGProtoPlayer : PlayerPawn {
         Super.postBeginPlay();
         AREAGInit();
 
-        iButtons = GetPlayerInput(INPUT_BUTTONS);
-		iOldButtons = GetPlayerInput(INPUT_OLDBUTTONS);
+        iButtons = GetPlayerInput(MODINPUT_BUTTONS);
+		iOldButtons = GetPlayerInput(MODINPUT_OLDBUTTONS);
         
         lerpVelZ = 0.0;
         zVelLerp = 0.0;

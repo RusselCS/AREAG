@@ -109,7 +109,7 @@ extend class AREAGPlayerPawn {
         }
 
         // JUMPING
-        if((bOnGround || airTime <= COYOTE_TIME) && (BT_JUMP & iButtons) && jumpDelay == 0 && CountInv("FallStunTime") == 0) {
+        if((bOnGround || airTime <= COYOTE_TIME) && (iButtons & BT_JUMP) && jumpDelay == 0 && CountInv("FallStunTime") == 0) {
             jumpDelay = 10;
             Vel.Z = JumpZ * 35 / TICRATE;
             A_StartSound("*jump", CHAN_BODY);
@@ -120,6 +120,10 @@ extend class AREAGPlayerPawn {
 			ThrustThingZ(0, 0, 0, 0);
 			bJumpCancel = false;
 		}
+
+        if(airTime > COYOTE_TIME && vel.z < 0) {
+			bJumpCancel = false;
+        }
 
         // WATER
 		if(CountInv("LegsUnderwater")>0)

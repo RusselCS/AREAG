@@ -1,0 +1,124 @@
+class NovaPackPickup : BasicPassive
+{
+    Default
+	{
+		BasicInventory.PickupType PICKTYPE_ARTIFICE;
+		BasicInventory.PickupID PICKMSG_NOVAPACK;
+		BasicInventory.CheckItem "NovaPackFlag";
+	}
+
+    override void definePickup()
+    {
+        cls = new("NovaPackPassive");
+    }
+
+    States
+	{
+	SpawnFrames:
+		BOOT I 1;
+		loop;
+	}
+}
+
+class NovaPackPassive : PlayerPassive
+{
+    const NOVA_MAXHEIGHT = 128.0;
+    const NOVA_MINSPEED = -10.0;
+    const NOVA_ADDSPEED = 3;
+    const NOVA_MAXSPEED = 10.0;
+
+    bool jetPackActive;
+    double jetPackMaxHeight;
+
+    override void passiveTick(AREAGPlayerPawn plr)
+    {
+        if(!plr.bOnGround) {
+            if(plr.CountInv("NovaPackFlag") > 0 && plr.CountInv("Battery") > 0 && !plr.bJumpCancel) {
+                if(plr.iButtons & BT_JUMP) { // ascend
+                    if(checkPressed(BT_JUMP, plr.iButtons, plr.iOldButtons)) {
+                            if(!jetPackActive) {
+                            jetPackActive = true;
+                            plr.iBatteryRegenStack++;
+                            jetPackMaxHeight = plr.pos.z + NOVA_MAXHEIGHT;
+                            plr.A_StartSound("player/jetpack", CHAN_JETPACK, CHANF_LOOP);
+                        }
+                    }
+
+                    if(jetPackActive) {
+                        plr.A_ChangeVelocity(plr.vel.x, plr.vel.y, getVelZ(plr, true), CVF_REPLACE);
+                        plr.A_GiveInventory("NovaSpend", 1);
+                    }
+                } else {
+                    if(jetPackActive) { // descend
+                        plr.A_ChangeVelocity(plr.vel.x, plr.vel.y, getVelZ(plr, false), CVF_REPLACE);
+                    }
+                }
+            }
+        } else {
+            if(plr.iBatteryRegenStack > 0) {
+                Console.printf("I think I am in hell... %d", plr.iBatteryRegenStack);
+            }
+            if(jetPackActive) {
+                jetPackActive = false;
+                plr.iBatteryRegenStack--;
+                plr.A_StopSound(CHAN_JETPACK);
+            }
+        }
+    }
+
+    double getVelZ(AREAGPlayerPawn plr, bool ascend) {
+        let velz = plr.vel.z;
+        let posz = plr.pos.z;
+
+        if(ascend) {
+            if(posz >= jetPackMaxHeight) {
+                return 0.0;
+            }
+
+            if(velz < NOVA_MINSPEED) {
+                return NOVA_MINSPEED+NOVA_ADDSPEED;
+            } else if (velz > NOVA_MAXSPEED) {
+                return NOVA_MAXSPEED;
+            } else {
+                return velz + NOVA_ADDSPEED;
+            }
+        } else {
+            if(velz < NOVA_MINSPEED) {
+                return NOVA_MINSPEED;
+            } else {
+                return velz;
+            }
+        }
+    }
+
+    void toggleGravity(AREAGPlayerPawn plr, bool toggle) {
+        if(plr.bNOGRAVITY != toggle) {
+            plr.bNOGRAVITY = toggle;
+        }
+    }
+}
+
+class NovaPackFlag : Once {}
+
+class NovaSpend : CustomInventory
+{
+	States
+	{
+	Pickup:
+		TNT1 A 0 A_JumpIfInventory("NovaSpendCooldown", 1, "End");
+		TNT1 A 0 A_TakeInventory("Battery", 4);
+		TNT1 A 0 A_GiveInventory("NovaSpendCooldown", 1);
+		stop;
+	End:
+		TNT1 A 0;
+		stop;
+	}
+}
+
+class NovaSpendCooldown : Powerup
+{
+	Default
+	{
+		powerup.duration 5;
+	}
+}

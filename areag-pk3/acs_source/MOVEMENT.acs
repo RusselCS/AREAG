@@ -36,39 +36,39 @@ script "movement_enter" ENTER
 	
 	bool menuFreeze = false;
 	
-	ACS_NamedExecuteAlways("movement_standing", 0);
+	//ACS_NamedExecuteAlways("movement_standing", 0);
 	ACS_NamedExecuteAlways("movement_water_player", 0);
 	delay(1);
 	while(GetActorProperty(0, APROP_HEALTH)>0)
 	{
 		
-		// NOVA PACK
-		if(CheckInventory("NovaPackFlag") > 0 && CheckInventory("Battery") > 0 &&
-		   CheckInventory("JumpCancel")==0 && buttons & BT_JUMP)
-		{
-			if(!novaFlight)
-			{
-				novaFlight = true;
-				novaFlightHeight = GetActorZ(0);
-			}
-			if(GetActorZ(0) < novaFlightHeight + NOVA_MAXHEIGHT && heightCooldown == 0)
-			{
-				ThrustThingZ(0, NOVA_SPEED, 0, true);
-			}
-			else
-			{
-				if(heightCooldown == 0)
-				{
-					ThrustThingZ(0, 0, 0, 0);
-					heightCooldown = 4;
-				}
-				else
-				{
-					heightCooldown--;
-				}
-			}
-			GiveInventory("NovaSpend", 1);
-		}
+		// // NOVA PACK
+		// if(CheckInventory("NovaPackFlag") > 0 && CheckInventory("Battery") > 0 &&
+		//    CheckInventory("JumpCancel")==0 && buttons & BT_JUMP)
+		// {
+		// 	if(!novaFlight)
+		// 	{
+		// 		novaFlight = true;
+		// 		novaFlightHeight = GetActorZ(0);
+		// 	}
+		// 	if(GetActorZ(0) < novaFlightHeight + NOVA_MAXHEIGHT && heightCooldown == 0)
+		// 	{
+		// 		ThrustThingZ(0, NOVA_SPEED, 0, true);
+		// 	}
+		// 	else
+		// 	{
+		// 		if(heightCooldown == 0)
+		// 		{
+		// 			ThrustThingZ(0, 0, 0, 0);
+		// 			heightCooldown = 4;
+		// 		}
+		// 		else
+		// 		{
+		// 			heightCooldown--;
+		// 		}
+		// 	}
+		// 	GiveInventory("NovaSpend", 1);
+		// }
 		
 		if(CheckInventory("JumpCancel"))
 		{

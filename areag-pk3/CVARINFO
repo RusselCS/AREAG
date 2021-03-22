@@ -1,5 +1,7 @@
-user bool cl_tapdash = true;
-user bool cl_handedness = false;
+// Player Options
+user bool cl_tapdash = true; // Determines whether the player can double-tap their direction buttons to dash - disabled for now; will re-enable after the dashrework is complete.
+user bool cl_handedness = false; // Determines positions of main and subweapons on the player's HUD.
+user bool cl_jetpacktoggle = false; // Determines whether jetpack is triggered by hold or toggle.
 
 // DEBUG SYSTEM
 user noarchive bool db_viewhitboxes = false;
