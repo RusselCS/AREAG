@@ -145,4 +145,17 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
     Actor GetBlockGrab() {
         return magBlock;
     }
+
+    clearscope int CountMaxInv(class<Inventory> itemtype, int ptr_select = AAPTR_DEFAULT) const
+	{
+		let realself = GetPointer(ptr_select);
+		if (realself == NULL || itemtype == NULL)
+		{
+			return 0;
+		}
+		else
+		{
+			return GetDefaultByType(itemtype).MaxAmount;
+		}
+	}
 }

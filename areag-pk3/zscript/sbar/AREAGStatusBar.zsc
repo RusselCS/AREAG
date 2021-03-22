@@ -101,7 +101,7 @@ Class AREAGStatusBar : BaseStatusBar {
         DrawBar("BARBUB", "BAREMP", amt, maxamt, (xOffs + barXOffs, -yOffs - barYOffs), 0, SHADER_HORZ);
 
         yOffs -= yOffsDiff;
-		[amt, maxamt] = GetAmount("DroneBattery");
+		[amt, maxamt] = GetAmount("Battery");
         DrawImage("ICOBAT",  (xOffs, -yOffs));
         DrawBar("BARBAT", "BAREMP", amt, maxamt, (xOffs + barXOffs, -yOffs - barYOffs), 0, SHADER_HORZ);
     }

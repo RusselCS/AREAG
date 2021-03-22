@@ -26,9 +26,9 @@ extend class AREAGPlayerPawn {
             }
         }
         
-        if(CountInv("DroneTrigger") > 0 && CountInv("DroneFlag") == 0 && iDroneRegenTime == 0) {
+        if(CountMaxInv("Battery") > CountInv("Battery") && iDroneRegenTime == 0) {
             iDroneRegenTime = DRONE_REGEN;
-            A_GiveInventory("DroneBattery", 1);
+            A_GiveInventory("Battery", 1);
         }
         if(iDroneRegenTime > 0) {
             iDroneRegenTime--;

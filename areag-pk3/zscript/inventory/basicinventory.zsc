@@ -250,3 +250,5 @@ class MapPickup : Actor
         stop;
     }
 }
+
+class Battery : Counter { Default { inventory.maxamount 100; } }

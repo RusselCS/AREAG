@@ -43,7 +43,7 @@ script "movement_enter" ENTER
 	{
 		
 		// NOVA PACK
-		if(CheckInventory("NovaPackFlag") > 0 && CheckInventory("NovaFuel") > 0 &&
+		if(CheckInventory("NovaPackFlag") > 0 && CheckInventory("Battery") > 0 &&
 		   CheckInventory("JumpCancel")==0 && buttons & BT_JUMP)
 		{
 			if(!novaFlight)
@@ -75,10 +75,10 @@ script "movement_enter" ENTER
 			novaFlight = false;
 			heightCooldown = 0;
 			
-			if(CheckInventory("NovaFuel") < GetAmmoCapacity("NovaFuel"))
-			{
-				GiveInventory("NovaRefuel", 1);
-			}
+			// if(CheckInventory("NovaFuel") < GetAmmoCapacity("NovaFuel"))
+			// {
+			// 	GiveInventory("NovaRefuel", 1);
+			// }
 		}
 		
 		// This just makes it so if you fall off a ledge you don't have to double tap jump
@@ -89,73 +89,73 @@ script "movement_enter" ENTER
 			TakeInventory("JumpCancel", 1);
 		}
 		
-		// TAP DASH
-		// Only triggers when the player has tap dash enabled, and
-		// if they're using gear greaves and standing on ground, or
-		// if they're using steam greaves at all, AND
-		// if the dash cooldown has been sated.
-		if(GetUserCVar(pln, "cl_tapdash") && canDash())
-		{
-			if(checkButtonPressed(BT_FORWARD, buttons, oldButtons))
-			{
-				if(CheckInventory("PressedForward"))
-				{
-					GiveInventory("DashForward", 1);
-				}
-				else
-				{
-					GiveInventory("PressedForward", 1);
-					TakeInventory("PressedBack", 1);
-					TakeInventory("PressedLeft", 1);
-					TakeInventory("PressedRight", 1);
-				}
-			}
+		// // TAP DASH
+		// // Only triggers when the player has tap dash enabled, and
+		// // if they're using gear greaves and standing on ground, or
+		// // if they're using steam greaves at all, AND
+		// // if the dash cooldown has been sated.
+		// if(GetUserCVar(pln, "cl_tapdash") && canDash())
+		// {
+		// 	if(checkButtonPressed(BT_FORWARD, buttons, oldButtons))
+		// 	{
+		// 		if(CheckInventory("PressedForward"))
+		// 		{
+		// 			GiveInventory("DashForward", 1);
+		// 		}
+		// 		else
+		// 		{
+		// 			GiveInventory("PressedForward", 1);
+		// 			TakeInventory("PressedBack", 1);
+		// 			TakeInventory("PressedLeft", 1);
+		// 			TakeInventory("PressedRight", 1);
+		// 		}
+		// 	}
 			
-			if(checkButtonPressed(BT_BACK, buttons, oldButtons))
-			{
-				if(CheckInventory("PressedBack"))
-				{
-					GiveInventory("DashBackward", 1);
-				}
-				else
-				{
-					TakeInventory("PressedForward", 1);
-					GiveInventory("PressedBack", 1);
-					TakeInventory("PressedLeft", 1);
-					TakeInventory("PressedRight", 1);
-				}
-			}
+		// 	if(checkButtonPressed(BT_BACK, buttons, oldButtons))
+		// 	{
+		// 		if(CheckInventory("PressedBack"))
+		// 		{
+		// 			GiveInventory("DashBackward", 1);
+		// 		}
+		// 		else
+		// 		{
+		// 			TakeInventory("PressedForward", 1);
+		// 			GiveInventory("PressedBack", 1);
+		// 			TakeInventory("PressedLeft", 1);
+		// 			TakeInventory("PressedRight", 1);
+		// 		}
+		// 	}
 			
-			if(checkButtonPressed(BT_MOVERIGHT, buttons, oldButtons))
-			{
-				if(CheckInventory("PressedRight"))
-				{
-					GiveInventory("DashRight", 1);
-				}
-				else
-				{
-					TakeInventory("PressedForward", 1);
-					TakeInventory("PressedBack", 1);
-					TakeInventory("PressedLeft", 1);
-					GiveInventory("PressedRight", 1);
-				}
-			}
+		// 	if(checkButtonPressed(BT_MOVERIGHT, buttons, oldButtons))
+		// 	{
+		// 		if(CheckInventory("PressedRight"))
+		// 		{
+		// 			GiveInventory("DashRight", 1);
+		// 		}
+		// 		else
+		// 		{
+		// 			TakeInventory("PressedForward", 1);
+		// 			TakeInventory("PressedBack", 1);
+		// 			TakeInventory("PressedLeft", 1);
+		// 			GiveInventory("PressedRight", 1);
+		// 		}
+		// 	}
 			
-			if(checkButtonPressed(BT_MOVELEFT, buttons, oldButtons))
-			{
-				if(CheckInventory("PressedLeft"))
-				{
-					GiveInventory("DashLeft", 1);
-				}
-				else
-				{
-					TakeInventory("PressedForward", 1);
-					TakeInventory("PressedBack", 1);
-					GiveInventory("PressedLeft", 1);
-					TakeInventory("PressedRight", 1);
-				}
-			}
-		}
+		// 	if(checkButtonPressed(BT_MOVELEFT, buttons, oldButtons))
+		// 	{
+		// 		if(CheckInventory("PressedLeft"))
+		// 		{
+		// 			GiveInventory("DashLeft", 1);
+		// 		}
+		// 		else
+		// 		{
+		// 			TakeInventory("PressedForward", 1);
+		// 			TakeInventory("PressedBack", 1);
+		// 			GiveInventory("PressedLeft", 1);
+		// 			TakeInventory("PressedRight", 1);
+		// 		}
+		// 	}
+		// }
 		
 		// TIME MANIPULATION (Menus, Timewatch)
 		if(CheckInventory("MenuFreezer")>0)

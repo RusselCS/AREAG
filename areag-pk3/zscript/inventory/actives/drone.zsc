@@ -14,7 +14,7 @@ class DronePickup : BasicActiveInventory
     }
 
     override void giveItemTrigger(AREAGPlayerPawn plr) {
-		plr.A_GiveInventory("DroneBattery", 100);
+		plr.A_GiveInventory("Battery", 100);
 		plr.pushToggleTrigger(new("ToggleStateMap").Init("DroneFlag", "DroneOff"));
 	}
 
@@ -51,7 +51,7 @@ class DroneTrigger : BasicActiveTrigger
 	States
 	{
 	TreasureUse:
-        TNT1 A 0 A_JumpIf(CountInv("DroneBattery") < 100, "FailUse");
+        TNT1 A 0 A_JumpIf(CountInv("Battery") < 100, "FailUse");
 		TNT1 A 0 A_SetInterruptState("DroneUse");
 		fail;
 	}
@@ -148,7 +148,7 @@ extend class AREAGPlayerPawn {
         A_TakeInventory("DronePlasmaGun", 1);
         A_SetHealth(iOldHealth);
 		A_TakeInventory("DroneFlag", 1);
-        A_SetInventory("DroneBattery", 0);
+        A_SetInventory("Battery", 0);
         ACS_NamedExecuteAlways("drone_curtain", 0, false);
         A_ChangeVelocity(0, 0, 0, CVF_REPLACE);
         soundclass = getClydeSoundClass();
@@ -192,8 +192,8 @@ extend class AREAGPlayerPawn {
             iDroneHPCooldown--;
         }
 
-        if(health != CountInv("DroneBattery")) {
-            A_SetInventory("DroneBattery", health);
+        if(health != CountInv("Battery")) {
+            A_SetInventory("Battery", health);
         }
 
         if(!bBUDDHA) {
@@ -321,7 +321,6 @@ class DronePlasmaGun : Weapon
 	}
 }
 
-class DroneBattery : Counter { Default { inventory.maxamount 100; } }
 class PlayerTempHealth : Counter {}
 class MapTransition : Once {}
 
