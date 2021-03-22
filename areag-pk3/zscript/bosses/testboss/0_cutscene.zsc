@@ -1,0 +1,149 @@
+class MikeCutsceneTest : Actor
+{
+    Default
+    {
+        +MISSILE;
+    }
+    States
+    {
+    Spawn:
+        TNT1 A 0;
+        TNT1 A 0 A_SetAngle(target.angle);
+        TNT1 A 0 A_SpawnItemEx("MikeCutscene", 128);
+        stop;
+    }
+}
+
+class MikeCutscene : BasicEffect
+{
+    Default
+    {
+        Scale 2.0;
+    }
+
+    States
+    {
+    Spawn:
+        MBCS A 1;
+        wait;
+    Begin:
+        MBCS A 35;
+        MBCS BC 10;
+        MBCS D 20;
+        MBCS EF 10;
+        MBCS G 35;
+        MBCS H 10 A_SpawnItemEx("MikeCutsceneGlass", 2, -10, 48, 1.5, -2.5, 0);
+        MBCS I 17;
+        MBCS JK 4;
+        MBCS L 4 A_ChangeVelocity(4, 0, 0, CVF_RELATIVE|CVF_REPLACE);
+        MBCS M 4 A_Stop;
+        MBCS NOP 4;
+        MBCS P 0 A_SpawnItemEx("MikeTeleport", 1);
+        MBCS P 1 A_SetTics(MIKE_TELEPORT_WAIT);
+        MBCS P 0 ACS_NamedExecuteAlways("testmap_mike_spawn", 0);
+        stop;
+    }
+}
+
+class MikeCutsceneGlass : BasicEffect
+{
+    Default
+    {
+        -NOINTERACTION;
+        -NOGRAVITY;
+        Scale 2.0;
+        BasicEffect.Rollspeed -1.5;
+        gravity 0.5;
+    }
+
+    action void A_CutsceneGlassDeath() {
+        BasicEffect act;
+        act = A_SpawnBasicEffect("MikeCutsceneGlassShard", 0, 0, 0,  4,  4, 4);
+        act.score = 0;
+        act = A_SpawnBasicEffect("MikeCutsceneGlassShard", 0, 0, 0,  4, -4, 4);
+        act.score = 1;
+        act = A_SpawnBasicEffect("MikeCutsceneGlassShard", 0, 0, 0, -4,  4, 4);
+        act.score = 2;
+        act = A_SpawnBasicEffect("MikeCutsceneGlassShard", 0, 0, 0, -4, -4, 4);
+        act.score = 3;
+    }
+
+    States
+    {
+    Spawn:
+        MBCS Q 1;
+        wait;
+    Death:
+        MBCS Q 0 A_CutsceneGlassDeath();
+        stop;
+    }
+}
+
+class MikeCutsceneGlassShard : BasicEffect
+{
+    Default
+    {
+        -NOGRAVITY;
+        +ROLLSPRITE;
+        -NOINTERACTION;
+        scale 2.0;
+        gravity 0.6;
+    }
+
+    override void BasicTick() {
+        if(z-Floorz <= 0) {
+            forceDeath();
+        }
+    }
+
+    action State A_SetShardFrame() {
+        switch(invoker.score) {
+            default:
+                return ResolveState("SpawnR");
+            case 1:
+                return ResolveState("SpawnS");
+            case 2:
+                return ResolveState("SpawnT");
+            case 3:
+                return ResolveState("SpawnU");
+        }
+    }
+
+    States
+    {
+    Spawn:
+        TNT1 A 0;
+        TNT1 A 0 A_SetShardFrame();
+    SpawnR:
+        MBCS R -1;
+    SpawnS:
+        MBCS S -1;
+    SpawnT:
+        MBCS T -1;
+    SpawnU:
+        MBCS U -1;
+        stop;
+    Death:
+        TNT1 A 0;
+        stop;
+    }
+}
+
+class MikeDoorPuff : BasicEffect
+{
+    Default
+    {
+        Scale 2.0;
+        alpha 0.7;
+    }
+
+    States
+    {
+    Spawn:
+        MDAD H 0;
+        MDAD H 0 A_SetAngle(angle + frandrange(35));
+        MDAD H 0 A_ChangeVelocity(10);
+        MDAD HHHIIIJJJ 2;
+        stop;
+    }
+}

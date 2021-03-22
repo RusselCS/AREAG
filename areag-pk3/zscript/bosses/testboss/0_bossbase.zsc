@@ -1,0 +1,165 @@
+const MIKE_HEIGHT = 122;
+const MIKE_TELEPORT_WAIT = 90;
+const MIKE_ATTACK_WAIT = 35;
+
+const MIKE_MOVE_RADIUS = 32;
+const MIKE_STAND_RADIUS = 10;
+
+class MikeBoss : BasicActor
+{
+    Default
+    {
+        +SHOOTABLE;
+        +NOGRAVITY;
+        +THRUACTORS;
+        species "Monster";
+        Radius 32;
+        height 60;
+        Health 1000;
+        Scale 2.0;
+        mass 9999999;
+        speed 60;
+    }
+
+    int attackCount;
+
+    override void BasicInit() {
+        attackCount = 0;
+    }
+
+    action void A_MikeMoveEnd() {
+        A_SetSize(MIKE_STAND_RADIUS);
+        bTHRUACTORS = false;
+        invoker.bSHOWHITBOX = true;
+    }
+
+    action void A_MikeMoveStart() {
+        bTHRUACTORS = true;
+        invoker.bSHOWHITBOX = false;
+        A_SetSize(MIKE_MOVE_RADIUS);
+    }
+
+    action void A_SpawnTeleportEffect() {
+        A_FaceTarget();
+        A_SpawnBasicEffect("MikeTeleport", 1);
+        A_SetTics(MIKE_TELEPORT_WAIT);
+    }
+
+    action State A_ChooseAttack() {
+
+        int chosenAttack = 0;
+
+        if(invoker.attackCount = 0) {
+            chosenAttack = 0;
+        } else {
+            chosenAttack = random(0, 1);
+        }
+
+        invoker.attackCount++;
+
+        switch(chosenAttack) {
+            default:
+            case 0:
+                return ResolveState("Hellfire");
+            case 1:
+                return ResolveState("DarkInferno");
+        }
+    }
+
+    States
+    {
+    Spawn:
+        TNT1 A 0;
+        TNT1 A 0 A_Warp(AAPTR_DEFAULT, 0, 0, MIKE_HEIGHT);
+        goto MoveEnd;
+    Move:
+        TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 1 A_Wander();
+        TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 1 A_Wander();
+        TNT1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 1 A_Wander();
+        goto MoveEnd;
+    MoveEnd:
+        TNT1 A 0 A_SpawnTeleportEffect();
+        MIKE A 1 A_SetTics(MIKE_ATTACK_WAIT);
+        TNT1 A 0 A_MikeMoveEnd();
+        MIKE A 1 A_ChooseAttack();
+        wait;
+    Hellfire:
+    DarkInferno:
+        MIKE AF 3;
+        MIKE F 0 A_FaceTarget();
+        MIKE F 0 A_SpawnItemEx("MikeHellfireSpawn", 10, -48, -64);
+        MIKE GH 3;
+        MIKE I 17;
+        MIKE HGFA 2;
+        goto TeleportOut;
+    TeleportOut:
+        TNT1 A 0 A_MikeMoveStart();
+        MIKE A 0 A_SpawnTeleportEffect();
+        TNT1 A 1;
+        goto Move;
+    }
+}
+
+class MikeHellfireSpawn : BasicEffect
+{
+    Default
+    {
+        +BRIGHT;
+        scale 2.0;
+    }
+    States
+    {
+    Spawn:
+        MATK A 0;
+        MATK A 0 A_StartSound("boss/mike/fire", CHAN_VOICE);
+        MATK ABCDE 2;
+        MATK E 0 A_SpawnItemEx("MikeHellfireShot", 0, 0, 0, 1.00, 0, 0,  15.0, SXF_MULTIPLYSPEED);
+        MATK E 0 A_SpawnItemEx("MikeHellfireShot", 0, 0, 0, 0.85, 0, 0,   7.5, SXF_MULTIPLYSPEED);
+        MATK E 0 A_SpawnItemEx("MikeHellfireShot", 0, 0, 0, 0.90, 0, 0,     0, SXF_MULTIPLYSPEED);
+        MATK E 0 A_SpawnItemEx("MikeHellfireShot", 0, 0, 0, 0.85, 0, 0,  -7.5, SXF_MULTIPLYSPEED);
+        MATK E 0 A_SpawnItemEx("MikeHellfireShot", 0, 0, 0, 1.00, 0, 0, -15.0, SXF_MULTIPLYSPEED);
+        stop;
+    }
+}
+
+class MikeHellfireShot : BasicProjectile
+{
+    Default
+    {
+        Damagefunction (20);
+        renderstyle "add";
+        +THRUSPECIES;
+        +BRIGHT;
+        species "Monster";
+        Speed 30;
+        height 10;
+        radius 5;
+        scale 2.0;
+    }
+
+    double setAngle;
+    bool angleFlipped;
+
+    override void BasicInit() {
+        setAngle = target.angle;
+        angleFlipped = false;
+    }
+
+    override void BasicTick() {
+        if(GetAge() > 10 && !angleFlipped) {
+            angleFlipped = true;
+            A_SetAngle(setAngle);
+            A_ChangeVelocity(speed, 0, 0, CVF_RELATIVE|CVF_REPLACE);
+        }
+    }
+
+    States
+    {
+    Spawn:
+        MATK FGH 2;
+        loop;
+    Death:
+        MATK IJKLMN 2;
+        stop;
+    }
+}

@@ -83,3 +83,6 @@
 // STATUS BARS AND MENUS
 #include "zscript/sbar/AREAGStatusBar.zsc"
 #include "zscript/sbar/menutools.zsc"
+
+// TEST BOSS
+#include "zscript/bosses/0_testboss.zsc"

@@ -2,3 +2,8 @@
 	playrepeat	seq/floormove
 	stopsound	seq/floorstop
 end
+
+:CeilingNormal
+	playrepeat	world/door/move
+	stopsound	world/door/stop
+end

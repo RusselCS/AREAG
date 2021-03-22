@@ -18,6 +18,7 @@ DoomEdNums
 
     20000 = JarSpawner
     20001 = BigJarSpawner
+    20002 = TestBossTorchSpawner
     
     30000 = SpearTrap
     30002 = LaserTrap

@@ -1,0 +1,220 @@
+const MKTP_DELAY = 35;
+const MKTP_DELAY_2 = 20;
+
+class MikeTeleport : BasicEffect
+{
+    States
+    {
+    Spawn:
+        TNT1 A 0;
+        TNT1 A 0 A_StartSound("boss/mike/telestart", CHAN_VOICE);
+        TNT1 A 0 A_SpawnBasicEffect("MikeTPFXDrop", 0, 0, ceilingz-z-32.0);
+        TNT1 A 1 A_SetTics(MKTP_DELAY);
+        TNT1 A 0 A_StartSound("boss/mike/teleup", CHAN_VOICE);
+        TNT1 A 0 A_SpawnBasicEffect("MikeFPFXRise", 0, 0, 0);
+        stop;
+    }
+}
+
+class MikeTPFX : BasicEffect
+{
+    Default
+    {
+        +FORCEYBILLBOARD;
+    }
+}
+
+class MikeTPFXDropWait : MikeTPFX
+{
+    Default
+    {
+        +BASICACTOR.DIEWITHTRACER;
+        renderstyle "add";
+        alpha 0.8;
+        +BRIGHT;
+    }
+
+    override void BasicInit() {
+        A_SetScale(2.0, scale.y);
+    }
+
+    States
+    {
+    Spawn:
+        MBFX V 0;
+        MBFX VWXYZ[ 1;
+        MBFX V 0 A_JumpIf(score % 2 == 0, "SpawnLoop");
+        MBFX ] 1;
+    SpawnLoop:
+        MBFX ][ 1;
+        loop;
+    Death:
+        MBFX ][ZYXWV 1;
+        stop;
+    }
+}
+
+class MikeTPFXDrop : MikeTPFX
+{
+    Default
+    {
+        +NOEXPLODEFLOOR;
+        height 32;
+    }
+
+    bool stateChange;
+
+    override void BasicInit() {
+        Warp(self, 0, 0, ceilingz-z-height);
+        stateChange = false;
+    }
+
+    override void BasicTick() {
+        if(z-floorz > 0) {
+            spawnTrailFX();
+            Warp(self, 0, 0, -min(height, pos.z-floorz));
+        } else if(!stateChange) {
+            stateChange = true;
+            spawnTrailFX();
+            SetState(ResolveState("SpawnLoop"));
+        }
+    }
+
+    void spawnTrailFX() {
+        let act = A_SpawnBasicEffect("MikeTPFXDropWait", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERALPHA);
+        act.tracer = self;
+        act.score = GetAge();
+    }
+
+    States
+    {
+    Spawn:
+        TNT1 A 1;
+        wait;
+    SpawnLoop:
+        TNT1 A 0;
+        TNT1 A 1 A_SetTics(MKTP_DELAY);
+        stop;
+    }
+}
+
+class MikeFPFXRise : MikeTPFX
+{
+    Default
+    {
+        +NOEXPLODEFLOOR;
+        speed 2.0;
+        height 2;
+    }
+
+    bool stateChange;
+    double accel;
+
+    override void BasicInit() {
+        Warp(self, 0, 0, 0, 0, WARPF_TOFLOOR);
+        stateChange = false;
+        accel = 1.15;
+    }
+
+    override void BasicTick() {
+        if(ceilingz-z-speed > 0) {
+            if(ceilingz-z < speed) {
+                Warp(self, 0, 0, ceilingz-z-speed);
+            } else {
+                spawnTrailFX();
+                Warp(self, 0, 0, speed);
+                speed *= accel;
+                speed = speed;
+            }
+            
+        } else if(!stateChange) {
+            stateChange = true;
+            SetState(ResolveState("SpawnLoop"));
+        }
+    }
+
+    void spawnTrailFX() {
+        let act = A_SpawnBasicEffect("MikeTPFXRiseWait", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERALPHA);
+        let scy = speed / 32;
+        act.scale.y = scy;
+        act.tracer = self;
+    }
+
+    States
+    {
+    Spawn:
+        TNT1 A 1;
+        wait;
+    SpawnLoop:
+        TNT1 A 1 A_SetTics(MKTP_DELAY_2);
+        stop;
+    }
+}
+
+class MikeTPFXRiseWait : MikeTPFX
+{
+    Default
+    {
+        +BASICACTOR.DIEWITHTRACER;
+        +BRIGHT;
+        renderstyle "add";
+        alpha 0.8;
+    }
+
+    override void BasicInit() {
+        A_SetScale(2.0, scale.y);
+    }
+
+    States
+    {
+    Spawn:
+        MBFX ABCDEFGHIJKLMNOPQRST 1;
+    SpawnLoop:
+        MBFX U 1;
+        loop;
+    Death:
+        MBFX U 0 A_SpawnItemEx("MikeTPFXFadeBG", -0.2, 0, 0, 0, 0, 0, 0, SXF_TRANSFERSCALE);
+        MBFX U 10;
+        MBFX U 1 A_FadeOut(0.1);
+        wait;
+    }
+}
+
+class MikeTPFXFadeBG : MikeTPFX
+{
+    Default
+    {
+        Renderstyle "Stencil";
+        StencilColor "Black";
+        alpha 0.1;
+    }
+
+    States
+    {
+    Spawn:
+        MBFX U 1;
+        MBFX UUUUUUUUU 1 A_FadeIn(0.1);
+        MBFX U 15;
+        MBFX U 1 A_FadeOut(0.1);
+        wait;
+    }
+}
+
+class TestBossTorchSpawner : JarSpawner
+{
+    Default
+    {
+        JarSpawner.JarType "TestBossTorch";
+        height 62;
+        radius 15;
+        scale 2.0;
+        renderstyle "none";
+    }
+
+    States
+    {
+    Spawn:
+        TRC1 A 1;
+        loop;
+    }
+}

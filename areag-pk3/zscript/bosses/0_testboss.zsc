@@ -1,0 +1,4 @@
+#include "zscript/bosses/testboss/0_bossbase.zsc"
+#include "zscript/bosses/testboss/0_cutscene.zsc"
+#include "zscript/bosses/testboss/1_teleport.zsc"
+#include "zscript/bosses/testboss/2_props.zsc"

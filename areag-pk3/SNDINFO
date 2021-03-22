@@ -165,6 +165,7 @@ player/crashland HARDLAND // THE KING OF FIGHTERS XIV
 
 misc/jarpain JARDMG // Mega Man Star Force
 misc/jarbreak JARSMASH // LA-MULANA
+misc/torchbreak TRCHBRAK // Donkey Kong 64
 
 misc/coinbounce COINBNCE // LA-MULANA
 misc/coinpickup COINGRAB // LA-MULANA
@@ -234,6 +235,17 @@ treasures/hornend_a HORNE5
 props/blockrumble BLKRUMB // LA-MULANA
 
 world/quake dsempty
+
+world/door/move DOORMOVE // Castlevania: The Adventure ReBirth
+world/door/stop DOORSHUT // Castlevania: The Adventure ReBirth
+
+// --------------------------------------------------
+// BOSS SOUNDS
+// --------------------------------------------------
+boss/mike/telestart MKTELE  // Castlevania: The Adventure ReBirth
+boss/mike/teleup    MKTELE2 // Castlevania: The Adventure ReBirth
+boss/mike/fire      MKFIRE  // Castlevania: The Adventure ReBirth
+
 
 // --------------------------------------------------
 // MUSIC VOLUME
