@@ -30,6 +30,7 @@ script "map_switchto" (int tomap, int door, int noSound)
 	if(CheckInventory("ChakramShield") > 0 && Checkinventory("ChakramStock") == 0) {
 		GiveInventory("ChakramStock", 1);
 	}
+	SetUserVariable(0, "bInMapTransition", true);
 	ACS_NamedExecuteAlways("map_transition", 0, false, noSound, GetUserVariable(0, "bDroneChangingLevel"));
 	if(!GetUserVariable(0, "bDroneChangingLevel")) {
 		Delay(35);
@@ -66,6 +67,7 @@ script "map_return" RETURN
 }
 
 function void mapStartUp(int droneRevert) {
+	SetUserVariable(0, "bInMapTransition", false);
 	clearMapCurtain();
 	transitionVeil(droneRevert);
 	ACS_NamedExecuteAlways("map_transition", 0, true, false, droneRevert);

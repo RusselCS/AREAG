@@ -2,6 +2,8 @@ const HP_SEG_MAX = 25;
 
 class AREAGPlayerPawn : AREAGProtoPlayer {
 
+    bool bInMapTransition;
+
     int iSelectedWep;
     int iPrevSelect;
 
@@ -42,11 +44,18 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
         }
 
         for(int i = 0; i < passives.size(); i++) {
-            if(passives[i]) {
-                passives[i].passiveTick(AREAGPlayerPawn(self));
+            if(!bInMapTransition) {
+                if(passives[i]) {
+                    passives[i].passiveTick(AREAGPlayerPawn(self));
+                } else {
+                    passives[i] = PlayerPassive(new(passiveClasses[i]));
+                }
             } else {
-                passives[i] = PlayerPassive(new(passiveClasses[i]));
+                if(passives[i]) {
+                    passives[i].Destroy();
+                }
             }
+            
         }
     }
 
