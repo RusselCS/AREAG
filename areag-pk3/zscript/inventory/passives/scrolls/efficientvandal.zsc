@@ -1,0 +1,18 @@
+class EfficientVandalScroll : BasicInventory
+{
+    Default
+    {
+        BasicInventory.PickupType PICKTYPE_TREASURE;
+        BasicInventory.PickupID PICKMSG_EFFICIENTVANDAL;
+        BasicInventory.CheckItem "EfficientVandalFlag";
+	    Scale 2.0;
+    }
+	States
+	{
+	SpawnFrames:
+        SCL1 A 1;
+        loop;
+	}
+}
+
+class EfficientVandalFlag : Once {}

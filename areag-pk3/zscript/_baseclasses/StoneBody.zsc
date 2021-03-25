@@ -1,13 +1,24 @@
 class StoneBody : BasicActor
 {
+	Default
+	{
+        bloodtype "HitPop";
+	}
+
 	Actor lastHit;
 
-    override int DamageMobj(Actor inflictor, Actor source, int damage, Name mod, int flags, double angle) {
+    override int onDamage(Actor inflictor, Actor source, int damage, Name mod, int flags, double angle) {
+		int dmgAmt = 1;
+
+		if(source.countInv("EfficientVandalFlag") > 0) {
+			dmgAmt = health;
+		}
+
 		if(lastHit != inflictor) {
 			lastHit = inflictor;
-			return super.DamageMobj(inflictor, source, min(damage, 1), mod, flags, angle);
+			return super.onDamage(inflictor, source, min(damage, dmgAmt), mod, flags, angle);
 		} else {
-			return super.DamageMobj(inflictor, source, 0, mod, flags, angle);
+			return super.onDamage(inflictor, source, 0, mod, flags, angle);
 		}
     }
 }

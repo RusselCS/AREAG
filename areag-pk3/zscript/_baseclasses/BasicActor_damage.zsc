@@ -1,0 +1,36 @@
+extend class BasicActor
+{
+    override int DamageMobj(Actor inflictor, Actor source, int damage, Name mod, int flags, double angle) {
+
+        int fDamage = onDamage(inflictor, source, damage, mod, flags, angle);
+
+        if(health > 0) {
+            if(bloodtype == "HitPop") {
+                A_StartSound("misc/jarpain", CHAN_VOICE);
+                A_SpawnItemEx("HitPop", inflictor.pos.x-pos.x, inflictor.pos.y-pos.y, inflictor.pos.z-pos.z, 0, 0, 0, 0, SXF_ABSOLUTEPOSITION);
+            }
+        }
+
+        return fDamage;
+	}
+
+    virtual int onDamage(Actor inflictor, Actor source, int damage, Name mod, int flags, double angle) {
+        return super.DamageMobj(inflictor, source, damage, mod, flags, angle);
+    }
+}
+
+class HitPop : BasicEffect
+{
+    Default
+    {
+        +FORCEXYBILLBOARD;
+        scale 2.0;
+    }
+
+    States
+    {
+    Spawn:
+        NBLU ABC 2;
+        stop;
+    }
+}
