@@ -119,6 +119,7 @@ extend class AREAGPlayerPawn {
 		A_GiveInventory("DroneFlag", 1);
         A_StartSound("drone/activate", CHAN_BODY);
         ACS_NamedExecuteAlways("drone_curtain", 0, true);
+        iBatteryRegenStack++;
         soundclass = getDroneSoundClass();
         updateJumpSpeed();
         iDroneHPCooldown = DRONEHP_COOLDOWN;
@@ -150,6 +151,7 @@ extend class AREAGPlayerPawn {
 		A_TakeInventory("DroneFlag", 1);
         A_SetInventory("Battery", 0);
         ACS_NamedExecuteAlways("drone_curtain", 0, false);
+        iBatteryRegenStack--;
         A_ChangeVelocity(0, 0, 0, CVF_REPLACE);
         soundclass = getClydeSoundClass();
         updateJumpSpeed();

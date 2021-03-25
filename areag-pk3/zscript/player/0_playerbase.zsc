@@ -10,6 +10,7 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
     Array<SubWeapon> subs;
     Array<ToggleStateMap> toggles;
     Array<PlayerPassive> passives;
+    Array<String> passiveClasses;
 
     bool isPushingBlock;
     AREAGPushBlock block;
@@ -41,7 +42,11 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
         }
 
         for(int i = 0; i < passives.size(); i++) {
-            passives[i].passiveTick(AREAGPlayerPawn(self));
+            if(passives[i]) {
+                passives[i].passiveTick(AREAGPlayerPawn(self));
+            } else {
+                passives[i] = PlayerPassive(new(passiveClasses[i]));
+            }
         }
     }
 
@@ -104,8 +109,10 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
         return null;
     }
 
-    void pushPassiveEffect(PlayerPassive pass) {
+    void pushPassiveEffect(String clsName) {
+        PlayerPassive pass = PlayerPassive(new(clsName));
         passives.push(pass);
+        passiveClasses.push(clsName);
     }
     
     override void AREAGInit() {

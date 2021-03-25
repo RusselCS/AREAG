@@ -1,13 +1,13 @@
 class BasicPassive : BasicInventory
 {
-    PlayerPassive cls;
+    String clsName;
 
     virtual void definePickup() {}
 
     override void BasicPickup(Actor toucher) {
         definePickup();
         AREAGPlayerPawn plr = AREAGPlayerPawn(toucher);
-        plr.pushPassiveEffect(cls);
+        plr.pushPassiveEffect(clsName);
     }
 }
 

@@ -9,7 +9,7 @@ class NovaPackPickup : BasicPassive
 
     override void definePickup()
     {
-        cls = new("NovaPackPassive");
+        clsName = "NovaPackPassive";
     }
 
     States
@@ -32,7 +32,7 @@ class NovaPackPassive : PlayerPassive
 
     override void passiveTick(AREAGPlayerPawn plr)
     {
-        if(!plr.bOnGround) {
+        if(!plr.bOnGround && plr.countInv("DroneFlag") == 0) {
             if(plr.CountInv("NovaPackFlag") > 0 && plr.CountInv("Battery") > 0 && !plr.bJumpCancel) {
                 if(plr.iButtons & BT_JUMP) { // ascend
                     if(checkPressed(BT_JUMP, plr.iButtons, plr.iOldButtons)) {
@@ -55,9 +55,6 @@ class NovaPackPassive : PlayerPassive
                 }
             }
         } else {
-            if(plr.iBatteryRegenStack > 0) {
-                Console.printf("I think I am in hell... %d", plr.iBatteryRegenStack);
-            }
             if(jetPackActive) {
                 jetPackActive = false;
                 plr.iBatteryRegenStack--;
