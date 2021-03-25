@@ -15,7 +15,7 @@ class SteamGreavesPickup : BasicPassive
 
     action void A_GiveSteamBoots() {
 		let plr = AREAGPlayerPawn(self);
-		plr.soundclass = plr.getClydeSoundClass();
+		plr.soundclass = "steamclyde";
 		plr.setBaseJumpSpeed(plr.dBaseJump + 2.4);
 	}
 

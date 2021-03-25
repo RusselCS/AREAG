@@ -1,0 +1,95 @@
+class BasicEffect : BasicActor
+{
+    Default
+    {
+        PROJECTILE;
+        +NOINTERACTION;
+        +THRUACTORS;
+        +NOGRAVITY;
+		+DONTSPLASH;
+		BasicEffect.RelativePosFlags WARPF_ABSOLUTEOFFSET|WARPF_INTERPOLATE;
+        renderstyle "translucent";
+        alpha 1.0;
+        height 1;
+        radius 1;
+    }
+
+	int m_basicEffectFlags;
+	flagdef MATCHTRACERSCALE: m_basicEffectFlags, 0;
+	flagdef KEEPRELATIVEPOS: m_basicEffectFlags, 1;
+
+	double rotationSpeed;
+	double rollSpeed;
+	double pitchSpeed;
+	double scaleSpeed;
+
+	property RotationSpeed: rotationSpeed;
+	property RollSpeed: rollSpeed;
+	property PitchSpeed: pitchSpeed;
+
+	bool relPosActive;
+	vector3 relativePos;
+	double relTargetAngle;
+	double relAngle;
+	int relFlags;
+	property RelativePosFlags: relFlags;
+
+	action void A_ChangeScale(double scx, double scy = 0.0, int ptr = AAPTR_DEFAULT, bool useZero = false) {
+		let tgt = GetPointer(ptr);
+		if(scy == 0) {
+			scy = scx;
+		}
+
+		scx = max(tgt.scale.x + scx, 0);
+		scy = max(tgt.scale.y + scy, 0);
+
+		A_SetScale(scx, scy, ptr, useZero);
+	}
+
+	override void PostBeginplay() {
+		super.PostBeginPlay();
+		relPosActive = false;
+	}
+
+	override void Tick() {
+		super.Tick();
+		if(bMATCHTRACERSCALE && tracer) {
+			if(scale.x != tracer.scale.x || scale.y != tracer.scale.y) {
+				A_SetScale(tracer.scale.x, tracer.scale.y);
+			}
+		}
+
+		if(pitchspeed != 0) {
+			A_SetPitch(pitch + pitchspeed);
+		}
+		if(rotationspeed != 0) {
+			A_SetAngle(angle + rotationspeed);
+		}
+        if(rollspeed != 0) {
+			if(!bROLLSPRITE) {
+				bROLLSPRITE = true;
+			}
+			A_SetRoll(roll + rollspeed);
+		}
+
+		if(bKEEPRELATIVEPOS) {
+			if(!relPosActive) {
+				relPosActive = true;
+				relativePos = pos - target.pos;
+				relTargetAngle = target.angle;
+				relAngle = angle;
+			}
+		} else {
+			if(relPosActive) {
+				relPosActive = false;
+			}
+		}
+
+		if(relPosActive) {
+			Warp(target, relativePos.X, relativePos.Y, relativePos.Z, 0, relFlags);
+			if(vel.x != 0 || vel.y != 0 || vel.z != 0) {
+				relativePos += vel;
+			}
+		}
+	}
+}

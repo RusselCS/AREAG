@@ -1,0 +1,19 @@
+class BasicActionProp : BasicActor
+{
+	Default
+	{
+		+USESPECIAL;
+		Activation THINGSPEC_TriggerActs|THINGSPEC_Switch;
+	}
+
+	override void Activate(Actor activator) {
+		if(ActivateConditon()) {
+			BasicActivate(activator);
+		}
+	}
+
+	virtual bool ActivateConditon() {
+		return true;
+	}
+	virtual void BasicActivate(Actor activator) {}
+}

@@ -88,7 +88,7 @@ class JarSpawner : BasicActor
     }
 }
 
-class JarSmall : ZSCStoneBody
+class JarSmall : StoneBody
 {
     //$Category AREAG-Map Tools
     //$Title Jar Small

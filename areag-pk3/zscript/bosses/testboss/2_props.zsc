@@ -1,4 +1,4 @@
-class TestBossTorch : ZSCStoneBody
+class TestBossTorch : StoneBody
 {
     Default
     {

@@ -435,3 +435,9 @@ class AREAGPitReturnPoint : Actor
 }
 
 class PitTeleport : Once {}
+
+// MOVEMENT FLAGS //
+class OnGround : Once {}
+class JumpCancel : Once {}
+class HeadUnderwater : Once {}
+class LegsUnderwater : Once {}

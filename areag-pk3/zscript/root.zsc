@@ -1,5 +1,13 @@
 #include "zscript/definitions.zsc"
 
+// BASE CLASSES
+#include "zscript/_baseclasses/AREAG_Common.zsc"
+#include "zscript/_baseclasses/BasicActionProp.zsc"
+#include "zscript/_baseclasses/BasicActor.zsc"
+#include "zscript/_baseclasses/BasicEffect.zsc"
+#include "zscript/_baseclasses/BasicProjectile.zsc"
+#include "zscript/_baseclasses/StoneBody.zsc"
+
 // DATABASE SYSTEM DEFINITIONS
 #include "zscript/database/mapdata.zsc"
 
@@ -44,9 +52,9 @@
 #include "zscript/inventory/passives/_BasicPassive.zsc"
 #include "zscript/inventory/passives/gearboots.zsc"
 #include "zscript/inventory/passives/steamboots.zsc"
+#include "zscript/inventory/passives/jetpack.zsc"
 #include "zscript/inventory/passives/keys.zsc"
 #include "zscript/inventory/passives/amulet.zsc"
-#include "zscript/inventory/passives/jetpack.zsc"
 
 #include "zscript/inventory/basicinventory.zsc"
 #include "zscript/inventory/currency.zsc"
