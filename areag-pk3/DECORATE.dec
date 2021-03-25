@@ -1,4 +1,3 @@
-#include "decorate/pickups/jetpack.dec"
 #include "decorate/pickups/health.dec"
 
 #include "decorate/props/testmap.dec"

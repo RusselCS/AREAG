@@ -1,0 +1,41 @@
+class SteamGreavesPickup : BasicPassive
+{
+    Default
+    {
+        BasicInventory.PickupType PICKTYPE_ARTIFICE;
+        BasicInventory.PickupID PICKMSG_STEAM;
+        BasicInventory.CheckItem "SteamGreavesFlag";
+	    Scale 2.5;
+    }
+
+    override void definePickup()
+    {
+        clsName = "SteamGreavesPassive";
+    }
+
+    action void A_GiveSteamBoots() {
+		let plr = AREAGPlayerPawn(self);
+		plr.soundclass = plr.getClydeSoundClass();
+		plr.setBaseJumpSpeed(plr.dBaseJump + 2.4);
+	}
+
+	States
+	{
+	SpawnFrames:
+		BOOT H 1;
+		loop;
+	PickupEffect:
+		TNT1 A 0 A_GiveSteamBoots();
+		stop;
+	}
+}
+
+class SteamGreavesPassive : PlayerPassive
+{
+    override void passiveTick(AREAGPlayerPawn plr)
+    {
+        //console.printf("Boots active");
+    }
+}
+
+class SteamGreavesFlag : Once {}

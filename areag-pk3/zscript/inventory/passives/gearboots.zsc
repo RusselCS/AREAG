@@ -1,0 +1,40 @@
+class GearGreavesPickup : BasicPassive
+{
+    Default
+    {
+        BasicInventory.PickupType PICKTYPE_ARTIFICE;
+        BasicInventory.PickupID PICKMSG_GEAR;
+        BasicInventory.CheckItem "GearGreavesSpeed";
+	    Scale 2.5;
+    }
+
+    override void definePickup()
+    {
+        clsName = "GearGreavesPassive";
+    }
+
+    action void A_GiveGearBoots() {
+		let plr = AREAGPlayerPawn(self);
+        plr.setBaseWalkSpeed(plr.dBaseSpeed + .286);
+	}
+
+	States
+	{
+	SpawnFrames:
+		BOOT G 1;
+		loop;
+    PickupEffect:
+		TNT1 A 0 A_GiveGearBoots();
+		stop;
+	}
+}
+
+class GearGreavesPassive : PlayerPassive
+{
+    override void passiveTick(AREAGPlayerPawn plr)
+    {
+        //console.printf("Boots active");
+    }
+}
+
+class GearGreavesSpeed : Once {}
