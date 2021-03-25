@@ -7,9 +7,11 @@ const MAP_TABLET_WRAP = 100;
 
 const BT_SUBNEXT = BT_USER1;
 const BT_SUBPREV = BT_USER2;
+const BT_DASH = BT_USER3;
 
 enum EAREAGSoundChannels {
-	CHAN_JETPACK = 8
+	CHAN_JETPACK = 8,
+	CHAN_DASHBOOTS
 }
 
 enum PickupTypes {

@@ -32,9 +32,63 @@ class SteamGreavesPickup : BasicPassive
 
 class SteamGreavesPassive : PlayerPassive
 {
+    const DASH_COOLDOWN = 50;
+    int bootsCooldown;
+
+    double dashAngle;
+
     override void passiveTick(AREAGPlayerPawn plr)
     {
-        //console.printf("Boots active");
+        int iButtons = plr.iButtons;
+        int iOldButtons = plr.iOldButtons;
+        if(!plr.bOnGround) {
+            if(bootsCooldown == 0 && checkPressed(BT_DASH, iButtons, iOldButtons)) {
+                dashAngle = calcDashAngle(plr);
+                playerDash(plr);
+                plr.A_StartSound("player/airdash", CHAN_DASHBOOTS);
+                bootsCooldown = DASH_COOLDOWN;
+            }
+        }
+
+        if(bootsCooldown > 0) {
+            bootsCooldown--;
+        }
+    }
+
+    void playerDash(AREAGPlayerPawn plr, double factor = 1.0) {
+        double dsp = DASH_SPEED * factor;
+        if(plr.countinv("LegsUnderwater") > 0) {
+            dsp = DASH_WATER * factor;
+        }
+        plr.A_ChangeVelocity(cos(dashAngle) * dsp, sin(dashAngle) * dsp, max(plr.vel.z, 0), CVF_REPLACE);
+    }
+
+    double calcDashAngle(AREAGPlayerPawn plr) {
+        let dng = plr.angle;
+
+        if(plr.iButtons & BT_FORWARD) {
+            if(plr.iButtons & BT_MOVERIGHT) {
+                dng = plr.angle-45.0;
+            } else if(plr.iButtons & BT_MOVELEFT) {
+                dng = plr.angle+45.0;
+            } else {
+                dng = plr.angle;
+            }
+        } else if(plr.iButtons & BT_BACK) {
+            if(plr.iButtons & BT_MOVERIGHT) {
+                dng = plr.angle+180.0+45.0;
+            } else if(plr.iButtons & BT_MOVELEFT) {
+                dng = plr.angle+180.0-45.0;
+            } else {
+                dng = plr.angle+180.0;
+            }
+        } else if(plr.iButtons & BT_MOVERIGHT) {
+            dng = plr.angle-90.0;
+        } else if(plr.iButtons & BT_MOVELEFT) {
+            dng = plr.angle+90.0;
+        }
+
+        return dng;
     }
 }
 

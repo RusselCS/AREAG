@@ -1,3 +1,6 @@
+const DASH_WATER = 26.0;
+const DASH_SPEED = 35.0;
+
 class GearGreavesPickup : BasicPassive
 {
     Default
@@ -15,7 +18,7 @@ class GearGreavesPickup : BasicPassive
 
     action void A_GiveGearBoots() {
 		let plr = AREAGPlayerPawn(self);
-        plr.setBaseWalkSpeed(plr.dBaseSpeed + .286);
+        plr.setBaseWalkSpeed(plr.dBaseSpeed + .25);
 	}
 
 	States
@@ -31,9 +34,88 @@ class GearGreavesPickup : BasicPassive
 
 class GearGreavesPassive : PlayerPassive
 {
+    const DASH_LENGTH = 18;
+    const DASH_COOLDOWN = 50;
+
+    int bootsHeldTime;
+    int bootsCooldown;
+
+    double dashAngle;
+
     override void passiveTick(AREAGPlayerPawn plr)
     {
         //console.printf("Boots active");
+
+        int iButtons = plr.iButtons;
+        if(plr.bOnGround) {
+            if(iButtons & BT_DASH) {
+                if(bootsHeldTime == 0 && bootsCooldown == 0) {
+                    dashAngle = calcDashAngle(plr);
+                    playerDash(plr);
+                    plr.A_StartSound("player/dash", CHAN_DASHBOOTS);
+                    bootsHeldTime++;
+                    bootsCooldown = DASH_COOLDOWN;
+                } else if(bootsHeldTime > 0 && bootsHeldTime < DASH_LENGTH) {
+                    playerDash(plr);
+                } else if(bootsHeldTime == DASH_LENGTH) {
+                    playerDash(plr, 0.6);
+                }
+                if(bootsHeldTime > 0) {
+                    bootsHeldTime++;
+                }
+            } else {
+                if(bootsHeldTime > 0) {
+                    if(bootsHeldTime < DASH_LENGTH) {
+                        playerDash(plr, 0.6);
+                    }
+                    bootsHeldTime = 0;
+                }
+            }
+        } else {
+            if(bootsHeldTime != 2*DASH_LENGTH) {
+                bootsHeldTime = 2*DASH_LENGTH;
+            }
+        }
+
+        if(bootsCooldown > 0) {
+            bootsCooldown--;
+        }
+    }
+
+    void playerDash(AREAGPlayerPawn plr, double factor = 1.0) {
+        double dsp = DASH_SPEED * factor;
+        if(plr.countinv("LegsUnderwater") > 0) {
+            dsp = DASH_WATER * factor;
+        }
+        plr.A_ChangeVelocity(cos(dashAngle) * dsp, sin(dashAngle) * dsp, plr.vel.z, CVF_REPLACE);
+    }
+
+    double calcDashAngle(AREAGPlayerPawn plr) {
+        let dng = plr.angle;
+
+        if(plr.iButtons & BT_FORWARD) {
+            if(plr.iButtons & BT_MOVERIGHT) {
+                dng = plr.angle-45.0;
+            } else if(plr.iButtons & BT_MOVELEFT) {
+                dng = plr.angle+45.0;
+            } else {
+                dng = plr.angle;
+            }
+        } else if(plr.iButtons & BT_BACK) {
+            if(plr.iButtons & BT_MOVERIGHT) {
+                dng = plr.angle+180.0+45.0;
+            } else if(plr.iButtons & BT_MOVELEFT) {
+                dng = plr.angle+180.0-45.0;
+            } else {
+                dng = plr.angle+180.0;
+            }
+        } else if(plr.iButtons & BT_MOVERIGHT) {
+            dng = plr.angle-90.0;
+        } else if(plr.iButtons & BT_MOVELEFT) {
+            dng = plr.angle+90.0;
+        }
+
+        return dng;
     }
 }
 

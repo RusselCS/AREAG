@@ -63,8 +63,9 @@ misc/WaterEnd OUTSPLAS // Steamworld Dig
 misc/JumpSplash JUMPSPLA // Mega Man Star Force
 misc/acidbubble ACIDIN // Metroid: Zero Mission
 
-player/stepdash TAPDASH // Garou: Mark of the Wolves
-player/jetpack jetpack // Catoon sound library- need to trace source. TEMP
+player/dash TAPDASH // Mega Man ZX
+player/airdash AIRDASH // Mega Man ZX
+player/jetpack jetpack // Cartoon sound library- need to trace source.
 player/ouch OUCH // LA-MULANA
 
 weapon/whipswing WHIPSWIN // Mega Man Star Force
