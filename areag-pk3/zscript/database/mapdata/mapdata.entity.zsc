@@ -29,7 +29,12 @@ class AREAGMapData : Object
     }
 
     String getPickup(int id) {
-        return pickups[id];
+        if(id >= pickups.size()) {
+            console.printf("Tried to spawn pickup ID: %d when the pickup table for this map is size %d.", id, pickups.size());
+            return "EmptyItem";
+        } else {
+            return pickups[id];
+        }
     }
 
     int getLevelNum() {
