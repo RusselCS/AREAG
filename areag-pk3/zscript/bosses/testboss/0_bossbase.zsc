@@ -30,12 +30,12 @@ class MikeBoss : BasicActor
     action void A_MikeMoveEnd() {
         A_SetSize(MIKE_STAND_RADIUS);
         bTHRUACTORS = false;
-        invoker.bSHOWHITBOX = true;
+        //invoker.bSHOWHITBOX = true;
     }
 
     action void A_MikeMoveStart() {
         bTHRUACTORS = true;
-        invoker.bSHOWHITBOX = false;
+        //invoker.bSHOWHITBOX = false;
         A_SetSize(MIKE_MOVE_RADIUS);
     }
 
