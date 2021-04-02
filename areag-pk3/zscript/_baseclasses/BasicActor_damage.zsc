@@ -6,13 +6,30 @@ extend class BasicActor
 
         if(health > 0) {
             if(bloodtype == "HitPop") {
-                A_StartSound("misc/jarpain", CHAN_VOICE);
-                A_SpawnItemEx("HitPop", inflictor.pos.x-pos.x, inflictor.pos.y-pos.y, inflictor.pos.z-pos.z, 0, 0, 0, 0, SXF_ABSOLUTEPOSITION);
+                SpawnBloodType(inflictor, source, bloodtype, "misc/jarpain");
             }
         }
 
         return fDamage;
 	}
+
+    void SpawnBloodType(Actor inflictor, Actor source, String type, String sound) {
+        let ang = VectorAngle(source.pos.x - pos.x, source.pos.y - pos.y);
+        A_StartSound(sound, CHAN_VOICE);
+        vector3 sPos;
+
+        if(inflictor != source && inflictor.pos.z != pos.z) {
+            sPos = inflictor.pos - pos;
+        } else {
+            sPos = (
+                radius * cos(ang),
+                radius * sin(ang),
+                height / 2
+            );
+        }
+
+        A_SpawnItemEx(type, sPos.x, sPos.y, sPos.z, 0, 0, 0, ang, SXF_ABSOLUTEANGLE|SXF_ABSOLUTEPOSITION);
+    }
 
     virtual int onDamage(Actor inflictor, Actor source, int damage, Name mod, int flags, double angle) {
         return super.DamageMobj(inflictor, source, damage, mod, flags, angle);
