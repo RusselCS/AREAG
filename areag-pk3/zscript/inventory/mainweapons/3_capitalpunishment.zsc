@@ -64,13 +64,13 @@ class LaserWhip : AREAGProtoWeapon
 		TNT1 A 0 A_SwingWhip();
 	SwingLeft:
 		LWPL ABC 1 A_YawRecoil(0.2);
-		LWPL A 0 A_FireProjectile("LaserWhipProjectileL", 0, 0, 0);
+		LWPL A 0 A_FireHandedProjectile("LaserWhipProjectileL", "LaserWhipProjectileR", 0, 0, 0);
 		LWPL A 0 A_FireProjectile("LaserWhipDamager", 0, 0, 0);
 		LWPL DEZ 1 A_YawRecoil(0.2);
 		goto FireEnd;
 	SwingRight:
 		LWPL FGH 1 A_YawRecoil(-0.2);
-		LWPL A 0 A_FireProjectile("LaserWhipProjectileR", 0, 0, 0);
+		LWPL A 0 A_FireHandedProjectile("LaserWhipProjectileR", "LaserWhipProjectileL", 0, 0, 0);
 		LWPL A 0 A_FireProjectile("LaserWhipDamager", 0, 0, 0);
 		LWPL IJK 1 A_YawRecoil(-0.2);
 		goto FireEnd;

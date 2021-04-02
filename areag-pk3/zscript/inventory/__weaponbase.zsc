@@ -50,7 +50,7 @@ class AREAGProtoWeapon : Weapon {
 
     action Actor A_FireHandedProjectile(String leftProj, String rightProj, double angle = 0, bool useammo = true, double spawnofs_xy = 0, double spawnheight = 0, int flags = 0, double pitch = 0)
     {
-        if(invoker.bHandedness) {
+        if(!invoker.bHandedness) {
             return A_FireProjectile(leftProj, angle, useammo, spawnofs_xy, spawnheight, flags, pitch);
         } else {
             return A_FireProjectile(rightProj, angle, useammo, spawnofs_xy, spawnheight, flags, pitch);

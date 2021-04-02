@@ -63,12 +63,12 @@ class ChainWhip : AREAGProtoWeapon
 		TNT1 A 0 A_SwingWhip();
 	SwingLeft:
 		CWPL ABC 1 A_YawRecoil(0.3);
-		CWPL A 0 A_FireProjectile("ChainWhipProjectileL", 0, 0, 0);
+		CWPL A 0 A_FireHandedProjectile("ChainWhipProjectileL", "ChainWhipProjectileR", 0, 0, 0);
 		CWPL DEZ 1 A_YawRecoil(0.3);
 		goto FireEnd;
 	SwingRight:
 		CWPL FGH 1 A_YawRecoil(-0.3);
-		CWPL A 0 A_FireProjectile("ChainWhipProjectileR", 0, 0, 0);
+		CWPL A 0 A_FireHandedProjectile("ChainWhipProjectileR", "ChainWhipProjectileL", 0, 0, 0);
 		CWPL IJK 1 A_YawRecoil(-0.3);
 		goto FireEnd;
 	FireEnd:
