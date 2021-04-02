@@ -18,8 +18,7 @@ extend class AREAGPlayerPawn {
 
     double dBaseGravity;
 
-    double prevBobXFracMult;
-    double prevBobYFracMult;
+    vector2 prevBob;
     double prevViewBob;
 
     double dBaseRadius;
@@ -45,8 +44,6 @@ extend class AREAGPlayerPawn {
 
     void AREAGMoveInit() {
         Thing_ChangeTID(0, PlayerNumber()+1000);
-        prevBobXFracMult = 0.0;
-        prevBobYFracMult = 0.0;
         prevViewBob = ViewBob;
         iStepCD = 0;
         eyesInit = false;
@@ -257,9 +254,12 @@ extend class AREAGPlayerPawn {
 
     override vector2 BobWeapon(double ticfrac)
     {
-        if(!Player) return (0, 0);
+        if(!Player)
+            return (0, 0);
+        
         let wep = Player.ReadyWeapon;
-        if(!wep || wep.bDONTBOB) return (0, 0); 
+        if(!wep || wep.bDONTBOB)
+            return (0, 0); 
 
         if(CountInv("DroneFlag") == 0) {
             if(CountInv("DashFlag") == 0) {
@@ -274,141 +274,53 @@ extend class AREAGPlayerPawn {
 
     vector2 humanWeaponBob(Weapon wep, double ticfrac)
     {
-        Vector2 p[2], r;
-		Vector2 result;
+        Vector2 r;
 
-		let player = self.player;
-		if (!player) return (0, 0);
-		let weapon = player.ReadyWeapon;
+        // Bob the weapon based on movement speed. ([SP] And user's bob speed setting)
+        double ang = wep.BobSpeed * 128 * Player.GetWBobSpeed() * (Level.Time) * 0.08;
 
-		if (weapon == null || weapon.bDontBob)
-		{
-			return (0, 0);
-		}
+        if (curbob != player.bob)
+        {
+            if (abs(player.bob - curbob) <= 1)
+            {
+                curbob = player.bob;
+            }
+            else
+            {
+                double zoom = MAX(1., abs(curbob - player.bob) / 40);
+                if (curbob > player.bob)
+                {
+                    curbob -= zoom;
+                }
+                else
+                {
+                    curbob += zoom;
+                }
+            }
+        }
 
-		// [XA] Get the current weapon's bob properties.
-		int bobstyle = weapon.BobStyle;
-		double BobSpeed = (weapon.BobSpeed * 128);
-		double Rangex = weapon.BobRangeX;
-		double Rangey = weapon.BobRangeY;
+        // The weapon bobbing intensity while firing can be adjusted by the player.
+        double BobIntensity = (WF_WEAPONBOBBING) ? 1. : player.GetWBobFire();
 
-		for (int i = 0; i < 2; i++)
-		{
-			// Bob the weapon based on movement speed. ([SP] And user's bob speed setting)
-			double angle = (BobSpeed * player.GetWBobSpeed() * 35 /	TICRATE*(Level.maptime - 1 + i)) * (360. / 8192.);
+        if (curbob != 0)
+        {
+            //[SP] Added in decorate player.viewbob checks
+            double bobx = (player.bob * BobIntensity * wep.BobRangeX * ViewBob);
+            double boby = (player.bob * BobIntensity * wep.BobRangeY * ViewBob);
 
-			// [RH] Smooth transitions between bobbing and not-bobbing frames.
-			// This also fixes the bug where you can "stick" a weapon off-center by
-			// shooting it when it's at the peak of its swing.
-			if (curbob != player.bob)
-			{
-				if (abs(player.bob - curbob) <= 1)
-				{
-					curbob = player.bob;
-				}
-				else
-				{
-					double zoom = MAX(1., abs(curbob - player.bob) / 40);
-					if (curbob > player.bob)
-					{
-						curbob -= zoom;
-					}
-					else
-					{
-						curbob += zoom;
-					}
-				}
-			}
+            r.X = bobx * cos(ang);
+            r.Y = 0.5f * (boby * (1. + (cos(ang * 2))));
+        }
+        else
+        {
+            r = (0, 0);
+        }
 
-			// The weapon bobbing intensity while firing can be adjusted by the player.
-			double BobIntensity = (WF_WEAPONBOBBING) ? 1. : player.GetWBobFire();
+        vector2 goal = Vec2Lerp(prevBob, r, ticfrac/2);
+        prevBob = goal;
+        goal.y += max(Lerp(lerpVelZ, vel.z, 0.5), -16.0);
 
-			if (curbob != 0)
-			{
-				//[SP] Added in decorate player.viewbob checks
-				double bobx = (player.bob * BobIntensity * Rangex * ViewBob);
-				double boby = (player.bob * BobIntensity * Rangey * ViewBob);
-
-                r.X = bobx*cos(angle);
-				r.Y = 0.5f * (boby * (1. + (cos(angle * 2))));
-
-				// switch (bobstyle)
-				// {
-				// case Bob_Normal:
-				// 	r.X = bobx * cos(angle);
-				// 	r.Y = boby * abs(sin(angle));
-				// 	break;
-
-				// case Bob_Inverse:
-				// 	r.X = bobx*cos(angle);
-				// 	r.Y = boby * (1. - abs(sin(angle)));
-				// 	break;
-
-				// case Bob_Alpha:
-				// 	r.X = bobx * sin(angle);
-				// 	r.Y = boby * abs(sin(angle));
-				// 	break;
-
-				// case Bob_InverseAlpha:
-				// 	r.X = bobx * sin(angle);
-				// 	r.Y = boby * (1. - abs(sin(angle)));
-				// 	break;
-
-				// case Bob_Smooth:
-				// 	r.X = bobx*cos(angle);
-				// 	r.Y = 0.5f * (boby * (1. - (cos(angle * 2))));
-				// 	break;
-
-				// case Bob_InverseSmooth:
-				// 	r.X = bobx*cos(angle);
-				// 	r.Y = 0.5f * (boby * (1. + (cos(angle * 2))));
-				// }
-			}
-			else
-			{
-				r = (0, 0);
-			}
-            p[i] = r;
-		}
-		return p[0] * (1. - ticfrac) + p[1] * ticfrac;
-
-        // vector2 p[2];
-        
-        // double ang = wep.BobSpeed * 128 * Player.GetWBobSpeed() * (Level.Time) * 0.08;
-        // prevViewBob = Lerp(prevViewBob, ViewBob, ticfrac/2);
-        // let xFracMult = cos(ang) * prevViewBob * 0.8;
-        // let yFracMult = 0.5-abs(sin(ang)) * prevViewBob * 0.5;
-        // double bobx = 0;
-        // double boby = 0;
-
-        // bobx = Player.Bob * wep.BobRangeX;
-        // boby = Player.Bob * wep.BobRangeY;
-        // bobx *= xFracMult;
-        // boby *= yFracMult;
-        // p[0] = (bobx, boby+5.0);
-
-        // bobx = Player.Bob * wep.BobRangeX;
-        // boby = Player.Bob * wep.BobRangeY;
-        // bobx *= prevBobXFracMult;
-        // boby *= prevBobYFracMult;
-        // p[1] = (bobx, boby+5.0);
-
-        // prevBobXFracMult = xFracMult;
-        // prevBobYFracMult = yFracMult;
-        
-        // vector2 interp = p[0] * (1 - 0.5) + p[1] * 0.5;
-        // interp.y += Lerp(lerpVelZ, vel.z, 0.5);
-
-        // // if(abs(sin(ang)) < 0.2 && bOnGround && AREAGIsWalking()) {
-        // //     if(iStepCD == 0) {
-        // //         A_PlaySound("*footstep", CHAN_BODY);
-        // //         iStepCD = 1;
-        // //     }
-        // // } else {
-        // //     iStepCD = 0;
-        // // }
-
-        // return interp;
+		return goal;
     }
 
     static int checkSR(int iButtons) {

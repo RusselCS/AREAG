@@ -231,14 +231,14 @@ extend class AREAGPlayerPawn {
         double boby = 0;
 
         boby = Player.Bob * wep.BobRangeY;
-        boby *= yFracMult;
+        boby *= prevBob.Y;
         p[0] = (0, boby+5.0);
 
         boby = Player.Bob * wep.BobRangeY;
-        boby *= prevBobYFracMult;
+        boby *= prevBob.Y;
         p[1] = (0, boby+5.0);
 
-        prevBobYFracMult = yFracMult;
+        prevBob.Y = yFracMult;
         
         vector2 interp = p[0] * (1 - 0.5) + p[1] * 0.5;
         interp.y += Lerp(lerpVelZ, vel.z, 0.5);

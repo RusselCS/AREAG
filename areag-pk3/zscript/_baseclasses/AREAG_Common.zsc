@@ -97,6 +97,11 @@ mixin class AREAG_Common
 		return (1 - t) * a + t * b;
 	}
 
+	static vector2 Vec2Lerp(vector2 a, vector2 b, double t)
+	{
+		return (1 - t) * a + t * b;
+	}
+
     static bool collidingBoxes(Actor a, Actor b, double rad) {
         double diffX = abs(a.pos.x - b.pos.x) - rad;
         double diffY = abs(a.pos.y - b.pos.y) - rad;

@@ -130,12 +130,14 @@ extend class AREAGPlayerPawn
         vector2 p[2];
 
         double moveAng = VectorAngle(vel.x, vel.y);
-        double ang = angle;//wep.BobSpeed * 128 * Player.GetWBobSpeed() * (angle - moveAng + 270.0) * 0.4;//();// * Player.GetWBobSpeed() * 0.08;
+        double ang = angle - moveAng + 270.0;//wep.BobSpeed * 128 * Player.GetWBobSpeed() * (angle - moveAng + 270.0) * 0.4;//();// * Player.GetWBobSpeed() * 0.08;
 
-        vector2 res;
-
-        res.x = -cos(ang) * 0.8 * 60.0;
-        res.y = 0.5-sin(ang) * 0.2 * 60.0;
+        vector2 res = (
+            -cos(ang) * 0.8 * 60.0,
+             1.0-sin(ang) * 0.4 * 60.0
+        );
+        res = Vec2Lerp(prevBob, res, ticfrac/2);
+        prevBob = res;
 
         return res;
 
