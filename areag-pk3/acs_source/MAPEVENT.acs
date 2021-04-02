@@ -16,5 +16,6 @@ script "map_event_open" OPEN
     
 }
 
+#include "events/__TM2.acs"
 #include "events/0_OUTSKI.acs"
 #include "events/1_GATE.acs"

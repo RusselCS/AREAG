@@ -38,7 +38,7 @@ script "outskirts_events" (int toggle, int action, int unused)
 			queueEventSave(action, loading);
 			SetUserVariable(0, "bEndState", true);
 			Floor_LowerToLowest(tag1, 64);
-			Ceiling_MoveToValue(tag2, 64, 2016, false);
+			moveCeiling(tag2, 64, 2016);
 			break;
 		case 3: // Endgame Horn Statue
 			queueEventSave(action, loading);
@@ -49,7 +49,7 @@ script "outskirts_events" (int toggle, int action, int unused)
 		case 5: // Talk to elder to cause door to open (will be a switch)
 			queueEventSave(action, loading);
 			PrintBold(s:"[PLACEHOLDER] TALKED TO ELDER!", i:tag1);
-			Ceiling_MoveToValue(tag1, 64, 1440, false);
+			moveCeiling(tag1, 64, 1440);
 			break;
 		case 6: // Destructible Wall
 			queueEventSave(action, loading);
@@ -62,9 +62,9 @@ script "outskirts_events" (int toggle, int action, int unused)
 		        setSwitchState(switchTag+1, "Loading", true);
                 setActorScore(switchTag+1, 175);
                 setActorScore(switchTag, 175);
-				Floor_MoveToValue(tag1+1, 20, 1568, 0);
+				moveFloor(tag1+1, 20, 1568);
 			} else {
-				Floor_MoveToValue(tag1+1, 20, 1824, 0);
+				moveFloor(tag1+1, 20, 1824);
 			}
 			break;
         case 9:
@@ -72,21 +72,21 @@ script "outskirts_events" (int toggle, int action, int unused)
 		        setSwitchState(switchTag-1, "Loading", true);
                 setActorScore(switchTag-1, 175);
                 setActorScore(switchTag, 175);
-				Floor_MoveToValue(tag1, 20, 1568, 0);
+				moveFloor(tag1, 20, 1568);
 			} else {
-				Floor_MoveToValue(tag1, 20, 1824, 0);
+				moveFloor(tag1, 20, 1824);
 			}
 			break;
 		case 10: // "Bear" miniboss; locks room.
 			if(checkEventState(action+1) != 1) {
 				PrintBold(s:"[PLACEHOLDER] MINIBOSS SPAWNED!");
-				Ceiling_MoveToValue(tag1, 128, 1312, false);
+				moveCeiling(tag1, 128, 1312);
 			}
 			break;
 		case 11: // Miniboss defeated. Unlocks room, lowers floor to reveal new path.
 			queueEventSave(action, loading);
 			PrintBold(s:"[PLACEHOLDER] MINIBOSS DEFEATED!");
-			Ceiling_MoveToValue(tag1, 64, 1472, false);
+			moveCeiling(tag1, 64, 1472);
 			Floor_LowerToLowest(tag2, 64);
 			break;
 		case 12: // Area Gate - Grand Gateway

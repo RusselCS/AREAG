@@ -60,7 +60,7 @@ script "gateway_events" (int toggle, int action, int unused)
 	case 1: // Jammed Door 1
 		queueEventSave(action, loading);
 		Floor_LowerToLowest(tag1, 64);
-		Ceiling_MoveToValue(tag2, 10, 992);
+		moveCeiling(tag2, 10, 992);
 		SetUserVariable(switchTag, "bEndState", true);
 		SetUserVariable(tag2, "bJammedDoor", false);
 		break;
@@ -68,7 +68,7 @@ script "gateway_events" (int toggle, int action, int unused)
 	case 2: // Jammed Door 2
 		queueEventSave(action, loading);
 		Floor_LowerToLowest(tag1, 64);
-		Ceiling_MoveToValue(tag2, 10, 992);
+		moveCeiling(tag2, 10, 992);
 		SetUserVariable(switchTag, "bEndState", true);
 		SetUserVariable(tag2, "bJammedDoor", false);
 		break;
@@ -76,16 +76,16 @@ script "gateway_events" (int toggle, int action, int unused)
 	case 3: // Crystal Switch lowers blocking bars (basement area)
 		queueEventSave(action, loading);
 		setSwitchState(switchTag, "Loading", loading);
-		Ceiling_MoveTOValue(tag1, 20, 908, 0);
-		Ceiling_MoveTOValue(tag2, 20, 984, 0);
+		moveCeiling(tag1, 20, 908);
+		moveCeiling(tag2, 20, 984);
 		break;
 
 	case 4: // Crystal Switch elevator (basement area)
 		if(Toggle) {
-			Floor_MoveToValue(tag1, 20, 1184, 0);
+			moveFloor(tag1, 20, 1184);
 			setActorScore(switchTag, 4*35);
 		} else {
-			Floor_MoveToValue(tag1, 20, 912, 0);
+			moveFloor(tag1, 20, 912);
 		}
 		break;
 
@@ -93,7 +93,7 @@ script "gateway_events" (int toggle, int action, int unused)
 		queueEventSave(action, loading);
 		if(GetActorZ(0) < 960.0 && !(gateEventStates[GATE_PEDESTAL] & 1)) {
 			gateEventStates[GATE_PEDESTAL] |= 1;
-			Floor_MoveToValue(tag1, 40, 1312, 0);
+			moveFloor(tag1, 40, 1312);
 		}
 		break;
 
@@ -101,7 +101,7 @@ script "gateway_events" (int toggle, int action, int unused)
 		if(gateEventStates[GATE_PEDESTAL] & 2 && gateEventStates[GATE_PEDESTAL] & 4 && gateEventStates[GATE_PEDESTAL] & 8) {
 			queueEventSave(action, loading);
 			tagwait(tag1);
-			Floor_MoveToValue(tag1, 40, 1120, 0);
+			moveFloor(tag1, 40, 1120);
 			gateEventStates[GATE_PEDESTAL] |= 16;
 			Delay(35);
 			PrintBold(s:"PUZZLE IN THE CENTER HAS BEEN COMPLETED");
@@ -142,23 +142,23 @@ script "gateway_events" (int toggle, int action, int unused)
 	case 11: // Four-switches puzzle - Bottom-right
 		queueEventSave(action, loading);
 		PrintBold(s:"WRONG! >:(");
-		Ceiling_MoveToValue(tag1, 64, 992, 0);
+		moveCeiling(tag1, 64, 992);
 		SetUserVariable(switchTag, "bEndState", true);
 		break;
 
 	case 12: // Four-switches puzzle - Bottom-left
 		queueEventSave(action, loading);
 		PrintBold(s:"WRONG! >:(");
-		Ceiling_MoveToValue(tag1, 64, 992, 0);
+		moveCeiling(tag1, 64, 992);
 		SetUserVariable(switchTag, "bEndState", true);
 		break;
 
 	case 13: // Four-switches puzzle - top-left
 		queueEventSave(action, loading);
 		PrintBold(s:"CORRECT! :)");
-		Ceiling_MoveToValue(tag1, 64, 992, 0);
-		Ceiling_MoveToValue(tag2, 20, 1096, 0);
-		Ceiling_MoveToValue(tag3, 20, 1168, 0);
+		moveCeiling(tag1, 64, 992);
+		moveCeiling(tag2, 20, 1096);
+		moveCeiling(tag3, 20, 1168);
 		SetUserVariable(switchTag, "bEndState", true);
 		break;
 
@@ -187,17 +187,17 @@ script "gateway_events" (int toggle, int action, int unused)
 		Delay(35);
 		Radius_Quake(5, 70, 0, 4, 0);
 		Delay(20);
-		Floor_MoveToValue(tag1, 40, 800, 0);
-		Floor_MoveToValue(tag2, 40, 800, 0);
-		Floor_MoveToValue(tag3, 40, 896, 0);
+		moveFloor(tag1, 40, 800);
+		moveFloor(tag2, 40, 800);
+		moveFloor(tag3, 40, 896);
 		break;
 
 	case 21: // Raises bars + waterfall side entrance.
 		queueEventSave(action, loading);
 		Floor_LowerToLowest(tag1, 64);
-		Ceiling_MoveToValue(tag2, 40, 808, 0);
-		Ceiling_MoveToValue(tag3, 40, 880, 0);
-		Ceiling_MoveToValue(tag4, 10, 1184, 0);
+		moveCeiling(tag2, 40, 808);
+		moveCeiling(tag3, 40, 880);
+		moveCeiling(tag4, 10, 1184);
 		SetUserVariable(switchTag, "bEndState", true);
 		break;
 
@@ -254,8 +254,8 @@ script "gateway_events" (int toggle, int action, int unused)
 		queueEventSave(action, loading);
 		SetUserVariable(switchTag, "bEndState", true);
 		Floor_LowerToLowest(tag1, 64);
-		Ceiling_MoveToValue(tag2, 40, 424, 0);
-		Ceiling_MoveToValue(tag3, 40, 504, 0);
+		moveCeiling(tag2, 40, 424);
+		moveCeiling(tag3, 40, 504);
 		SetActorState(tag1, "Deactivate");
 		break;
 
@@ -266,14 +266,14 @@ script "gateway_events" (int toggle, int action, int unused)
 		queueEventSave(action, loading);
 		PrintBold(s:"PEW PEW DART SHOOTY!");
 		SetUserVariable(switchTag, "bEndState", true);
-		Floor_MoveToValue(tag1, 40, 320, 0);
+		moveFloor(tag1, 40, 320);
 		break;
 
 	case 31: // Waterfall entrance to invisible maze puzzle
 		queueEventSave(action, loading);
 		SetUserVariable(switchTag, "bEndState", true);
 		Floor_LowerToLowest(tag1, 64);
-		Floor_MoveToValue(tag2, 40, 384, 0);
+		moveFloor(tag2, 40, 384);
 		break;
 
 	case 32: // Save room
@@ -285,15 +285,15 @@ script "gateway_events" (int toggle, int action, int unused)
 	case 34: // Looping elevator platform
 		queueEventSave(action, loading);
 		SetUserVariable(switchTag, "bEndState", true);
-		Ceiling_MoveToValue(tag1, 40, 1344, 0);
+		moveCeiling(tag1, 40, 1344);
 
 		while(true) {
 			Delay(70);
-			Ceiling_MoveToValue(tag2, 20, 1512-616, 0);
-			Floor_MoveToValue(tag2, 20, 1480-616, 0);
+			moveCeiling(tag2, 20, 1512-616);
+			moveFloor(tag2, 20, 1480-616);
 			Delay(70);
-			Ceiling_MoveToValue(tag2, 20, 1512, 0);
-			Floor_MoveToValue(tag2, 20, 1480, 0);
+			moveCeiling(tag2, 20, 1512);
+			moveFloor(tag2, 20, 1480);
 		}
 		break;
 
@@ -315,8 +315,8 @@ script "gateway_events" (int toggle, int action, int unused)
 		queueEventSave(action, loading);
 		SetUserVariable(switchTag, "bEndState", true);
 		Floor_LowerToLowest(tag1, 64);
-		Ceiling_MoveToValue(tag2, 40, 1000, 0);
-		Ceiling_MoveToValue(tag3, 40, 1072, 0);
+		moveCeiling(tag2, 40, 1000);
+		moveCeiling(tag3, 40, 1072);
 		break;
 
 	case 37: // Spear Trap
@@ -335,10 +335,10 @@ script "gateway_events" (int toggle, int action, int unused)
 
 	case 41: // Crystal Switch temporary platform raise
 		if(Toggle) {
-			Floor_MoveToValue(tag1, 20, 896, 0);
+			moveFloor(tag1, 20, 896);
 			setActorScore(switchTag, 700);
 		} else {
-			Floor_MoveToValue(tag1, 20, 712, 0);
+			moveFloor(tag1, 20, 712);
 		}
 		break;
 
@@ -346,8 +346,8 @@ script "gateway_events" (int toggle, int action, int unused)
 		if(gateEventStates[GATE_MINIBOSS] == 0) {
 			PrintBold(s:"GIANT SPIDER AAAAAAAAAAH!!!!");
 			gateEventStates[GATE_MINIBOSS] = 1;
-			Ceiling_MOveToValue(tag1, 40, 1024, 0);
-			Ceiling_MOveToValue(tag2, 40, 1024, 0);
+			moveCeiling(tag1, 40, 1024);
+			moveCeiling(tag2, 40, 1024);
 		}
 		break;
 
@@ -356,19 +356,19 @@ script "gateway_events" (int toggle, int action, int unused)
 		if(gateEventStates[GATE_MINIBOSS] == 1) {
 			PrintBold(s:"SPIDER DEAD! :)");
 			gateEventStates[GATE_MINIBOSS] = 2;
-			Ceiling_MOveToValue(tag1, 40, 1128, 0);
-			Ceiling_MOveToValue(tag2, 40, 1208, 0);
-			Floor_MoveToValue(tag3, 64, 1056, 0);
+			moveCeiling(tag1, 40, 1128);
+			moveCeiling(tag2, 40, 1208);
+			moveFloor(tag3, 64, 1056);
 		}
 		break;
 
 	case 44: // While Floor switch is pressed, raise a platform.
 		if(Toggle) {
-			Floor_MoveToValue(tag1, 64, 1088, 0);
-			Floor_MoveToValue(tag2, 96, 1184, 0);
+			moveFloor(tag1, 64, 1088);
+			moveFloor(tag2, 96, 1184);
 		} else {
-			Floor_MoveToValue(tag1, 64, 1096, 0);
-			Floor_MoveToValue(tag2, 96, 1040, 0);
+			moveFloor(tag1, 64, 1096);
+			moveFloor(tag2, 96, 1040);
 		}
 		break;
 
@@ -377,10 +377,10 @@ script "gateway_events" (int toggle, int action, int unused)
 
 	case 46: // Crystal Switch raises elevator. Lowers after delay.
 		if(Toggle) {
-			Floor_MoveToValue(tag1, 64, 1120, 0);
+			moveFloor(tag1, 64, 1120);
 			setActorScore(switchTag, 70);
 		} else {
-			Floor_MoveToValue(tag1, 64, 704, 0);
+			moveFloor(tag1, 64, 704);
 		}
 		break;
 
@@ -402,19 +402,19 @@ script "gateway_events" (int toggle, int action, int unused)
 
 	case 49: // Crystal Switch Raises platform, lowers after a moment.
 		if(Toggle) {
-			Floor_MoveToValue(tag1, 40, 1184, 0);
+			moveFloor(tag1, 40, 1184);
 			setActorScore(switchTag, 60);
 		} else {
-			Floor_MoveToValue(tag1, 40, 1000, 0);
+			moveFloor(tag1, 40, 1000);
 		}
 		break;
 
 	case 50: // Crystal Switch Raises platform, lowers after a moment.
 		if(Toggle) {
-			Floor_MoveToValue(tag1, 40, 1184, 0);
+			moveFloor(tag1, 40, 1184);
 			setActorScore(switchTag, 60);
 		} else {
-			Floor_MoveToValue(tag1, 40, 1000, 0);
+			moveFloor(tag1, 40, 1000);
 		}
 		break;
 
@@ -425,7 +425,7 @@ script "gateway_events" (int toggle, int action, int unused)
 		queueEventSave(action, loading);
 		SetUserVariable(switchTag, "bEndState", true);
 		Floor_LowerToLowest(tag1, 64);
-		Floor_MoveToValue(tag2, 40, 1088, 0);
+		moveFloor(tag2, 40, 1088);
 		break;
 
 	case 53: // Mine Shaft
@@ -439,10 +439,10 @@ script "gateway_events" (int toggle, int action, int unused)
 
 	case 56: // Crystal Switch raises elevator. Lowers after a moment.
 		if(Toggle) {
-			Floor_MoveToValue(tag1, 40, 1280, 0);
+			moveFloor(tag1, 40, 1280);
 			setActorScore(switchTag, 140);
 		} else {
-			Floor_MoveToValue(tag1, 40, 992, 0);
+			moveFloor(tag1, 40, 992);
 		}
 		break;
 
@@ -480,13 +480,11 @@ script "gateway_return" (void)
 {
 	if(getUserVariable(147, "bEndState")) {
 		SetUserVariable(147, "bEndState", false);
-		Floor_Stop(147);
-		Floor_MoveToValue(147, 64, 1064, 0);
+		moveFloor(147, 64, 1064);
 	}
 
 	if(getUserVariable(148, "bEndState")) {
 		SetUserVariable(148, "bEndState", false);
-		Floor_Stop(148);
-		Floor_MoveToValue(148, 64, 1032, 0);
+		moveFloor(148, 64, 1032);
 	}
 }

@@ -121,3 +121,17 @@ function void queueEventSave(int evt, bool loading) {
 function int checkEventState(int evt) {
 	return ACS_NamedExecuteWithResult("map_checkEvent", evt);
 }
+
+function void moveFloor(int tag, int height, int speed) {
+	Floor_Stop(tag);
+	Floor_MoveToValue(tag, abs(height), speed, height < 0);
+}
+
+function void moveCeiling(int tag, int height, int speed) {
+	Ceiling_Stop(tag);
+	Ceiling_MoveToValue(tag, abs(height), speed, height < 0);
+}
+
+function bool tagMoving(int tag) {
+	return false;
+}

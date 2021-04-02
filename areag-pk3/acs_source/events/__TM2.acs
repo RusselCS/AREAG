@@ -1,0 +1,45 @@
+/*============================================================*\
+||                         TEST MAP 2                         ||
+\*============================================================*/
+
+script "TESTMAP2_HELL" OPEN
+{
+    Log(s:"TEST MAP SCRIPT WORKS");
+}
+
+script "testmap2_event" (int toggle, int action, int unused)
+{
+	bool loading = false;
+    int actionDiff = 400;
+	
+	if(action == 0) {
+		if(ActivatorTID() >= 1000) {
+			terminate;
+		} else {
+			action = ActivatorTID()-actionDiff;
+		}
+	} else {
+		if(ActivatorTID() < 1000) {
+			loading = true;
+		}
+	}
+
+	int switchTag = actionDiff+action;
+	int tag1 = switchTag;
+	int tag2 = switchTag+100;
+
+	switch(action)
+	{
+        case 4:
+        case 5:
+            break;
+		case 1:
+        case 2:
+        case 3:
+        case 6:
+            SetThingSpecial(switchTag, 0, 0, 0, 0, 0, 0);
+            int succ = SpawnSpot("CoinDropper", 0, tag2, 0);
+            SetActorProperty(tag2, APROP_Score, 25);
+            break;
+	}
+}
