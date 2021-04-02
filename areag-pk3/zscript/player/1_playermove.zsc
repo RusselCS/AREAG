@@ -92,8 +92,12 @@ extend class AREAGPlayerPawn {
             }
 		}
 
-        if(viewHeight != dBaseViewHeight && dBaseViewHeight != 0.0) {
-            updateViewHeight(Lerp(viewHeight, dBaseViewHeight, 0.3));
+        if(dBaseViewHeight != 0.0 && viewHeight != dBaseViewHeight) {
+            if(abs(viewHeight-dBaseViewHeight) < 1.0) {
+                updateViewHeight(dBaseViewHeight);
+            } else {
+                updateViewHeight(Lerp(viewHeight, dBaseViewHeight, 0.3));
+            }
         }
     }
 
