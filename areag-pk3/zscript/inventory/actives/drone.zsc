@@ -133,7 +133,7 @@ extend class AREAGPlayerPawn {
         iWalkCooldown = 0;
 
         A_SetSize(DRONESIZE_RADIUS, DRONESIZE_HEIGHT);
-        ViewHeight = DRONESIZE_VIEWHEIGHT;
+        changeViewHeight(DRONESIZE_VIEWHEIGHT, true);
         attackZOffset = DRONESIZE_ATTACKZOFFSET;
 
         iLevelNum = level.levelnum;
@@ -172,7 +172,7 @@ extend class AREAGPlayerPawn {
         iWalkCooldown = 0;
 
         A_SetSize(dBaseRadius, dBaseHeight);
-        ViewHeight = dBaseViewHeight;
+        changeViewHeight(dStartingViewHeight, true);
         attackZOffset = dBaseAttackZOffset;
         if(CountInv("ArmorBars") > 0) {
             bBUDDHA = true;

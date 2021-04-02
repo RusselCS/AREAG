@@ -29,8 +29,8 @@ class AREAGProtoPlayer : PlayerPawn {
     }
 
     override void PlayerThink() {
-        AREAGThink();
         super.PlayerThink();
+        AREAGThink();
     }
 
     override void Tick() {
