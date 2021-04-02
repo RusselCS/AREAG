@@ -2,11 +2,6 @@
 ||                         TEST MAP 2                         ||
 \*============================================================*/
 
-script "TESTMAP2_HELL" OPEN
-{
-    Log(s:"TEST MAP SCRIPT WORKS");
-}
-
 script "testmap2_event" (int toggle, int action, int unused)
 {
 	bool loading = false;

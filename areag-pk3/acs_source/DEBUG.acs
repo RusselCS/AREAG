@@ -1,6 +1,8 @@
 #library "debug"
 
+#nocompact
 #include "zcommon.acs"
+#include "commfunc.acs"
 #include "mapfunc.acs"
 
 script "debug_setspawnpos" (void) {
