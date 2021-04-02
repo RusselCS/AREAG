@@ -18,7 +18,7 @@ class AREAGPlayer : AREAGPlayerPawn
         player.viewheight 60.0;
 		player.attackzoffset 20.0;
 		radius 16;
-		height 56;
+		height 60;
         mass 0x7ffffff;
         gravity 1.2;
         +DONTBLAST;

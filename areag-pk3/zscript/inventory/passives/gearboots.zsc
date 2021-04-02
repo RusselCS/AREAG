@@ -36,6 +36,8 @@ class GearGreavesPassive : PlayerPassive
 {
     const DASH_LENGTH = 18;
     const DASH_COOLDOWN = 50;
+    const DASH_HEIGHT = 48.0; // Height of the player when dashing.
+    const DASH_VIEWHEIGHT = 44.0;
 
     int bootsHeldTime;
     int bootsCooldown;
@@ -55,6 +57,7 @@ class GearGreavesPassive : PlayerPassive
                         playerDash(plr);
                         plr.A_StartSound("player/dash", CHAN_DASHBOOTS);
                         plr.A_GiveInventory("DashFlag", 1);
+                        playerDashTransform(plr, true);
                         bootsHeldTime++;
                         bootsCooldown = DASH_COOLDOWN;
                     } else if(bootsHeldTime > 0 && bootsHeldTime < DASH_LENGTH) {
@@ -62,6 +65,7 @@ class GearGreavesPassive : PlayerPassive
                         plr.A_GiveInventory("DashFlag", 1);
                     } else if(bootsHeldTime == DASH_LENGTH) {
                         playerDash(plr, 0.6);
+                        playerDashTransform(plr, false);
                         plr.A_TakeInventory("DashFlag", 1);
                     }
                     if(bootsHeldTime > 0) {
@@ -73,6 +77,7 @@ class GearGreavesPassive : PlayerPassive
                             playerDash(plr, 0.6);
                         }
                         bootsHeldTime = 0;
+                        playerDashTransform(plr, false);
                         plr.A_TakeInventory("DashFlag", 1);
                     }
                 }
@@ -85,6 +90,18 @@ class GearGreavesPassive : PlayerPassive
 
         if(bootsCooldown > 0) {
             bootsCooldown--;
+        }
+    }
+
+    void playerDashTransform(AREAGPlayerPawn plr, bool active) {
+        if(plr.CountInv("DroneFlag") == 0) {
+            if(active) {
+                plr.changeheight(DASH_HEIGHT);
+                plr.changeViewHeight(DASH_VIEWHEIGHT);
+            } else {
+                plr.changeheight(plr.dStartingHeight);
+                plr.changeViewHeight(plr.dStartingViewHeight);
+            }
         }
     }
 

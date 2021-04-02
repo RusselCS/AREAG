@@ -23,6 +23,7 @@ extend class AREAGPlayerPawn {
 
     double dBaseRadius;
 	double dBaseHeight;
+    double dStartingHeight;
     double dBaseViewHeight;
     double dStartingViewHeight;
     double dBaseStepHeight;
@@ -51,6 +52,7 @@ extend class AREAGPlayerPawn {
 
         dBaseRadius = radius;
 	    dBaseHeight = height;
+        dStartingHeight = dBaseHeight;
         dBaseViewHeight = viewHeight;
         dStartingViewHeight = dBaseViewHeight;
         dBaseStepHeight = maxstepheight;
@@ -236,16 +238,35 @@ extend class AREAGPlayerPawn {
                 }
             }
         }
+
+        // HEIGHT CHANGES
+        if(height != dBaseHeight) {
+            if(dBaseHeight > height) {
+                // need to make sure there's room before changing size
+                // TO DO: HOW TO CHECK IF AN ACTOR IS IN THE WAY :worry:
+                if(ceilingz - floorz < dBaseHeight) {
+                    height = ceilingz - floorz - 1;
+                } else {
+                    height = dBaseHeight;
+                }
+            } else {
+                height = dBaseHeight;
+            }
+        }
     }
 
-    void changeViewHeight(int amt, bool forced = false) {
+    void changeHeight(double amt) {
+        dBaseHeight = amt;
+    }
+
+    void changeViewHeight(double amt, bool forced = false) {
         dBaseViewHeight = amt;
         if(forced) {
             updateViewHeight(amt);
         }
     }
 
-    void updateViewHeight(int amt) {
+    void updateViewHeight(double amt) {
         player.viewheight = amt;
         viewheight = amt;
     }
