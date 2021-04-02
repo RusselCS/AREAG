@@ -337,12 +337,11 @@ extend class AREAGPlayerPawn {
     }
 
     Name getClydeSoundClass() {
-        // if(CountInv("SteamGreavesFlag") > 0) {
-        //     return "steamclyde";
-        // } else {
-        //     return "clyde";
-        // }
-        return "clyde";
+        if(CountInv("SteamGreavesFlag") > 0) {
+            return "steamclyde";
+        } else {
+            return "clyde";
+        }
     }
 
     void setBaseJumpSpeed(double which) {

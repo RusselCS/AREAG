@@ -39,14 +39,16 @@ class SteamGreavesPassive : PlayerPassive
 
     override void passiveTick(AREAGPlayerPawn plr)
     {
-        int iButtons = plr.iButtons;
-        int iOldButtons = plr.iOldButtons;
-        if(!plr.bOnGround) {
-            if(bootsCooldown == 0 && checkPressed(BT_DASH, iButtons, iOldButtons)) {
-                dashAngle = calcDashAngle(plr);
-                playerDash(plr);
-                plr.A_StartSound("player/airdash", CHAN_DASHBOOTS);
-                bootsCooldown = DASH_COOLDOWN;
+        if(plr.countInv("DroneFlag") == 0) {
+            int iButtons = plr.iButtons;
+            int iOldButtons = plr.iOldButtons;
+            if(!plr.bOnGround) {
+                if(bootsCooldown == 0 && checkPressed(BT_DASH, iButtons, iOldButtons)) {
+                    dashAngle = calcDashAngle(plr);
+                    playerDash(plr);
+                    plr.A_StartSound("player/airdash", CHAN_DASHBOOTS);
+                    bootsCooldown = DASH_COOLDOWN;
+                }
             }
         }
 

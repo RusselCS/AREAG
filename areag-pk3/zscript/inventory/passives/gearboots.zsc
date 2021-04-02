@@ -46,38 +46,40 @@ class GearGreavesPassive : PlayerPassive
     {
         //console.printf("Boots active");
 
-        int iButtons = plr.iButtons;
-        if(plr.bOnGround) {
-            if(iButtons & BT_DASH) {
-                if(bootsHeldTime == 0 && bootsCooldown == 0) {
-                    dashAngle = calcDashAngle(plr);
-                    playerDash(plr);
-                    plr.A_StartSound("player/dash", CHAN_DASHBOOTS);
-                    plr.A_GiveInventory("DashFlag", 1);
-                    bootsHeldTime++;
-                    bootsCooldown = DASH_COOLDOWN;
-                } else if(bootsHeldTime > 0 && bootsHeldTime < DASH_LENGTH) {
-                    playerDash(plr);
-                    plr.A_GiveInventory("DashFlag", 1);
-                } else if(bootsHeldTime == DASH_LENGTH) {
-                    playerDash(plr, 0.6);
-                    plr.A_TakeInventory("DashFlag", 1);
-                }
-                if(bootsHeldTime > 0) {
-                    bootsHeldTime++;
+        if(plr.countInv("DroneFlag") == 0) {
+            int iButtons = plr.iButtons;
+            if(plr.bOnGround) {
+                if(iButtons & BT_DASH) {
+                    if(bootsHeldTime == 0 && bootsCooldown == 0) {
+                        dashAngle = calcDashAngle(plr);
+                        playerDash(plr);
+                        plr.A_StartSound("player/dash", CHAN_DASHBOOTS);
+                        plr.A_GiveInventory("DashFlag", 1);
+                        bootsHeldTime++;
+                        bootsCooldown = DASH_COOLDOWN;
+                    } else if(bootsHeldTime > 0 && bootsHeldTime < DASH_LENGTH) {
+                        playerDash(plr);
+                        plr.A_GiveInventory("DashFlag", 1);
+                    } else if(bootsHeldTime == DASH_LENGTH) {
+                        playerDash(plr, 0.6);
+                        plr.A_TakeInventory("DashFlag", 1);
+                    }
+                    if(bootsHeldTime > 0) {
+                        bootsHeldTime++;
+                    }
+                } else {
+                    if(bootsHeldTime > 0) {
+                        if(bootsHeldTime < DASH_LENGTH) {
+                            playerDash(plr, 0.6);
+                        }
+                        bootsHeldTime = 0;
+                        plr.A_TakeInventory("DashFlag", 1);
+                    }
                 }
             } else {
-                if(bootsHeldTime > 0) {
-                    if(bootsHeldTime < DASH_LENGTH) {
-                        playerDash(plr, 0.6);
-                    }
-                    bootsHeldTime = 0;
-                    plr.A_TakeInventory("DashFlag", 1);
+                if(bootsHeldTime != 2*DASH_LENGTH) {
+                    bootsHeldTime = 2*DASH_LENGTH;
                 }
-            }
-        } else {
-            if(bootsHeldTime != 2*DASH_LENGTH) {
-                bootsHeldTime = 2*DASH_LENGTH;
             }
         }
 
