@@ -53,12 +53,15 @@ class GearGreavesPassive : PlayerPassive
                     dashAngle = calcDashAngle(plr);
                     playerDash(plr);
                     plr.A_StartSound("player/dash", CHAN_DASHBOOTS);
+                    plr.A_GiveInventory("DashFlag", 1);
                     bootsHeldTime++;
                     bootsCooldown = DASH_COOLDOWN;
                 } else if(bootsHeldTime > 0 && bootsHeldTime < DASH_LENGTH) {
                     playerDash(plr);
+                    plr.A_GiveInventory("DashFlag", 1);
                 } else if(bootsHeldTime == DASH_LENGTH) {
                     playerDash(plr, 0.6);
+                    plr.A_TakeInventory("DashFlag", 1);
                 }
                 if(bootsHeldTime > 0) {
                     bootsHeldTime++;
@@ -69,6 +72,7 @@ class GearGreavesPassive : PlayerPassive
                         playerDash(plr, 0.6);
                     }
                     bootsHeldTime = 0;
+                    plr.A_TakeInventory("DashFlag", 1);
                 }
             }
         } else {
@@ -119,4 +123,60 @@ class GearGreavesPassive : PlayerPassive
     }
 }
 
+extend class AREAGPlayerPawn
+{
+    vector2 dashWeaponBob(Weapon wep, double ticfrac)
+    {
+        vector2 p[2];
+
+        double moveAng = VectorAngle(vel.x, vel.y);
+        double ang = angle;//wep.BobSpeed * 128 * Player.GetWBobSpeed() * (angle - moveAng + 270.0) * 0.4;//();// * Player.GetWBobSpeed() * 0.08;
+
+        vector2 res;
+
+        res.x = -cos(ang) * 0.8 * 60.0;
+        res.y = 0.5-sin(ang) * 0.2 * 60.0;
+
+        return res;
+
+        // prevViewBob = Lerp(prevViewBob, ViewBob, ticfrac/2);
+        // prevViewBobX = Lerp(prevViewBob, ViewBob, ticfrac/2);
+        // prevViewBobY = Lerp(prevViewBob, ViewBob, ticfrac/2);
+        // let xFracMult = -cos(ang) * prevViewBob * 0.2;
+        // let yFracMult = 0.5-sin(ang) * prevViewBob * 0.2;
+        // double bobx = 0;
+        // double boby = 0;
+
+        // bobx = Player.Bob * wep.BobRangeX;
+        // boby = Player.Bob * wep.BobRangeY;
+        // bobx *= xFracMult;
+        // boby *= yFracMult;
+        // p[0] = (bobx, boby+5.0);
+
+        // bobx = Player.Bob * wep.BobRangeX;
+        // boby = Player.Bob * wep.BobRangeY;
+        // bobx *= prevBobXFracMult;
+        // boby *= prevBobYFracMult;
+        // p[1] = (bobx, boby+5.0);
+
+        // prevBobXFracMult = xFracMult;
+        // prevBobYFracMult = yFracMult;
+        
+        // vector2 interp = p[0] * (1 - 0.5) + p[1] * 0.5;
+        // interp.y += Lerp(lerpVelZ, vel.z, 0.5);
+
+        // if(abs(sin(ang)) < 0.2 && bOnGround && AREAGIsWalking()) {
+        //     if(iStepCD == 0) {
+        //         A_PlaySound("*footstep", CHAN_BODY);
+        //         iStepCD = 1;
+        //     }
+        // } else {
+        //     iStepCD = 0;
+        // }
+
+        //return interp;
+    }
+}
+
+class DashFlag : PowerTime5 {}
 class GearGreavesSpeed : Once {}

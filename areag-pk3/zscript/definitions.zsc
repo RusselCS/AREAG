@@ -70,6 +70,13 @@ class Counter : Inventory
     }
 }
 
+class PowerTime5 : PowerUp {
+	Default
+	{
+		powerup.duration 5;
+	}
+}
+
 class PowerTime15 : PowerUp {
 	Default
 	{
