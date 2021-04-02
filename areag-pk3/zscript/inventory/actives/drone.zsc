@@ -132,7 +132,7 @@ extend class AREAGPlayerPawn {
 
         iWalkCooldown = 0;
 
-        A_SetSize(DRONESIZE_RADIUS, DRONESIZE_HEIGHT);
+        changeSize(DRONESIZE_RADIUS, DRONESIZE_HEIGHT);
         changeViewHeight(DRONESIZE_VIEWHEIGHT, true);
         attackZOffset = DRONESIZE_ATTACKZOFFSET;
 
@@ -171,7 +171,7 @@ extend class AREAGPlayerPawn {
         bDroneChangingLevel = false;
         iWalkCooldown = 0;
 
-        A_SetSize(dBaseRadius, dStartingHeight);
+        changeSize(dBaseRadius, dStartingHeight);
         changeViewHeight(dStartingViewHeight, true);
         attackZOffset = dBaseAttackZOffset;
         if(CountInv("ArmorBars") > 0) {

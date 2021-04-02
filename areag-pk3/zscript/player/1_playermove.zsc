@@ -241,18 +241,13 @@ extend class AREAGPlayerPawn {
 
         // HEIGHT CHANGES
         if(height != dBaseHeight) {
-            if(dBaseHeight > height) {
-                // need to make sure there's room before changing size
-                // TO DO: HOW TO CHECK IF AN ACTOR IS IN THE WAY :worry:
-                if(ceilingz - floorz < dBaseHeight) {
-                    height = ceilingz - floorz - 1;
-                } else {
-                    height = dBaseHeight;
-                }
-            } else {
-                height = dBaseHeight;
-            }
+            changeSize(radius, dBaseHeight);
         }
+    }
+
+    void changeSize(double rd, double ht) {
+        dBaseHeight = ht;
+        A_SetSize(rd, ht, true);
     }
 
     void changeHeight(double amt) {
