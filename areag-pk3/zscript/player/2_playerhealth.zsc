@@ -76,6 +76,14 @@ extend class AREAGPlayerPawn {
                 bBUDDHA = false;
             }
             return super.DamageMobj(inflictor, source, dmg, mod, flags, ng);
+        } else if(mod == "Falling") {
+			A_GiveInventory("PitTeleport", 1);
+            if(dmg >= health) {
+                bBUDDHA = false;
+            }
+			int res = super.DamageMobj(inflictor, source, dmg, mod, flags, ng);
+			A_GiveInventory("PitProtect", 1);
+            return res;
         } else {
 
 			if(CountInv("DroneFlag") > 0) {

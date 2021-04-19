@@ -135,3 +135,17 @@ function void moveCeiling(int tag, int height, int speed) {
 function bool tagMoving(int tag) {
 	return false;
 }
+
+function void clearSpecial(int tag) {
+	SetThingSpecial(tag, 0, 0, 0, 0, 0, 0);
+}
+
+function void spawnCoins(int baseTag, int coinTag, int amount, bool clrSpc) {
+	int succeed = SpawnSpot("CoinDropper", baseTag, coinTag, 0);
+	if(succeed) {
+		SetActorProperty(coinTag, APROP_Score, amount);
+		if(clrSpc) {
+			clearSpecial(baseTag);
+		}
+	}
+}

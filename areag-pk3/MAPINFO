@@ -14,6 +14,7 @@ DoomEdNums
     10568 = SavePoint
     10569 = MapPickup
     10570 = ZSCWallSwitch
+	10571 = PitSector
 	10573 = BreakableWall
 
     20000 = JarSpawner
@@ -154,4 +155,26 @@ map ADV08 "temp placeholder"
 	forcenoskystretch 
 	clipmidtextures
 	useplayerstartz
+}
+
+map TESTMAP "Beyond the Valley Of The Saints"
+{
+	next = "MAP01"
+	music = "M_TM1"
+	aircontrol = 0.65
+	sky1 = "TESTSKY1"
+	cluster = 1
+	levelnum = 100
+	pixelratio = 1.0
+}
+
+map TESTMAP2 "Valley Colisseum"
+{
+	next = "MAP01"
+	music = "M_TM2"
+	aircontrol = 0.65
+	sky1 = "TESTSKY1"
+	cluster = 1
+	levelnum = 101
+	pixelratio = 1.0
 }

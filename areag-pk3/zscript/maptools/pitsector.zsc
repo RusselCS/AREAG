@@ -1,5 +1,88 @@
 class PitSector : Actor
 {
+    AutomapRoom amRoom;
+    array<Line> checkedLines;
+
+    void traverseSectors(Sector sec) {
+
+        addToSet(sec);
+        // int brg = sec.GetLightLevel();
+        // int hgt = GetZAt(sec.centerspot.x, sec.centerspot.y, 0, GZF_CEILING|GZF_ABSOLUTEPOS|GZF_NO3DFLOOR) - GetZAt(sec.centerspot.x, sec.centerspot.y, 0, GZF_ABSOLUTEPOS|GZF_NO3DFLOOR);
+        // sec.SetLightLevel(0);
+        // sec.SetGlowHeight(sec.ceiling, hgt);
+        // sec.SetGlowColor(sec.ceiling, Color(brg, 255, 255, 255));
+
+        // sec.SetGlowHeight(sec.ceiling, hgt);
+        // sec.SetGlowHeight(sec.floor, 128);
+        // sec.SetSpecialColor(sec.walltop, Color(brg, 255, 255, 255));
+        // sec.SetSpecialColor(sec.wallbottom, Color(brg, 0, 0, 0));
+
+        sec.damagetype = "Falling";
+        sec.damageamount = 25;
+        sec.damageinterval = 1;
+
+        for(int i = 0; i < sec.Lines.size(); i++) {
+            if(!lineInSet(sec.Lines[i]) && !(sec.Lines[i].Flags & 0x00000080) && !(sec.Lines[i].Flags & 0x00000001)) {
+                checkedLines.push(sec.Lines[i]);
+
+                Sector front = sec.Lines[i].FrontSector;
+                Sector back = sec.Lines[i].BackSector;
+                if(front && !sectorInSet(front) && front.GetTexture(0) == sec.GetTexture(0)) {
+                    traverseSectors(front);
+                }
+
+                if(back && !sectorInSet(back) && back.GetTexture(0) == sec.GetTexture(0)) {
+                    traverseSectors(back);
+                }
+            }
+        }
+    }
+
+    bool lineInSet(Line lin) {
+        bool found = false;
+
+        for(int i = 0; !found && i < checkedLines.size(); i++) {
+            if(checkedLines[i] == lin) {
+                found = true;
+            }
+        }
+
+        return found;
+    }
+
+    bool sectorInSet(Sector sec) {
+        bool found = false;
+
+        for(int i = 0; !found && i < amRoom.size(); i++) {
+            if(amRoom.get(i) == sec) {
+                found = true;
+            }
+        }
+
+        return found;
+    }
+
+    void addToSet(Sector sec) {
+        if(!sectorInSet(sec)) {
+            amRoom.addSector(sec);
+        }
+    }
+
+    override void PostBeginPlay() {
+        amRoom = new("AutomapRoom");
+        traverseSectors(CurSector);
+    }
+
+    states
+    {
+    Spawn:
+        TNT1 A 1;
+        wait;
+    }
+}
+
+class PitDamage : Actor
+{
     default
     {
         +NOINTERACTION;
@@ -8,15 +91,94 @@ class PitSector : Actor
     override void PostBeginPlay() {
         super.PostBeginPlay();
         
-        Cursector.damagetype = "Falling";
-        Cursector.damageamount = 25;
-        Cursector.damageinterval = 1;
+        
     }
 
     States
     {
     Spawn:
-        TNT1 A 1;
-        stop;
+        PLAY A 1;
+        loop;
+    }
+}
+
+extend class AREAGPlayerPawn
+{
+    const PIT_QUEUE_SIZE = 6;
+
+    PitTeleportPos pitPosQueue[PIT_QUEUE_SIZE];
+    int pitPosEnd;
+
+    void move_PitTeleportTick()
+    {
+        if(bOnGround) {
+            if(CountInv("PitTeleport") == 0) {
+                queuePos();
+            } else {
+                warpToPos();
+                TakeInventory("PitTeleport", 999);
+            }
+        }
+    }
+
+    void queuePos() {
+        let sPos = pos;
+        sPos.Z = floorz;
+        let qPos = new("PitTeleportPos").Init(sPos, angle);
+        if(pitPosQueue[pitPosEnd]) {
+            pitPosQueue[pitPosEnd].destroy();
+        }
+        pitPosQueue[pitPosEnd] = qPos;
+        pitPosEnd = (pitPosEnd + 1) % PIT_QUEUE_SIZE;
+    }
+
+    void warpToPos() {
+        let tp = pitPosQueue[pitPosEnd];
+        if(tp) {
+            let tPos = tp.getPos();
+            let tAng = tp.getAng();
+            Warp(self, tPos.X, tPos.Y, tPos.Z, 0, WARPF_ABSOLUTEPOSITION);
+            A_SetAngle(tAng);
+            A_ChangeVelocity(0, 0, -FallingScreamMinSpeed*2, CVF_REPLACE);
+            player.viewheight = viewheight;
+        } else {
+            A_GiveInventory("PitTeleportDefault", 1);
+        }
+    }
+}
+
+class PitTeleportPos : Object
+{
+    private vector3 pos;
+    private double ang;
+
+    PitTeleportPos Init(vector3 tp, double ta) {
+        pos = tp;
+        ang = ta;
+        return self;
+    }
+
+    void setPos(vector3 tp) {
+        pos = tp;
+    }
+
+    vector3 getPos() {
+        return pos;
+    }
+
+    void setAng(double ta) {
+        ang = ta;
+    }
+
+    double getAng() {
+        return ang;
+    }
+}
+
+class PitTeleportDefault : ArtiTeleport
+{
+    Default
+    {
+        +INVENTORY.AUTOACTIVATE;
     }
 }

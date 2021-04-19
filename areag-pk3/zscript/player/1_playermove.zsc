@@ -35,8 +35,6 @@ extend class AREAGPlayerPawn {
 
     int iStepCD;
 
-    Actor aTPPoint;
-
     double dViewHeightOffset;
     double dOldViewHeightOffset;
     int iStepCountdown;
@@ -110,8 +108,8 @@ extend class AREAGPlayerPawn {
                 A_SpawnItemEx("AREAGCrashLand");
                 A_StartSound("drone/crashland", CHAN_BODY);
             } else {
-                A_GiveInventory("FallStunTime", 140);
-                A_GiveInventory("ScreenShakeTime", 5);
+                A_SetInventory("FallStunTime", 140);
+                A_SetInventory("ScreenShakeTime", 5);
                 A_SpawnItemEx("AREAGCrashLand");
                 A_StartSound("player/crashland", CHAN_BODY);
             }
@@ -184,8 +182,6 @@ extend class AREAGPlayerPawn {
 		}
 
         // -- GROUND CHECKS --
-        bool viewHeightChanged = false;
-        
         // STAIRS
         if(!bOnGround && bOldOnGround) {
             if(pos.z - floorz <= maxstepheight && vel.z < 0) {
@@ -196,7 +192,6 @@ extend class AREAGPlayerPawn {
                 vel.z = 0.0;
 
                 bOnGround = true;
-                viewHeightChanged = true;
             }
         }
 
@@ -225,23 +220,7 @@ extend class AREAGPlayerPawn {
         }
 
         // PIT TELEPORTER
-        if(!aTPPoint) {
-            bool spSuccess = false;
-            while(!spSuccess) {
-                [spSuccess, aTPPoint] = A_SpawnItemEx("AREAGPitReturnPoint");
-            }
-        } else {
-            if(bOnGround) {
-                if(CountInv("PitTeleport") == 0) {
-                    aTPPoint.A_Warp(AAPTR_PLAYER1, -Vel.X*4, Vel.Y*4, -(Pos.Z-floorz), 0, WARPF_NOCHECKPOSITION|WARPF_ABSOLUTEANGLE);
-                    aTPPoint.A_SetAngle(angle);
-                } else {
-                    A_Stop();
-                    aTPPoint.A_Warp(AAPTR_PLAYER1, 0, 0, -(Pos.Z-floorz), 0, WARPF_NOCHECKPOSITION|WARPF_MOVEPTR);
-                    A_TakeInventory("PitTeleport", 999);
-                }
-            }
-        }
+        move_PitTeleportTick();
 
         // HEIGHT CHANGES
         if(height != dBaseHeight) {
@@ -466,6 +445,12 @@ class AREAGPitReturnPoint : Actor
 }
 
 class PitTeleport : Once {}
+class PitProtect : PowerProtection {
+    Default {
+        powerup.duration 5;
+        damagefactor "Falling", 0.0;
+    }
+}
 
 // MOVEMENT FLAGS //
 class OnGround : Once {}
