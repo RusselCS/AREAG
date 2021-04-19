@@ -16,6 +16,7 @@ DoomEdNums
     10570 = ZSCWallSwitch
 	10571 = PitSector
 	10573 = BreakableWall
+	10574 = HornSwitch
 
     20000 = JarSpawner
     20001 = BigJarSpawner
