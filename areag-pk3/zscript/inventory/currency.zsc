@@ -37,7 +37,7 @@ class CoinPickup : CustomInventory
             }
         }
 
-        if(z-floorz < 2.0 && abs(vel.z) < 2.0 && vel.z != 0) {
+        if(pos.z-floorz < 2.0 && abs(vel.z) < 2.0 && vel.z != 0) {
             A_Stop();
         }
     }

@@ -78,7 +78,7 @@ class TestBossTorchShard : BasicEffect
             A_SpawnItemEx("TestBossTorchEmber", frandrange(8), frandrange(8), 16);
         }
 
-        if(z-Floorz <= 0) {
+        if(pos.z-Floorz <= 0) {
             forceDeath();
         }
     }

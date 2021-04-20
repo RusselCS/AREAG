@@ -100,8 +100,8 @@ class ThrownSeed : BasicProjectile
     Death:
         SUBS B 0 A_SpawnItemEx("SeedExplosion");
         SUBS Z 2;
-        SUBS B 0 A_JumpIf(z-floorz < maxstepheight, "DeathFloor");
-        SUBS B 0 A_JumpIf(ceilingz-(z+height) < maxstepheight, "DeathCeiling");
+        SUBS B 0 A_JumpIf(pos.z-floorz < maxstepheight, "DeathFloor");
+        SUBS B 0 A_JumpIf(ceilingz-(pos.z+height) < maxstepheight, "DeathCeiling");
         goto DeathWall;
     DeathFloor:
     DeathCeiling:

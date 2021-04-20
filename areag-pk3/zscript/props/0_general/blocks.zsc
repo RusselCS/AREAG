@@ -100,7 +100,7 @@ extend class AREAGProtoWeapon {
 
     action void A_StopPush() {
         invoker.plr.block.bPushActive = false;
-        invoker.plr.block.A_ChangeVelocity(0, 0, invoker.plr.block.velz, CVF_REPLACE);
+        invoker.plr.block.A_ChangeVelocity(0, 0, invoker.plr.block.vel.z, CVF_REPLACE);
         A_StopSound(CHAN_BODY);
         SetPlayerProperty(true, false, PROP_TOTALLYFROZEN);
         A_ChangeVelocity(-3, 0, 0, CVF_RELATIVE|CVF_REPLACE);

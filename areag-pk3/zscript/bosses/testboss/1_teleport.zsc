@@ -8,7 +8,7 @@ class MikeTeleport : BasicEffect
     Spawn:
         TNT1 A 0;
         TNT1 A 0 A_StartSound("boss/mike/telestart", CHAN_VOICE);
-        TNT1 A 0 A_SpawnBasicEffect("MikeTPFXDrop", 0, 0, ceilingz-z-32.0);
+        TNT1 A 0 A_SpawnBasicEffect("MikeTPFXDrop", 0, 0, ceilingz-pos.z-32.0);
         TNT1 A 1 A_SetTics(MKTP_DELAY);
         TNT1 A 0 A_StartSound("boss/mike/teleup", CHAN_VOICE);
         TNT1 A 0 A_SpawnBasicEffect("MikeFPFXRise", 0, 0, 0);
@@ -65,12 +65,12 @@ class MikeTPFXDrop : MikeTPFX
     bool stateChange;
 
     override void BasicInit() {
-        Warp(self, 0, 0, ceilingz-z-height);
+        Warp(self, 0, 0, ceilingz-pos.z-height);
         stateChange = false;
     }
 
     override void BasicTick() {
-        if(z-floorz > 0) {
+        if(pos.z-floorz > 0) {
             spawnTrailFX();
             Warp(self, 0, 0, -min(height, pos.z-floorz));
         } else if(!stateChange) {
@@ -117,9 +117,9 @@ class MikeFPFXRise : MikeTPFX
     }
 
     override void BasicTick() {
-        if(ceilingz-z-speed > 0) {
-            if(ceilingz-z < speed) {
-                Warp(self, 0, 0, ceilingz-z-speed);
+        if(ceilingz-pos.z-speed > 0) {
+            if(ceilingz-pos.z < speed) {
+                Warp(self, 0, 0, ceilingz-pos.z-speed);
             } else {
                 spawnTrailFX();
                 Warp(self, 0, 0, speed);

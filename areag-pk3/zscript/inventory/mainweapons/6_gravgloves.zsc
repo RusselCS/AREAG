@@ -266,12 +266,12 @@ class LightFistAttack : FastProjectile
 		TNT1 A 1;
 		stop;
 	Death:
-		TNT1 A 0 A_PlaySoundEx("lightfist/dryhit", "auto");
+		TNT1 A 0 A_StartSound("lightfist/dryhit", CHAN_AUTO);
 		TNT1 A 0 A_GiveToTarget("LightFistStrike", 1);
 		TNT1 A 0 A_SpawnItemEx("LightFistImpactFX", frandom(-2, 2), frandom(-2, 2), 8+frandom(-2, 2));
 		stop;
 	XDeath:
-		TNT1 A 0 A_PlaySoundEx("lightfist/smack", "auto");
+		TNT1 A 0 A_StartSound("lightfist/smack", CHAN_AUTO);
 		TNT1 A 0 A_GiveToTarget("LightFistStrike", 1);
 		TNT1 A 0 A_GiveToTarget("LightFistSmack", 1);
 		TNT1 A 0 A_SpawnItemEx("LightFistSmackFX", frandom(-2, 2), frandom(-2, 2), 8+frandom(-2, 2));

@@ -116,7 +116,7 @@ class ThrowBola : BasicProjectile
         BOLS BCDE 1;
         loop;
     XDeath:
-        BOLS A 0 A_SpawnItemEx("BolaWeightHolder", 0, 0, -(z-tracer.pos.z), 0, 0, 0, 0, SXF_TRANSFERPOINTERS);
+        BOLS A 0 A_SpawnItemEx("BolaWeightHolder", 0, 0, -(pos.z-tracer.pos.z), 0, 0, 0, 0, SXF_TRANSFERPOINTERS);
         stop;
 	}
 }

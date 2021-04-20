@@ -242,7 +242,7 @@ class BasicEnemy : BasicActor
     }
 
     action void A_DeathSequence(int type = EDS_FadeBurn) {
-        A_ChangeFlag("NOINTERACTION", true);
+        invoker.bNOINTERACTION = true;
         A_Stop();
         invoker.bInDeathSequence = true;
         invoker.iDeathSequenceType = type;

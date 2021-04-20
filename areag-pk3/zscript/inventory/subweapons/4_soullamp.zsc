@@ -222,14 +222,14 @@ class SoulLampShot : BasicProjectile
         Actor act;
         bool ret;
         for(int i = 1.0; i <= lp; i+=1.0) {
-            [ret, act] = A_SpawnItemEx("SoulLampGhost", invoker.explosionRadius, 0, -(z-floorz), 0, 0, 10, i/lp*360 + invoker.baseAngle, SXF_SETMASTER);
+            [ret, act] = A_SpawnItemEx("SoulLampGhost", invoker.explosionRadius, 0, -(pos.z-floorz), 0, 0, 10, i/lp*360 + invoker.baseAngle, SXF_SETMASTER);
             act.master = self;
         }
 
         invoker.baseAngle += 10.0;
         A_FaceTarget();
         A_SpawnItemEx("SoulLampShotTrail", -16, 0, 0, fRandRange(2.0), fRandRange(2.0), fRandRange(2.0));
-        [ret, act] = A_SpawnItemEx("SoulLampExploder", 0, 0, -(z-floorz), 0, 0, 10, 0, SXF_SETMASTER);
+        [ret, act] = A_SpawnItemEx("SoulLampExploder", 0, 0, -(pos.z-floorz), 0, 0, 10, 0, SXF_SETMASTER);
         act.master = self;
         act.mass = invoker.explosionRadius;
 
@@ -247,7 +247,7 @@ class SoulLampShot : BasicProjectile
         SBLP K 0 {
             Actor act;
             bool ret;
-            [ret, act] = A_SpawnItemEx("SoulLampCircle", 0, 0, -(z-floorz), 0, 0, 0, 0, SXF_SETMASTER);
+            [ret, act] = A_SpawnItemEx("SoulLampCircle", 0, 0, -(pos.z-floorz), 0, 0, 0, 0, SXF_SETMASTER);
             act.A_SetScale(invoker.circleScale);
             act.master = self;
         }
