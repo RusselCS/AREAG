@@ -19,14 +19,16 @@ class EnemySpawner : BasicActor
     bool awaitingRespawn;
 
     override void BasicInit() {
-        spawnEnemy();
-        player = GetPointer(AAPTR_PLAYER1);
+        if(!getCvarBool("db_removemonsters")) {
+            spawnEnemy();
+            player = GetPointer(AAPTR_PLAYER1);
 
-        if(iRespawnTime == 0) {
-            if(score == 0) {
-                iRespawnTime = 30 * 35;
-            } else {
-                iRespawnTime = score * 35;
+            if(iRespawnTime == 0) {
+                if(score == 0) {
+                    iRespawnTime = 30 * 35;
+                } else {
+                    iRespawnTime = score * 35;
+                }
             }
         }
     }
@@ -51,23 +53,27 @@ class EnemySpawner : BasicActor
     }
 
     override void BasicTick() {
-        if(bDROPPED) {
-            Destroy();
-        }
-        if(!bSTANDSTILL) {
-            if(!awaitingRespawn) {
-                if(!activeEnemy) {
-                    respawnCountdown = iRespawnTime;
-                    awaitingRespawn = true;
-                }
-            } else {
-                if(!canPlayerSee()) {
-                    respawnCountdown--;
-                    if(respawnCountdown == 0) {
-                        spawnEnemy();
+        if(!getCvarBool("db_removemonsters")) {
+            if(bDROPPED) {
+                Destroy();
+            }
+            if(!bSTANDSTILL) {
+                if(!awaitingRespawn) {
+                    if(!activeEnemy) {
+                        respawnCountdown = iRespawnTime;
+                        awaitingRespawn = true;
+                    }
+                } else {
+                    if(!canPlayerSee()) {
+                        respawnCountdown--;
+                        if(respawnCountdown == 0) {
+                            spawnEnemy();
+                        }
                     }
                 }
             }
+        } else {
+            // do nothing tbh
         }
     }
 

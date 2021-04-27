@@ -10,6 +10,7 @@ user int db_spawnposY;
 user int db_spawnposZ;
 user int db_spawnang;
 user noarchive bool db_spawn_changemap = true;
+user bool db_removemonsters = false;
 
 // TEST MAP VARIABLES
 server int db_enemytestterrain = 0;
