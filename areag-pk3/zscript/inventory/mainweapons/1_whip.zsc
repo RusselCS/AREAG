@@ -187,7 +187,7 @@ class WhipQuake : Actor
 	Spawn:
 		TNT1 A 0;
 		TNT1 A 0 Radius_Quake(1, 4, 0, 32, 0);
-		TNT1 A 1;
+		TNT1 AAAAAAAA 1;
 		stop;
 	}
 }

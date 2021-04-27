@@ -1,0 +1,64 @@
+Pointlight WhipLight
+{
+   Color 1.0 1.0 1.0
+   Size 24
+   Offset 0 0 0
+}
+
+Object WhipQuake
+{
+   Frame TNT1A { Light WhipLight }
+}
+
+Pointlight PlayerLight
+{
+   Color 0.4 0.4 0.4
+   Size 32
+   Offset 0 30 0
+}
+
+Object AREAGPlayer
+{
+   Frame PLAYA { Light PlayerLight }
+   Frame PLAYB { Light PlayerLight }
+   Frame PLAYC { Light PlayerLight }
+   Frame PLAYD { Light PlayerLight }
+   Frame PLAYE { Light PlayerLight }
+   Frame PLAYF { Light PlayerLight }
+   Frame PLAYG { Light PlayerLight }
+   Frame PLAYH { Light PlayerLight }
+   Frame PLAYI { Light PlayerLight }
+   Frame PLAYJ { Light PlayerLight }
+   Frame PLAYK { Light PlayerLight }
+   Frame PLAYL { Light PlayerLight }
+   Frame PLAYM { Light PlayerLight }
+   Frame PLAYN { Light PlayerLight }
+   Frame PLAYO { Light PlayerLight }
+   Frame PLAYP { Light PlayerLight }
+   Frame PLAYQ { Light PlayerLight }
+   Frame PLAYR { Light PlayerLight }
+   Frame PLAYS { Light PlayerLight }
+   Frame PLAYT { Light PlayerLight }
+   Frame PLAYU { Light PlayerLight }
+   Frame PLAYV { Light PlayerLight }
+   Frame PLAYW { Light PlayerLight }
+}
+
+material texture TSTBRK
+{
+   normal "glmaps/ADV01/normal maps/TSTBRK.PNG"
+   specular "glmaps/ADV01/specular maps/TSTBRK.PNG"
+   roughness "glmaps/ADV01/gloss maps/TSTBRK.PNG"
+   ao "glmaps/ADV01/ao maps/TSTBRK.PNG"
+   specularlevel "8"
+   glossiness "8"
+}
+
+material texture TSTCLM
+{
+   normal "glmaps/ADV01/normal maps/TSTCLM.PNG"
+   specular "glmaps/ADV01/specular maps/TSTCLM.PNG"
+   roughness "glmaps/ADV01/gloss maps/TSTCLM.PNG"
+   specularlevel "8"
+   glossiness "8"
+}
