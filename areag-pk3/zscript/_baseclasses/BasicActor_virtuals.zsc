@@ -1,0 +1,217 @@
+// Applies to anything that inherits from Actor
+mixin class BasicActor_Virtuals
+{
+    bool hasDied;
+
+    // =============
+    //  Actor Flags
+    // =============
+    int m_virtualFuncFlags;
+
+	flagdef DIEWITHTARGET: m_virtualFuncFlags, 0;
+	flagdef DIEWITHTRACER: m_virtualFuncFlags, 1;
+	flagdef DIEWITHMASTER: m_virtualFuncFlags, 2;
+
+    // ======================================
+    //  Implementing empty virtual functions
+    // ======================================
+    override void PostBeginPlay() {
+		Super.PostBeginPlay();
+		BasicInit();
+	}
+
+    override void Tick() {
+        Super.Tick();
+		if(!IsFrozen() || bNOTIMEFREEZE) {
+			BasicTick();
+
+			if(!hasDied) {
+				if((bDIEWITHTARGET && !target) ||
+				   (bDIEWITHTRACER && !tracer) ||
+				   (bDIEWITHMASTER && !master)) {
+						forceDeath();
+				}
+			}
+		}
+
+        updateHitbox();
+    }
+
+	override void Die(Actor source, Actor inflictor, int dmgflags, Name MeansOfDeath) {
+        hasDied = true;
+        super.Die(source, inflictor, dmgflags, MeansOfDeath);
+    }
+
+	override void OnDestroy() {
+		Super.OnDestroy();
+		BasicDestroy();
+
+		destroyHitbox();
+	}
+
+    // ====================================
+    //  Implementation of Action Functions
+    // ====================================
+    action BasicEffect A_SpawnBasicEffect(string effect, double posx = 0, double posy = 0, double posz = 0, double velx = 0, double vely = 0, double velz = 0, double ang = 0, int flags = 0) {
+		bool b;
+		Actor fx;
+		[b, fx] = A_SpawnItemEx(effect, posx, posy, posz, velx, vely, velz, ang, flags);
+		BasicEffect ret = BasicEffect(fx);
+		return ret;
+	}
+
+	action State A_CheckFooting(StateLabel where) {
+		if(pos.z ~== floorz || bONMOBJ || bMBFBOUNCER) {
+			return ResolveState(where);
+		}
+		return ResolveState(null);
+	}
+
+    action void A_StopXY() {
+		A_ChangeVelocity(0, 0, vel.z, CVF_REPLACE);
+	}
+
+    // ======================================================================================
+    //  Distance and position functions, typically return values without modifying the actor
+    // ======================================================================================
+    bool XYLineTrace(double x, double y, double z, int flags = 0, double offsetforward = 0, double offsetside = 0) {
+		
+		double ang = VectorAngle(x, y);
+		if(flags & XYLF_RELATIVE) {
+			ang += angle;
+		}
+
+		if(flags & XYLF_ADDRADIUS) {
+			let radiusMod = radius * RADIUS_OFFS;
+			let radModX = SignFromInt(x) * radiusMod;
+			let radModY = SignFromInt(y) * radiusMod;
+
+			x += radModX;
+			y += radModY;
+		}
+
+		double dist = sqrt(x * x + y * y);
+		
+		FLineTraceData deets;
+		let ret = LineTrace(ang, dist, 0, TRF_SOLIDACTORS|TRF_THRUHITSCAN|TRF_BLOCKSELF, z, offsetforward, offsetside, deets);
+		A_SpawnItemEx("WhipPuff", deets.HitLocation.x-pos.x, deets.HitLocation.y-pos.y, deets.HitLocation.z-pos.z, 0, 0, 0, 0, SXF_ABSOLUTEPOSITION);
+
+		//A_Log(String.format("Angle: %f // In Dist: %f // Out Dist: %f", ang, dist, deets.distance));
+
+		return ret;
+	}
+
+    // ===============================
+    //  Direct manipulation functions
+    // ===============================
+    void forceDeath() {
+		Die(null, null, 0, "Null");
+	}
+    
+    double floorDist() {
+		return pos.z - floorz;
+	}
+
+    double ceilingDist() {
+        return ceilingz - (pos.z + height);
+    }
+
+    // =====================
+    //  Debug Functionality
+    // =====================
+    Array<Actor> pixels;
+    bool bToggleHitbox;
+    
+	flagdef SHOWHITBOX: m_virtualFuncFlags, 3;
+
+    void createHitbox() {
+		for(int i = 0; i < radius; i+=2) {
+			addToPixels("HitboxParticle", radius, i, 1);
+			addToPixels("HitboxParticle", radius, -i, 1);
+			addToPixels("HitboxParticle", -radius, i, 1);
+			addToPixels("HitboxParticle", -radius, -i, 1);
+			addToPixels("HitboxParticle", i, radius, 1);
+			addToPixels("HitboxParticle", -i, radius, 1);
+			addToPixels("HitboxParticle", i, -radius, 1);
+			addToPixels("HitboxParticle", -i, -radius, 1);
+
+			addToPixels("HitboxParticle", radius, i, height);
+			addToPixels("HitboxParticle", radius, -i, height);
+			addToPixels("HitboxParticle", -radius, i, height);
+			addToPixels("HitboxParticle", -radius, -i, height);
+			addToPixels("HitboxParticle", i, radius, height);
+			addToPixels("HitboxParticle", -i, radius, height);
+			addToPixels("HitboxParticle", i, -radius, height);
+			addToPixels("HitboxParticle", -i, -radius, height);
+		}
+
+		for(int i = 1; i <= height; i+=2) {
+			addToPixels("HitboxParticle", radius, radius, i);
+			addToPixels("HitboxParticle", radius, -radius, i);
+			addToPixels("HitboxParticle", -radius, radius, i);
+			addToPixels("HitboxParticle", -radius, -radius, i);
+		}
+	}
+
+    void addToPixels(String item, int posx, int posy, int posz) {
+		bool success;
+		Actor act;
+
+		[success, act] = A_SpawnItemEx(item, posx, posy, posz, 0, 0, 0, 0, SXF_SETMASTER);
+		act.args[0] = posx;
+		act.args[1] = posy;
+		act.args[2] = posz;
+		pixels.push(act);
+	}
+
+	void updateHitbox() {
+
+		if(bSHOWHITBOX || getCvarBool("db_viewhitboxes")) {
+			if(!bToggleHitbox) {
+				bToggleHitbox = true;
+				createHitbox();
+			}
+		} else {
+			if(bToggleHitbox) {
+				bToggleHitbox = false;
+				destroyHitbox();
+			}
+		}
+
+		if(bToggleHitbox) {
+			for(int i = 0; i < pixels.size(); i++) {
+				pixels[i].A_Warp(AAPTR_MASTER, pixels[i].args[0], pixels[i].args[1], pixels[i].args[2], 0, WARPF_NOCHECKPOSITION|WARPF_INTERPOLATE|WARPF_ABSOLUTEOFFSET);
+			}
+		}
+	}
+
+	void destroyHitbox() {
+		for(int i = 0; i < pixels.size(); i++) {
+			pixels[i].Destroy();
+		}
+		pixels.clear();
+	}
+}
+
+enum EXYLineTraceFlags
+{
+	XYLF_RELATIVE = 1,
+	XYLF_ADDRADIUS = 2,
+};
+
+// Debug Actors
+class HitboxParticle : BasicEffect
+{
+    Default
+    {
+        +FORCEXYBILLBOARD;
+        translation "0:255=104:104";
+    }
+
+    States
+    {
+    Spawn:
+        CHWP BB 1 bright;
+        wait;
+    }
+}

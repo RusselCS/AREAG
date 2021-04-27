@@ -2,6 +2,7 @@
 
 // BASE CLASSES
 #include "zscript/_baseclasses/AREAG_Common.zsc"
+#include "zscript/_baseclasses/BasicActor_Virtuals.zsc"
 #include "zscript/_baseclasses/BasicActionProp.zsc"
 #include "zscript/_baseclasses/BasicActor.zsc"
 #include "zscript/_baseclasses/BasicActor_damage.zsc"
