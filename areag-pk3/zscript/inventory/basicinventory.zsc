@@ -2,6 +2,7 @@ class BasicInventory : CustomInventory
 {
     bool inWorld;
     int itemId;
+    double baseFloorDist;
 
     int iPickupId;
     int ptType;
@@ -48,6 +49,7 @@ class BasicInventory : CustomInventory
         BasicInit();
         inWorld = false;
         itemId = score;
+        baseFloorDist = floorDist();
     }
 
     override void Tick() {
@@ -64,8 +66,16 @@ class BasicInventory : CustomInventory
             if(GetAge() % 10 == 0) {
                 A_SpawnItemEx("BasicItemParticle", frandom(-32, 32), 0, -16, 0, 0, 1, frandom(0, 360), SXF_ABSOLUTEANGLE);
             }
+
+            if(floorDist() != baseFloorDist) {
+                Warp(self, 0, 0, -floorDist() + baseFloorDist);
+            }
         }
     }
+
+	double floorDist() {
+		return pos.z - floorz;
+	}
 
     virtual void BasicInit() {}
     virtual void BasicTick() {}
@@ -221,25 +231,27 @@ class MapPickup : Actor
         super.PostBeginPlay();
 
         //args[0] = score;
-        int pickupId = score;
-        String pickup = MapDataRepo.getPickupFromHere(level.levelnum, pickupId);
+        if(score == 3) {
+            int pickupId = score;
+            String pickup = MapDataRepo.getPickupFromHere(level.levelnum, pickupId);
 
-        if(MapDataRepo.getTempPickupByLevel(level.levelnum, pickupId-1) == 0) {
-            bool spawned;
-            Actor child;
-            sTid = tid;
-            Thing_ChangeTID(0, 0);
-            [spawned, child] = A_SpawnItemEx(pickup, 0, 0, 16, 0, 0, 0, 0, SXF_TRANSFERSPECIAL, 0, sTid);
-            if(spawned) {
-                if(bSTANDSTILL) {
-                    child.bFLOATBOB = false;
+            if(MapDataRepo.getTempPickupByLevel(level.levelnum, pickupId-1) == 0) {
+                bool spawned;
+                Actor child;
+                sTid = tid;
+                Thing_ChangeTID(0, 0);
+                [spawned, child] = A_SpawnItemEx(pickup, 0, 0, 16, 0, 0, 0, 0, SXF_TRANSFERSPECIAL, 0, sTid);
+                if(spawned) {
+                    if(bSTANDSTILL) {
+                        child.bFLOATBOB = false;
+                    }
+                    child.score = score;
+                } else {
+                    A_Log(String.format("Failed to spawn Pickup %s", pickup));
                 }
-                child.score = score;
             } else {
-                A_Log(String.format("Failed to spawn Pickup %s", pickup));
+                A_CallSpecial(special, args[0], args[1], args[2], args[3], args[4]);
             }
-        } else {
-            A_CallSpecial(special, args[0], args[1], args[2], args[3], args[4]);
         }
     }
 
