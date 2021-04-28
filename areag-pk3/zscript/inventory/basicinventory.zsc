@@ -1,5 +1,8 @@
 class BasicInventory : CustomInventory
 {
+	mixin AREAG_Common;
+    mixin BasicActor_Virtuals;
+    
     bool inWorld;
     int itemId;
     double baseFloorDist;
@@ -44,17 +47,13 @@ class BasicInventory : CustomInventory
         bFLOAT = false;
     }
 
-    override void PostBeginPlay() {
-        super.PostBeginPlay();
-        BasicInit();
+    virtual void BasicInit() {
         inWorld = false;
         itemId = score;
         baseFloorDist = floorDist();
     }
 
-    override void Tick() {
-        super.Tick();
-        BasicTick();
+    virtual void BasicTick() {
 
         if(bFLOATBOB && bSPECIAL) {
             if(GetAge() == 1) {
@@ -73,12 +72,7 @@ class BasicInventory : CustomInventory
         }
     }
 
-	double floorDist() {
-		return pos.z - floorz;
-	}
-
-    virtual void BasicInit() {}
-    virtual void BasicTick() {}
+    virtual void BasicDestroy() {}
  
     Default
     {
@@ -133,7 +127,7 @@ class BasicItemTrail : BasicEffect
     {
     Spawn:
         "----" "#" 0;
-        "----" "#" 1 A_SetScale(scale.x*1.1);
+        "----" "#" 1 A_SetScale(scale.x*1.07);
         "----" "#" 0 A_FadeOut();
         loop;
     Death:
@@ -148,7 +142,7 @@ class BasicItemParticle : BasicEffect
     {
         +FORCEXYBILLBOARD;
         +ROLLSPRITE;
-        scale 0.25;
+        scale 0.1875;
         renderstyle "add";
         reactiontime 70;
         +MOVEWITHSECTOR;
@@ -160,7 +154,7 @@ class BasicItemParticle : BasicEffect
     Spawn:
         SPRK A 0;
         SPRK A 0 A_SetRoll(roll+2);
-        SPRK A 1 A_SpawnItemEx("BasicItemParticleTrail", 0, 0, 0, 0, 0, -2, 0, SXF_TRANSFERROLL);
+        SPRK A 1 A_SpawnItemEx("BasicItemParticleTrail", 0, 0, 0, 0, 0, -2, 0, SXF_TRANSFERROLL|SXF_TRANSFERSCALE);
         SPRK A 0 A_CountDown();
         loop;
     Death:
@@ -176,7 +170,6 @@ class BasicItemParticleTrail : BasicEffect
         +FORCEXYBILLBOARD;
         +ROLLSPRITE;
         renderstyle "add";
-        scale 0.25;
         +MOVEWITHSECTOR;
         +BASICACTOR.DIEWITHTARGET;
     }
