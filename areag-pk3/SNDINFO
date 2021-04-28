@@ -188,6 +188,10 @@ seq/floorstop FLSTOP // Rayman 2: The Great Escape
 
 trap/spearlaunch STLAUNCH // Rayman 2: The Great Escape
 trap/speartwang STTWANG // Rayman 2: The Great Escape
+trap/dartlaunch DTLAUNCH // Donkey Kong 64
+$limit trap/dartlaunch 0
+trap/dartbreak DTBREAK // Donkey Kong 64
+$limit trap/dartbreak 0
 
 monster/glowfly/spawn   GF_SPAWN // Metroid Prime 2: Echoes
 monster/glowfly/death   GF_DIE // Metroid Prime 2: Echoes

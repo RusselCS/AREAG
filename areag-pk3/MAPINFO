@@ -23,6 +23,7 @@ DoomEdNums
     20002 = TestBossTorchSpawner
     
     30000 = SpearTrap
+    30001 = DartTrap
     30002 = LaserTrap
 
     30100 = ObArcherSpawner

@@ -1,7 +1,76 @@
-class DartTrap : Actor
+class DartTrap : BasicActor
 {
     //$Category AREAG-Traps
     //$Title Dart Trap
-    //$Sprite E0WBA0 -- INCORRECT. FIX LATER.
-    //$NotAngled
+    //$Sprite E0WBB0
+
+    Default
+    {
+        +NOGRAVITY;
+        -SOLID;
+        height 16;
+        radius 8;
+    }
+
+    States
+    {
+    Spawn:
+        TNT1 A 1;
+        loop;
+    Fire:
+        TNT1 A 1;
+        TNT1 A 0 A_SpawnBasicEffect("DartTrapPuff");
+        TNT1 A 0 A_StartSound("trap/dartlaunch", CHAN_WEAPON);
+        TNT1 A 0 A_SpawnProjectile("DartTrapDart",0,0,0,2,0);
+        goto Spawn;
+    }
+}
+
+class DartTrapDart : BasicProjectile
+{
+    Default
+    {
+        DamageFunction (20);
+        Speed 50;
+        height 16;
+        radius 8;
+        scale 2.0;
+    }
+
+    States
+    {
+    Spawn:
+        TRAP B 1;
+        wait;
+    Death:
+        TNT1 A 0 A_SpawnBasicEffect("DartTrapPuff");
+        TNT1 A 0 A_StartSound("trap/dartbreak", CHAN_BODY);
+        stop;
+    XDeath:
+        TNT1 A 0;
+        stop;
+    }
+}
+
+class DartTrapPuff : BasicEffect
+{
+    Default
+    {
+        -NOINTERACTION;
+        +FORCEXYBILLBOARD;
+        +ROLLSPRITE;
+        -ACTIVATEIMPACT;
+        +MOVEWITHSECTOR;
+        bouncetype "hexen";
+        alpha 0.4;
+        scale 1.5;
+    }
+	States
+	{
+	Spawn:
+		WHPF A 0;
+		WHPF A 0 A_SetRoll(frandom(0.0, 360.0));
+		WHPF ABCD 2;
+		stop;        
+	}
 }

@@ -134,28 +134,42 @@ script "gateway_events" (int toggle, int action, int unused)
 
 	case 10: // Four-switches puzzle - Top-right
 		queueEventSave(action, loading);
-		PrintBold(s:"WRONG! >:(");
 		Floor_LowerToLowest(tag1, 64);
 		SetUserVariable(switchTag, "bEndState", true);
+
+		SetActorState(tag2, "Fire");
+		delay(3);
+		SetActorState(tag3, "Fire");
+		delay(3);
+		SetActorState(tag4, "Fire");
 		break;
 
 	case 11: // Four-switches puzzle - Bottom-right
 		queueEventSave(action, loading);
-		PrintBold(s:"WRONG! >:(");
 		moveCeiling(tag1, 64, 992);
 		SetUserVariable(switchTag, "bEndState", true);
+
+		SetActorState(tag2, "Fire");
+		delay(3);
+		SetActorState(tag3, "Fire");
+		delay(3);
+		SetActorState(tag4, "Fire");
 		break;
 
 	case 12: // Four-switches puzzle - Bottom-left
 		queueEventSave(action, loading);
-		PrintBold(s:"WRONG! >:(");
 		moveCeiling(tag1, 64, 992);
 		SetUserVariable(switchTag, "bEndState", true);
+
+		SetActorState(tag2, "Fire");
+		delay(3);
+		SetActorState(tag3, "Fire");
+		delay(3);
+		SetActorState(tag4, "Fire");
 		break;
 
 	case 13: // Four-switches puzzle - top-left
 		queueEventSave(action, loading);
-		PrintBold(s:"CORRECT! :)");
 		moveCeiling(tag1, 64, 992);
 		moveCeiling(tag2, 20, 1096);
 		moveCeiling(tag3, 20, 1168);
@@ -264,9 +278,9 @@ script "gateway_events" (int toggle, int action, int unused)
 
 	case 30: // Long dart trap
 		queueEventSave(action, loading);
-		PrintBold(s:"PEW PEW DART SHOOTY!");
 		SetUserVariable(switchTag, "bEndState", true);
 		moveFloor(tag1, 40, 320);
+		SetActorState(tag2, "Fire");
 		break;
 
 	case 31: // Waterfall entrance to invisible maze puzzle
@@ -388,7 +402,7 @@ script "gateway_events" (int toggle, int action, int unused)
 		if(Toggle && !getUserVariable(switchTag, "bEndState")) {
 			Floor_LowerToLowest(tag1, 64);
 			SetUserVariable(switchTag, "bEndState", true);
-			PrintBold(s:"PEW PEW DART SHOOTY - 1");
+			SetActorState(tag2, "Fire");
 		}
 		break;
 
@@ -396,7 +410,7 @@ script "gateway_events" (int toggle, int action, int unused)
 		if(Toggle && !getUserVariable(switchTag, "bEndState")) {
 			Floor_LowerToLowest(tag1, 64);
 			SetUserVariable(switchTag, "bEndState", true);
-			PrintBold(s:"PEW PEW DART SHOOTY - 2");
+			SetActorState(tag2, "Fire");
 		}
 		break;
 
