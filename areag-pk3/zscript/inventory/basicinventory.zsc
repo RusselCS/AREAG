@@ -224,27 +224,25 @@ class MapPickup : Actor
         super.PostBeginPlay();
 
         //args[0] = score;
-        if(score == 3) {
-            int pickupId = score;
-            String pickup = MapDataRepo.getPickupFromHere(level.levelnum, pickupId);
+        int pickupId = score;
+        String pickup = MapDataRepo.getPickupFromHere(level.levelnum, pickupId);
 
-            if(MapDataRepo.getTempPickupByLevel(level.levelnum, pickupId-1) == 0) {
-                bool spawned;
-                Actor child;
-                sTid = tid;
-                Thing_ChangeTID(0, 0);
-                [spawned, child] = A_SpawnItemEx(pickup, 0, 0, 16, 0, 0, 0, 0, SXF_TRANSFERSPECIAL, 0, sTid);
-                if(spawned) {
-                    if(bSTANDSTILL) {
-                        child.bFLOATBOB = false;
-                    }
-                    child.score = score;
-                } else {
-                    A_Log(String.format("Failed to spawn Pickup %s", pickup));
+        if(MapDataRepo.getTempPickupByLevel(level.levelnum, pickupId-1) == 0) {
+            bool spawned;
+            Actor child;
+            sTid = tid;
+            Thing_ChangeTID(0, 0);
+            [spawned, child] = A_SpawnItemEx(pickup, 0, 0, 16, 0, 0, 0, 0, SXF_TRANSFERSPECIAL, 0, sTid);
+            if(spawned) {
+                if(bSTANDSTILL) {
+                    child.bFLOATBOB = false;
                 }
+                child.score = score;
             } else {
-                A_CallSpecial(special, args[0], args[1], args[2], args[3], args[4]);
+                A_Log(String.format("Failed to spawn Pickup %s", pickup));
             }
+        } else {
+            A_CallSpecial(special, args[0], args[1], args[2], args[3], args[4]);
         }
     }
 
