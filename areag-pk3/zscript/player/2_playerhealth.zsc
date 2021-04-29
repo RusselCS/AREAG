@@ -1,22 +1,24 @@
 
 extend class AREAGPlayerPawn {
 
+	int lastArmor;
     int lastHealth;
     int lastFallStun;
 
     void AREAGHealthInit() {
         lastHealth = health;
+		lastArmor = CountInv("ArmorBars");
         lastFallStun = 0;
-        bBUDDHA = true;
         updateHealth();
     }
 
     void AREAGHealthTick() {
 
 		if(CountInv("DroneFlag") == 0) {
-			if(lastHealth != health) {
+			if(lastHealth != health || lastArmor != CountInv("ArmorBars")) {
 				updateHealth();
 				lastHealth = health;
+				lastArmor = CountInv("ArmorBars");
 			}
 
 			if(CountInv("MaxHealthBars") * HP_SEG_MAX != starthealth){
@@ -42,6 +44,10 @@ extend class AREAGPlayerPawn {
 		if(healthBars < CountInv("ArmorBars")) {
 			SetInventory("ArmorBars", healthBars);
             bBUDDHA = true;
+		}
+
+		if(!bBUDDHA && CountInv("ArmorBars")) {
+			bBUDDHA = true;
 		}
 		SetInventory("HealthBars", healthBars);
 		SetInventory("HealthCounter", hpPool);
