@@ -1,0 +1,60 @@
+class AutomapEntrance : BasicActor
+{
+    //$Category AREAG-Automap
+	//$Title Starting Room
+	//$Sprite E0WBG0
+    //$Arg0 Room ID
+	//$NotAngled
+
+    Default
+    {
+        +NOGRAVITY;
+        +NOINTERACTION;
+    }
+
+    AREAGPlayerPawn plr;
+    int roomId;
+
+    override void BasicInit()
+    {
+        plr = AREAGPlayerPawn(GetPointer(AAPTR_PLAYER1));
+        roomId = args[0];
+    }
+
+    override void BasicTick()
+    {
+        if(playerInSector()) {
+            if(plr.pos.z < ceilingz-plr.height && plr.pos.z >= floorz) {
+                if(plr.getRoomId() != roomId) {
+                    // Set player tag to top;
+                    plr.setRoomId(roomId);
+                    console.printf("Starting Room: %d", roomId);
+                    if(bDORMANT) {
+                        destroy();
+                    }
+                }
+            }
+        }
+    }
+
+    bool playerInSector()
+    {
+        if(plr) {
+            return plr.cursector == cursector;
+        }
+        return false;
+    }
+}
+
+extend class AREAGPlayerPawn
+{
+    int roomId;
+
+    int getRoomId() {
+        return roomId;
+    }
+
+    void setRoomId(int room) {
+        roomId = room;
+    }
+}

@@ -66,6 +66,7 @@ extend class AREAGPlayerPawn {
         dBaseGravity = gravity;
         airTime = 0;
         jumpDelay = 0;
+        roomId = 0;
     }
 
     void AREAGUpdateSpeeds() {

@@ -17,6 +17,9 @@ DoomEdNums
 	10571 = PitSector
 	10573 = BreakableWall
 	10574 = HornSwitch
+	10575 = AutomapDropdown
+	10576 = AutomapDoorway
+	10577 = AutomapEntrance
 
     20000 = JarSpawner
     20001 = BigJarSpawner

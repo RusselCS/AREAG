@@ -16,6 +16,9 @@ class DoorController : Actor
     bool bApplyDoor;
     bool bJammedDoor;
 
+    int frontRoom;
+    int backRoom;
+
     bool voidLine(Line ln) {
         return ln.BackSector == null;
     }
@@ -52,6 +55,15 @@ class DoorController : Actor
 
     override void PostBeginPlay() {
         super.PostBeginPlay();
+
+        frontRoom = args[1];
+        backRoom = args[2];
+
+        bool s;
+        Actor act;
+        [s, act] = A_SpawnItemEx("AutomapDoorway");
+        act.args[0] = frontRoom;
+        act.args[1] = backRoom;
 
         sDoor = CurSector;
         bJammedDoor = score > 0;

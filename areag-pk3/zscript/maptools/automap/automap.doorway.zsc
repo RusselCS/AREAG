@@ -1,0 +1,59 @@
+class AutomapDoorway : BasicActor
+{
+    //$Category AREAG-Automap
+	//$Title Room Change (Doorway)
+	//$Sprite E0WBE0
+    //$Arg0 Front Room
+    //$Arg1 Back Room
+
+    Default
+    {
+        +NOGRAVITY;
+        +NOCLIP;
+    }
+
+    AREAGPlayerPawn plr;
+    int frontRoom;
+    int backRoom;
+
+    override void BasicInit()
+    {
+        plr = AREAGPlayerPawn(GetPointer(AAPTR_PLAYER1));
+        frontRoom = args[0];
+        backRoom = args[1];
+    }
+
+    override void BasicTick()
+    {
+        if(playerInSector()) {
+            if(plr.pos.z < ceilingz && plr.pos.z >= floorz) {
+                if(playerInFront()) {
+                    if(plr.getRoomId() != frontRoom) {
+                        // Set player tag to top;
+                        plr.setRoomId(frontRoom);
+                        console.printf("Entered frontRoom %d", frontRoom);
+                    }
+                } else {
+                    if(plr.getRoomId() != backRoom) {
+                        // Set player tag to bottom;
+                        plr.setRoomId(backRoom);
+                        console.printf("Entered backRoom %d", backRoom);
+                    }
+                }
+            }
+        }
+    }
+
+    bool playerInFront() {
+        double tarAng = VectorAngle(plr.pos.x - pos.x, plr.pos.y - pos.y);
+        return angleBetween(angle, tarAng-90.0, tarAng+90.0);
+    }
+
+    bool playerInSector()
+    {
+        if(plr) {
+            return plr.cursector == cursector;
+        }
+        return false;
+    }
+}

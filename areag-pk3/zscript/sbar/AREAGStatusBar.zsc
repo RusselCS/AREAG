@@ -3,12 +3,83 @@ Class AREAGStatusBar : BaseStatusBar {
     AREAGPlayerPawn pl;
 
     HUDFont sBarFont;
+    HUDFont tabletFont;
+
+    static const String[] mapRooms = {
+        "ADV01_00",
+        "ADV01_01",
+        "ADV01_02",
+        "ADV01_03",
+        "ADV01_04",
+        "ADV01_05",
+        "ADV01_06",
+        "ADV01_07",
+        "ADV01_08",
+        "ADV01_09",
+        "ADV01_10",
+        "ADV01_11",
+        "ADV01_12",
+        "ADV01_13",
+        "ADV01_14",
+        "ADV01_15",
+        "ADV01_16",
+        "ADV01_17",
+        "ADV01_18",
+        "ADV01_19",
+        "ADV01_20",
+        "ADV01_21",
+        "ADV01_22",
+        "ADV01_23",
+        "ADV01_24",
+        "ADV01_25",
+        "ADV01_26",
+        "ADV01_27",
+        "ADV01_28",
+        "ADV01_29",
+        "ADV01_30",
+        "ADV01_31",
+        "ADV01_32",
+        "ADV01_33",
+        "ADV01_34",
+        "ADV01_35",
+        "ADV01_36",
+        "ADV01_37",
+        "ADV01_38",
+        "ADV01_39",
+        "ADV01_40",
+        "ADV01_41",
+        "ADV01_42",
+        "ADV01_43",
+        "ADV01_44",
+        "ADV01_45",
+        "ADV01_46",
+        "ADV01_47",
+        "ADV01_48",
+        "ADV01_49",
+        "ADV01_50",
+        "ADV01_51",
+        "ADV01_52",
+        "ADV01_53",
+        "ADV01_54",
+        "ADV01_55",
+        "ADV01_56",
+        "ADV01_57",
+        "ADV01_58",
+        "ADV01_59",
+        "ADV01_60",
+        "ADV01_61",
+        "ADV01_62",
+        "ADV01_63",
+        "ADV01_64"
+    };
 
     override void Init() {
 		Super.Init();
 		SetSize(0, 160, 100);
         Font fnt = "INDEXFONT";
         sBarFont = HUDFont.Create(fnt, fnt.GetCharWidth("0"), Mono_CellLeft);
+        Font fnt2 = "DESCFONT";
+        tabletFont = HUDFont.Create(fnt2, fnt2.GetCharWidth("W"), Mono_CellLeft);
 	}
 
     override void Tick() {
@@ -32,7 +103,7 @@ Class AREAGStatusBar : BaseStatusBar {
     void AREAGDrawHud(double TicFrac) {
 
         double yOffsDiff = 14.0;
-        double yOffs = (5*yOffsDiff + yOffsDiff/2);
+        double yOffs = (9*yOffsDiff + yOffsDiff/2);
         double xOffs = 12.0;
         double barYOffs = 2.0;
         double barXOffs = 30.5;
@@ -48,6 +119,17 @@ Class AREAGStatusBar : BaseStatusBar {
         double subCYOffs = 4.0;
 
         int amt, maxamt;
+
+        if(getCVarBool("db_showmapouutline")) {
+            int roomNum = pl.roomId;
+            if(roomNum >= 100) {
+                DrawImage(mapRooms[roomNum-100],  (xOffs*6, -yOffs));
+            } else {
+                DrawString(tabletFont, "No map room found.", (xOffs + numXOffs, -yOffs-numYOffs), DI_TEXT_ALIGN_LEFT);
+            }
+        }
+
+        yOffs -= 4*yOffsDiff;
 
         DrawImage("ICOCSH",  (xOffs, -yOffs));
         [amt, maxamt] = GetAmount("AGCoin");
@@ -103,6 +185,15 @@ Class AREAGStatusBar : BaseStatusBar {
         yOffs -= yOffsDiff;
 		[amt, maxamt] = GetAmount("Battery");
         DrawImage("ICOBAT",  (xOffs, -yOffs));
-        DrawBar("BARBAT", "BAREMP", amt, maxamt, (xOffs + barXOffs, -yOffs - barYOffs), 0, SHADER_HORZ);
+        DrawBar("BARBAT", "BAREMP", amt, maxamt, (xOffs + barXOffs, -yOffs - barYOffs), 0, SHADER_HORZ); 
+    }
+
+    bool getCVarBool(String which) {
+        let cv = cvar.FindCvar(which);
+
+        if(cv) {
+            return cv.getBool();
+        }
+        return false;
     }
 }

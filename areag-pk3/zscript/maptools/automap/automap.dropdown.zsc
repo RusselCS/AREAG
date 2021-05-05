@@ -1,0 +1,119 @@
+class AutomapDropdown : BasicActor
+{
+    //$Category AREAG-Automap
+	//$Title Room Change (Dropdown)
+	//$Sprite E0WBD0
+    //$Arg0 Top Room
+    //$Arg1 Bottom Room
+	//$NotAngled
+	
+    Default
+    {
+        +NOGRAVITY;
+        +NOINTERACTION;
+    }
+
+    AREAGPlayerPawn plr;
+    int topRoom;
+    int botRoom;
+    Array<Sector> sectors;
+    Array<Line> checkedLines;
+
+    override void BasicInit()
+    {
+        plr = AREAGPlayerPawn(GetPointer(AAPTR_PLAYER1));
+        topRoom = args[0];
+        botRoom = args[1];
+
+        traverseSectors(curSector);
+        //console.printf("[%d traversed %d sectors]", topRoom, sectors.size());
+    }
+
+    override void BasicTick()
+    {
+        if(playerInSector()) {
+            if(plr.pos.z > pos.z) {
+                if(plr.getRoomId() != topRoom) {
+                    // Set player tag to top;
+                    plr.setRoomId(topRoom);
+                    console.printf("Entered topRoom %d", topRoom);
+                }
+            } else {
+                if(plr.getRoomId() != botRoom) {
+                    // Set player tag to bottom;
+                    plr.setRoomId(botRoom);
+                    console.printf("Entered botRoom %d", botRoom);
+                }
+            }
+        }
+    }
+
+    bool playerInSector()
+    {
+        if(plr) {
+            for(int i = 0; i < sectors.size(); i++) {
+                if(plr.cursector == sectors[i]) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    void traverseSectors(Sector sec) {
+
+        double flr = GetZAt(sec.centerspot.x, sec.centerspot.y, 0, GZF_ABSOLUTEPOS);
+        double ciel = GetZAt(sec.centerspot.x, sec.centerspot.y, 0, GZF_ABSOLUTEPOS|GZF_CEILING);
+
+        if(flr < pos.z && ciel > pos.z) {
+            //console.printf("[%d] %f < %f < %f || center: %f, %f", topRoom, flr, pos.z, ciel, sec.centerspot.x, sec.centerspot.y);
+            addToSet(sec);
+
+            for(int i = 0; i < sec.Lines.size(); i++) {
+                if(!lineInSet(sec.Lines[i]) && !(sec.Lines[i].Flags & 0x00000080) && !(sec.Lines[i].Flags & 0x00000001)) {
+                    checkedLines.push(sec.Lines[i]);
+
+                    Sector front = sec.Lines[i].FrontSector;
+                    Sector back = sec.Lines[i].BackSector;
+                    if(front && !sectorInSet(front)) {
+                        traverseSectors(front);
+                    }
+
+                    if(back && !sectorInSet(back)) {
+                        traverseSectors(back);
+                    }
+                }
+            }
+        }
+    }
+
+    bool lineInSet(Line lin) {
+        bool found = false;
+
+        for(int i = 0; !found && i < checkedLines.size(); i++) {
+            if(checkedLines[i] == lin) {
+                found = true;
+            }
+        }
+
+        return found;
+    }
+
+    bool sectorInSet(Sector sec) {
+        bool found = false;
+
+        for(int i = 0; !found && i < sectors.size(); i++) {
+            if(sectors[i] == sec) {
+                found = true;
+            }
+        }
+
+        return found;
+    }
+
+    void addToSet(Sector sec) {
+        if(!sectorInSet(sec)) {
+            sectors.push(sec);
+        }
+    }
+}

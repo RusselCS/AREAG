@@ -66,6 +66,9 @@
 #include "zscript/status/curse.zsc"
 
 // MAP TOOLS
+#include "zscript/maptools/automap/automap.dropdown.zsc"
+#include "zscript/maptools/automap/automap.doorway.zsc"
+#include "zscript/maptools/automap/automap.enter.zsc"
 #include "zscript/maptools/automap/automap.entity.zsc"
 #include "zscript/maptools/automap/automap.repo.zsc"
 #include "zscript/maptools/areagate.zsc"

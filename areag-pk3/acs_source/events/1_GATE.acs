@@ -177,6 +177,8 @@ script "gateway_events" (int toggle, int action, int unused)
 		break;
 
 	case 14: // Statue Puzzle - Finish
+		moveCeiling(tag1, 40, 1192);
+		moveCeiling(tag2, 40, 1240);
 		break;
 
 	case 15: // Statue Puzzle - Part 1
@@ -192,6 +194,9 @@ script "gateway_events" (int toggle, int action, int unused)
 		break;
 
 	case 19: // Boss Defeated - Bars raise, door to Throne Room opens
+		moveCeiling(tag1, 40, 1192);
+		moveCeiling(tag2, 40, 1240);
+		moveFloor(tag3, 40, 1200);
 		break;
 
 	case 20: // Floor collapse
@@ -481,6 +486,11 @@ script "gateway_events" (int toggle, int action, int unused)
 	case 67:
 	case 69:
 		spawnCoins(switchTag, tag2, 20, true);
+		break;
+
+	case 70:
+		moveCeiling(tag1, 40, 992);
+		moveCeiling(tag2, 40, 992);
 		break;
 	}
 }

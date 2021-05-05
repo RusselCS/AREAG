@@ -108,6 +108,8 @@ extend class AREAGPlayerPawn {
 
     Vector3 returnPoint;
 
+    Actor entryRoom;
+
     Name getDroneSoundClass() {
         return "drone";
     }
@@ -137,6 +139,12 @@ extend class AREAGPlayerPawn {
         attackZOffset = DRONESIZE_ATTACKZOFFSET;
 
         iLevelNum = level.levelnum;
+
+        bool sp;
+        Actor act;
+        [sp, act] = A_SpawnItemEx("AutomapEntrance");
+        act.args[0] = getRoomId();
+        act.bDORMANT = true;
 
         if(who) {
             A_ChangeVelocity(who.vel.x, who.vel.y, who.vel.z, CVF_REPLACE);
