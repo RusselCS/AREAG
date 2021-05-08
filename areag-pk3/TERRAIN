@@ -20,6 +20,7 @@ floor TESTBRK6 Stone*/
 splash InSplash
 {
 	baseclass	InSplash
+	noalert
 }
 
 terrain advwater

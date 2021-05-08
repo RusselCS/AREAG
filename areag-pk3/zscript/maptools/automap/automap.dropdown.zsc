@@ -21,7 +21,7 @@ class AutomapDropdown : BasicActor
 
     override void BasicInit()
     {
-        plr = AREAGPlayerPawn(GetPointer(AAPTR_PLAYER1));
+        plr = getPlayer();
         topRoom = args[0];
         botRoom = args[1];
 

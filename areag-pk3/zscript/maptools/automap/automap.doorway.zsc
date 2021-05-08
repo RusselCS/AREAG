@@ -18,7 +18,7 @@ class AutomapDoorway : BasicActor
 
     override void BasicInit()
     {
-        plr = AREAGPlayerPawn(GetPointer(AAPTR_PLAYER1));
+        plr = getPlayer();
         frontRoom = args[0];
         backRoom = args[1];
     }

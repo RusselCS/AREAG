@@ -17,7 +17,7 @@ class AutomapEntrance : BasicActor
 
     override void BasicInit()
     {
-        plr = AREAGPlayerPawn(GetPointer(AAPTR_PLAYER1));
+        plr = getPlayer();
         roomId = args[0];
     }
 

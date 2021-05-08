@@ -101,6 +101,10 @@ mixin class BasicActor_Virtuals
 		return ret;
 	}
 
+	AREAGPlayerPawn getPlayer() {
+		return AREAGPlayerPawn(GetPointer(AAPTR_PLAYER1));
+	}
+
     // ===============================
     //  Direct manipulation functions
     // ===============================

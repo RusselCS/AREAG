@@ -16,12 +16,12 @@ class JarSpawner : BasicActor
     property RespawnTime: iRespawnTime;
 
     Actor activeJar;
-    Actor player;
+    AREAGPlayerPawn player;
     bool awaitingRespawn;
 
     override void BasicInit() {
         spawnJar();
-        player = GetPointer(AAPTR_PLAYER1);
+        player = getPlayer();
 
         if(iRespawnTime == 0) {
             if(score == 0) {

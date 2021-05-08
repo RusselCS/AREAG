@@ -5,6 +5,7 @@ class EnemySpawner : BasicActor
         +NOINTERACTION;
         +THRUACTORS;
         +NOCLIP;
+        health 1;
     }
 
     String sEnemyType;
@@ -14,33 +15,49 @@ class EnemySpawner : BasicActor
     property EnemyType: sEnemyType;
     property RespawnTime: iRespawnTime;
 
-    Actor activeEnemy;
-    Actor player;
+    BasicEnemy activeEnemy;
+    AREAGPlayerPawn player;
+    int roomId;
     bool awaitingRespawn;
 
     override void BasicInit() {
         if(!getCvarBool("db_removemonsters")) {
             spawnEnemy();
-            player = GetPointer(AAPTR_PLAYER1);
+            player = getPlayer();
+            roomId = score;
 
             if(iRespawnTime == 0) {
-                if(score == 0) {
-                    iRespawnTime = 30 * 35;
+                if(health == 1) {
+                    iRespawnTime = 10 * 35;
                 } else {
-                    iRespawnTime = score * 35;
+                    iRespawnTime = health * 35;
                 }
             }
         }
+    }
+
+    bool canRespawn() {
+        return !canPlayerSee() && !playerInRoom() && !enemyInSight();
     }
 
     bool canPlayerSee() {
         return player.IsVisible(self, false);
     }
 
+    bool enemyInSight() {
+        return activeEnemy && player.IsVisible(activeEnemy, false);
+    }
+
+    bool playerInRoom() {
+        return roomId != 0 && player && player.getRoomId() == roomId;
+    }
+
     void spawnEnemy() {
         bool sp;
-        [sp, activeEnemy] = A_SpawnItemEx(sEnemyType);
+        Actor en;
+        [sp, en] = A_SpawnItemEx(sEnemyType);
         if(sp) {
+            activeEnemy = BasicEnemy(en);
             if(!bSTANDSTILL) {
                 activeEnemy.score = score;
             }
@@ -58,16 +75,49 @@ class EnemySpawner : BasicActor
                 Destroy();
             }
             if(!bSTANDSTILL) {
-                if(!awaitingRespawn) {
-                    if(!activeEnemy) {
-                        respawnCountdown = iRespawnTime;
-                        awaitingRespawn = true;
+                if(activeEnemy) {
+                    if(!playerInRoom() && !enemyInSight()) {
+                        if(!activeEnemy.sightFrozen) {
+                            console.printf("Freezing enemy");
+                            activeEnemy.sightFrozen = true;
+                        }
+                    } else {
+                        if(activeEnemy.sightFrozen) {
+                            console.printf("Unfreezing enemy");
+                            activeEnemy.sightFrozen = false;
+                        }
+                    }
+
+                    if(activeEnemy.pos != self.pos && activeEnemy.sightFrozen) {
+                        if(!awaitingRespawn) {
+                            respawnCountdown = iRespawnTime;
+                            awaitingRespawn = true;
+                        } else {
+                            if(canRespawn()) {
+                                respawnCountdown--;
+                                console.printf("Frozen counting down %d", respawnCountdown);
+                                if(respawnCountdown <= 0) {
+                                    activeEnemy.Destroy();
+                                    spawnEnemy();
+                                }
+                            }
+                        }
+                    } else {
+                        if(awaitingRespawn) {
+                            awaitingRespawn = false;
+                        }
                     }
                 } else {
-                    if(!canPlayerSee()) {
-                        respawnCountdown--;
-                        if(respawnCountdown == 0) {
-                            spawnEnemy();
+                    if(!awaitingRespawn) {
+                        respawnCountdown = iRespawnTime;
+                        awaitingRespawn = true;
+                    } else {
+                        if(canRespawn()) {
+                            respawnCountdown--;
+                            console.printf("Dead counting down %d", respawnCountdown);
+                            if(respawnCountdown <= 0) {
+                                spawnEnemy();
+                            }
                         }
                     }
                 }
@@ -112,6 +162,10 @@ class BasicEnemy : BasicActor
     int iDeathTick;
     int iDeathSequenceType;
 
+    int roomId;
+    bool sightFrozen;
+
+    AREAGPlayerPawn plr;
     EnemyPatrolNode nextPatrol;
 
     Vector2 BaseScale;
@@ -135,6 +189,9 @@ class BasicEnemy : BasicActor
 
         BaseScale = scale;
         BaseDimensions = (radius, height);
+
+        roomId = score;
+        plr = getPlayer();
 
         monsterInit();
     }
@@ -190,8 +247,8 @@ class BasicEnemy : BasicActor
     virtual void monsterDeathSound(Name mod) {}
 
 	override void BasicTick() {
-		super.BasicTick();
-		tick_KnockBack();
+        super.BasicTick();
+        tick_KnockBack();
         tick_DeathSequence();
         
         monsterTick();
@@ -199,10 +256,12 @@ class BasicEnemy : BasicActor
 
     // Enemies freeze after a hit.
     override void Tick() {
-        if(iDamageTick == 0) {
-            super.tick();
-        } else {
-            tick_DamageFlash();
+        if(!sightFrozen) {
+            if(iDamageTick == 0) {
+                super.tick();
+            } else {
+                tick_DamageFlash();
+            }
         }
     }
 
@@ -290,6 +349,12 @@ class BasicEnemy : BasicActor
     void StopLedgeFall() {
         if(abs(GetZAt(pos.x + vel.x, pos.y + vel.y, 0, GZF_ABSOLUTEPOS|GZF_ABSOLUTEANG) - floorz) > maxstepheight * 2) {
             A_Stop();
+        }
+    }
+
+    action void A_RoomLookEx(int flags, float minseedist, float maxseedist, float maxheardist, double fov, StateLabel label) {
+        if((invoker.roomId == 0) || (invoker.plr && invoker.plr.getRoomId() == invoker.roomId)) {
+            A_LookEx(flags, minseedist, maxseedist, maxheardist, fov, label);
         }
     }
 

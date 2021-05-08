@@ -65,7 +65,7 @@ class ObBrute : BasicEnemy
     override void monsterTick() {
         if(CurState == patrolState || CurState == spawnState) {
             if(!target) {
-                A_LookEx(searchParams.flags, searchParams.minDist, searchParams.maxDist, searchParams.maxHearDist, searchParams.fov, "See");
+                A_RoomLookEx(searchParams.flags, searchParams.minDist, searchParams.maxDist, searchParams.maxHearDist, searchParams.fov, "See");
             } else {
                 SetState(ResolveState("See"));
             }
