@@ -311,10 +311,23 @@ class BruteStunEffect : BasicEffect
         }
     }
 
+    action state A_StunCountdown() {
+        let e = BasicEnemy(tracer);
+        if(e) {
+            if(!e.sightFrozen) {
+                reactiontime--;
+                if(reactiontime <= 0) {
+                    return ResolveState("Death");
+                }
+            }
+        }
+        return ResolveState(null);
+    }
+
     States
     {
     Spawn:
-        TNT1 A 1 A_Countdown();
+        TNT1 A 1 A_StunCountdown();
         wait;
     Death:
         TNT1 A 0;

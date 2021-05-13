@@ -28,7 +28,7 @@ class EnemySpawner : BasicActor
 
             if(iRespawnTime == 0) {
                 if(health == 1) {
-                    iRespawnTime = 10 * 35;
+                    iRespawnTime = 30 * 35;
                 } else {
                     iRespawnTime = health * 35;
                 }
