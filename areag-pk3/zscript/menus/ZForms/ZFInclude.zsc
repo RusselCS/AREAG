@@ -1,0 +1,14 @@
+const boxScaled = 1;
+const boxTiled = 0;
+
+#include "zscript/menus/ZForms/ZFBaseMenu.zsc"
+#include "zscript/menus/ZForms/ZFElement.zsc"
+#include "zscript/menus/ZForms/ZFButton.zsc"
+#include "zscript/menus/ZForms/ZFBoxTextures.zsc"
+#include "zscript/menus/ZForms/ZFBoundingBox.zsc"
+#include "zscript/menus/ZForms/ZFFrame.zsc"
+#include "zscript/menus/ZForms/ZFLabel.zsc"
+#include "zscript/menus/ZForms/ZFHandler.zsc"
+#include "zscript/menus/ZForms/ZFImage.zsc"
+#include "zscript/menus/ZForms/ZFBoxImage.zsc"
+#include "zscript/menus/ZForms/ZFUiEvent.zsc"

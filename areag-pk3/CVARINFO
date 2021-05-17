@@ -2,6 +2,9 @@
 user bool cl_handedness = false; // Determines positions of main and subweapons on the player's HUD.
 user bool cl_jetpacktoggle = false; // Determines whether jetpack is triggered by hold or toggle.
 
+user float cl_musvol = 1.0;
+user float cl_sndvol = 1.0;
+
 // DEBUG SYSTEM
 user noarchive bool db_viewhitboxes = false;
 user int db_levelnum = 0;
@@ -119,9 +122,9 @@ user string SAVE_TESTMAP_1_PICKUP_3;
 user string SAVE_TESTMAP_2_EVENT_3;
 user string SAVE_TESTMAP_2_PICKUP_3;
 
-user int SAVE_MAP_1;
-user int SAVE_MAP_2;
-user int SAVE_MAP_3;
+user int SAVE_MAP_1 = 0;
+user int SAVE_MAP_2 = 0;
+user int SAVE_MAP_3 = 0;
 
 user int SAVE_DOOR_1;
 user int SAVE_DOOR_2;

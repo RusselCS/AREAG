@@ -2,3 +2,9 @@ cameratexture CAMBLUR 40 25
 cameratexture CAMBLUR1 40 25
 cameratexture CAMBLUR2 40 25
 //cameratexture CAMBLUR 1600 1000
+
+texture GLOWBOX
+    pic GLOWBOX3 tics 12
+    pic GLOWBOX2 tics 12
+    pic GLOWBOX1 tics 12
+    pic GLOWBOX2 tics 12

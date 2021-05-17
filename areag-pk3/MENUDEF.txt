@@ -18,7 +18,7 @@ LISTMENU "MainMenu"
 
 	PatchItem "M_NGAME", "n", "PlayerclassMenu"
 	PatchItem "M_OPTION","o", "OptionsMenu"
-	PatchItem "M_LOADG", "l", "RealLoadMenu"
+	PatchItem "M_LOADG", "l", "AREAGLoadMenu"
 	PatchItem "M_QUITG", "q", "QuitMenu"
 }
 

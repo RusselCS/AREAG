@@ -3,7 +3,8 @@
 // UPGRADES AND POWERUPS
 
 AR_GEARGREAVES = "GEAR GREAVES";
-PU_GEARGREAVES = "Increased Running Speed\nStep Dash Enabled";
+PU_GEARGREAVES = "Increased Running Speed\nDash Enabled";
+DC_GEARGREAVES = "Leg augment meant to enhance running speed. It is equipped with spring-wound mechanisms that wind up as the wearer moves. The springs can be released to launch the wearer along the ground in any direction they choose.";
 
 AR_STEAMGREAVES = "STEAM GREAVES";
 PU_STEAMGREAVES = "Increased Jump Height\nAir Dash Enabled";

@@ -100,5 +100,8 @@
 #include "zscript/sbar/AREAGStatusBar.zsc"
 #include "zscript/sbar/menutools.zsc"
 
+#include "zscript/menus/ZForms/ZFinclude.zsc"
+#include "zscript/menus/LoadMenu.zsc"
+
 // TEST BOSS
 #include "zscript/bosses/0_testboss.zsc"

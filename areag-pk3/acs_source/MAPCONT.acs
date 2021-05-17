@@ -426,6 +426,7 @@ script "map_savepoint" (int doorNum)
 
 script "map_loadGame" (int file)
 {
+	SetActivator(1000); // multiplyer killer
 	SetCVar("SAVE_PICKER", file);
 	int levelNum = GetCVar(StrParam(s:"SAVE_MAP_", i:file));
 	int doorNum = GetCVar(StrParam(s:"SAVE_DOOR_", i:file)) + 20;
