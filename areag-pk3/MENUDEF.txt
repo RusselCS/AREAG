@@ -4,27 +4,20 @@
 //
 //-------------------------------------------------------------------------------------------
 
+DEFAULTLISTMENU
+{
+	Font "BigFont", "Untranslated"
+	LineSpacing 22
+}
+
 LISTMENU "MainMenu"
 {
-	IfGame(Doom, Chex)
-	{
-		StaticPatch 94, 2, "M_DOOM"
-		Position 97, 72
-		IfOption(ReadThis)
-		{
-			Position 97, 64
-		}
-	}
-
-	PatchItem "M_NGAME", "n", "PlayerclassMenu"
+	Position 200, 130
+	// The patch items use the font "STONECROSS" from DaFont.com
+	PatchItem "M_NEWG", "n", "AREAGLoadMenu"
 	PatchItem "M_OPTION","o", "OptionsMenu"
-	PatchItem "M_LOADG", "l", "AREAGLoadMenu"
 	PatchItem "M_QUITG", "q", "QuitMenu"
 }
 
-OptionMenu "RealLoadMenu"
-{
-	Command "Load 1", "CMD_LOAD_1"
-	Command "Load 2", "CMD_LOAD_2"
-	Command "Load 3", "CMD_LOAD_3"
-}
+ListMenu "EpisodeMenu" {}
+ListMenu "SkillMenu" {}
