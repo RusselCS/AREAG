@@ -207,7 +207,7 @@ class EmptyItem : BasicInventory
 
 class EmptyCounter : Counter {}
 
-class MapPickup : Actor
+class MapPickup : BasicActor
 {
     Default
     {
@@ -238,6 +238,12 @@ class MapPickup : Actor
                     child.bFLOATBOB = false;
                 }
                 child.score = score;
+                if(GetCvarBool("db_showpickupids")) {
+                    [spawned, child] = A_SpawnItemEx("ZSCNumber", 0, 0, 16);
+                    if(spawned) {
+                        child.score = pickupId;
+                    }
+                }
             } else {
                 A_Log(String.format("Failed to spawn Pickup %s", pickup));
             }

@@ -15,6 +15,7 @@ user int db_spawnang;
 user noarchive bool db_spawn_changemap = true;
 user bool db_removemonsters = false;
 user bool db_showmapouutline = false;
+user bool db_showpickupids = true;
 
 // TEST MAP VARIABLES
 server int db_enemytestterrain = 0;

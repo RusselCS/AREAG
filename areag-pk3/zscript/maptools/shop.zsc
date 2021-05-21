@@ -14,7 +14,11 @@ class ZSCNumber : Actor
     {
         super.PostBeginPlay();
 
-        iNumberToDraw = random(0, random(1, 100)*10);
+        iNumberToDraw = score;
+        if(iNumberToDraw == 0) {
+            iNumberToDraw = random(0, random(1, 100)*10);
+        }
+
         int digits = countDigits(iNumberToDraw);
         int start = digits/2;
 
