@@ -1,0 +1,39 @@
+class StudySlideRing : BasicEffect
+{
+    Default
+    {
+        radius 1952;
+    }
+
+    override void BasicInit() {
+        int baseTID = tid;
+        Thing_ChangeTID(0, 0);
+        A_SpawnItemEx("SlideRingCenter", 0, 0, 0, 0, 0, 0, 0, 0, 0, baseTID);
+        //A_SpawnItemEx("SlideRingStairs", 0, 0, 0, 0, 0, 0, 0, 0, 0, baseTID+100);
+    }
+
+    override void BasicTick() {
+        //A_SetAngle(angle + 0.2);
+    }
+
+    States
+    {
+    Spawn:
+        TNT1 A 0;
+        stop;
+    }
+}
+
+class SlideRingCenter : StudySlideRing
+{
+    override void BasicInit() {}
+
+    States
+    {
+    Spawn:
+        PCBA A 1;
+        wait;
+    }
+}
+
+class SlideRingStairs : SlideRingCenter {}

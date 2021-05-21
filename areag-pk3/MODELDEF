@@ -93,3 +93,23 @@ Model TabletModel
 
    FrameIndex TBLT C 0 0
 }
+
+Model SlideRingCenter
+{
+   Path "models/Study"
+   Model 0 "M_LRING.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 -256.0
+
+   FrameIndex PCBA A 0 0
+}
+
+Model SlideRingStairs
+{
+   Path "models/Study"
+   Model 0 "M_LSTAIR.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 -96.0
+
+   FrameIndex PCBA A 0 0
+}

@@ -28,6 +28,7 @@ DoomEdNums
     30000 = SpearTrap
     30001 = DartTrap
     30002 = LaserTrap
+	30003 = StudySlideRing
 
     30100 = ObArcherSpawner
 	30101 = ObBruteSpawner
@@ -51,7 +52,7 @@ cluster 1
 
 GAMEINFO
 {
-    EventHandlers = "MapUtilInit", "AutomapRepository"
+    EventHandlers = "MapUtilInit"//, "DynamicMusicHandler"
 	statusbarclass = "AREAGStatusBar"
 }
 
@@ -64,6 +65,7 @@ map ADV00 "Outskirts"
 	sky1 = "TESTSKY1"
 	forcenoskystretch 
 	clipmidtextures
+	AllowRespawn
 }
 
 map ADV01 "Grand Gateway" 
@@ -75,6 +77,7 @@ map ADV01 "Grand Gateway"
 	sky1 = "BLACK", 0 
 	forcenoskystretch 
 	clipmidtextures
+	AllowRespawn
 	useplayerstartz
 }
 
@@ -87,6 +90,7 @@ map ADV02 "Queen's Study"
 	sky1 = "BLACK", 0 
 	forcenoskystretch 
 	clipmidtextures
+	AllowRespawn
 	useplayerstartz
 }
 
@@ -99,6 +103,7 @@ map ADV03 "Lost Impact"
 	sky1 = "BLACK", 0 
 	forcenoskystretch 
 	clipmidtextures
+	AllowRespawn
 	useplayerstartz
 }
 
@@ -111,6 +116,7 @@ map ADV04 "King's Dungeon"
 	sky1 = "BLACK", 0 
 	forcenoskystretch 
 	clipmidtextures
+	AllowRespawn
 	useplayerstartz
 }
 
@@ -123,6 +129,7 @@ map ADV05 "Realm of Shadows"
 	sky1 = "BLACK", 0 
 	forcenoskystretch 
 	clipmidtextures
+	AllowRespawn
 	useplayerstartz
 }
 
@@ -135,6 +142,7 @@ map ADV06 "mech"
 	sky1 = "BLACK", 0 
 	forcenoskystretch 
 	clipmidtextures
+	AllowRespawn
 	useplayerstartz
 }
 
@@ -147,6 +155,7 @@ map ADV07 "the artist formerly known as temporal tower"
 	sky1 = "BLACK", 0 
 	forcenoskystretch 
 	clipmidtextures
+	AllowRespawn
 	useplayerstartz
 }
 
@@ -159,6 +168,7 @@ map ADV08 "temp placeholder"
 	sky1 = "BLACK", 0 
 	forcenoskystretch 
 	clipmidtextures
+	AllowRespawn
 	useplayerstartz
 }
 

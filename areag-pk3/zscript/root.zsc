@@ -96,6 +96,8 @@
 #include "zscript/props/1_gateway/lasertrap.zsc"
 #include "zscript/props/1_gateway/speartrap.zsc"
 
+#include "zscript/props/2_study/StudySlideRing.zsc"
+
 // STATUS BARS AND MENUS
 #include "zscript/sbar/AREAGStatusBar.zsc"
 #include "zscript/sbar/menutools.zsc"

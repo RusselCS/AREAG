@@ -1,0 +1,579 @@
+/*============================================================*\
+||                  Q U E E N ' S   S T U D Y                 ||
+\*============================================================*/
+
+
+/////////////////////////
+// DOOR IDS:           //
+//                     //
+/////////////////////////
+
+int ringState = 0;
+int stairState = 0;
+
+#define STAIR_SIZE 14
+int westStairs[STAIR_SIZE];
+int eastStairs[STAIR_SIZE];
+int invisWalls[2];
+
+script "study_init" (void)
+{
+    westStairs[0] = 201;
+    westStairs[1] = 301;
+    westStairs[2] = 401;
+    westStairs[3] = 501;
+    westStairs[4] = 601;
+    westStairs[5] = 701;
+    westStairs[6] = 801;
+    westStairs[7] = 901;
+    westStairs[8] = 202;
+    westStairs[9] = 302;
+    westStairs[10] = 402;
+    westStairs[11] = 502;
+    westStairs[12] = 602;
+    westStairs[13] = 702;
+
+    eastStairs[0] = 802;
+    eastStairs[1] = 902;
+    eastStairs[2] = 203;
+    eastStairs[3] = 303;
+    eastStairs[4] = 403;
+    eastStairs[5] = 503;
+    eastStairs[6] = 603;
+    eastStairs[7] = 703;
+    eastStairs[8] = 803;
+    eastStairs[9] = 903;
+    eastStairs[10] = 204;
+    eastStairs[11] = 304;
+    eastStairs[12] = 404;
+    eastStairs[13] = 504;
+
+    invisWalls[0] = 604;
+    invisWalls[1] = 704;
+
+    moveCeiling(invisWalls[(ringState % 2)], -160, SECTOR_SPEED_MAX);
+    moveCeiling(invisWalls[!(ringState % 2)], 256, SECTOR_SPEED_MAX);
+}
+
+// TAG HELP
+// Event number format: #XX
+// # - Tag number affected by current event
+// XX - Event Number
+
+script "study_events" (int toggle, int action, int unused)
+{
+	bool loading = false;
+	
+	if(action == 0) {
+		if(ActivatorTID() >= 1000) {
+			terminate;
+		} else {
+			action = ActivatorTID()-100;
+		}
+	} else {
+		if(ActivatorTID() < 1000) {
+			loading = true;
+		}
+	}
+
+	int switchTag = 100+action;
+	int tag1 = 200+action;
+	int tag2 = 300+action;
+	int tag3 = 400+action;
+	int tag4 = 500+action;
+	int tag5 = 600+action;
+	int tag6 = 700+action;
+	int tag7 = 800+action;
+	int tag8 = 900+action;
+    
+    int i;
+
+	switch(action)
+	{
+	case 1:
+        if(toggle) {
+            // Rotating centerpiece
+            // ALSO MAKES USE OF TAGS FOR EVENTS 2, 3, and 4.
+
+            int ringObj = tag1;
+            int stairObj = tag2;
+
+            ringState = (ringState + 1) % 4;
+            int ringPos = ringState % 2;
+
+            int targetAng = normalizeFixedAngle(ringState * 0.25);
+
+            moveCeiling(invisWalls[ringPos], -160, SECTOR_SPEED_MAX);
+            moveCeiling(invisWalls[!ringPos], 256, SECTOR_SPEED_MAX);
+
+            while(GetActorAngle(ringObj) != targetAng) {
+                int curAng = normalizeFixedAngle(GetActorAngle(ringObj) + 256);
+                SetActorAngle(ringObj, curAng);
+                delay(1);
+            }
+
+            if(ringPos == 1) // Ring faces E/W
+            {
+                stairState = (stairState + 1) % 2;
+
+                if(stairState == 0) {
+                    // Lower West stairs, raise East stairs
+                    for(i = 0; i < STAIR_SIZE; i++) {
+                        moveFloor(westStairs[i], (i+1) * -16, SECTOR_SPEED_MAX);
+                        moveFloor(eastStairs[i], (i+1) *  16, SECTOR_SPEED_MAX);
+                    }
+                } else {
+                    // Lower East stairs, raise West stairs
+                    for(i = 0; i < STAIR_SIZE; i++) {
+                        moveFloor(westStairs[i], (i+1) *  16, SECTOR_SPEED_MAX);
+                        moveFloor(eastStairs[i], (i+1) * -16, SECTOR_SPEED_MAX);
+                    }
+                }
+            }
+            else // Ring faces N/S
+            {
+                // Set all stairs to None
+                for(i = 0; i < STAIR_SIZE; i++) {
+                    moveFloor(westStairs[i], STAIR_SIZE * -16, SECTOR_SPEED_MAX);
+                    moveFloor(eastStairs[i], STAIR_SIZE * -16, SECTOR_SPEED_MAX);
+                }
+            }
+
+            SetActorState(switchTag, "SwitchOff", false);
+        }
+        break;
+
+	// case 2: // Jammed Door 2
+	// 	queueEventSave(action, loading);
+	// 	Floor_LowerToLowest(tag1, 64);
+	// 	moveCeiling(tag2, 10, 992);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+	// 	SetUserVariable(tag2, "bJammedDoor", false);
+	// 	break;
+
+	// case 3: // Crystal Switch lowers blocking bars (basement area)
+	// 	queueEventSave(action, loading);
+	// 	setSwitchState(switchTag, "Loading", loading);
+	// 	moveCeiling(tag1, 20, 908);
+	// 	moveCeiling(tag2, 20, 984);
+	// 	break;
+
+	// case 4: // Crystal Switch elevator (basement area)
+	// 	if(Toggle) {
+	// 		moveFloor(tag1, 20, 1184);
+	// 		setActorScore(switchTag, 4*35);
+	// 	} else {
+	// 		moveFloor(tag1, 20, 912);
+	// 	}
+	// 	break;
+
+	// case 5: // Knife Puzzle - Pedestal raises
+	// 	queueEventSave(action, loading);
+	// 	if(GetActorZ(0) < 960.0 && !(gateEventStates[GATE_PEDESTAL] & 1)) {
+	// 		gateEventStates[GATE_PEDESTAL] |= 1;
+	// 		moveFloor(tag1, 40, 1312);
+	// 	}
+	// 	break;
+
+	// case 6: // Knife Puzzle - Lower pedestal
+	// 	if(gateEventStates[GATE_PEDESTAL] & 2 && gateEventStates[GATE_PEDESTAL] & 4 && gateEventStates[GATE_PEDESTAL] & 8) {
+	// 		queueEventSave(action, loading);
+	// 		tagwait(tag1);
+	// 		moveFloor(tag1, 40, 1120);
+	// 		gateEventStates[GATE_PEDESTAL] |= 16;
+	// 		Delay(35);
+	// 		PrintBold(s:"PUZZLE IN THE CENTER HAS BEEN COMPLETED");
+	// 	}
+	// 	break;
+
+	// case 7: // Knife Puzzle - Torch Lit
+	// 	queueEventSave(action, loading);
+	// 	setSwitchState(switchTag, "Loading", loading);
+	// 	gateEventStates[GATE_PEDESTAL] |= 2;
+	// 	PrintBold(s:"ONE THIRD OF THE PUZZLE HAS BEEN SOLVED");
+	// 	ACS_NamedExecuteAlways("gateway_events", 0, 0, 6);
+	// 	break;
+
+	// case 8: // Knife Puzzle - Torch Lit
+	// 	queueEventSave(action, loading);
+	// 	setSwitchState(switchTag, "Loading", loading);
+	// 	gateEventStates[GATE_PEDESTAL] |= 4;
+	// 	PrintBold(s:"ONE THIRD OF THE PUZZLE HAS BEEN SOLVED");
+	// 	ACS_NamedExecuteAlways("gateway_events", 0, 0, 6);
+	// 	break;
+
+	// case 9: // Knife Puzzle - Torch Lit
+	// 	queueEventSave(action, loading);
+	// 	setSwitchState(switchTag, "Loading", loading);
+	// 	gateEventStates[GATE_PEDESTAL] |= 8;
+	// 	PrintBold(s:"ONE THIRD OF THE PUZZLE HAS BEEN SOLVED");
+	// 	ACS_NamedExecuteAlways("gateway_events", 0, 0, 6);
+	// 	break;
+
+	// case 10: // Four-switches puzzle - Top-right
+	// 	queueEventSave(action, loading);
+	// 	Floor_LowerToLowest(tag1, 64);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+
+	// 	SetActorState(tag2, "Fire");
+	// 	delay(3);
+	// 	SetActorState(tag3, "Fire");
+	// 	delay(3);
+	// 	SetActorState(tag4, "Fire");
+	// 	break;
+
+	// case 11: // Four-switches puzzle - Bottom-right
+	// 	queueEventSave(action, loading);
+	// 	moveCeiling(tag1, 64, 992);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+
+	// 	SetActorState(tag2, "Fire");
+	// 	delay(3);
+	// 	SetActorState(tag3, "Fire");
+	// 	delay(3);
+	// 	SetActorState(tag4, "Fire");
+	// 	break;
+
+	// case 12: // Four-switches puzzle - Bottom-left
+	// 	queueEventSave(action, loading);
+	// 	moveCeiling(tag1, 64, 992);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+
+	// 	SetActorState(tag2, "Fire");
+	// 	delay(3);
+	// 	SetActorState(tag3, "Fire");
+	// 	delay(3);
+	// 	SetActorState(tag4, "Fire");
+	// 	break;
+
+	// case 13: // Four-switches puzzle - top-left
+	// 	queueEventSave(action, loading);
+	// 	moveCeiling(tag1, 64, 992);
+	// 	moveCeiling(tag2, 20, 1096);
+	// 	moveCeiling(tag3, 20, 1168);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+	// 	break;
+
+	// case 14: // Statue Puzzle - Finish
+	// 	moveCeiling(tag1, 40, 1192);
+	// 	moveCeiling(tag2, 40, 1240);
+	// 	break;
+
+	// case 15: // Statue Puzzle - Part 1
+	// 	break;
+
+	// case 16: // Statue Puzzle - Part 2
+	// 	break;
+
+	// case 17: // Statue Puzzle - Part 3
+	// 	break;
+
+	// case 18: // Statue Puzzle - Part 4
+	// 	break;
+
+	// case 19: // Boss Defeated - Bars raise, door to Throne Room opens
+	// 	moveCeiling(tag1, 40, 1192);
+	// 	moveCeiling(tag2, 40, 1240);
+	// 	moveFloor(tag3, 40, 1200);
+	// 	break;
+
+	// case 20: // Floor collapse
+	// 	queueEventSave(action, loading);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+	// 	Floor_LowerToLowest(tag1, 64);
+	// 	Delay(35);
+	// 	Radius_Quake(5, 70, 0, 4, 0);
+	// 	Delay(20);
+	// 	moveFloor(tag1, 40, 800);
+	// 	moveFloor(tag2, 40, 800);
+	// 	moveFloor(tag3, 40, 896);
+	// 	break;
+
+	// case 21: // Raises bars + waterfall side entrance.
+	// 	queueEventSave(action, loading);
+	// 	Floor_LowerToLowest(tag1, 64);
+	// 	moveCeiling(tag2, 40, 808);
+	// 	moveCeiling(tag3, 40, 880);
+	// 	moveCeiling(tag4, 10, 1184);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+	// 	break;
+
+	// case 22: // Area access - Melting Point.
+	// 	break;
+
+	// case 23: // Mine Shaft.
+	// 	break;
+
+	// case 24: // Switch 1 for Block Puzzle.
+	// 	queueEventSave(action, loading);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+	// 	Floor_LowerToLowest(tag1, 64);
+	// 	Floor_LowerToLowest(tag2, 10);
+	// 	tagWait(tag2);
+	// 	ChangeFloor(tag2, "ANAWAT");
+	// 	break;
+
+	// case 25: // Switch 2 for Block Puzzle.
+	// 	queueEventSave(action, loading);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+	// 	Floor_LowerToLowest(tag1, 64);
+	// 	Floor_LowerToLowest(tag2, 10);
+	// 	tagWait(tag2);
+	// 	ChangeFloor(tag2, "ANAWAT");
+	// 	break;
+
+	// case 26: // Spear Traps. No script needed - Utilizing slot to test a tablet thing.
+	// 	queueEventSave(action, loading);
+	// 	Log(s:"[PLACEHOLDER] Executed event 26.");
+	// 	int startAngle = GetActorAngle(tag2);
+	// 	int rotationGoal = 0.5;
+	// 	int maxRotation = 8;
+	// 	SetUserVariable(tag1, "spc", 0);
+	// 	SetUserArray(tag1, "sargs", 0, 0);
+	// 	SetUserArray(tag1, "sargs", 0, 1);
+	// 	SetUserArray(tag1, "sargs", 0, 2);
+	// 	SetUserArray(tag1, "sargs", 0, 3);
+	// 	SetUserArray(tag1, "sargs", 0, 4);
+
+	// 	for(int i = 1; i <= maxRotation; i++) {
+	// 		int curAng = startAngle + FIxedMul(FixedDiv(i, maxRotation), rotationGoal);
+	// 		SetActorAngle(tag2, curAng);
+	// 		Delay(1);
+	// 	}
+
+	// 	SetUserVariable(tag1, "tabletNum", 1);
+	// 	break;
+
+	// case 27: // Big Fucking Laser.
+	// 	break;
+
+	// case 28: // Disable laser + raise rails.
+	// 	queueEventSave(action, loading);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+	// 	Floor_LowerToLowest(tag1, 64);
+	// 	moveCeiling(tag2, 40, 424);
+	// 	moveCeiling(tag3, 40, 504);
+	// 	SetActorState(tag1, "Deactivate");
+	// 	break;
+
+	// case 29: // Shop
+	// 	break;
+
+	// case 30: // Long dart trap
+	// 	queueEventSave(action, loading);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+	// 	moveFloor(tag1, 40, 320);
+	// 	SetActorState(tag2, "Fire");
+	// 	break;
+
+	// case 31: // Waterfall entrance to invisible maze puzzle
+	// 	queueEventSave(action, loading);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+	// 	Floor_LowerToLowest(tag1, 64);
+	// 	moveFloor(tag2, 40, 384);
+	// 	break;
+
+	// case 32: // Save room
+	// 	break;
+
+	// case 33: // Area Gate - Tower of Thirst
+	// 	break;
+
+	// case 34: // Looping elevator platform
+	// 	queueEventSave(action, loading);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+	// 	moveCeiling(tag1, 40, 1344);
+
+	// 	while(true) {
+	// 		Delay(70);
+	// 		moveCeiling(tag2, 20, 1512-616);
+	// 		moveFloor(tag2, 20, 1480-616);
+	// 		Delay(70);
+	// 		moveCeiling(tag2, 20, 1512);
+	// 		moveFloor(tag2, 20, 1480);
+	// 	}
+	// 	break;
+
+	// case 35: // Pit Teleporter
+	// 	bool ended = false;
+	// 	until(ended) {
+	// 		if(ThingCountSector(T_NONE, ActivatorTID(), tag1) <= 0) {
+	// 			ended = true;
+	// 		}
+
+	// 		if(GetActorZ(0) <= 736.0) {
+	// 			Teleport_NoFog(tag2, 0, 0);
+	// 		}
+	// 		delay(1);
+	// 	}
+	// 	break;
+
+	// case 36: // Raises Rails in Red Key Room
+	// 	queueEventSave(action, loading);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+	// 	Floor_LowerToLowest(tag1, 64);
+	// 	moveCeiling(tag2, 40, 1000);
+	// 	moveCeiling(tag3, 40, 1072);
+	// 	break;
+
+	// case 37: // Spear Trap
+	// 	queueEventSave(action, loading);
+	// 	Log(s:"[PLACEHOLDER] Executed event 37.");
+	// 	break;
+
+	// case 38: // Endgame Statue Puzzle
+	// 	break;
+
+	// case 39: // Endgame Statue Puzzle
+	// 	break;
+
+	// case 40: // Save Room
+	// 	break;
+
+	// case 41: // Crystal Switch temporary platform raise
+	// 	if(Toggle) {
+	// 		moveFloor(tag1, 20, 896);
+	// 		setActorScore(switchTag, 700);
+	// 	} else {
+	// 		moveFloor(tag1, 20, 712);
+	// 	}
+	// 	break;
+
+	// case 42: // Miniboss begin - Lower rails and spawn boss.
+	// 	if(gateEventStates[GATE_MINIBOSS] == 0) {
+	// 		PrintBold(s:"GIANT SPIDER AAAAAAAAAAH!!!!");
+	// 		gateEventStates[GATE_MINIBOSS] = 1;
+	// 		moveCeiling(tag1, 40, 1024);
+	// 		moveCeiling(tag2, 40, 1024);
+	// 	}
+	// 	break;
+
+	// case 43: // Miniboss end
+	// 	queueEventSave(action, loading);
+	// 	if(gateEventStates[GATE_MINIBOSS] == 1) {
+	// 		PrintBold(s:"SPIDER DEAD! :)");
+	// 		gateEventStates[GATE_MINIBOSS] = 2;
+	// 		moveCeiling(tag1, 40, 1128);
+	// 		moveCeiling(tag2, 40, 1208);
+	// 		moveFloor(tag3, 64, 1056);
+	// 	}
+	// 	break;
+
+	// case 44: // While Floor switch is pressed, raise a platform.
+	// 	if(Toggle) {
+	// 		moveFloor(tag1, 64, 1088);
+	// 		moveFloor(tag2, 96, 1184);
+	// 	} else {
+	// 		moveFloor(tag1, 64, 1096);
+	// 		moveFloor(tag2, 96, 1040);
+	// 	}
+	// 	break;
+
+	// case 45: // Area Gate - Queen's Study
+	// 	break;
+
+	// case 46: // Crystal Switch raises elevator. Lowers after delay.
+	// 	if(Toggle) {
+	// 		moveFloor(tag1, 64, 1120);
+	// 		setActorScore(switchTag, 70);
+	// 	} else {
+	// 		moveFloor(tag1, 64, 704);
+	// 	}
+	// 	break;
+
+	// case 47: // Hallway Darts 1
+	// 	if(Toggle && !getUserVariable(switchTag, "bEndState")) {
+	// 		Floor_LowerToLowest(tag1, 64);
+	// 		SetUserVariable(switchTag, "bEndState", true);
+	// 		SetActorState(tag2, "Fire");
+	// 	}
+	// 	break;
+
+	// case 48: // Hallway Darts 2
+	// 	if(Toggle && !getUserVariable(switchTag, "bEndState")) {
+	// 		Floor_LowerToLowest(tag1, 64);
+	// 		SetUserVariable(switchTag, "bEndState", true);
+	// 		SetActorState(tag2, "Fire");
+	// 	}
+	// 	break;
+
+	// case 49: // Crystal Switch Raises platform, lowers after a moment.
+	// 	if(Toggle) {
+	// 		moveFloor(tag1, 40, 1184);
+	// 		setActorScore(switchTag, 60);
+	// 	} else {
+	// 		moveFloor(tag1, 40, 1000);
+	// 	}
+	// 	break;
+
+	// case 50: // Crystal Switch Raises platform, lowers after a moment.
+	// 	if(Toggle) {
+	// 		moveFloor(tag1, 40, 1184);
+	// 		setActorScore(switchTag, 60);
+	// 	} else {
+	// 		moveFloor(tag1, 40, 1000);
+	// 	}
+	// 	break;
+
+	// case 51: // Save Room
+	// 	break;
+
+	// case 52: // Floor Switch raises pillar (Permanent)
+	// 	queueEventSave(action, loading);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+	// 	Floor_LowerToLowest(tag1, 64);
+	// 	moveFloor(tag2, 40, 1088);
+	// 	break;
+
+	// case 53: // Mine Shaft
+	// 	break;
+
+	// case 54: // Area Gate - King's Dungeon
+	// 	break;
+
+	// case 55: // Area Gate - Throne Room
+	// 	break;
+
+	// case 56: // Crystal Switch raises elevator. Lowers after a moment.
+	// 	if(Toggle) {
+	// 		moveFloor(tag1, 40, 1280);
+	// 		setActorScore(switchTag, 140);
+	// 	} else {
+	// 		moveFloor(tag1, 40, 992);
+	// 	}
+	// 	break;
+
+	// case 57: // Waterfall Actors
+	// 	break;
+
+	// case 58: // Waterfall Actors
+	// 	break;
+
+	// case 59: // Waterfall Actors
+	// 	break;
+
+	// case 60: // Jars of coins
+	// case 62:
+	// case 64:
+	// case 66:
+	// case 68:
+	// 	break;
+	// case 61:
+	// case 63:
+	// case 65:
+	// case 67:
+	// case 69:
+	// 	spawnCoins(switchTag, tag2, 20, true);
+	// 	break;
+
+	// case 70:
+	// 	moveCeiling(tag1, 40, 992);
+	// 	moveCeiling(tag2, 40, 992);
+	// 	break;
+	}
+}
+
+script "study_return" (void)
+{
+
+}
