@@ -218,8 +218,8 @@ class AREAGLoadMenu : ZFGenericMenu
     static const String[] mapNames = {
         "OUTSKIRTS",
         "GRAND GATEWAY",
-        "LOST IMPACT",
         "QUEEN'S STUDY",
+        "LOST IMPACT",
         "TOWER OF THIRST",
         "KING'S DUNGEON",
         "ECLIPSE ENGINE",
