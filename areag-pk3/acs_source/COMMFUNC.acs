@@ -1,3 +1,7 @@
+// common definitions
+
+#define HP_SEG_MAX 25
+
 function int iterateTowards(int base, int amount, int dest)
 {
 	{

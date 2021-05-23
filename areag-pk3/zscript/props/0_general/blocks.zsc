@@ -27,6 +27,9 @@ class AREAGPushBlock : BasicActionProp
 
     override void BasicInit() {
         bPushActive = false;
+        if(GetCvarBool("db_enginepushable")) {
+            bPUSHABLE = true;
+        }
     }
 
     override void BasicActivate(Actor activator) {

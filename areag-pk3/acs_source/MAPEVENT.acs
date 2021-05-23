@@ -20,5 +20,4 @@ script "map_event_open" OPEN
 #include "events/0_OUTSKI.acs"
 #include "events/1_GATE.acs"
 #include "events/2_STUDY.acs"
-
-// - Some bug with the doors that start out stuck for... some reason?
+#include "events/3_IMPACT.acs"

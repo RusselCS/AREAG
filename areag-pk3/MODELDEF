@@ -80,6 +80,58 @@ Model BreakableWall
    FrameIndex BWOS B 0 0
 }
 
+Model BreakableWall_Impact_1
+{
+   Path "models/Impact"
+   Model 0 "M_WBEM3.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+
+   FrameIndex BWOS A 0 0
+}
+
+Model BreakableWall_Impact_2
+{
+   Path "models/Impact"
+   Model 0 "M_WBEM4.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+
+   FrameIndex BWOS A 0 0
+}
+
+Model BreakableWall_Impact_3
+{
+   Path "models/Impact"
+   Model 0 "M_WBEM5.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+
+   FrameIndex BWOS A 0 0
+}
+
+Model BreakableWall_Impact_4
+{
+   Path "models/Impact"
+   Model 0 "M_RWAL4.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 48.0 0.0
+   AngleOffset 90
+
+   FrameIndex BWOS A 0 0
+}
+
+Model BreakableWall_Impact_5
+{
+   Path "models/Impact"
+   Model 0 "M_RWAL5.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 48.0 0.0
+   AngleOffset 90
+
+   FrameIndex BWOS A 0 0
+}
+
 Model TabletModel
 {
    Path "models"

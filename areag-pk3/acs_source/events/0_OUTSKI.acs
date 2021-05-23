@@ -2,7 +2,7 @@
 ||                          OUTSKIRTS                         ||
 \*============================================================*/
 
-script "outskirts_events" (int toggle, int action, int unused)
+script "outskirts_events" (int toggle, int action, int loadOverride)
 {
 	bool loading = false;
 	
@@ -17,6 +17,12 @@ script "outskirts_events" (int toggle, int action, int unused)
 			loading = true;
 		}
 	}
+
+	if(loadOverride == -1) {
+        loading = false;
+    } else if(loadOverride == 1) {
+        loading = true;
+    }
 
 	int switchTag = 100+action;
 	int tag1 = 100+action;

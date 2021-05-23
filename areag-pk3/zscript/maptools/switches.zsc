@@ -53,7 +53,9 @@ class ZSCSwitchCrystal : BasicActor
 
     void switchOff() {
         bSwitchOn = false;
-        A_StartSound("misc/switchoff", CHAN_BODY, 0, 1.0, ATTN_NONE);
+        if(score > 10) {
+            A_StartSound("misc/switchoff", CHAN_BODY, 0, 1.0, ATTN_NONE);
+        }
         runSpecial();
     }
 

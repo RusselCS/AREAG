@@ -1,0 +1,890 @@
+/*============================================================*\
+||                   L O S T   I M P A C T                    ||
+\*============================================================*/
+
+
+/////////////////////////
+// DOOR IDS:           //
+// 0 - GATEWAY         //
+/////////////////////////
+
+// TAG HELP
+// Event number format: #XX
+// # - Tag number affected by current event
+// XX - Event Number
+
+int brokenFireballPillars;
+int inLavaEvent;
+int bootsMinibossState;
+int dynamiteMinibossState;
+bool railMode1;
+bool railMode2;
+bool railMode3;
+
+int woodBarState1;
+int woodBarState2;
+int woodBarState3;
+int woodBarState4;
+int woodBarState5;
+int woodBarState6;
+
+script "impact_events" (int toggle, int action, int loadOverride)
+{
+	bool loading = false;
+	
+	if(action == 0) {
+		if(ActivatorTID() >= 1000) {
+			terminate;
+		} else {
+			action = ActivatorTID()-100;
+		}
+	} else {
+		if(ActivatorTID() < 1000) {
+			loading = true;
+		}
+	}
+
+	if(loadOverride == -1) {
+        loading = false;
+    } else if(loadOverride == 1) {
+        loading = true;
+    }
+
+	int switchTag = 100+action;
+	int tag1 = 100+action;
+	int tag2 = 200+action;
+	int tag3 = 300+action;
+	int tag4 = 400+action;
+	int tag5 = 500+action;
+	int tag6 = 600+action;
+	int tag7 = 700+action;
+	int tag8 = 800+action;
+	int tag9 = 900+action;
+    
+    int i;
+
+    int aTid = ActivatorTID();
+
+	int moveTimer;
+
+	switch(action)
+	{
+	case 1: // Raised platform by Gateway entrance
+		queueEventSave(action, loading);
+	 	setSwitchState(switchTag, "Loading", loading);
+        moveFloor(tag1, 16, SECTOR_SPEED_MEDIUM);
+		break;
+    
+    case 2: // Fireball pillar puzzle
+    case 3:
+    case 4:
+    case 5:
+        brokenFireballPillars++;
+		ACS_NamedExecuteAlways("impact_events", 0, 0, 6, -1);
+        break;
+
+    case 6: // all fireball pillars broken, raise the door.
+        if(loading || brokenFireballPillars == 4) {
+            brokenFireballPillars = 4;
+            moveCeiling(tag1, 0, SECTOR_SPEED_MEDIUM);
+		    queueEventSave(action, loading);
+	 	    setSwitchState(102, "Loading", loading);
+            setSwitchState(103, "Loading", loading);
+            setSwitchState(104, "Loading", loading);
+            setSwitchState(105, "Loading", loading);
+        }
+        break;
+    
+    case 7: // [8] Music tablet. Case reserved for whatever that will do.
+        break;
+
+    case 8: // [TODO] [9] Reserving slots for breakable structures.
+    case 9: // [10]
+        queueEventSave(action, loading);
+		Thing_Destroy(switchTag);
+        break;
+
+    case 10: // [11] Two sets breakable pillars in the room with the kitty pool.
+    case 11:
+		woodBarState3++;
+        queueEventSave(action, loading);
+		Thing_Destroy(switchTag);
+		ACS_NamedExecuteAlways("impact_events", 0, 0, 12, -1);
+        break;
+    case 12:
+		if(loading || woodBarState3 == 2) {
+			moveTimer = 42;
+        	queueEventSave(action, loading);
+			Radius_Quake2(tag1, 3, 35 * 3, 0, 512, "");
+			Delay(35 * 3);
+			Radius_Quake2(tag1, 5, 50, 0, 512, "");
+			moveFloor(tag2, -144, SECTOR_SPEED_SLOW);
+			moveCeiling(tag2, -80, SECTOR_SPEED_SLOW);
+			// Multiplayer killer
+			while(GetSectorFloorZ(tag2, 0, 0) - GetSectorFloorZ(tag3, 0, 0) > 6 * GetActorProperty(1000, APROP_Height) / 5 ) {
+				moveTimer--;
+				delay(1);
+			}
+			Sector_SetDamage(tag3, 255, MOD_CRUSH);
+			Delay(moveTimer);
+			Radius_Quake2(tag1, 9, 8, 0, 1024, "");
+		}
+        break;
+
+    case 13: // [11] Can't fill these in until I make breakable structures actually perform actions
+    case 14:
+		woodBarState4++;
+        queueEventSave(action, loading);
+		Thing_Destroy(switchTag);
+		ACS_NamedExecuteAlways("impact_events", 0, 0, 15, -1);
+        break;
+    case 15:
+		if(loading || woodBarState4 == 2) {
+			moveTimer = 42;
+        	queueEventSave(action, loading);
+			Radius_Quake2(tag1, 3, 35 * 3, 0, 512, "");
+			Delay(35 * 3);
+			Radius_Quake2(tag1, 5, 50, 0, 512, "");
+			moveFloor(tag2, -144, SECTOR_SPEED_SLOW);
+			moveCeiling(tag2, -80, SECTOR_SPEED_SLOW);
+			// Multiplayer killer
+			while(GetSectorFloorZ(tag2, 0, 0) - GetSectorFloorZ(tag3, 0, 0) > 6 * GetActorProperty(1000, APROP_Height) / 5 ) {
+				moveTimer--;
+				delay(1);
+			}
+			Sector_SetDamage(tag3, 255, MOD_CRUSH);
+			Delay(moveTimer);
+			Radius_Quake2(tag1, 9, 8, 0, 1024, "");
+		}
+        break;
+
+    // [13] doesn't need an event, but it needs to be noted.
+
+    case 16: // [15] Breakable wall
+        queueEventSave(action, loading);
+		Thing_Destroy(switchTag);
+        break;
+
+    case 17: // [16] Damaging liquid puzzle.
+        if(inLavaEvent == 0) {
+            inLavaEvent = 1;
+            int startingHealth = getActorHealth(aTid);
+            while(ThingCountSector(T_NONE, aTid, tag1) && inLavaEvent == 1) {
+                if(getActorHealth(aTid) <= HP_SEG_MAX && getActorHealth(aTid) < startingHealth) {
+                    inLavaEvent = 2;
+                }
+                delay(1);
+            }
+
+            if(loading || inLavaEvent == 2) {
+                moveCeiling(tag2, -480, SECTOR_SPEED_MEDIUM);
+		        queueEventSave(action, loading);
+            } else {
+                inLavaEvent = 0;
+            }
+        }
+        break;
+
+    case 18: // [17] Miniboss begin
+        if(bootsMinibossState == 0) {
+            bootsMinibossState = 1;
+            moveFloor(tag1, -480, SECTOR_SPEED_MEDIUM);
+        }
+        break;
+    case 19: // [17] Miniboss end
+        bootsMinibossState = 2;
+        queueEventSave(action, loading);
+        moveFloor(tag1, -704, SECTOR_SPEED_MEDIUM);
+        break;
+
+    case 20: // [17] Music puzzle placeholder for later
+        break;
+
+    case 21: // [TODO] [18] Breakable wall
+        queueEventSave(action, loading);
+		Thing_Destroy(switchTag);
+        break;
+
+    case 22: // [19] Floor switch to open door rails
+        queueEventSave(action, loading);
+		SetUserVariable(switchTag, "bEndState", true);
+		Floor_LowerToLowest(tag1, SECTOR_SPEED_FAST);
+        Floor_LowerToLowest(tag2, SECTOR_SPEED_FAST);
+        break;
+
+    case 23: // [22] Can't fill these in until I make destructible walls execute actions
+    case 24:
+    case 25:
+    case 26:
+		woodBarState1++;
+        queueEventSave(action, loading);
+		Thing_Destroy(switchTag);
+		ACS_NamedExecuteAlways("impact_events", 0, 0, 27, -1);
+        break;
+    case 27:
+		if(loading || woodBarState1 == 4) {
+			moveTimer = 42;
+        	queueEventSave(action, loading);
+			Radius_Quake2(tag1, 3, 35 * 3, 0, 512, "");
+			moveCeiling(tag2, 160, SECTOR_SPEED_MAX);
+			Delay(35 * 3);
+			Radius_Quake2(tag1, 5, 50, 0, 512, "");
+			moveFloor(tag2, -960, SECTOR_SPEED_SLOW);
+			moveCeiling(tag2, 32, SECTOR_SPEED_SLOW);
+			// Multiplayer killer
+			while(GetSectorFloorZ(tag2, 0, 0) - GetSectorFloorZ(tag3, 0, 0) > 6 * GetActorProperty(1000, APROP_Height) / 5 ) {
+				moveTimer--;
+				delay(1);
+			}
+			Sector_SetDamage(tag3, 255, MOD_CRUSH);
+			Delay(moveTimer);
+			Radius_Quake2(tag1, 9, 8, 0, 1024, "");
+		}
+        break;
+
+    case 28: // [TODO] [23] same as [22]
+    case 29:
+    case 30:
+    case 31:
+		woodBarState2++;
+        queueEventSave(action, loading);
+		Thing_Destroy(switchTag);
+		ACS_NamedExecuteAlways("impact_events", 0, 0, 32, -1);
+        break;
+    case 32:
+		if(loading || woodBarState2 == 4) {
+			moveTimer = 53;
+        	queueEventSave(action, loading);
+			Radius_Quake2(tag1, 3, 35 * 3, 0, 512, "");
+			moveCeiling(tag2, 192, SECTOR_SPEED_MAX);
+			Delay(35 * 3);
+			Radius_Quake2(tag1, 5, moveTimer, 0, 512, "");
+			moveFloor(tag2, -960, SECTOR_SPEED_SLOW);
+			moveCeiling(tag2, 32, SECTOR_SPEED_SLOW);
+			// Multiplayer killer
+			while(GetSectorFloorZ(tag2, 0, 0) - GetSectorFloorZ(tag3, 0, 0) > 6 * GetActorProperty(1000, APROP_Height) / 5 ) {
+				moveTimer--;
+				delay(1);
+			}
+			Sector_SetDamage(tag3, 255, MOD_CRUSH);
+			delay(moveTimer);
+			Radius_Quake2(tag1, 9, 8, 0, 1024, "");
+		}
+        break;
+
+    case 33: // [24] Password console
+        // [TODO] Implement a password console
+		queueEventSave(action, loading);
+		setSwitchState(switchTag, "Loading", loading);
+        moveFloor(tag2, 192, SECTOR_SPEED_SLOW);
+        moveCeiling(tag3, 96, SECTOR_SPEED_SLOW);
+        tagWait(tag2);
+        tagWait(tag3);
+        Delay(2);
+        moveFloor(tag2, 64, SECTOR_SPEED_MEDIUM);
+        moveCeiling(tag3, 224, SECTOR_SPEED_MEDIUM);
+        tagWait(tag2);
+        tagWait(tag3);
+
+        moveFloor(tag2, 40, SECTOR_SPEED_FAST);
+        moveCeiling(tag3, 248, SECTOR_SPEED_FAST);
+
+        moveFloor(tag4, 40, SECTOR_SPEED_FAST);
+        moveCeiling(tag4, 248, SECTOR_SPEED_FAST);
+        break;
+
+    case 34: // [25] Endgame Statue Puzzle
+        break;
+
+    case 35: // [25] Unlock Boss Door
+        break;
+
+    case 36: // [26] Enable exit to Realm of Shadows
+        break;
+    
+    case 37: // [29] Dynamite Miniboss spawns
+        if(dynamiteMinibossState == 0) {
+            dynamiteMinibossState = 1;
+            moveCeiling(tag1, -512, SECTOR_SPEED_FAST);
+            moveCeiling(tag2, -256, SECTOR_SPEED_FAST);
+        }
+        break;
+
+    case 38: // [29] Dynamite Miniboss defeated
+        dynamiteMinibossState = 2;
+		queueEventSave(action, loading);
+        moveCeiling(tag1, -416, SECTOR_SPEED_FAST);
+        moveCeiling(tag2, -160, SECTOR_SPEED_FAST);
+        moveFloor(tag3, -256, SECTOR_SPEED_MEDIUM);
+        tagWait(tag3);
+        moveFloor(tag4, -416, SECTOR_SPEED_MEDIUM);
+        moveFloor(tag5, -408, SECTOR_SPEED_MEDIUM);
+        break;
+
+    case 39: // [30] Temporary elevator
+        moveFloor(tag1, 128, SECTOR_SPEED_MEDIUM);
+        tagWait(tag1);
+        while(ThingCountSector(T_NONE, aTid, tag1) > 0) {
+            delay(1);
+        }
+        delay(10);
+        moveFloor(tag1, -64, SECTOR_SPEED_MEDIUM);
+        break;
+
+    case 40: // [TODO] [33] Breakable walls
+    case 41:
+        queueEventSave(action, loading);
+		Thing_Destroy(switchTag);
+        break;
+
+    case 60: // [TODO] [35] Breakable walls
+    case 42:
+    case 43:
+    case 44:
+        queueEventSave(action, loading);
+		Thing_Destroy(switchTag);
+        break;
+
+    case 45: // [35] Toggle rails
+        if(toggle) {
+            railMode1 = !railMode1;
+            if(railMode1) {
+                moveCeiling(tag1, -56, SECTOR_SPEED_MAX);
+                moveFloor(tag1, -64, SECTOR_SPEED_MAX);
+                moveFloor(tag2, -328, SECTOR_SPEED_MAX);
+                moveCeiling(tag2, -320, SECTOR_SPEED_MAX);
+            } else {
+                moveCeiling(tag2, -88, SECTOR_SPEED_MAX);
+                moveFloor(tag2, -96, SECTOR_SPEED_MAX);
+                moveFloor(tag1, -328, SECTOR_SPEED_MAX);
+                moveCeiling(tag1, -320, SECTOR_SPEED_MAX);
+            }
+        }
+        break;
+
+    case 46: // [37] Temperature puzzle
+		queueEventSave(action, loading);
+		setSwitchState(switchTag, "Loading", loading);
+		Floor_LowerToLowest(tag1, SECTOR_SPEED_FAST);
+        break;
+
+    case 47: // [39] Breakable pillars
+    case 48:
+		woodBarState5++;
+        queueEventSave(action, loading);
+		Thing_Destroy(switchTag);
+		ACS_NamedExecuteAlways("impact_events", 0, 0, 49, -1);
+        break;
+    case 49:
+		if(loading || woodBarState5 == 2) {
+			moveTimer = 42;
+        	queueEventSave(action, loading);
+			Radius_Quake2(tag1, 3, 35 * 3, 0, 512, "");
+			Delay(35 * 3);
+			Radius_Quake2(tag1, 5, moveTimer, 0, 512, "");
+			moveFloor(tag2, -224, SECTOR_SPEED_SLOW);
+			moveCeiling(tag2, -192, SECTOR_SPEED_SLOW);
+			// Multiplayer killer
+			while(GetSectorFloorZ(tag2, 0, 0) - GetSectorFloorZ(tag3, 0, 0) > 6 * GetActorProperty(1000, APROP_Height) / 5 ) {
+				moveTimer--;
+				delay(1);
+			}
+			Sector_SetDamage(tag3, 255, MOD_CRUSH);
+			delay(moveTimer);
+			Radius_Quake2(tag1, 9, 8, 0, 1024, "");
+		}
+        break;
+
+    case 50: // [40] Breakable wall saves
+    case 51:
+    case 52:
+    case 53:
+    case 54:
+    case 55:
+    case 56:
+        queueEventSave(action, loading);
+		Thing_Destroy(switchTag);
+        break;
+
+    case 57: // [41] Floor switch removes bars
+        queueEventSave(action, loading);
+		SetUserVariable(switchTag, "bEndState", true);
+		Floor_LowerToLowest(tag1, SECTOR_SPEED_FAST);
+        Floor_LowerToLowest(tag2, SECTOR_SPEED_FAST);
+        break;
+
+    case 58: // [42] Toggle rails
+        if(toggle) {
+            railMode2 = !railMode2;
+            if(railMode2) {
+                moveCeiling(tag1, -216, SECTOR_SPEED_MAX);
+                moveFloor(tag1, -224, SECTOR_SPEED_MAX);
+                moveFloor(tag2, -552, SECTOR_SPEED_MAX);
+                moveCeiling(tag2, -544, SECTOR_SPEED_MAX);
+            } else {
+                moveCeiling(tag2, -216, SECTOR_SPEED_MAX);
+                moveFloor(tag2, -224, SECTOR_SPEED_MAX);
+                moveFloor(tag1, -552, SECTOR_SPEED_MAX);
+                moveCeiling(tag1, -544, SECTOR_SPEED_MAX);
+            }
+        }
+        break;
+
+    case 59: // [43] Toggle rails
+        if(toggle) {
+            railMode3 = !railMode3;
+            if(railMode3) {
+                moveCeiling(tag1, 72, SECTOR_SPEED_MAX);
+                moveFloor(tag1, 64, SECTOR_SPEED_MAX);
+                moveFloor(tag2, -424, SECTOR_SPEED_MAX);
+                moveCeiling(tag2, -416, SECTOR_SPEED_MAX);
+            } else {
+                moveCeiling(tag2, 72, SECTOR_SPEED_MAX);
+                moveFloor(tag2, 64, SECTOR_SPEED_MAX);
+                moveFloor(tag1, -424, SECTOR_SPEED_MAX);
+                moveCeiling(tag1, -416, SECTOR_SPEED_MAX);
+            }
+        }
+        break;
+
+    case 60: // [44] Floor switch ladder
+        queueEventSave(action, loading);
+		SetUserVariable(switchTag, "bEndState", true);
+	 	Floor_LowerToLowest(tag1, 64);
+        moveFloor(tag2, 64, SECTOR_SPEED_MEDIUM);
+        break;
+
+	// case 2: // Jammed Door 2
+	// 	queueEventSave(action, loading);
+	// 	Floor_LowerToLowest(tag1, 64);
+	// 	moveCeiling(tag2, 10, 992);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+	// 	SetUserVariable(tag2, "bJammedDoor", false);
+	// 	break;
+
+	// case 3: // Crystal Switch lowers blocking bars (basement area)
+	// 	queueEventSave(action, loading);
+	// 	setSwitchState(switchTag, "Loading", loading);
+	// 	moveCeiling(tag1, 20, 908);
+	// 	moveCeiling(tag2, 20, 984);
+	// 	break;
+
+	// case 4: // Crystal Switch elevator (basement area)
+	// 	if(Toggle) {
+	// 		moveFloor(tag1, 20, 1184);
+	// 		setActorScore(switchTag, 4*35);
+	// 	} else {
+	// 		moveFloor(tag1, 20, 912);
+	// 	}
+	// 	break;
+
+	// case 5: // Knife Puzzle - Pedestal raises
+	// 	queueEventSave(action, loading);
+	// 	if(GetActorZ(0) < 960.0 && !(gateEventStates[GATE_PEDESTAL] & 1)) {
+	// 		gateEventStates[GATE_PEDESTAL] |= 1;
+	// 		moveFloor(tag1, 40, 1312);
+	// 	}
+	// 	break;
+
+	// case 6: // Knife Puzzle - Lower pedestal
+	// 	if(gateEventStates[GATE_PEDESTAL] & 2 && gateEventStates[GATE_PEDESTAL] & 4 && gateEventStates[GATE_PEDESTAL] & 8) {
+	// 		queueEventSave(action, loading);
+	// 		tagwait(tag1);
+	// 		moveFloor(tag1, 40, 1120);
+	// 		gateEventStates[GATE_PEDESTAL] |= 16;
+	// 		Delay(35);
+	// 		PrintBold(s:"PUZZLE IN THE CENTER HAS BEEN COMPLETED");
+	// 	}
+	// 	break;
+
+	// case 7: // Knife Puzzle - Torch Lit
+	// 	queueEventSave(action, loading);
+	// 	setSwitchState(switchTag, "Loading", loading);
+	// 	gateEventStates[GATE_PEDESTAL] |= 2;
+	// 	PrintBold(s:"ONE THIRD OF THE PUZZLE HAS BEEN SOLVED");
+	// 	ACS_NamedExecuteAlways("gateway_events", 0, 0, 6);
+	// 	break;
+
+	// case 8: // Knife Puzzle - Torch Lit
+	// 	queueEventSave(action, loading);
+	// 	setSwitchState(switchTag, "Loading", loading);
+	// 	gateEventStates[GATE_PEDESTAL] |= 4;
+	// 	PrintBold(s:"ONE THIRD OF THE PUZZLE HAS BEEN SOLVED");
+	// 	ACS_NamedExecuteAlways("gateway_events", 0, 0, 6);
+	// 	break;
+
+	// case 9: // Knife Puzzle - Torch Lit
+	// 	queueEventSave(action, loading);
+	// 	setSwitchState(switchTag, "Loading", loading);
+	// 	gateEventStates[GATE_PEDESTAL] |= 8;
+	// 	PrintBold(s:"ONE THIRD OF THE PUZZLE HAS BEEN SOLVED");
+	// 	ACS_NamedExecuteAlways("gateway_events", 0, 0, 6);
+	// 	break;
+
+	// case 10: // Four-switches puzzle - Top-right
+	// 	queueEventSave(action, loading);
+	// 	Floor_LowerToLowest(tag1, 64);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+
+	// 	SetActorState(tag2, "Fire");
+	// 	delay(3);
+	// 	SetActorState(tag3, "Fire");
+	// 	delay(3);
+	// 	SetActorState(tag4, "Fire");
+	// 	break;
+
+	// case 11: // Four-switches puzzle - Bottom-right
+	// 	queueEventSave(action, loading);
+	// 	moveCeiling(tag1, 64, 992);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+
+	// 	SetActorState(tag2, "Fire");
+	// 	delay(3);
+	// 	SetActorState(tag3, "Fire");
+	// 	delay(3);
+	// 	SetActorState(tag4, "Fire");
+	// 	break;
+
+	// case 12: // Four-switches puzzle - Bottom-left
+	// 	queueEventSave(action, loading);
+	// 	moveCeiling(tag1, 64, 992);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+
+	// 	SetActorState(tag2, "Fire");
+	// 	delay(3);
+	// 	SetActorState(tag3, "Fire");
+	// 	delay(3);
+	// 	SetActorState(tag4, "Fire");
+	// 	break;
+
+	// case 13: // Four-switches puzzle - top-left
+	// 	queueEventSave(action, loading);
+	// 	moveCeiling(tag1, 64, 992);
+	// 	moveCeiling(tag2, 20, 1096);
+	// 	moveCeiling(tag3, 20, 1168);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+	// 	break;
+
+	// case 14: // Statue Puzzle - Finish
+	// 	moveCeiling(tag1, 40, 1192);
+	// 	moveCeiling(tag2, 40, 1240);
+	// 	break;
+
+	// case 15: // Statue Puzzle - Part 1
+	// 	break;
+
+	// case 16: // Statue Puzzle - Part 2
+	// 	break;
+
+	// case 17: // Statue Puzzle - Part 3
+	// 	break;
+
+	// case 18: // Statue Puzzle - Part 4
+	// 	break;
+
+	// case 19: // Boss Defeated - Bars raise, door to Throne Room opens
+	// 	moveCeiling(tag1, 40, 1192);
+	// 	moveCeiling(tag2, 40, 1240);
+	// 	moveFloor(tag3, 40, 1200);
+	// 	break;
+
+	// case 20: // Floor collapse
+	// 	queueEventSave(action, loading);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+	// 	Floor_LowerToLowest(tag1, 64);
+	// 	Delay(35);
+	// 	Radius_Quake(5, 70, 0, 4, 0);
+	// 	Delay(20);
+	// 	moveFloor(tag1, 40, 800);
+	// 	moveFloor(tag2, 40, 800);
+	// 	moveFloor(tag3, 40, 896);
+	// 	break;
+
+	// case 21: // Raises bars + waterfall side entrance.
+	// 	queueEventSave(action, loading);
+	// 	Floor_LowerToLowest(tag1, 64);
+	// 	moveCeiling(tag2, 40, 808);
+	// 	moveCeiling(tag3, 40, 880);
+	// 	moveCeiling(tag4, 10, 1184);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+	// 	break;
+
+	// case 22: // Area access - Melting Point.
+	// 	break;
+
+	// case 23: // Mine Shaft.
+	// 	break;
+
+	// case 24: // Switch 1 for Block Puzzle.
+	// 	queueEventSave(action, loading);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+	// 	Floor_LowerToLowest(tag1, 64);
+	// 	Floor_LowerToLowest(tag2, 10);
+	// 	tagWait(tag2);
+	// 	ChangeFloor(tag2, "ANAWAT");
+	// 	break;
+
+	// case 25: // Switch 2 for Block Puzzle.
+	// 	queueEventSave(action, loading);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+	// 	Floor_LowerToLowest(tag1, 64);
+	// 	Floor_LowerToLowest(tag2, 10);
+	// 	tagWait(tag2);
+	// 	ChangeFloor(tag2, "ANAWAT");
+	// 	break;
+
+	// case 26: // Spear Traps. No script needed - Utilizing slot to test a tablet thing.
+	// 	queueEventSave(action, loading);
+	// 	Log(s:"[PLACEHOLDER] Executed event 26.");
+	// 	int startAngle = GetActorAngle(tag2);
+	// 	int rotationGoal = 0.5;
+	// 	int maxRotation = 8;
+	// 	SetUserVariable(tag1, "spc", 0);
+	// 	SetUserArray(tag1, "sargs", 0, 0);
+	// 	SetUserArray(tag1, "sargs", 0, 1);
+	// 	SetUserArray(tag1, "sargs", 0, 2);
+	// 	SetUserArray(tag1, "sargs", 0, 3);
+	// 	SetUserArray(tag1, "sargs", 0, 4);
+
+	// 	for(int i = 1; i <= maxRotation; i++) {
+	// 		int curAng = startAngle + FIxedMul(FixedDiv(i, maxRotation), rotationGoal);
+	// 		SetActorAngle(tag2, curAng);
+	// 		Delay(1);
+	// 	}
+
+	// 	SetUserVariable(tag1, "tabletNum", 1);
+	// 	break;
+
+	// case 27: // Big Fucking Laser.
+	// 	break;
+
+	// case 28: // Disable laser + raise rails.
+	// 	queueEventSave(action, loading);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+	// 	Floor_LowerToLowest(tag1, 64);
+	// 	moveCeiling(tag2, 40, 424);
+	// 	moveCeiling(tag3, 40, 504);
+	// 	SetActorState(tag1, "Deactivate");
+	// 	break;
+
+	// case 29: // Shop
+	// 	break;
+
+	// case 30: // Long dart trap
+	// 	queueEventSave(action, loading);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+	// 	moveFloor(tag1, 40, 320);
+	// 	SetActorState(tag2, "Fire");
+	// 	break;
+
+	// case 31: // Waterfall entrance to invisible maze puzzle
+	// 	queueEventSave(action, loading);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+	// 	Floor_LowerToLowest(tag1, 64);
+	// 	moveFloor(tag2, 40, 384);
+	// 	break;
+
+	// case 32: // Save room
+	// 	break;
+
+	// case 33: // Area Gate - Tower of Thirst
+	// 	break;
+
+	// case 34: // Looping elevator platform
+	// 	queueEventSave(action, loading);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+	// 	moveCeiling(tag1, 40, 1344);
+
+	// 	while(true) {
+	// 		Delay(70);
+	// 		moveCeiling(tag2, 20, 1512-616);
+	// 		moveFloor(tag2, 20, 1480-616);
+	// 		Delay(70);
+	// 		moveCeiling(tag2, 20, 1512);
+	// 		moveFloor(tag2, 20, 1480);
+	// 	}
+	// 	break;
+
+	// case 35: // Pit Teleporter
+	// 	bool ended = false;
+	// 	until(ended) {
+	// 		if(ThingCountSector(T_NONE, ActivatorTID(), tag1) <= 0) {
+	// 			ended = true;
+	// 		}
+
+	// 		if(GetActorZ(0) <= 736.0) {
+	// 			Teleport_NoFog(tag2, 0, 0);
+	// 		}
+	// 		delay(1);
+	// 	}
+	// 	break;
+
+	// case 36: // Raises Rails in Red Key Room
+	// 	queueEventSave(action, loading);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+	// 	Floor_LowerToLowest(tag1, 64);
+	// 	moveCeiling(tag2, 40, 1000);
+	// 	moveCeiling(tag3, 40, 1072);
+	// 	break;
+
+	// case 37: // Spear Trap
+	// 	queueEventSave(action, loading);
+	// 	Log(s:"[PLACEHOLDER] Executed event 37.");
+	// 	break;
+
+	// case 38: // Endgame Statue Puzzle
+	// 	break;
+
+	// case 39: // Endgame Statue Puzzle
+	// 	break;
+
+	// case 40: // Save Room
+	// 	break;
+
+	// case 41: // Crystal Switch temporary platform raise
+	// 	if(Toggle) {
+	// 		moveFloor(tag1, 20, 896);
+	// 		setActorScore(switchTag, 700);
+	// 	} else {
+	// 		moveFloor(tag1, 20, 712);
+	// 	}
+	// 	break;
+
+	// case 42: // Miniboss begin - Lower rails and spawn boss.
+	// 	if(gateEventStates[GATE_MINIBOSS] == 0) {
+	// 		PrintBold(s:"GIANT SPIDER AAAAAAAAAAH!!!!");
+	// 		gateEventStates[GATE_MINIBOSS] = 1;
+	// 		moveCeiling(tag1, 40, 1024);
+	// 		moveCeiling(tag2, 40, 1024);
+	// 	}
+	// 	break;
+
+	// case 43: // Miniboss end
+	// 	queueEventSave(action, loading);
+	// 	if(gateEventStates[GATE_MINIBOSS] == 1) {
+	// 		PrintBold(s:"SPIDER DEAD! :)");
+	// 		gateEventStates[GATE_MINIBOSS] = 2;
+	// 		moveCeiling(tag1, 40, 1128);
+	// 		moveCeiling(tag2, 40, 1208);
+	// 		moveFloor(tag3, 64, 1056);
+	// 	}
+	// 	break;
+
+	// case 44: // While Floor switch is pressed, raise a platform.
+	// 	if(Toggle) {
+	// 		moveFloor(tag1, 64, 1088);
+	// 		moveFloor(tag2, 96, 1184);
+	// 	} else {
+	// 		moveFloor(tag1, 64, 1096);
+	// 		moveFloor(tag2, 96, 1040);
+	// 	}
+	// 	break;
+
+	// case 45: // Area Gate - Queen's Study
+	// 	break;
+
+	// case 46: // Crystal Switch raises elevator. Lowers after delay.
+	// 	if(Toggle) {
+	// 		moveFloor(tag1, 64, 1120);
+	// 		setActorScore(switchTag, 70);
+	// 	} else {
+	// 		moveFloor(tag1, 64, 704);
+	// 	}
+	// 	break;
+
+	// case 47: // Hallway Darts 1
+	// 	if(Toggle && !getUserVariable(switchTag, "bEndState")) {
+	// 		Floor_LowerToLowest(tag1, 64);
+	// 		SetUserVariable(switchTag, "bEndState", true);
+	// 		SetActorState(tag2, "Fire");
+	// 	}
+	// 	break;
+
+	// case 48: // Hallway Darts 2
+	// 	if(Toggle && !getUserVariable(switchTag, "bEndState")) {
+	// 		Floor_LowerToLowest(tag1, 64);
+	// 		SetUserVariable(switchTag, "bEndState", true);
+	// 		SetActorState(tag2, "Fire");
+	// 	}
+	// 	break;
+
+	// case 49: // Crystal Switch Raises platform, lowers after a moment.
+	// 	if(Toggle) {
+	// 		moveFloor(tag1, 40, 1184);
+	// 		setActorScore(switchTag, 60);
+	// 	} else {
+	// 		moveFloor(tag1, 40, 1000);
+	// 	}
+	// 	break;
+
+	// case 50: // Crystal Switch Raises platform, lowers after a moment.
+	// 	if(Toggle) {
+	// 		moveFloor(tag1, 40, 1184);
+	// 		setActorScore(switchTag, 60);
+	// 	} else {
+	// 		moveFloor(tag1, 40, 1000);
+	// 	}
+	// 	break;
+
+	// case 51: // Save Room
+	// 	break;
+
+	// case 52: // Floor Switch raises pillar (Permanent)
+	// 	queueEventSave(action, loading);
+	// 	SetUserVariable(switchTag, "bEndState", true);
+	// 	Floor_LowerToLowest(tag1, 64);
+	// 	moveFloor(tag2, 40, 1088);
+	// 	break;
+
+	// case 53: // Mine Shaft
+	// 	break;
+
+	// case 54: // Area Gate - King's Dungeon
+	// 	break;
+
+	// case 55: // Area Gate - Throne Room
+	// 	break;
+
+	// case 56: // Crystal Switch raises elevator. Lowers after a moment.
+	// 	if(Toggle) {
+	// 		moveFloor(tag1, 40, 1280);
+	// 		setActorScore(switchTag, 140);
+	// 	} else {
+	// 		moveFloor(tag1, 40, 992);
+	// 	}
+	// 	break;
+
+	// case 57: // Waterfall Actors
+	// 	break;
+
+	// case 58: // Waterfall Actors
+	// 	break;
+
+	// case 59: // Waterfall Actors
+	// 	break;
+
+	// case 60: // Jars of coins
+	// case 62:
+	// case 64:
+	// case 66:
+	// case 68:
+	// 	break;
+	// case 61:
+	// case 63:
+	// case 65:
+	// case 67:
+	// case 69:
+	// 	spawnCoins(switchTag, tag2, 20, true);
+	// 	break;
+
+	// case 70:
+	// 	moveCeiling(tag1, 40, 992);
+	// 	moveCeiling(tag2, 40, 992);
+	// 	break;
+	}
+}
+
+script "impact_return" (void)
+{
+
+}
