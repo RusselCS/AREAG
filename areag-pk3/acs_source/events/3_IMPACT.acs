@@ -337,7 +337,7 @@ script "impact_events" (int toggle, int action, int loadOverride)
 		Thing_Destroy(switchTag);
         break;
 
-    case 60: // [TODO] [35] Breakable walls
+    case 61: // [TODO] [35] Breakable walls
     case 42:
     case 43:
     case 44:
