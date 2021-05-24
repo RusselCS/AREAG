@@ -1,0 +1,37 @@
+class MonsterPathNode : BasicActor
+{
+    //$Category AREAG-Map Tools
+	//$Title Monster Path Node
+	//$Sprite E0WBF0
+	//$NotAngled
+    //$Arg0 Next Node
+    //$Arg1 Delay Time
+
+    Default
+    {
+        +NOINTERACTION;
+        +NOGRAVITY;
+        Renderstyle "None";
+    }
+
+    MonsterPathNode nextNode;
+    int delayTime;
+
+    override void BasicInit()
+    {
+        if(args[0] > 0) {
+            let iter = LevelLocals.CreateActorIterator(args[0], "MonsterPathNode");
+            if(iter) {
+                nextNode = MonsterPathNode(iter.next());
+            }
+        }
+        delayTime = args[1];
+    }
+
+    States
+    {
+    Spawn:
+        BOOT G 1;
+        wait;
+    }
+}

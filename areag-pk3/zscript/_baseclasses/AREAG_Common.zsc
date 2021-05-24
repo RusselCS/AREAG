@@ -127,4 +127,13 @@ mixin class AREAG_Common
 		}
 		return x;
 	}
+
+	static bool valueBetween(double min, double x, double max) {
+		if(min > max) {
+			let tmp = max;
+			max = min;
+			min = tmp;
+		}
+		return x > min && x < max;
+	}
 }

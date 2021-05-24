@@ -29,7 +29,9 @@ DoomEdNums
     30001 = DartTrap
     30002 = LaserTrap
 	30003 = StudySlideRing
+	30004 = MiningPlatform
 
+	30099 = MonsterPathNode
     30100 = ObArcherSpawner
 	30101 = ObBruteSpawner
 }

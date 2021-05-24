@@ -1,0 +1,178 @@
+class MiningPlatform : BasicActor
+{
+    Default
+    {
+        +CANPASS;
+        +SOLID;
+        +NOGRAVITY;
+        height 16;
+        radius 64;
+        speed 10;
+    }
+
+    Actor pole;
+    Actor player;
+    MonsterPathNode nextNode;
+    int delayTime;
+    vector3 oldPos;
+
+    double movX;
+    double movY;
+    double movZ;
+
+    bool carrying;
+
+    override void BasicInit() {
+        carrying = false;
+        bool sp;
+        //[sp, pole] = A_SpawnItemEx("MiningPlatformPole", 0, 0, height);
+        player = GetPointer(AAPTR_PLAYER1);
+        
+        if(args[0] > 0) {
+            let iter = LevelLocals.CreateActorIterator(args[0], "MonsterPathNode");
+            if(iter) {
+                nextNode = MonsterPathNode(iter.next());
+                updateSpeeds();
+            }
+        }
+    }
+
+    void updateSpeeds()
+    {
+        //console.printf("Updating speeds");
+        double diffX, diffY, diffZ, tYaw, tPit, len;
+        diffX = nextNode.pos.x - pos.x;
+        diffY = nextNode.pos.y - pos.y;
+        diffZ = nextNode.pos.z - pos.z;
+
+        tYaw = VectorAngle(diffX, diffY);
+        if(((tYaw + 45) % 180) > 90) {
+            len = diffY / sin(tYaw);
+        } else {
+            len = diffX / cos(tYaw);
+        }
+        tPit = -VectorAngle(len, diffZ);
+
+        movX = speed * cos(tYaw) * cos(tPit);
+        movY = speed * sin(tYaw) * cos(tPit);
+        movZ = speed * -sin(tPit);
+    }
+
+    override void BasicTick() {
+
+        if(delayTime <= 0) {
+            if(nextNode) {
+                let checkDist = Distance3D(nextNode);
+                //console.printf("Moving to next point - Current Distance: %f", checkDist);
+                if(checkDist < speed * 3) {
+                    Warp(self,
+                        nextNode.pos.x,
+                        nextNode.pos.y,
+                        nextNode.pos.z,
+                        0, WARPF_INTERPOLATE|WARPF_NOCHECKPOSITION|WARPF_MOVEPTR|WARPF_ABSOLUTEPOSITION|WARPF_USECALLERANGLE);
+                    
+                    delayTime = nextNode.delayTime;
+                    nextNode = nextNode.nextNode;
+
+                    updateSpeeds();
+                } else {
+                    A_ChangeVelocity(movX, movY, 0, CVF_REPLACE);
+                    Warp(self,
+                        pos.x,
+                        pos.y,
+                        pos.z + movZ,
+                        0, WARPF_INTERPOLATE|WARPF_NOCHECKPOSITION|WARPF_MOVEPTR|WARPF_ABSOLUTEPOSITION|WARPF_USECALLERANGLE);
+                }
+            }
+        } else {
+            A_ChangeVelocity(0, 0, 0, CVF_REPLACE);
+            delayTime--;
+        }
+
+        let deltaZ = max(abs(oldPos.z - pos.z) * 2, 2);
+
+        if(collidingBoxes(self, player, self.radius + player.radius) && valueBetween(pos.z + height - deltaZ, player.pos.z, pos.z + height + deltaZ)) {
+            if(!carrying) {
+                carrying = true;
+                //console.printf("Carrying");
+            }
+        } else {
+            if(carrying) {
+                carrying = false;
+                //console.printf("No longer carrying");
+                player.vel += vel;
+            }
+        }
+
+        if(pos != oldPos) {
+            let delta = pos - oldPos;
+            oldPos = pos;
+
+            if(pole) {
+                if(pole.pos != (pos.x, pos.y, pos.z + height)) {
+                    Warp(pole,
+                        pos.x,
+                        pos.y,
+                        pos.z + height,
+                        0, WARPF_INTERPOLATE|WARPF_MOVEPTR|WARPF_ABSOLUTEPOSITION|WARPF_USECALLERANGLE);
+                }
+                pole.vel = vel;
+            }
+
+            if(carrying) {
+                Warp(player,
+                    player.pos.x + (delta.x),
+                    player.pos.y + (delta.y),
+                    player.pos.z + (delta.z),
+                    0, WARPF_INTERPOLATE|WARPF_MOVEPTR|WARPF_ABSOLUTEPOSITION|WARPF_USECALLERANGLE);
+            }
+        }
+    }
+
+    States
+    {
+    Spawn:
+        BOOT A 1;
+        wait;
+    }
+
+}
+
+class MiningPlatformPole : MiningPlatform
+{
+    Default
+    {
+        radius 16;
+        height 104;
+    }
+    override void BasicInit() {
+        carrying = false;
+        player = GetPointer(AAPTR_PLAYER1);
+    }
+
+    override void BasicTick() {
+        if(collidingBoxes(self, player, self.radius + player.radius) && player.pos.z ~== pos.z + height) {
+            if(!carrying) {
+                carrying = true;
+            }
+        } else {
+            if(carrying) {
+                carrying = false;
+                player.vel += vel;
+            }
+        }
+
+        if(pos != oldPos) {
+            let delta = pos - oldPos;
+            oldPos = pos;
+
+            if(carrying) {
+                Warp(player,
+                    player.pos.x + (delta.x),
+                    player.pos.y + (delta.y),
+                    player.pos.z + (delta.z),
+                    0, WARPF_MOVEPTR|WARPF_ABSOLUTEPOSITION|WARPF_USECALLERANGLE);
+            }
+        }
+    }
+}

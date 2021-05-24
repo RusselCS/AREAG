@@ -84,6 +84,8 @@
 
 // MONSTERS
 #include "zscript/monsters/__monsterbase.zsc"
+#include "zscript/monsters/__monsterpathing.zsc"
+
 #include "zscript/monsters/1_golem.zsc"
 #include "zscript/monsters/2_glowfly.zsc"
 #include "zscript/monsters/3_melee-rush.zsc"
@@ -97,6 +99,8 @@
 #include "zscript/props/1_gateway/speartrap.zsc"
 
 #include "zscript/props/2_study/StudySlideRing.zsc"
+
+#include "zscript/props/3_impact/MiningPlatform.zsc"
 
 // STATUS BARS AND MENUS
 #include "zscript/sbar/AREAGStatusBar.zsc"
