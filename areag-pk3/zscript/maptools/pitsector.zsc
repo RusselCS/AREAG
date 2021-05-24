@@ -111,7 +111,7 @@ extend class AREAGPlayerPawn
 
     void move_PitTeleportTick()
     {
-        if(bOnGround) {
+        if(bOnGround && !bOnMobj) {
             if(CountInv("PitTeleport") == 0) {
                 queuePos();
             } else {
