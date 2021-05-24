@@ -44,7 +44,7 @@ script "outskirts_events" (int toggle, int action, int loadOverride)
 			queueEventSave(action, loading);
 			SetUserVariable(0, "bEndState", true);
 			Floor_LowerToLowest(tag1, 64);
-			moveCeiling(tag2, 64, 2016);
+			moveCeiling(tag2, 2016, 64);
 			break;
 		case 3: // Endgame Horn Statue
 			queueEventSave(action, loading);
@@ -55,7 +55,7 @@ script "outskirts_events" (int toggle, int action, int loadOverride)
 		case 5: // Talk to elder to cause door to open (will be a switch)
 			queueEventSave(action, loading);
 			PrintBold(s:"[PLACEHOLDER] TALKED TO ELDER!", i:tag1);
-			moveCeiling(tag1, 64, 1440);
+			moveCeiling(tag1, 1440, 64);
 			break;
 		case 6: // Destructible Wall
 			queueEventSave(action, loading);
@@ -68,9 +68,9 @@ script "outskirts_events" (int toggle, int action, int loadOverride)
 		        setSwitchState(switchTag+1, "Loading", true);
                 setActorScore(switchTag+1, 175);
                 setActorScore(switchTag, 175);
-				moveFloor(tag1+1, 20, 1568);
+				moveFloor(tag1+1, 1568, 20);
 			} else {
-				moveFloor(tag1+1, 20, 1824);
+				moveFloor(tag1+1, 1824, 20);
 			}
 			break;
         case 9:
@@ -78,21 +78,21 @@ script "outskirts_events" (int toggle, int action, int loadOverride)
 		        setSwitchState(switchTag-1, "Loading", true);
                 setActorScore(switchTag-1, 175);
                 setActorScore(switchTag, 175);
-				moveFloor(tag1, 20, 1568);
+				moveFloor(tag1, 1568, 20);
 			} else {
-				moveFloor(tag1, 20, 1824);
+				moveFloor(tag1, 1824, 20);
 			}
 			break;
 		case 10: // "Bear" miniboss; locks room.
 			if(checkEventState(action+1) != 1) {
 				PrintBold(s:"[PLACEHOLDER] MINIBOSS SPAWNED!");
-				moveCeiling(tag1, 128, 1312);
+				moveCeiling(tag1, 1312, 128);
 			}
 			break;
 		case 11: // Miniboss defeated. Unlocks room, lowers floor to reveal new path.
 			queueEventSave(action, loading);
 			PrintBold(s:"[PLACEHOLDER] MINIBOSS DEFEATED!");
-			moveCeiling(tag1, 64, 1472);
+			moveCeiling(tag1, 1472, 64);
 			Floor_LowerToLowest(tag2, 64);
 			break;
 		case 12: // Area Gate - Grand Gateway
