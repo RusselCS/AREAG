@@ -6,16 +6,6 @@ class PitSector : Actor
     void traverseSectors(Sector sec) {
 
         addToSet(sec);
-        // int brg = sec.GetLightLevel();
-        // int hgt = GetZAt(sec.centerspot.x, sec.centerspot.y, 0, GZF_CEILING|GZF_ABSOLUTEPOS|GZF_NO3DFLOOR) - GetZAt(sec.centerspot.x, sec.centerspot.y, 0, GZF_ABSOLUTEPOS|GZF_NO3DFLOOR);
-        // sec.SetLightLevel(0);
-        // sec.SetGlowHeight(sec.ceiling, hgt);
-        // sec.SetGlowColor(sec.ceiling, Color(brg, 255, 255, 255));
-
-        // sec.SetGlowHeight(sec.ceiling, hgt);
-        // sec.SetGlowHeight(sec.floor, 128);
-        // sec.SetSpecialColor(sec.walltop, Color(brg, 255, 255, 255));
-        // sec.SetSpecialColor(sec.wallbottom, Color(brg, 0, 0, 0));
 
         sec.damagetype = "Falling";
         sec.damageamount = 25;

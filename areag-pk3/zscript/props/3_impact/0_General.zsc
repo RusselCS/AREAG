@@ -1,0 +1,99 @@
+class LostImpactLampSpawner : JarSpawner
+{
+    Default
+    {
+        +NOGRAVITY;
+        JarSpawner.JarType "LostImpactLamp";
+        height 64;
+        radius 32;
+        scale 2.0;
+        renderstyle "none";
+    }
+
+    States
+    {
+    Spawn:
+        LIPR A 0;
+        LIPR A 0 A_SpawnItemEx("LostImpactLampChain", 0, 0, height);
+    SpawnLoop:
+        LIPR A 1;
+        loop;
+    }
+}
+
+class LostImpactLamp : StoneBody
+{
+    Default
+    {
+        +SOLID;
+        +SHOOTABLE;
+        +NOBLOOD;
+        +CANPASS;
+        +FORCEYBILLBOARD;
+        +NOGRAVITY;
+        height 64;
+        radius 32;
+        scale 2.0;
+        mass 999999999;
+        health 3;
+        gravity 0.6;
+        species "Monster";
+        +BRIGHT;
+    }
+
+    action void A_SpawnLampDebris()
+    {
+        A_FaceTarget();
+        A_StartSound("misc/jarbreak", CHAN_BODY);
+    }
+
+    action void A_SpawnLampFlame()
+    {
+        if(getAge() % 4 == 0) {
+            A_SpawnBasicEffect("LostImpactLampFlame", frandrange(radius), frandrange(radius), height/2 + frandrange(height/2));
+        }
+    }
+
+    States
+    {
+    Spawn:
+        LIPR ABCB 2;
+        loop;
+    Death:
+        TRC1 I 0 A_SpawnLampDebris();
+        EFIR ABCDEFG 1 A_SpawnLampFlame();
+        stop;
+    }
+}
+
+class LostImpactLampChain : BasicEffect
+{
+    Default
+    {
+        height 16;
+        radius 32;
+        scale 2.0;
+    }
+
+    States
+    {
+    Spawn:
+        LIPR D 0;
+        LIPR D 0 A_JumpIf(ceilingz-pos.z < height * 4, "SpawnLoop");
+        LIPR D 0 A_SpawnItemEx("LostImpactLampChain", 0, 0, height * 4);
+    SpawnLoop:
+        LIPR D 1;
+        wait;
+    }
+}
+
+class LostImpactLampFlame : BasicEffect
+{
+    States
+    {
+    Spawn:
+        EFIR ABCDEFG 1;
+        stop;
+    }
+}
+

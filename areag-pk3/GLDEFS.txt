@@ -1,3 +1,6 @@
+// ============================================ LIGHTS ============================================
+// GENERAL
+
 Pointlight WhipLight
 {
    Color 1.0 1.0 1.0
@@ -44,14 +47,50 @@ Object AREAGPlayer
    Frame PLAYW { Light PlayerLight }
 }
 
+// LOST IMPACT
+
+pointlight LILampA
+{
+    color 0.88 0.82 0.30
+    size 512
+    offset 0 32 0
+    attenuate 1
+}
+
+pointlight LILampB
+{
+    color 0.90 0.84 0.32
+    size 544
+    offset 0 32 0
+    attenuate 1
+}
+
+pointlight LILampC
+{
+    color 0.92 0.86 0.34
+    size 576
+    offset 0 32 0
+    attenuate 1
+}
+
+Object LostImpactLamp
+{
+   Frame LIPRA { Light LILampA }
+   Frame LIPRB { Light LILampB }
+   Frame LIPRC { Light LILampC }
+}
+
+// ========================================== MATERIALS ===========================================
+// 
+
 material texture TSTBRK
 {
    normal "glmaps/ADV01/normal maps/TSTBRK.PNG"
    specular "glmaps/ADV01/specular maps/TSTBRK.PNG"
    roughness "glmaps/ADV01/gloss maps/TSTBRK.PNG"
    ao "glmaps/ADV01/ao maps/TSTBRK.PNG"
-   specularlevel "8"
-   glossiness "8"
+   specularlevel "2"
+   glossiness "2"
 }
 
 material texture TSTCLM
@@ -59,6 +98,6 @@ material texture TSTCLM
    normal "glmaps/ADV01/normal maps/TSTCLM.PNG"
    specular "glmaps/ADV01/specular maps/TSTCLM.PNG"
    roughness "glmaps/ADV01/gloss maps/TSTCLM.PNG"
-   specularlevel "8"
-   glossiness "8"
+   specularlevel "2"
+   glossiness "2"
 }

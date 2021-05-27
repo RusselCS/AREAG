@@ -100,6 +100,7 @@
 
 #include "zscript/props/2_study/StudySlideRing.zsc"
 
+#include "zscript/props/3_Impact/0_General.zsc"
 #include "zscript/props/3_impact/MiningPlatform.zsc"
 
 // STATUS BARS AND MENUS

@@ -2,7 +2,7 @@ class StudySlideRing : BasicEffect
 {
     Default
     {
-        radius 1952;
+        radius 903;
     }
 
     override void BasicInit() {
