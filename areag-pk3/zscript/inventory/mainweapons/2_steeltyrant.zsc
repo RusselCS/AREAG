@@ -215,14 +215,14 @@ class ChainWhipChunks : Actor
         PROJECTILE;
         -ACTIVATEIMPACT;
         -NOGRAVITY;
-        Scale 2.5;
+        Scale 1.0;
         bouncetype "Doom";
         bouncecount 4;
     }
 
     override void PostBeginPlay() {
         super.postBeginPlay();
-        float sc = frandom(1.0, 2.5);
+        float sc = frandom(0.5, 1.0);
         scale.X = sc;
         scale.Y = sc;
     }
