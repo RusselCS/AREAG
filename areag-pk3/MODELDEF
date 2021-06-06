@@ -158,6 +158,229 @@ Model TabletModel
    FrameIndex TBLT C 0 0
 }
 
+// QUEEN'S STUDY
+
+Model BookCase_6x6
+{
+   Path "models/Study"
+   Model 0 "M_BC6X6.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+   AngleOffset 90
+
+   FrameIndex BWOS A 0 0
+}
+
+Model BookCase_8x6
+{
+   Path "models/Study"
+   Model 0 "M_BC8X6.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+   AngleOffset 90
+
+   FrameIndex BWOS A 0 0
+}
+
+Model BookCase_10x6
+{
+   Path "models/Study"
+   Model 0 "M_BC10X6.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+   AngleOffset 90
+
+   FrameIndex BWOS A 0 0
+}
+
+Model BookCase_12x6
+{
+   Path "models/Study"
+   Model 0 "M_BC12X6.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+   AngleOffset 90
+
+   FrameIndex BWOS A 0 0
+}
+
+Model BookCase_8x8
+{
+   Path "models/Study"
+   Model 0 "M_BC8X8.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+   AngleOffset 90
+
+   FrameIndex BWOS A 0 0
+}
+
+Model BookCase_10x4
+{
+   Path "models/Study"
+   Model 0 "M_BC10X4.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+   AngleOffset 90
+
+   FrameIndex BWOS A 0 0
+}
+
+Model BookCase_18x8
+{
+   Path "models/Study"
+   Model 0 "M_BC18X8.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+   AngleOffset 90
+
+   FrameIndex BWOS A 0 0
+}
+
+Model BookCase_12x4
+{
+   Path "models/Study"
+   Model 0 "M_BC12X4.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+   AngleOffset 90
+
+   FrameIndex BWOS A 0 0
+}
+
+Model BookCase_4x6
+{
+   Path "models/Study"
+   Model 0 "M_BC4X6.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+   AngleOffset 90
+
+   FrameIndex BWOS A 0 0
+}
+
+Model BookCase_8x4
+{
+   Path "models/Study"
+   Model 0 "M_BC8X4.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+   AngleOffset 90
+
+   FrameIndex BWOS A 0 0
+}
+
+Model BookCase_6x8
+{
+   Path "models/Study"
+   Model 0 "M_BC6X8.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+   AngleOffset 90
+
+   FrameIndex BWOS A 0 0
+}
+
+Model BookCase_12x8
+{
+   Path "models/Study"
+   Model 0 "M_BC12X8.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+   AngleOffset 90
+
+   FrameIndex BWOS A 0 0
+}
+
+Model BookCase_6x12
+{
+   Path "models/Study"
+   Model 0 "M_BC6X12.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+   AngleOffset 90
+
+   FrameIndex BWOS A 0 0
+}
+
+Model BookCase_14x6
+{
+   Path "models/Study"
+   Model 0 "M_BC14X6.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+   AngleOffset 90
+
+   FrameIndex BWOS A 0 0
+}
+
+Model BookCase_4x4
+{
+   Path "models/Study"
+   Model 0 "M_BC4X4.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+   AngleOffset 90
+
+   FrameIndex BWOS A 0 0
+}
+
+Model BookCase_6x4
+{
+   Path "models/Study"
+   Model 0 "M_BC6X4.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+   AngleOffset 90
+
+   FrameIndex BWOS A 0 0
+}
+
+Model BookCase_18x6
+{
+   Path "models/Study"
+   Model 0 "M_BC18X6.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+   AngleOffset 90
+
+   FrameIndex BWOS A 0 0
+}
+
+Model BookCase_14x8
+{
+   Path "models/Study"
+   Model 0 "M_BC14X8.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+   AngleOffset 90
+
+   FrameIndex BWOS A 0 0
+}
+
+Model BookCase_10x8
+{
+   Path "models/Study"
+   Model 0 "M_BC10X8.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+   AngleOffset 90
+
+   FrameIndex BWOS A 0 0
+}
+
+Model BookCase_10x5
+{
+   Path "models/Study"
+   Model 0 "M_BC10X5.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+   AngleOffset 90
+
+   FrameIndex BWOS A 0 0
+}
+
+
 Model SlideRingCenter
 {
    Path "models/Study"

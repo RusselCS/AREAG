@@ -1,0 +1,248 @@
+class StudyBookCase : BasicActor
+{
+    Default
+    {
+        +NOINTERACTION;
+        +THRUSPECIES;
+        species "Bookcase";
+        radius 31;
+        height 64;
+    }
+
+    Array<BookCaseTracker> trackers;
+
+    string user_frame;
+    double user_height;
+
+    override void BasicInit() {
+        Super.BasicInit();
+
+        if(user_frame.length() > 0) {
+            Array<String> arr;
+            user_frame.split(arr, "x");
+
+            if(arr.size() == 2) {
+                // Structure is length by height
+                // Length and Height of these are 32 * N
+
+                // Blocks have a side length of 64
+                // Length of 6 means it will have 3 blocks
+                let blockRadius = arr[0].toInt() / 2;
+
+                // Height uses the normal height factor...
+                let blockHeight = arr[1].toInt() * 32;
+
+                A_SetSize(radius, blockHeight);
+
+                if(blockRadius % 2 == 0) { // Even Number of blocks
+                    for(int i = 0; i < blockRadius / 2; i++) {
+                        let pos = radius + i * 2 * radius;
+                        spawnBookCaseExtender(pos);
+                        spawnBookCaseExtender(-pos);
+                    }
+                } else { // Odd Number of blocks
+                    spawnBookCaseExtender(0);
+                    for(int i = 0; i < blockRadius / 2; i++) {
+                        let pos = (i + 1) * 2 * radius;
+                        spawnBookCaseExtender(pos);
+                        spawnBookCaseExtender(-pos);
+                    }
+                }
+
+                spawnBookCaseModel(user_frame, blockRadius * 64);
+            } else {
+                Console.printf("Bookshelf at (%d, %d, %d) has improper frame structure.", pos.x, pos.y, pos.z);
+                A_SpawnErrorMarker();
+            }
+        } else {
+            Console.printf("Bookshelf at (%d, %d, %d) has improper frame structure.", pos.x, pos.y, pos.z);
+            A_SpawnErrorMarker();
+        }
+
+        if(user_height > 0) {
+            console.printf("Bookshelf at (%d, %d, %d) has a user_height value.", pos.x, pos.y, pos.z);
+            A_SpawnErrorMarker();
+        }
+    }
+
+    override void BasicTick() {
+        super.basicTick();
+
+        for(int i = 0; i < trackers.size(); i++) {
+            if(trackers[i].posChanged()) {
+                updateExtender(trackers[i], i);
+                trackers[i].updatePos();
+            }
+        }
+    }
+
+    bool updateExtender(BookCaseTracker ext, int idx) {
+        let delta = ext.posDelta();
+
+        for(int i = 0; i < trackers.size(); i++) {
+            if(i == idx) {
+                continue;
+            }
+            let act = trackers[i].getBlock();
+            let dest = trackers[i].getDestPos(delta);
+            Warp(act,
+                dest.x,
+                dest.y,
+                dest.z,
+                0, WARPF_INTERPOLATE|WARPF_MOVEPTR|WARPF_ABSOLUTEPOSITION|WARPF_USECALLERANGLE);
+            trackers[i].updatePos();
+        }
+
+        let dest = pos + delta;
+        Warp(self,
+            dest.x,
+            dest.y,
+            dest.z,
+            0, WARPF_INTERPOLATE|WARPF_MOVEPTR|WARPF_ABSOLUTEPOSITION|WARPF_USECALLERANGLE);
+
+        return true;
+    }
+
+    void spawnBookCaseModel(string fName, double fRad) {
+        let modelName = String.format("BookCase_%s", fName);
+        bool bl;
+        Actor act;
+        [bl, act] = A_SpawnItemEx(modelName);
+        
+        if(bl) {
+            trackers.push(new("BookCaseTracker").init(act));
+            act.master = self;
+            //act.A_SetSize(fRad);
+        } else {
+            console.printf("\cgFailed to spawn model %s", fName);
+            //A_SpawnErrorMarker();
+        }
+    }
+
+    void spawnBookCaseExtender(double dist) {
+        bool bl;
+        Actor act;
+        [bl, act] = A_SpawnItemEx("BookCaseExtend", 0, dist);
+        
+        trackers.push(new("BookCaseTracker").init(act));
+        act.master = self;
+        act.A_SetSize(radius, height);
+    }
+
+    AREAGPushBlock getFarthestBlock(Actor plr) {
+        int idx = 0;
+        double mDist = 0;
+        for(int i = 0; i < trackers.size(); i++) {
+            let tDist = plr.distance3D(trackers[i].getBlock());
+            if(mDist < tDist) {
+                idx = i;
+                mDist = tDist;
+            }
+        }
+        return AREAGPushBlock(trackers[idx].getBlock());
+    }
+
+    States
+    {
+    Spawn:
+        TNT1 A 1;
+        wait;
+    }
+}
+
+class BookCaseTracker : Object
+{
+    private Actor block;
+    private vector3 pos;
+    private vector3 vel;
+
+    BookCaseTracker Init(Actor blk) {
+        block = blk;
+        pos = block.pos;
+        vel = block.vel;
+        return self;
+    }
+
+    void updatePos() {
+        pos = block.pos;
+        vel = block.vel;
+    }
+
+    bool posChanged() {
+        return pos != block.pos;// || vel != block.vel;
+    }
+
+    vector3 posDelta() {
+        return block.pos - pos;
+    }
+
+    vector3 getDestPos(vector3 delta) {
+        return block.pos + delta;
+    }
+
+    Actor getBlock() {
+        return block;
+    }
+}
+
+class BookCaseExtend : AREAGPushBlock
+{
+    Default
+    {
+        //+BASICACTOR.SHOWHITBOX;
+        radius 32;
+        height 64;
+        +THRUSPECIES;
+        species "Bookcase";
+        +BASICACTOR.DIEWITHMASTER;
+        renderstyle "none";
+    }
+
+    override AREAGPushBlock getPushBlock() {
+        return StudyBookCase(master).getFarthestBlock(plr);
+    }
+
+    override bool canGrabAngle(Actor activator) {
+        let tAng = VectorAngle(activator.pos.x - self.pos.x, activator.pos.y - self.pos.y);
+        let leftAng = angle - 90;
+        let rightAng = angle + 90;
+        return angleBetween(tAng, leftAng - 45, leftAng + 45) || angleBetween(tAng, rightAng - 45, rightAng + 45);
+    }
+}
+
+class BookCaseModel : BasicEffect
+{
+    Default
+    {
+        +BASICACTOR.DIEWITHMASTER;
+        renderstyle "Normal";
+    }
+
+    States
+    {
+    Spawn:
+        BWOS A 1;
+        wait;
+    }
+}
+
+class BookCase_6x6 : BookCaseModel {}
+class BookCase_8x6 : BookCaseModel {}
+class BookCase_8x8 : BookCaseModel {}
+class BookCase_4x6 : BookCaseModel {}
+class BookCase_8x4 : BookCaseModel {}
+class BookCase_6x8 : BookCaseModel {}
+class BookCase_4x4 : BookCaseModel {}
+class BookCase_6x4 : BookCaseModel {}
+class BookCase_6x12 : BookCaseModel {}
+class BookCase_10x6 : BookCaseModel {}
+class BookCase_12x6 : BookCaseModel {}
+class BookCase_10x4 : BookCaseModel {}
+class BookCase_18x8 : BookCaseModel {}
+class BookCase_12x4 : BookCaseModel {}
+class BookCase_12x8 : BookCaseModel {}
+class BookCase_14x6 : BookCaseModel {}
+class BookCase_18x6 : BookCaseModel {}
+class BookCase_14x8 : BookCaseModel {}
+class BookCase_10x8 : BookCaseModel {}
+class BookCase_10x5 : BookCaseModel {}

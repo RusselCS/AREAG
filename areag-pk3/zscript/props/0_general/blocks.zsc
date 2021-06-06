@@ -22,7 +22,9 @@ class AREAGPushBlock : BasicActionProp
     }
 
     bool isCloseEnough(Actor who) {
-        return Distance2D(who) - who.radius - self.radius < 48.0 && abs(who.pos.z - self.pos.z) < (4 * maxstepheight);
+        // [Russ] Horizonal check broke bookshelves when they were implemented.
+        // return Distance2D(who) - who.radius - self.radius < 48.0 && abs(who.pos.z - self.pos.z) < (4 * maxstepheight);
+        return abs(who.pos.z - self.pos.z) < (4 * maxstepheight);
     }
 
     override void BasicInit() {
@@ -33,10 +35,10 @@ class AREAGPushBlock : BasicActionProp
     }
 
     override void BasicActivate(Actor activator) {
-        if(!bPushActive && isCloseEnough(activator) && checkPosClear(activator)) {
+        if(!bPushActive && isCloseEnough(activator) && checkPosClear(activator) && canGrabAngle(activator)) {
             plr = AREAGPlayerPawn(activator);
             plr.setInterruptState("BlockPushBegin");
-            plr.SetBlockPush(self);
+            plr.SetBlockPush(self.getPushBlock());
         }
     }
 
@@ -44,6 +46,14 @@ class AREAGPushBlock : BasicActionProp
         let tAng = roundToNearest(VectorAngle(activator.pos.x - pos.x, activator.pos.y - pos.y), 90);
         Vector2 checkPos = (pos.x + cos(tAng) * 64, pos.y + sin(tAng) * 64);
         return activator.checkMove(checkPos);
+    }
+
+    virtual AREAGPushBlock getPushBlock() {
+        return self;
+    }
+
+    virtual bool canGrabAngle(Actor activator) {
+        return true;
     }
 
     States
@@ -90,15 +100,18 @@ extend class AREAGProtoWeapon {
     int iPushTicks;
 
     action void A_StartPush() {
+        let plr = invoker.plr;
+        let block = invoker.plr.block;
         invoker.iPushTicks = 0;
-        invoker.plr.block.bPushActive = true;
+        block.bPushActive = true;
         SetPlayerProperty(true, true, PROP_TOTALLYFROZEN);
-        let tAng = roundToNearest(VectorAngle(invoker.plr.pos.x - invoker.plr.block.pos.x, invoker.plr.pos.y - invoker.plr.block.pos.y), 90);
-        let tempAng = invoker.plr.angle;
-        invoker.plr.block.Warp(invoker.plr, 64, 0, 0, tAng, WARPF_MOVEPTR|WARPF_ABSOLUTEANGLE|WARPF_NOCHECKPOSITION);
+        let tAng = roundToNearest(VectorAngle(plr.pos.x - block.pos.x, plr.pos.y - block.pos.y), 90);
+        let tempAng = plr.angle;
+        let dist = 64 + ((2 * block.radius) * floor(plr.distance3D(block) / (2 * block.radius)));
+        block.Warp(plr, dist, 0, 0, tAng, WARPF_MOVEPTR|WARPF_ABSOLUTEANGLE|WARPF_NOCHECKPOSITION);
         A_SetAngle(tempAng);
         A_ChangeVelocity(0, 0, 0, CVF_REPLACE);
-        A_Face(invoker.plr.block, 0, 0, 0, 0, FAF_MIDDLE, 0);
+        A_Face(block, 0, 0, 0, 0, FAF_MIDDLE, 0);
     }
 
     action void A_StopPush() {
@@ -137,8 +150,11 @@ extend class AREAGProtoWeapon {
                 double speed = baseSpeed * min(BLOCK_MAXSPEEDTICKS, invoker.iPushTicks) / BLOCK_MAXSPEEDTICKS;
                 double speedX = cos(angle) * speed;
                 double speedY = sin(angle) * speed;
-                A_ChangeVelocity(speedX, speedY, vel.z, CVF_REPLACE);
-                invoker.plr.block.A_ChangeVelocity(speedX, speedY, invoker.plr.block.vel.z, CVF_REPLACE);
+                if(invoker.plr.checkMove((invoker.plr.pos.x + speedX, invoker.plr.pos.y + speedY), PCM_DROPOFF) &&
+                   invoker.plr.block.checkMove((invoker.plr.block.pos.x + speedX, invoker.plr.block.pos.y + speedY), PCM_DROPOFF)) {
+                        A_ChangeVelocity(speedX, speedY, vel.z, CVF_REPLACE);
+                        invoker.plr.block.A_ChangeVelocity(speedX, speedY, invoker.plr.block.vel.z, CVF_REPLACE);
+                    }
                 Radius_Quake(1, 2, 0, 2, 0);
             } else {
                 if(invoker.iPushTicks != 0) {

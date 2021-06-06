@@ -1,0 +1,41 @@
+# MAP01.wad, map MAP01
+# Created by GZDoom Builder 2.3.0.3107
+
+o MAP01
+v -96 0 32
+v -96 192 32
+v 96 192 32
+v 96 0 32
+v 96 0 -32
+v 96 192 -32
+v -96 192 -32
+v -96 0 -32
+vn 0 0 -1
+vn 0 0 1
+vn -1 0 0
+vn 1 0 0
+vn 0 1 0
+vn 0 -1 0
+vt 0.75 -0.75
+vt 0.75 0
+vt 0 0
+vt 0 -0.75
+vt 1 -3
+vt 1 0
+vt 0 -3
+vt -1.192093E-07 -1.5
+vt 0.9999999 -1.5
+vt 1 1.5
+vt 1.192093E-07 1.5
+mtllib Case6x6.mtl
+usemtl Default
+usemtl LIBOOKS
+f 1/1/1 2/2/1 3/3/1 4/4/1
+f 5/1/2 6/2/2 7/3/2 8/4/2
+usemtl FCWOD2
+f 8/5/3 7/6/3 2/3/3 1/7/3
+f 4/5/4 3/6/4 6/3/4 5/7/4
+usemtl Default
+usemtl FCWOD2
+f 4/8/5 5/9/5 8/10/5 1/11/5
+f 6/9/6 3/8/6 2/11/6 7/10/6

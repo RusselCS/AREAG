@@ -129,7 +129,7 @@ mixin class BasicActor_Virtuals
 	flagdef SHOWHITBOX: m_virtualFuncFlags, 3;
 
     void createHitbox() {
-		for(int i = 0; i < radius; i+=2) {
+		for(int i = 0; i < radius; i+=radius/5) {
 			addToPixels("HitboxParticle", radius, i, 1);
 			addToPixels("HitboxParticle", radius, -i, 1);
 			addToPixels("HitboxParticle", -radius, i, 1);
@@ -149,7 +149,7 @@ mixin class BasicActor_Virtuals
 			addToPixels("HitboxParticle", -i, -radius, height);
 		}
 
-		for(int i = 1; i <= height; i+=2) {
+		for(int i = 1; i <= height; i+=height/10) {
 			addToPixels("HitboxParticle", radius, radius, i);
 			addToPixels("HitboxParticle", radius, -radius, i);
 			addToPixels("HitboxParticle", -radius, radius, i);
@@ -195,6 +195,11 @@ mixin class BasicActor_Virtuals
 		}
 		pixels.clear();
 	}
+
+	action void A_SpawnErrorMarker()
+	{
+		A_SpawnItemEx("ErrorMarker");
+	}
 }
 
 enum EXYLineTraceFlags
@@ -219,4 +224,14 @@ class HitboxParticle : BasicEffect
         CHWP BB 1 bright;
         wait;
     }
+}
+
+class ErrorMarker : MapMarker
+{
+	States
+	{
+	Spawn:
+		unkn a 1;
+		wait;
+	}
 }

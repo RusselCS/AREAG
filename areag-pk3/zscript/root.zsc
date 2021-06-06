@@ -98,6 +98,7 @@
 #include "zscript/props/1_gateway/lasertrap.zsc"
 #include "zscript/props/1_gateway/speartrap.zsc"
 
+#include "zscript/props/2_study/StudyBookCase.zsc"
 #include "zscript/props/2_study/StudySlideRing.zsc"
 
 #include "zscript/props/3_Impact/0_General.zsc"

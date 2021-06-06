@@ -1,0 +1,41 @@
+# Base.wad, map MAP01
+# Created by Ultimate Doom Builder 3.0.0.3663
+
+o MAP01
+v -192 0 32
+v -192 256 32
+v 192 256 32
+v 192 0 32
+v 192 0 -32
+v 192 256 -32
+v -192 256 -32
+v -192 0 -32
+vn 0 0 -1
+vn 0 0 1
+vn -1 0 0
+vn 1 0 0
+vn 0 1 0
+vn 0 -1 0
+vt 1.5 -1
+vt 1.5 0
+vt 0 0
+vt 0 -1
+vt 1 -4
+vt 1 0
+vt 0 -4
+vt -1 -3
+vt -1.665335E-16 -3
+vt 2.220446E-16 3
+vt -1 3
+mtllib M_BC12X8.mtl
+usemtl Default
+usemtl LIBOOKS
+f 1/1/1 2/2/1 3/3/1 4/4/1
+f 5/1/2 6/2/2 7/3/2 8/4/2
+usemtl FCWOD2
+f 8/5/3 7/6/3 2/3/3 1/7/3
+f 4/5/4 3/6/4 6/3/4 5/7/4
+usemtl Default
+usemtl FCWOD2
+f 4/8/5 5/9/5 8/10/5 1/11/5
+f 6/9/6 3/8/6 2/11/6 7/10/6
