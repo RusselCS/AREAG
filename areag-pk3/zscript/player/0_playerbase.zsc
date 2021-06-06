@@ -13,6 +13,8 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
     Array<ToggleStateMap> toggles;
     Array<PlayerPassive> passives;
     Array<String> passiveClasses;
+    HatPassive currentHat;
+    String currentHatClass;
 
     bool isPushingBlock;
     AREAGPushBlock block;
@@ -55,7 +57,21 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
                     passives[i].Destroy();
                 }
             }
-            
+        }
+
+         if(!bInMapTransition) {
+            if(currentHat) {
+                currentHat.hatTick(AREAGPlayerPawn(self));
+            } else {
+                if(currentHatClass.length() > 0) {
+                    currentHat = HatPassive(new(currentHatClass));
+                    currentHat.hatInit(AREAGPlayerPawn(self));
+                }
+            }
+        } else {
+            if(currentHat) {
+                currentHat.Destroy();
+            }
         }
     }
 
@@ -122,6 +138,23 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
         PlayerPassive pass = PlayerPassive(new(clsName));
         passives.push(pass);
         passiveClasses.push(clsName);
+    }
+
+    void setCurrentHat(String clsName) {
+        if(currentHat) {
+            currentHat.hatRemove(AREAGPlayerPawn(self));
+            currentHat.Destroy();
+        }
+
+        if(clsName.length() > 0) {
+            currentHat = HatPassive(new(clsName));
+            currentHatClass = clsName;
+            currentHat.hatEquip(AREAGPlayerPawn(self));
+            currentHat.hatInit(AREAGPlayerPawn(self));
+        } else {
+            currentHat = null;
+            currentHatClass = "";
+        }
     }
     
     override void AREAGInit() {

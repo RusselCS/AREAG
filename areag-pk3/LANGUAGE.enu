@@ -78,6 +78,9 @@ PU_PENDANT = "Grants immunity to damage from Luminite Sludge.";
 AR_EFFICIENTVANDAL = "EFFICIENTVANDAL";
 PU_EFFICIENTVANDAL = "Breakable Structures die in one hit.";
 
+AR_MININGHAT = "Mining Light";
+PU_MININGHAT = "While equipped, the area around you is brightly lit up.";
+
 // TABLETS
 
 TABLET_TESTMAP_0 = "This is a puzzle tablet. Read the other using nova pack.";

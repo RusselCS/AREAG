@@ -1,0 +1,34 @@
+// Define a BasicInventory for the hat pickup, then inherit from HatEquip similar to the BasicPassive creations to create the selector.
+
+class HatEquip : BasicInventory
+{
+    String clsName;
+    String hatCheckItem;
+
+    virtual void definePickup() {}
+
+    override void BasicPickup(Actor toucher) {
+        definePickup();
+        if(toucher.CountInv(hatCheckitem) > 0) {
+            AREAGPlayerPawn plr = AREAGPlayerPawn(toucher);
+            plr.setCurrentHat(clsName);
+        }
+    }
+}
+
+class HatPassive : Thinker
+{
+    mixin AREAG_Common;
+    virtual void hatInit(AREAGPlayerPawn plr) {}
+    virtual void hatTick(AREAGPlayerPawn plr) {}
+    virtual void hatEquip(AREAGPlayerPawn plr) {}
+    virtual void hatRemove(AREAGPlayerPawn plr) {}
+}
+
+class HatRemove : HatEquip
+{
+    override void BasicPickup(Actor toucher) {
+        AREAGPlayerPawn plr = AREAGPlayerPawn(toucher);
+        plr.setCurrentHat("");
+    }
+}

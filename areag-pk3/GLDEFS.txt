@@ -47,6 +47,18 @@ Object AREAGPlayer
    Frame PLAYW { Light PlayerLight }
 }
 
+Pointlight MiningHatLight
+{
+   Color 0.9 0.9 0.8
+   Size 256
+   Offset 0 0 0
+}
+
+Object MiningHatFX
+{
+   Frame PLAYA { Light MiningHatLight }
+}
+
 // LOST IMPACT
 
 pointlight LILampA
