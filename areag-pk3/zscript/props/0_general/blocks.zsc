@@ -154,6 +154,9 @@ extend class AREAGProtoWeapon {
                    invoker.plr.block.checkMove((invoker.plr.block.pos.x + speedX, invoker.plr.block.pos.y + speedY), PCM_DROPOFF)) {
                         A_ChangeVelocity(speedX, speedY, vel.z, CVF_REPLACE);
                         invoker.plr.block.A_ChangeVelocity(speedX, speedY, invoker.plr.block.vel.z, CVF_REPLACE);
+                    } else {
+                        A_ChangeVelocity(0, 0, vel.z, CVF_REPLACE);
+                        invoker.plr.block.A_ChangeVelocity(0, 0, invoker.plr.block.vel.z, CVF_REPLACE);
                     }
                 Radius_Quake(1, 2, 0, 2, 0);
             } else {

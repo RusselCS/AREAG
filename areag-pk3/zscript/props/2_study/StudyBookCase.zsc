@@ -85,11 +85,15 @@ class StudyBookCase : BasicActor
             }
             let act = trackers[i].getBlock();
             let dest = trackers[i].getDestPos(delta);
+            let flags = WARPF_INTERPOLATE|WARPF_MOVEPTR|WARPF_ABSOLUTEPOSITION|WARPF_USECALLERANGLE;
+            if(i + 1 == trackers.size()) {
+                flags |= WARPF_NOCHECKPOSITION;
+            }
             Warp(act,
                 dest.x,
                 dest.y,
                 dest.z,
-                0, WARPF_INTERPOLATE|WARPF_MOVEPTR|WARPF_ABSOLUTEPOSITION|WARPF_USECALLERANGLE);
+                0, flags);
             trackers[i].updatePos();
         }
 
@@ -112,7 +116,7 @@ class StudyBookCase : BasicActor
         if(bl) {
             trackers.push(new("BookCaseTracker").init(act));
             act.master = self;
-            //act.A_SetSize(fRad);
+            act.A_SetSize(fRad);
         } else {
             console.printf("\cgFailed to spawn model %s", fName);
             //A_SpawnErrorMarker();
