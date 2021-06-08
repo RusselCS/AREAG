@@ -76,6 +76,7 @@ class ZSCSwitchCrystal : BasicActor
         wait;
     SwitchOnOff:
         SCRY B 0 A_SetTics(score);
+        SCRY B 0 A_JumpIf(score == 0, "SwitchOn");
     SwitchOff:
         SCRY B 0 switchOff();
 		goto Spawn;

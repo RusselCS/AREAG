@@ -230,23 +230,27 @@ class BookCaseModel : BasicEffect
     }
 }
 
-class BookCase_6x6 : BookCaseModel {}
-class BookCase_8x6 : BookCaseModel {}
-class BookCase_8x8 : BookCaseModel {}
-class BookCase_4x6 : BookCaseModel {}
-class BookCase_8x4 : BookCaseModel {}
-class BookCase_6x8 : BookCaseModel {}
 class BookCase_4x4 : BookCaseModel {}
 class BookCase_6x4 : BookCaseModel {}
-class BookCase_6x12 : BookCaseModel {}
+class BookCase_8x4 : BookCaseModel {}
+class BookCase_10x4 : BookCaseModel {}
+class BookCase_12x4 : BookCaseModel {}
+
+class BookCase_10x5 : BookCaseModel {}
+
+class BookCase_4x6 : BookCaseModel {}
+class BookCase_6x6 : BookCaseModel {}
+class BookCase_8x6 : BookCaseModel {}
 class BookCase_10x6 : BookCaseModel {}
 class BookCase_12x6 : BookCaseModel {}
-class BookCase_10x4 : BookCaseModel {}
-class BookCase_18x8 : BookCaseModel {}
-class BookCase_12x4 : BookCaseModel {}
-class BookCase_12x8 : BookCaseModel {}
 class BookCase_14x6 : BookCaseModel {}
 class BookCase_18x6 : BookCaseModel {}
-class BookCase_14x8 : BookCaseModel {}
+
+class BookCase_6x8 : BookCaseModel {}
+class BookCase_8x8 : BookCaseModel {}
 class BookCase_10x8 : BookCaseModel {}
-class BookCase_10x5 : BookCaseModel {}
+class BookCase_12x8 : BookCaseModel {}
+class BookCase_14x8 : BookCaseModel {}
+class BookCase_18x8 : BookCaseModel {}
+
+class BookCase_6x12 : BookCaseModel {}
