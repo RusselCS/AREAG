@@ -62,7 +62,7 @@ script "study_init" (void)
 // # - Tag number affected by current event
 // XX - Event Number
 
-script "study_events" (int toggle, int action, int unused)
+script "study_events" (int toggle, int action, int args)
 {
 	bool loading = false;
 	
@@ -234,7 +234,7 @@ script "study_events" (int toggle, int action, int unused)
 		}
 		break;
 
-	case 18: // [37] Toggleable staircase. Uses tags for 19 as well.
+	case 18: // [37] [TODO] Toggleable staircase. Uses tags for 19 as well.
 		break;
 
 	case 20: // [39] Endgame statue puzzle.
@@ -270,6 +270,7 @@ script "study_events" (int toggle, int action, int unused)
 	case 26: // [54] Lower the platform in the room with the jail bars.
 		if(toggle) {
 			moveFloor(tag1, -320, SECTOR_SPEED_FAST);
+			
 			moveFloor(tag2, -312, SECTOR_SPEED_FAST);
 		} else {
 			moveFloor(tag1, -128, SECTOR_SPEED_FAST);
@@ -280,6 +281,8 @@ script "study_events" (int toggle, int action, int unused)
 	case 27: // [54] Lock the moving platform down after it's lowered.
 		queueEventSave(action, loading);
 		SetActorProperty(switchTag-1, APROP_Score, 0);
+		setSwitchState(switchTag, "Loading", loading);
+		ACS_NamedExecuteAlways("study_events", 0, true, 26);
 		break;
 
 	case 28: // [57] Piano

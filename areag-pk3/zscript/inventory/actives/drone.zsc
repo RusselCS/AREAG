@@ -115,7 +115,10 @@ extend class AREAGPlayerPawn {
     }
 
     void transformToDrone(Actor who) {
-        A_SpawnItemEx("DronePlayerDummy", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERSCALE|SXF_TRANSFERSPRITEFRAME);
+        bool bl;
+        Actor dummy;
+        [bl, dummy] = A_SpawnItemEx("DronePlayerDummy", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERSCALE|SXF_TRANSFERSPRITEFRAME);
+        dummy.target = self;
         A_GiveInventory("DronePlasmaGun");
         A_SelectWeapon("DronePlasmaGun");
 		A_GiveInventory("DroneFlag", 1);
@@ -130,6 +133,9 @@ extend class AREAGPlayerPawn {
         maxstepheight = 16;
 
         returnPoint = (pos.x, pos.y, floorz);
+        if(bOnGround) {
+            returnPoint.z = pos.z;
+        }
         dAngle = angle;
 
         iWalkCooldown = 0;
@@ -395,8 +401,7 @@ class DronePlayerDummy : Actor
     Default
     {
         -SOLID;
-        +NOCLIP;
-        +MISSILE;
+        +CANPASS;
         renderstyle "translucent";
         Alpha 1.0;
     }
