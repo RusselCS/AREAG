@@ -31,6 +31,30 @@ class MapUtilInit : StaticEventHandler
         latest.addPickup("EmptyItem");
         
         addMap(new("AREAGMapData").Init(3, "ADV02", "MCRNE_02", "$NAME_ADV02", "TI03", "SAVE_STUDY"));
+        latest.addPickup("EmptyItem");
+        latest.addPickup("DronePickup");
+        latest.addPickup("BolaSackPickup");
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");          // 5
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");          // 10
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");          // 15
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");          // 20
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");
+        latest.addPickup("EmptyItem");
 
         addMap(new("AREAGMapData").Init(4, "ADV03", "MCRNE_03", "$NAME_ADV03", "TI02", "SAVE_IMPACT"));
         latest.addPickup("GearGreavesPickup");

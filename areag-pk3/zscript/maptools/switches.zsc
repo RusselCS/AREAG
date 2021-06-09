@@ -261,6 +261,7 @@ class ZSCWallSwitch : Actor
         wait;
     SwitchOnOff:
         SCRY C 0 A_SetTics(score);
+        SCRY C 0 A_JumpIf(score == 0, "SwitchOn");
         SCRY C 0 switchOff();
 		goto Spawn;
     }

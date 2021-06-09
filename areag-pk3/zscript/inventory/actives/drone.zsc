@@ -110,6 +110,8 @@ extend class AREAGPlayerPawn {
 
     Actor entryRoom;
 
+    String currentWeapon;
+
     Name getDroneSoundClass() {
         return "drone";
     }
@@ -119,6 +121,7 @@ extend class AREAGPlayerPawn {
         Actor dummy;
         [bl, dummy] = A_SpawnItemEx("DronePlayerDummy", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERSCALE|SXF_TRANSFERSPRITEFRAME);
         dummy.target = self;
+        currentWeapon = player.ReadyWeapon.getClassName();
         A_GiveInventory("DronePlasmaGun");
         A_SelectWeapon("DronePlasmaGun");
 		A_GiveInventory("DroneFlag", 1);
@@ -185,6 +188,7 @@ extend class AREAGPlayerPawn {
         bDroneChangingLevel = false;
         iWalkCooldown = 0;
 
+        A_SelectWeapon(currentWeapon);
         changeSize(dBaseRadius, dStartingHeight);
         changeViewHeight(dStartingViewHeight, true);
         attackZOffset = dBaseAttackZOffset;
@@ -306,7 +310,7 @@ class DroneTransitionMissile : BasicProjectile
 	}
 }
 
-class DronePlasmaGun : Weapon
+class DronePlasmaGun : AREAGProtoWeapon
 {
     Default
     {
