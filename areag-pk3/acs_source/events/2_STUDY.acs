@@ -11,10 +11,15 @@
 int ringState = 0;
 int stairState = 0;
 
-#define STAIR_SIZE 14
-int westStairs[STAIR_SIZE];
-int eastStairs[STAIR_SIZE];
+#define RING_STAIR_SIZE 14
+int westStairs[RING_STAIR_SIZE];
+int eastStairs[RING_STAIR_SIZE];
 int invisWalls[2];
+int specialDoor;
+
+#define DRONE_STAIR_SIZE 9
+int droneStairs[DRONE_STAIR_SIZE];
+bool droneStaircaseToggle;
 
 int bolasMinibossState = 0;
 
@@ -52,6 +57,18 @@ script "study_init" (void)
 
     invisWalls[0] = 604;
     invisWalls[1] = 704;
+
+	specialDoor = 804;
+
+	droneStairs[0] = 318;
+	droneStairs[1] = 418;
+	droneStairs[2] = 518;
+	droneStairs[3] = 618;
+	droneStairs[4] = 718;
+	droneStairs[5] = 818;
+	droneStairs[6] = 918;
+	droneStairs[7] = 219;
+	droneStairs[8] = 319;
 
     moveCeiling(invisWalls[(ringState % 2)], -160, SECTOR_SPEED_MAX);
     moveCeiling(invisWalls[!(ringState % 2)], 256, SECTOR_SPEED_MAX);
@@ -121,24 +138,26 @@ script "study_events" (int toggle, int action, int args)
 
                 if(stairState == 0) {
                     // Lower West stairs, raise East stairs
-                    for(i = 0; i < STAIR_SIZE; i++) {
+                    for(i = 0; i < RING_STAIR_SIZE; i++) {
                         moveFloor(westStairs[i], (i+1) * -16, SECTOR_SPEED_MAX);
                         moveFloor(eastStairs[i], (i+1) *  16, SECTOR_SPEED_MAX);
                     }
+					moveCeiling(specialDoor, -32, SECTOR_SPEED_MAX);
                 } else {
                     // Lower East stairs, raise West stairs
-                    for(i = 0; i < STAIR_SIZE; i++) {
+                    for(i = 0; i < RING_STAIR_SIZE; i++) {
                         moveFloor(westStairs[i], (i+1) *  16, SECTOR_SPEED_MAX);
                         moveFloor(eastStairs[i], (i+1) * -16, SECTOR_SPEED_MAX);
                     }
+					moveCeiling(specialDoor, 96, SECTOR_SPEED_MAX);
                 }
             }
             else // Ring faces N/S
             {
                 // Set all stairs to None
-                for(i = 0; i < STAIR_SIZE; i++) {
-                    moveFloor(westStairs[i], STAIR_SIZE * -16, SECTOR_SPEED_MAX);
-                    moveFloor(eastStairs[i], STAIR_SIZE * -16, SECTOR_SPEED_MAX);
+                for(i = 0; i < RING_STAIR_SIZE; i++) {
+                    moveFloor(westStairs[i], RING_STAIR_SIZE * -16, SECTOR_SPEED_MAX);
+                    moveFloor(eastStairs[i], RING_STAIR_SIZE * -16, SECTOR_SPEED_MAX);
                 }
             }
 
@@ -234,7 +253,22 @@ script "study_events" (int toggle, int action, int args)
 		}
 		break;
 
-	case 18: // [37] [TODO] Toggleable staircase. Uses tags for 19 as well.
+	case 18: // [37] Toggleable staircase. Uses tags for 19 as well.
+		if(toggle) {
+			moveFloor(tag1, 0, SECTOR_SPEED_FAST);
+			droneStaircaseToggle = !droneStaircaseToggle;
+			if(droneStaircaseToggle) {
+				for(i = 0; i < DRONE_STAIR_SIZE; i++) {
+					moveFloor(droneStairs[i], -(i+1) *  16, SECTOR_SPEED_SLOW);
+				}
+			} else {
+				for(i = 0; i < DRONE_STAIR_SIZE; i++) {
+					moveFloor(droneStairs[i],  (i+1) *  16, SECTOR_SPEED_SLOW);
+				}
+			}
+		} else {
+			moveFloor(tag1, 16, SECTOR_SPEED_FAST);
+		}
 		break;
 
 	case 20: // [39] Endgame statue puzzle.
