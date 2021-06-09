@@ -85,10 +85,10 @@ class StudyBookCase : BasicActor
             }
             let act = trackers[i].getBlock();
             let dest = trackers[i].getDestPos(delta);
-            let flags = WARPF_INTERPOLATE|WARPF_MOVEPTR|WARPF_ABSOLUTEPOSITION|WARPF_USECALLERANGLE;
-            if(i + 1 == trackers.size()) {
-                flags |= WARPF_NOCHECKPOSITION;
-            }
+            let flags = WARPF_INTERPOLATE|WARPF_MOVEPTR|WARPF_ABSOLUTEPOSITION|WARPF_USECALLERANGLE|WARPF_NOCHECKPOSITION;
+            // if(i + 1 == trackers.size()) {
+            //     flags |= WARPF_NOCHECKPOSITION;
+            // }
             Warp(act,
                 dest.x,
                 dest.y,
@@ -236,6 +236,7 @@ class BookCase_8x4 : BookCaseModel {}
 class BookCase_10x4 : BookCaseModel {}
 class BookCase_12x4 : BookCaseModel {}
 
+class BookCase_8x5 : BookCaseModel {}
 class BookCase_10x5 : BookCaseModel {}
 
 class BookCase_4x6 : BookCaseModel {}

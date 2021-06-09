@@ -380,6 +380,16 @@ Model BookCase_10x5
    FrameIndex BWOS A 0 0
 }
 
+Model BookCase_8x5
+{
+   Path "models/Study"
+   Model 0 "M_BC8X5.obj"
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.0
+   AngleOffset 90
+
+   FrameIndex BWOS A 0 0
+}
 
 Model SlideRingCenter
 {

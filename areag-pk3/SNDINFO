@@ -257,5 +257,5 @@ boss/mike/fire      MKFIRE  // Castlevania: The Adventure ReBirth
 // --------------------------------------------------
 $musicvolume M_BEACH 1.0
 $musicvolume M_GATE 1.0
-$musicvolume M_STUDY 0.7
+$musicvolume M_STUDY 0.1
 $musicvolume M_IMPACT 0.7
