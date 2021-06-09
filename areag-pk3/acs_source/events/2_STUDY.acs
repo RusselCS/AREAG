@@ -236,6 +236,7 @@ script "study_events" (int toggle, int action, int args)
 		SetUserVariable(switchTag, "bEndState", true);
 		Floor_LowerToLowest(tag1, SECTOR_SPEED_FAST);
         Floor_LowerToLowest(tag2, SECTOR_SPEED_FAST);
+		moveFloor(tag3, 320, SECTOR_SPEED_SLOW);
 		break;
 
 	case 15: // [31] Underground Drone Puzzle
@@ -254,6 +255,7 @@ script "study_events" (int toggle, int action, int args)
 		break;
 
 	case 18: // [37] Toggleable staircase. Uses tags for 19 as well.
+		// [TODO] Requires *attackable* floor switch instead of big steppy floor switch
 		if(toggle) {
 			moveFloor(tag1, 0, SECTOR_SPEED_FAST);
 			droneStaircaseToggle = !droneStaircaseToggle;
