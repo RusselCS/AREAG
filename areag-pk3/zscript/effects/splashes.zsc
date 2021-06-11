@@ -117,11 +117,3 @@ class BreathTime : Counter
         inventory.maxamount 100;
     }
 }
-
-class BreathCooldown : Powerup
-{
-    Default
-    {
-        powerup.duration 20;
-    }
-}

@@ -60,6 +60,7 @@
 
 #include "zscript/inventory/passives/scrolls/efficientvandal.zsc"
 #include "zscript/inventory/passives/scrolls/shockabsorber.zsc"
+#include "zscript/inventory/passives/scrolls/swimminglessons.zsc"
 
 #include "zscript/inventory/hats/_BasicHat.zsc"
 #include "zscript/inventory/hats/MiningHat.zsc"
