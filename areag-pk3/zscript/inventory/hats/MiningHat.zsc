@@ -33,7 +33,7 @@ class MiningHatPassive : HatPassive {
         let lpos = getLightPos(plr);
         bool bl;
         [bl, lightFX] = plr.A_SpawnItemEx("MiningHatFX", lpos.x, lpos.y, lpos.z);
-        console.printf("Mining Hat Initiated.");
+        //console.printf("Mining Hat Initiated.");
     }
     override void hatEquip(AREAGPlayerPawn plr) {
         // 
@@ -46,15 +46,16 @@ class MiningHatPassive : HatPassive {
                     lpos.y,
                     lpos.z,
                     0, WARPF_INTERPOLATE|WARPF_NOCHECKPOSITION|WARPF_MOVEPTR|WARPF_ABSOLUTEPOSITION);
-        console.printf("Mining Hat Tick.");
+        //console.printf("Mining Hat Tick.");
     }
     override void hatRemove(AREAGPlayerPawn plr) {
-        lightFX.Destroy();
         console.printf("Mining Hat Removed.");
     }
 
     override void onDestroy() {
-        lightFX.Destroy();
+        if(lightFX) {
+            lightFX.Destroy();
+        }
     }
 
     vector3 getLightPos(AREAGPlayerPawn plr) {

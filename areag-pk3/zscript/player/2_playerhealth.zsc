@@ -4,8 +4,10 @@ extend class AREAGPlayerPawn {
 	int lastArmor;
     int lastHealth;
     int lastFallStun;
+    int hatHealth;
 
     void AREAGHealthInit() {
+		hatHealth = HP_SEG_MAX;
         lastHealth = health;
 		lastArmor = CountInv("ArmorBars");
         lastFallStun = 0;

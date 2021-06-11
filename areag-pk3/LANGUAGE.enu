@@ -78,8 +78,11 @@ PU_PENDANT = "Grants immunity to damage from Luminite Sludge.";
 AR_EFFICIENTVANDAL = "EFFICIENTVANDAL";
 PU_EFFICIENTVANDAL = "Breakable Structures die in one hit.";
 
-AR_MININGHAT = "Mining Light";
+AR_MININGHAT = "MINING LIGHT";
 PU_MININGHAT = "While equipped, the area around you is brightly lit up.";
+
+AR_TOPHAT = "TOP HAT";
+PU_TOPHAT = "While equipped, gain an extra 25 Max HP.";
 
 // TABLETS
 

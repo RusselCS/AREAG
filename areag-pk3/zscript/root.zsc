@@ -61,6 +61,7 @@
 
 #include "zscript/inventory/hats/_BasicHat.zsc"
 #include "zscript/inventory/hats/MiningHat.zsc"
+#include "zscript/inventory/hats/TopHat.zsc"
 
 #include "zscript/inventory/basicinventory.zsc"
 #include "zscript/inventory/currency.zsc"

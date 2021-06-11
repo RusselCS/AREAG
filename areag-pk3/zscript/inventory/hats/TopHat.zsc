@@ -1,0 +1,48 @@
+class TopHatPickup : BasicInventory
+{
+    Default
+    {
+        BasicInventory.PickupType PICKTYPE_ARTIFICE;
+        BasicInventory.PickupID PICKMSG_TOPHAT;
+        BasicInventory.CheckItem "HasTopHat";
+    }
+	States
+	{
+	SpawnFrames:
+		HATS B 1;
+		loop;
+	}
+}
+
+class TopHatEquip : HatEquip
+{
+    override void definePickup()
+    {
+        clsName = "TopHatPassive";
+        hatCheckItem = "HasTopHat";
+    }
+}
+
+class HasTopHat : Once {}
+
+class TopHatPassive : HatPassive {
+
+    override void hatInit(AREAGPlayerPawn plr) {}
+    override void hatEquip(AREAGPlayerPawn plr) {
+        plr.A_GiveInventory("MaxHealthBars", 1);
+        plr.A_SetHealth(plr.health + plr.hatHealth);
+        plr.hatHealth = 0;
+    }
+    override void hatTick(AREAGPlayerPawn plr) {}
+    override void hatRemove(AREAGPlayerPawn plr) {
+        let segs = plr.CountInv("MaxHealthBars") - 1;
+
+        if(plr.health > segs * HP_SEG_MAX) {
+            plr.hatHealth = plr.health - segs * HP_SEG_MAX;
+            plr.A_SetHealth(segs * HP_SEG_MAX);
+        }
+
+        plr.A_TakeInventory("MaxHealthBars", 1);
+    }
+    override void onDestroy() {}
+}
