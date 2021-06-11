@@ -149,7 +149,7 @@ class WhipProjectileL : BasicProjectile
         +NOTIMEFREEZE;
         +HITTRACER;
         +BLOODSPLATTER;
-		damagetype "Explosive";
+		damagetype "Whip";
         radius 4;
         radius 2;
     }

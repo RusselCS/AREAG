@@ -97,3 +97,35 @@ class LostImpactLampFlame : BasicEffect
     }
 }
 
+class LostImpactExplosiveBarrel : BasicActor
+{
+    Default
+    {
+        Damagefactor "Explosive", 100.0;
+        +SHOOTABLE;
+        +NOBLOOD;
+        bloodtype "HitPop";
+        Health 25;
+        height 64;
+        radius 46;
+        scale 2.0;
+    }
+
+    States
+    {
+    Spawn:
+        BART A 1;
+        wait;
+    Death:
+        BART B 0 A_NoBlocking();
+        BART BCD 2;
+        BART D 0 {
+            bool bl;
+            Actor act;
+            [bl, act] = A_SpawnItemEx("DynamiteMine", 0, 0, 0, 0, 0, 0, 0, SXF_TRANSFERPOINTERS);
+            act.reactiontime = 0;
+        }
+        BART EFGHIJKL 2;
+        wait;
+    }
+}

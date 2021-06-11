@@ -32,6 +32,7 @@ DoomEdNums
 	30003 = StudySlideRing
 	30004 = MiningPlatform
 	30005 = StudyBookCase
+	30006 = LostImpactExplosiveBarrel
 
 	30099 = MonsterPathNode
     30100 = ObArcherSpawner
