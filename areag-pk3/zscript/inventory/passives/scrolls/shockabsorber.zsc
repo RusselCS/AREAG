@@ -1,0 +1,18 @@
+class ShockAbsorberScroll : BasicInventory
+{
+    Default
+    {
+        BasicInventory.PickupType PICKTYPE_TREASURE;
+        BasicInventory.PickupID PICKMSG_SHOCKABSORBER;
+        BasicInventory.CheckItem "ShockAbsorberFlag";
+	    Scale 2.0;
+    }
+	States
+	{
+	SpawnFrames:
+        SCL1 B 1;
+        loop;
+	}
+}
+
+class ShockAbsorberFlag : Once {}

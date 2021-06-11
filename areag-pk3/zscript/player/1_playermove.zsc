@@ -110,7 +110,11 @@ extend class AREAGPlayerPawn {
                 A_SpawnItemEx("AREAGCrashLand");
                 A_StartSound("drone/crashland", CHAN_BODY);
             } else {
-                A_SetInventory("FallStunTime", 140);
+                if(CountInv("ShockAbsorberFlag")) {
+                    A_SetInventory("FallStunTime", 70);
+                } else {
+                    A_SetInventory("FallStunTime", 140);
+                }
                 A_SetInventory("ScreenShakeTime", 5);
                 A_SpawnItemEx("AREAGCrashLand");
                 A_StartSound("player/crashland", CHAN_BODY);

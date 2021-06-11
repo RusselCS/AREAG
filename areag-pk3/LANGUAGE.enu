@@ -84,6 +84,9 @@ PU_MININGHAT = "While equipped, the area around you is brightly lit up.";
 AR_TOPHAT = "TOP HAT";
 PU_TOPHAT = "While equipped, gain an extra 25 Max HP.";
 
+AR_SHOCKABSORBER = "SHOCK ABSORBER";
+PU_SHOCKABSORBER = "Reduces fall stun duration.";
+
 // TABLETS
 
 TABLET_TESTMAP_0 = "This is a puzzle tablet. Read the other using nova pack.";
