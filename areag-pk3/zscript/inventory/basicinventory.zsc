@@ -227,6 +227,15 @@ class MapPickup : BasicActor
         int pickupId = score;
         String pickup = MapDataRepo.getPickupFromHere(level.levelnum, pickupId);
 
+        if(GetCvarBool("db_showpickupids")) {
+            bool spawned;
+            Actor child;
+            [spawned, child] = A_SpawnItemEx("ZSCNumber", 0, 0, 16);
+            if(spawned) {
+                child.score = pickupId;
+            }
+        }
+
         if(MapDataRepo.getTempPickupByLevel(level.levelnum, pickupId-1) == 0) {
             bool spawned;
             Actor child;
@@ -238,12 +247,6 @@ class MapPickup : BasicActor
                     child.bFLOATBOB = false;
                 }
                 child.score = score;
-                if(GetCvarBool("db_showpickupids")) {
-                    [spawned, child] = A_SpawnItemEx("ZSCNumber", 0, 0, 16);
-                    if(spawned) {
-                        child.score = pickupId;
-                    }
-                }
             } else {
                 A_Log(String.format("Failed to spawn Pickup %s", pickup));
             }

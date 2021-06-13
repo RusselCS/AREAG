@@ -1,0 +1,29 @@
+class SilverCuirassPickup : BasicInventory
+{
+    Default
+    {
+        BasicInventory.PickupType PICKTYPE_ARTIFICE;
+        BasicInventory.PickupID PICKMSG_CUIRASS;
+        BasicInventory.CheckItem "CuirassProtection";
+    }
+	States
+	{
+	SpawnFrames:
+		PSVE B 1;
+		loop;
+	}
+}
+
+class CuirassProtection : PowerProtection
+{
+	Default
+	{
+  		+INVENTORY.HUBPOWER;
+		Damagefactor "Normal", 0.5;
+
+		Damagefactor "Crush", 1.0;
+		Damagefactor "Slime", 1.0;
+		Damagefactor "Falling", 1.0;
+		Damagefactor "Drowning", 1.0;
+	}
+}

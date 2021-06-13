@@ -90,6 +90,9 @@ PU_SHOCKABSORBER = "Reduces fall stun duration.";
 AR_SWIMMINGLESSONS = "SWIMMING LESSONS";
 PU_SWIMMINGLESSONS = "Increases underwater breathing time.";
 
+AR_SILVERCUIRASS = "SILVER CUIRASS";
+PU_SILVERCUIRASS = "Damage taken is reduced by half.";
+
 // TABLETS
 
 TABLET_TESTMAP_0 = "This is a puzzle tablet. Read the other using nova pack.";
