@@ -38,3 +38,49 @@ script "testmap2_event" (int toggle, int action, int unused)
             break;
 	}
 }
+
+script "testmap_floorMoves" (int tag, int upSpeed, int downSpeed)
+{
+	int sidx;
+
+	sidx = 0;
+	moveFloor(tag, 224, upSpeed);
+	do {
+		delay(1);
+		sidx = isFloorMoving(tag, sidx);
+	} while(sidx != -1);
+	Delay(35);
+
+	sidx = 0;
+	moveFloor(tag, 32, downSpeed);
+	do {
+		delay(1);
+		sidx = isFloorMoving(tag, sidx);
+	} while(sidx != -1);
+	Delay(35);
+
+	restart;
+}
+
+script "testmap_ceilingMoves" (int tag, int upSpeed, int downSpeed)
+{
+	int sidx;
+
+	sidx = 0;
+	moveCeiling(tag, 256, upSpeed);
+	do {
+		delay(1);
+		sidx = isCeilingMoving(tag, sidx);
+	} while(sidx != -1);
+	Delay(35);
+
+	sidx = 0;
+	moveCeiling(tag, 480, downSpeed);
+	do {
+		delay(1);
+		sidx = isCeilingMoving(tag, sidx);
+	} while(sidx != -1);
+	Delay(35);
+	
+	restart;
+}

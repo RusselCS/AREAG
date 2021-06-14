@@ -1,0 +1,114 @@
+class MovingFloorsRepo Abstract
+{
+    static MovingSectorsCollection getRepository() {
+        let evh = MovingSectorsHandler(EventHandler.Find("MovingSectorsHandler"));
+        if(evh) {
+            //console.printf("Found eventhandler, returning floors item.");
+            return evh.floors;
+        }
+        //console.printf("Eventhandler not found, returning null");
+        return null;
+    }
+
+    static int refreshTag(int tag, int idx) {
+        let flr = getRepository();
+        if(flr) {
+            return flr.refreshTag(tag, idx);
+        }
+        return -1;
+    }
+
+    static int addSector(int tag, int dest, int speed) {
+        let flr = getRepository();
+        if(flr) {
+            return flr.addSector(tag, dest, speed);
+        }
+        console.printf("addSector returning -1");
+        return -1;
+    }
+
+    static void removeSectorById(int idx) {
+        let flr = getRepository();
+        if(flr) {
+            flr.removeSectorById(idx);
+        }
+    }
+
+    static double getTargetHeightById(int idx) {
+        let flr = getRepository();
+        if(flr) {
+            return flr.getTargetHeightById(idx);
+        }
+        return -66535;
+    }
+
+    static void pauseAllSectors() {
+        let flr = getRepository();
+        if(flr) {
+            flr.pauseAllSectors();
+        }
+    }
+
+    static void resumeAllSectors() {
+        let flr = getRepository();
+        if(flr) {
+            flr.resumeAllSectors();
+        }
+    }
+}
+
+class MovingCeilingsRepo Abstract
+{
+    static MovingSectorsCollection getRepository() {
+        let evh = MovingSectorsHandler(EventHandler.Find("MovingSectorsHandler"));
+        if(evh) {
+            return evh.ceilings;
+        }
+        return null;
+    }
+
+    static int refreshTag(int tag, int idx) {
+        let flr = getRepository();
+        if(flr) {
+            return flr.refreshTag(tag, idx);
+        }
+        return -1;
+    }
+
+    static int addSector(int tag, int dest, int speed) {
+        let flr = getRepository();
+        if(flr) {
+            return flr.addSector(tag, dest, speed);
+        }
+        return -1;
+    }
+
+    static void removeSectorById(int idx) {
+        let flr = getRepository();
+        if(flr) {
+            flr.removeSectorById(idx);
+        }
+    }
+
+    static double getTargetHeightById(int idx) {
+        let flr = getRepository();
+        if(flr) {
+            return flr.getTargetHeightById(idx);
+        }
+        return -66535;
+    }
+
+    static void pauseAllSectors() {
+        let flr = getRepository();
+        if(flr) {
+            flr.pauseAllSectors();
+        }
+    }
+
+    static void resumeAllSectors() {
+        let flr = getRepository();
+        if(flr) {
+            flr.resumeAllSectors();
+        }
+    }
+}

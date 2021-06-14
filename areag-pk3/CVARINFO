@@ -22,6 +22,9 @@ user bool db_enginepushable = true;
 server int db_enemytestterrain = 0;
 server int db_mapexitdest = 0;
 
+// SYSTEM TOGGLES
+server noarchive bool sys_timefreeze = false;
+
 // SAVE SYSTEM
 user noarchive string SAVE_OUTSKIRTS_EVENT_0 = "000000000000000";
 user noarchive string SAVE_OUTSKIRTS_PICKUP_0 = "00000000000";

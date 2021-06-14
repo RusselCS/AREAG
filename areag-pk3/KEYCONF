@@ -10,3 +10,6 @@ alias db_clearspawn "db_levelnum 0"
 alias CMD_LOAD_1 "pukename map_loadGame 1"
 alias CMD_LOAD_2 "pukename map_loadGame 2"
 alias CMD_LOAD_3 "pukename map_loadGame 3"
+
+alias db_stopsectors "pukename map_pauseMovingSectors 0; wait 2; pukename map_pauseMovingSectors 1;"
+alias db_resumesectors "pukename map_resumeMovingSectors 0; wait 2; pukename map_resumeMovingSectors 1;"

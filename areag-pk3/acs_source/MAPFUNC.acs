@@ -128,17 +128,45 @@ function int checkEventState(int evt) {
 }
 
 function void moveFloor(int tag, int height, int speed) {
-	Floor_Stop(tag);
-	Floor_MoveToValue(tag, speed, abs(height), height < 0);
+	ACS_NamedExecuteAlways("map_moveFloor", 0, tag, height, speed);
 }
 
 function void moveCeiling(int tag, int height, int speed) {
-	Ceiling_Stop(tag);
-	Ceiling_MoveToValue(tag, speed, abs(height), height < 0);
+	ACS_NamedExecuteAlways("map_moveCeiling", 0, tag, height, speed);
 }
 
-function bool tagMoving(int tag) {
-	return false;
+// PARAMETERS:
+// - Sector Tag
+// - Moving Sector Index (set to 0 if you don't have it)
+// 
+// RETURNS:
+// - Moving Sector Index (-1 if sector is not currently in motion)
+//
+function int isFloorMoving(int tag, int idx) {
+	return ScriptCall("MovingFloorsRepo", "refreshTag", tag, idx);
+}
+
+// PARAMETERS:
+// - Sector Tag
+// - Moving Sector Index (set to 0 if you don't have it)
+// 
+// RETURNS:
+// - Moving Sector Index (-1 if sector is not currently in motion)
+//
+function int isCeilingMoving(int tag, int idx) {
+	return ScriptCall("MovingCeilingsRepo", "refreshTag", tag, idx);
+}
+
+function void timeStop(void) {
+	SetCVar("sys_timefreeze", true);
+	ScriptCall("MovingFloorsRepo", "pauseAllSectors");
+	ScriptCall("MovingCeilingsRepo", "pauseAllSectors");
+}
+
+function void timeResume(void) {
+	SetCVar("sys_timefreeze", false);
+	ScriptCall("MovingFloorsRepo", "resumeAllSectors");
+	ScriptCall("MovingCeilingsRepo", "resumeAllSectors");
 }
 
 function void clearSpecial(int tag) {

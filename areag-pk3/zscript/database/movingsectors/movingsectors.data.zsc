@@ -1,0 +1,18 @@
+class MovingSectorsHandler : EventHandler
+{
+    MovingSectorsCollection floors;
+    MovingSectorsCollection ceilings;
+
+    override void WorldLoaded(WorldEvent e) {
+        floors = new("MovingSectorsCollection").Init(0);
+        ceilings = new("MovingSectorsCollection").Init(1);
+
+        if(floors) {
+            console.printf("Floors instanciated.");
+        }
+
+        if(ceilings) {
+            console.printf("Ceilings instanciated.");
+        }
+    }
+}

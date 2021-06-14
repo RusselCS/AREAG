@@ -1,0 +1,3 @@
+#include "zscript/database/movingsectors/movingsectors.data.zsc"
+#include "zscript/database/movingsectors/movingsectors.entity.zsc"
+#include "zscript/database/movingsectors/movingsectors.repo.zsc"

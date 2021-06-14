@@ -1,0 +1,73 @@
+class MovingSectorsCollection
+{
+    Array<int> tags;
+    Array<double> dests;
+    Array<double> speeds;
+
+    int plane;
+
+    MovingSectorsCollection Init(int pl) {
+        plane = pl;
+        return self;
+    }
+
+    int refreshTag(int tag, int idx) {
+        if((idx == -1) || (idx < tags.size() && tags[idx] == tag)) {
+            return idx;
+        }
+        return findTag(tag);
+    }
+
+    int findTag(int tag) {
+        for(int i = 0; i < tags.size(); i++) {
+            if(tag == tags[i]) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    int addSector(int tag, double dest, double speed) {
+        int idx = findTag(tag);
+        if(idx == -1) { // This is new
+            tags.push(tag);
+            dests.push(dest);
+            speeds.push(speed);
+            return tags.size()-1;
+        } else { // Update existing
+            dests[idx] = dest;
+            speeds[idx] = speed;
+            return idx;
+        }
+    }
+
+    void removeSectorByTag(int tag) {
+        int idx = findTag(tag);
+        if(idx != -1) {
+            removeSectorById(idx);
+        }
+    }
+
+    void removeSectorById(int idx) {
+        tags.delete(idx);
+        dests.delete(idx);
+        speeds.delete(idx);
+    }
+
+    void pauseAllSectors() {
+        for(int i = 0; i < tags.size(); i++) {
+            CallACS("map_forceStopPlane", plane, tags[i]);
+        }
+    }
+
+    void resumeAllSectors() {
+        for(int i = 0; i < tags.size(); i++) {
+            CallACS("map_forceResumePlane", plane, tags[i], dests[i], speeds[i]);
+        }
+    }
+
+    double getTargetHeightById(int idx) {
+        return dests[idx];
+    }
+}
+

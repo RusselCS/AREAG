@@ -451,3 +451,88 @@ script "map_loadGame" (int file)
 	ACS_NamedExecuteAlways("map_switchto", 100, levelNum, doorNum, true);
 	ACS_NamedExecuteAlways("map_switchto", 0, 100, 0);
 }
+
+script "map_moveFloor" (int tag, int dest, int speed)
+{
+	int present = (isFloorMoving(tag, 0) == -1);
+	int idx = ScriptCall("MovingFloorsRepo", "addSector", tag, dest, speed);
+
+	if(!GetCVar("sys_timefreeze")) {
+		Floor_Stop(tag);
+		Floor_MoveToValue(tag, speed, abs(dest), dest < 0);
+	}
+	
+	if(!present) {
+
+		int cur, sDest;
+
+		do
+		{
+			delay(1);
+			idx = ScriptCall("MovingFloorsRepo", "refreshTag", tag, idx);
+			cur = GetSectorFloorZ(tag, 0, 0);
+			sDest = ScriptCall("MovingFloorsRepo", "getTargetHeightById", idx);
+		}
+		while(cur != sDest);
+
+		ScriptCall("MovingFloorsRepo", "removeSectorById", idx);
+	}
+}
+
+script "map_moveCeiling" (int tag, int dest, int speed)
+{
+	int present = (isFloorMoving(tag, 0) == -1);
+	int idx = ScriptCall("MovingCeilingsRepo", "addSector", tag, dest, speed);
+
+	if(!GetCVar("sys_timefreeze")) {
+		Ceiling_Stop(tag);
+		Ceiling_MoveToValue(tag, speed, abs(dest), dest < 0);
+	}
+
+	if(!present) {
+
+		int cur, sDest;
+
+		do
+		{
+			delay(1);
+			idx = ScriptCall("MovingCeilingsRepo", "refreshTag", tag, idx);
+			cur = GetSectorCeilingZ(tag, 0, 0);
+			sDest = ScriptCall("MovingCeilingsRepo", "getTargetHeightById", idx);
+			printBold(s:"cur ", f:cur, s:" / ", f:sDest, s:" dest");
+		}
+		while(cur != sDest);
+
+		ScriptCall("MovingCeilingsRepo", "removeSectorById", idx);
+	}
+}
+
+script "map_pauseMovingSectors" (void) NET
+{
+	timeStop();
+}
+
+script "map_resumeMovingSectors" (void) NET
+{
+	timeResume();
+}
+
+script "map_forceStopPlane" (int which, int tag)
+{
+	//PrintBold(s:"ForceResume called: [", i:which, s:"] ", i:tag);
+	if(which == 0) {
+		Floor_Stop(tag);
+	} else {
+		Ceiling_Stop(tag);
+	}
+}
+
+script "map_forceResumePlane" (int which, int tag, int dest, int speed)
+{
+	//PrintBold(s:"ForceResume called: [", i:which, s:"] ", i:tag, s:", ", i:dest, s:", ", i:speed);
+	if(which == 0) {
+		Floor_MoveToValue(tag, speed, abs(dest), dest < 0);
+	} else {
+		Ceiling_MoveToValue(tag, speed, abs(dest), dest < 0);
+	}
+}

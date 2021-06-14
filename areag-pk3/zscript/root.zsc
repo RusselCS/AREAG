@@ -12,6 +12,7 @@
 
 // DATABASE SYSTEM DEFINITIONS
 #include "zscript/database/mapdata.zsc"
+#include "zscript/database/movingsectors.zsc"
 
 // GRAPHIC EFFECTS
 #include "zscript/effects/splashes.zsc"

@@ -57,7 +57,7 @@ cluster 1
 
 GAMEINFO
 {
-    EventHandlers = "MapUtilInit"//, "DynamicMusicHandler"
+    EventHandlers = "MapUtilInit", "MovingSectorsHandler"//, "DynamicMusicHandler"
 	statusbarclass = "AREAGStatusBar"
 }
 
