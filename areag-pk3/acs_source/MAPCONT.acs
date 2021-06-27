@@ -507,12 +507,12 @@ script "map_moveCeiling" (int tag, int dest, int speed)
 	}
 }
 
-script "map_pauseMovingSectors" (void) NET
+script "map_pauseMovingSectors" (void)
 {
 	timeStop();
 }
 
-script "map_resumeMovingSectors" (void) NET
+script "map_resumeMovingSectors" (void)
 {
 	timeResume();
 }

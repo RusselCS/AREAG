@@ -50,6 +50,7 @@
 // ACTIVE ITEMS
 #include "zscript/inventory/actives/drone.zsc"
 #include "zscript/inventory/actives/horn.zsc"
+#include "zscript/inventory/actives/timepiece.zsc"
 
 // PASSIVE ITEMS
 #include "zscript/inventory/passives/_BasicPassive.zsc"

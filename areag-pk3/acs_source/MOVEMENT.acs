@@ -417,6 +417,8 @@ function int getPlayerWaterLevel (void)
 			if(playerHeight < sectorCeil)
 			{
 				legsUnderWater = true;
+				if(GetUserVariable(0, "dWaterLevel") != sectorCeil)
+					SetUserVariable(0, "dWaterLevel", sectorCeil);
 			}
 			
 			if(viewHeight < sectorCeil)
@@ -431,6 +433,8 @@ function int getPlayerWaterLevel (void)
 			if(playerHeight < sectorCeil && playerHeight >= sectorFloor)
 			{
 				legsUnderWater = true;
+				if(GetUserVariable(0, "dWaterLevel") != sectorCeil)
+					SetUserVariable(0, "dWaterLevel", sectorCeil);
 			}
 			
 			if(viewHeight < sectorCeil && viewHeight >= sectorFloor)

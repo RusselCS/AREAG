@@ -40,12 +40,12 @@ class AREAGProtoPlayer : PlayerPawn {
         bOnGround = pos.z ~== floorz || bONMOBJ || bMBFBOUNCER;
 
         // This will be overridden by subclasses.
-        if(!Level.isFrozen() && !bNOTIMEFREEZE) {
+        if(!Level.isFrozen() || bNOTIMEFREEZE) {
             AREAGTick();
         }
 
         iOldButtons = iButtons;
-        iButtons = GetPlayerInput(INPUT_BUTTONS);
+        iButtons = GetPlayerInput(MODINPUT_BUTTONS);
 
         // VelZ interpolations also based on Lithium.
         if(Vel.Z - lastZVel > double.Epsilon)
