@@ -13,6 +13,7 @@ class ChakramShieldPickup : BasicInventory
         CSHL A 1;
         loop;
     PickupEffect:
+        CSHL A 0 A_TakeInventory("IronShield", 1);
         CSHL A 0 A_GiveInventory("ChakramStock", 1);
         CSHL A 0 A_SelectWeapon("ChakramShield");
         stop;
@@ -24,7 +25,7 @@ class ChakramShield : AREAGProtoWeapon
 
     Default
     {
-        Weapon.SlotNumber 1;
+        Weapon.SlotNumber 2;
         Obituary "%o was sliced by %k's Kinderlun.";
         Inventory.Pickupmessage "";
     }

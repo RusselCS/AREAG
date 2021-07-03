@@ -6,6 +6,18 @@ class IronShieldPickup : BasicInventory
         BasicInventory.PickupID PICKMSG_IRONSHIELD;
         BasicInventory.CheckItem "IronShield";
     }
+
+    override bool pickupCheck(Actor toucher) {
+        if(sCheckItem) {
+			if(toucher.CountInv("ChakramShield") > 0) {
+                return false;
+			} else {
+                return true;
+            }
+        }
+        return true;
+    }
+
     States
     {
     SpawnFrames:
@@ -22,7 +34,7 @@ class IronShield : AREAGProtoWeapon
 
     Default
     {
-        Weapon.SlotNumber 1;
+        Weapon.SlotNumber 2;
         Obituary "%o was crushed by %k's smashing board.";
         Inventory.Pickupmessage "";
     }

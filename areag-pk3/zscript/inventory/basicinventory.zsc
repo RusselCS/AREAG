@@ -32,6 +32,24 @@ class BasicInventory : CustomInventory
 
     virtual void BasicPickup(Actor toucher) {}
 
+    action State A_PickupCheck() {
+        if(invoker.pickupCheck(self)) {
+            return ResolveState(null);
+        }
+        return ResolveState("PickupFail");
+    }
+
+    virtual bool pickupCheck(Actor toucher) {
+        if(sCheckItem) {
+			if(toucher.CountInv(sCheckItem) > 0) {
+                return false;
+			} else {
+                return true;
+            }
+        }
+        return true;
+    }
+
     action void A_PickupSequence() {
         if(invoker.inWorld) {
             ACS_NamedExecuteAlways("pickups_displayMessage", 0, invoker.ptType, invoker.iPickupId);
@@ -93,6 +111,7 @@ class BasicInventory : CustomInventory
         TNT1 A 0 A_JumpIf(true, "SpawnFrames");
         goto SpawnFrames;
     Pickup:
+        TNT1 A 0 A_PickupCheck();
         TNT1 A 0 A_PickupSequence();
         TNT1 A 0 A_JumpIf(true, "PickupEffect");
         goto PickupEffect;

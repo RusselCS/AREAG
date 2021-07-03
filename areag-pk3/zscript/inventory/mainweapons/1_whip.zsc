@@ -8,6 +8,17 @@ class LeatherWhipPickup : BasicInventory
 		Scale 1.7;
     }
 
+	override bool pickupCheck(Actor toucher) {
+        if(sCheckItem) {
+			if(toucher.CountInv(sCheckItem) > 0 || toucher.CountInv("ChainWhip") > 0 || toucher.CountInv("LaserWhip") > 0) {
+                return false;
+			} else {
+                return true;
+            }
+        }
+        return true;
+    }
+
     States
     {
     SpawnFrames:

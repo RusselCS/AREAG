@@ -7,12 +7,24 @@ class ChainWhipPickup : BasicInventory
         BasicInventory.CheckItem "ChainWhip";
     }
 
+	override bool pickupCheck(Actor toucher) {
+        if(sCheckItem) {
+			if(toucher.CountInv(sCheckItem) > 0 || toucher.CountInv("LaserWhip") > 0) {
+                return false;
+			} else {
+                return true;
+            }
+        }
+        return true;
+    }
+
     States
     {
     SpawnFrames:
         CHWP A 1;
         loop;
     PickupEffect:
+		CHWP A 0 A_TakeInventory("AdventureWhip", 1);
         CHWP A 0 A_SelectWeapon("ChainWhip");
         stop;
     }
