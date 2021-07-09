@@ -212,13 +212,13 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
         int dest;
 
         if(add) {
-            bool doubleAmt = x < 0 && !(false); // currentHatClass == "EngineerHatPassive"
+            bool doubleAmt = x < 0 && !(currentHatClass == "BatteryHatPassive");
             if(doubleAmt) {
                 x *= 2;
             }
-            dest = CountInv("Battery") + x;
+            dest = max(CountInv("Battery") + x, 0); // you can't set an item to a negative number, now can you?
         } else {
-            dest = max(x, 0); // you can't set an item to a negative number, now can you?
+            dest = max(x, 0);
         }
 
         A_SetInventory("Battery", dest);

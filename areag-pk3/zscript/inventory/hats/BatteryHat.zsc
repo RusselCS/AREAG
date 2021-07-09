@@ -1,0 +1,38 @@
+class BatteryHatPickup : BasicInventory
+{
+    Default
+    {
+        BasicInventory.PickupType PICKTYPE_ARTIFICE;
+        BasicInventory.PickupID PICKMSG_BATTERYHAT;
+        BasicInventory.CheckItem "HasBatteryHat";
+    }
+	States
+	{
+	SpawnFrames:
+		HATS C 1;
+		loop;
+	}
+}
+
+class BatteryHatEquip : HatEquip
+{
+    override void definePickup()
+    {
+        clsName = "BatteryHatPassive";
+        hatCheckItem = "HasBatteryHat";
+    }
+}
+
+class HasBatteryHat : Once {}
+
+class BatteryHatPassive : HatPassive {
+
+    override void hatInit(AREAGPlayerPawn plr) {}
+    override void hatEquip(AREAGPlayerPawn plr) {
+        console.printf("Battery Hat Equipped.");
+    }
+    override void hatTick(AREAGPlayerPawn plr) {}
+    override void hatRemove(AREAGPlayerPawn plr) {
+        console.printf("Battery Hat Removed.");
+    }
+}
