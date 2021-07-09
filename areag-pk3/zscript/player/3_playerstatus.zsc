@@ -31,7 +31,7 @@ extend class AREAGPlayerPawn {
         
         if(iBatteryRegenStack == 0 && CountMaxInv("Battery") > CountInv("Battery") && iDroneRegenTime == 0) {
             iDroneRegenTime = DRONE_REGEN;
-            A_GiveInventory("Battery", 1);
+            changeBatteryAmount(1);
         }
         if(iDroneRegenTime > 0) {
             iDroneRegenTime--;

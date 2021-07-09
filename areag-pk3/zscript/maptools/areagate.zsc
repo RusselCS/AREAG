@@ -1,5 +1,5 @@
 // AREA TRANSITION GATES
-class AreaGate : SecActHitFloor
+class AreaGate : SecActEnter
 {
     //$Category AREAG-Map Tools
     //$Title Area Gate

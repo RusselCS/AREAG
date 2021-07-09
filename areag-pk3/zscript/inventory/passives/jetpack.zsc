@@ -28,7 +28,7 @@ class NovaPackPassive : PlayerPassive
     const NOVA_MAXSPEED = 10.0;
 
     bool jetPackActive;
-    double jetPackMaxHeight;
+    double jetPackStartHeight;
 
     override void passiveTick(AREAGPlayerPawn plr)
     {
@@ -39,14 +39,18 @@ class NovaPackPassive : PlayerPassive
                             if(!jetPackActive) {
                             jetPackActive = true;
                             plr.iBatteryRegenStack++;
-                            jetPackMaxHeight = plr.pos.z + NOVA_MAXHEIGHT;
+                            jetPackStartHeight = plr.pos.z;
                             plr.A_StartSound("player/jetpack", CHAN_JETPACK, CHANF_LOOP);
                         }
                     }
 
                     if(jetPackActive) {
                         plr.A_ChangeVelocity(plr.vel.x, plr.vel.y, getVelZ(plr, true), CVF_REPLACE);
-                        plr.A_GiveInventory("NovaSpend", 1);
+                        if(plr.countInv("NovaSpendCooldown") == 0) {
+                            plr.changeBatteryAmount(-2);
+                            plr.A_GiveInventory("NovaSpendCooldown", 1);
+                        }
+                        
                     }
                 } else {
                     if(jetPackActive) { // descend
@@ -68,7 +72,10 @@ class NovaPackPassive : PlayerPassive
         let posz = plr.pos.z;
 
         if(ascend) {
-            if(posz >= jetPackMaxHeight) {
+            if(posz < jetPackStartHeight) {
+                jetPackStartHeight = posz;
+            }
+            if(posz >= jetPackStartHeight + NOVA_MAXHEIGHT) {
                 return 0.0;
             }
 
@@ -96,21 +103,6 @@ class NovaPackPassive : PlayerPassive
 }
 
 class NovaPackFlag : Once {}
-
-class NovaSpend : CustomInventory
-{
-	States
-	{
-	Pickup:
-		TNT1 A 0 A_JumpIfInventory("NovaSpendCooldown", 1, "End");
-		TNT1 A 0 A_TakeInventory("Battery", 4);
-		TNT1 A 0 A_GiveInventory("NovaSpendCooldown", 1);
-		stop;
-	End:
-		TNT1 A 0;
-		stop;
-	}
-}
 
 class NovaSpendCooldown : Powerup
 {

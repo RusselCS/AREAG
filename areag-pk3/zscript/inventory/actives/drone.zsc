@@ -14,7 +14,6 @@ class DronePickup : BasicActiveInventory
     }
 
     override void giveItemTrigger(AREAGPlayerPawn plr) {
-		plr.A_GiveInventory("Battery", 100);
 		plr.pushToggleTrigger(new("ToggleStateMap").Init("DroneFlag", "DroneOff"));
 	}
 
@@ -167,7 +166,7 @@ extend class AREAGPlayerPawn {
         A_TakeInventory("DronePlasmaGun", 1);
         A_SetHealth(iOldHealth);
 		A_TakeInventory("DroneFlag", 1);
-        A_SetInventory("Battery", 0);
+        changeBatteryAmount(0, false);
         ACS_NamedExecuteAlways("drone_curtain", 0, false);
         iBatteryRegenStack--;
         A_ChangeVelocity(0, 0, 0, CVF_REPLACE);
@@ -213,7 +212,7 @@ extend class AREAGPlayerPawn {
         }
 
         if(health != CountInv("Battery")) {
-            A_SetInventory("Battery", health);
+            changeBatteryAmount(health, false);
         }
 
         if(!bBUDDHA) {

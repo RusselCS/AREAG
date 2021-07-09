@@ -207,4 +207,20 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
 			return GetDefaultByType(itemtype).MaxAmount;
 		}
 	}
+
+    void changeBatteryAmount(int x, bool add = true) {
+        int dest;
+
+        if(add) {
+            bool doubleAmt = x < 0 && !(false); // currentHatClass == "EngineerHatPassive"
+            if(doubleAmt) {
+                x *= 2;
+            }
+            dest = CountInv("Battery") + x;
+        } else {
+            dest = max(x, 0); // you can't set an item to a negative number, now can you?
+        }
+
+        A_SetInventory("Battery", dest);
+    }
 }
