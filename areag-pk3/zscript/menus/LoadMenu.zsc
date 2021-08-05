@@ -59,10 +59,47 @@ class AREAGLoadMenu : ZFGenericMenu
 
         loadSelect = 0;
 
+        createFocusIndicator();
         createBackground();
-        createLoadButton(1);
-        createLoadButton(2);
-        createLoadButton(3);
+        let load1 = createLoadButton(1);
+        let load2 = createLoadButton(2);
+        let load3 = createLoadButton(3);
+
+        load1.setFocusNeighbor(ZFNavEventType_Up, load3);
+        load1.setFocusNeighbor(ZFNavEventType_Down, load2);
+
+        load2.setFocusNeighbor(ZFNavEventType_Up, load1);
+        load2.setFocusNeighbor(ZFNavEventType_Down, load3);
+
+        load3.setFocusNeighbor(ZFNavEventType_Up, load2);
+        load3.setFocusNeighbor(ZFNavEventType_Down, load1);
+
+        setFocus(load1, ZFNavEventType_Tab);
+    }
+
+    override void positionFocusIndicator(Vector2 pos, vector2 size)
+    {
+        getFocusIndicator().setPos(pos);
+        getFocusIndicator().setSize(size);
+    }
+
+    void createFocusIndicator() {
+        let cursorTexture = ZFBoxTextures.CreateTexturePixels
+        (
+            "GLOWBOX",
+            (17, 17), (32, 32),
+            boxTiled, boxTiled
+        );
+        
+        let cursor = ZFBoxImage.Create
+        (
+            // Position and size get overridden almost immediately anyway, so there's no real reason to push this.
+            (1, 1), // Position
+            (1, 1), // Size
+            cursorTexture // Texture
+        );
+
+        setFocusIndicator(cursor);
     }
 
     void createBackground() {
@@ -83,12 +120,12 @@ class AREAGLoadMenu : ZFGenericMenu
             (0.5, 0.5) // Scale
         );
 
-        startPos = boxImage.box.pos + (14, 14);
+        startPos = boxImage.getPos() + (14, 14);
         
         boxImage.Pack (mainFrame);
     }
 
-    void createLoadButton(int slot) {
+    ZFButton createLoadButton(int slot) {
 
         let leftMargin = 0;
         let width = 276;
@@ -120,23 +157,16 @@ class AREAGLoadMenu : ZFGenericMenu
             createLabel("NEW FILE", (boxPos + (width/2, height/2)), smallFont, 1.0, ZFLabel.AlignType_Center);
         }
 
-        createLoadBox(boxPos, (width, height), slot);
+        return createLoadBox(boxPos, (width, height), slot);
     }
 
-    void createLoadBox(vector2 pos, vector2 size, int slot) {
+    ZFButton createLoadBox(vector2 pos, vector2 size, int slot) {
 
         String command = String.format("Load_%d", slot);
 
         let baseBoxTexture = ZFBoxTextures.CreateTexturePixels
         (
             "LOADBOX",
-            (17, 17), (32, 32),
-            boxTiled, boxTiled
-        );
-
-        let selectedBoxTexture = ZFBoxTextures.CreateTexturePixels
-        (
-            "GLOWBOX",
             (17, 17), (32, 32),
             boxTiled, boxTiled
         );
@@ -161,12 +191,14 @@ class AREAGLoadMenu : ZFGenericMenu
             command: command,
             // The button's textures
             inactive: baseBoxTexture,
-            hover: selectedBoxTexture,
+            hover: baseBoxTexture,
             click: clickedBoxTexture
         );
         // Add the button element into the main frame.
         loadButton.Pack (mainFrame);
         buttons.push(loadButton);
+
+        return loadButton;
     }
 
     void createLabel(String txt, vector2 pos, Font fnt, double scl = 1.0, int aln = ZFLabel.AlignType_TopLeft) {
@@ -197,7 +229,7 @@ class AREAGLoadMenu : ZFGenericMenu
         } else if(horzAlign == ZFLabel.AlignType_Right) {
             alignOffset -= (size.x, 0);
         }
-        label.box.pos += alignOffset;
+        label.setPos(label.getPos() + alignOffset);
         
         label.Pack (mainFrame);
     }

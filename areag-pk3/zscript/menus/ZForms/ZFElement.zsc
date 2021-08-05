@@ -80,7 +80,7 @@ class ZFElement ui {
 	string getCommand() {return self.command; }
 	void setCommand(string command) {self.command = command; }
 
-	ZFAABB box;
+	protected ZFAABB box;
 	Vector2 getPos() { return self.box.pos; }
 	double getPosX() { return self.box.pos.x; }
 	double getPosY() { return self.box.pos.y; }
