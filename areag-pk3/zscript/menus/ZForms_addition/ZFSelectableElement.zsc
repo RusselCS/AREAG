@@ -1,0 +1,53 @@
+class ZFSelectableElement : ZFElement
+{
+    override void onUIEvent(ZFUiEvent ev) {
+        
+    }
+
+    override void doHover (Vector2 mousePos) {
+		bool hover = isSelected; // || boxToScreen().pointCollides(mousePos);
+
+		if (hover && !isHovered) {
+			if (cmdHandler) {
+				cmdHandler.elementHoverChanged(self, command, false);
+			}
+			isHovered = true;
+		}
+		else if (!hover && isHovered) {
+			if (cmdHandler) {
+				cmdHandler.elementHoverChanged(self, command, true);
+			}
+			isHovered = false;
+		}
+	}
+
+    ZFSelectableElement findElement(String id) {
+        if(!id) {
+            return null;
+        } else {
+            for(int i = 0; i < master.elements.size(); i++) {
+                let elem = ZFSelectableElement(master.elements[i]);
+
+                if(elem.elementId && elem.elementId == id) {
+                    return elem;
+                }
+            }
+        }
+        return null;
+    }
+
+    bool selectElement(ZFSelectableElement ein) {
+        for(int i = 0; i < master.elements.size(); i++) {
+            let elem = ZFSelectableElement(master.elements[i]);
+
+            if(elem.elementId) {
+                if(elem.elementId == ein.elementId) {
+                    ein.isSelected = true;
+                } else {
+                    ein.isSelected = false;
+                }
+            }
+        }
+        return true;
+    }
+}

@@ -5,6 +5,24 @@ class ZFHandler ui {
 	virtual void buttonHeldCommand(ZFButton caller, string command) {
 	}
 
+	virtual void radioButtonChanged(ZFRadioButton caller, string command, ZFRadioController variable) {
+	}
+
+	virtual void toggleButtonChanged(ZFToggleButton caller, string command, bool on) {
+	}
+
+	virtual void textInputExit(ZFTextInput caller, string command) {
+	}
+
+	virtual void textInputChanged(ZFTextInput caller, string command) {
+	}
+
+	virtual void sliderChanged(ZFSlider caller, string command) {
+	}
+
+	virtual void dropdownChanged(ZFDropdownList caller, string command) {
+	}
+
 	virtual void elementHoverChanged(ZFElement caller, string command, bool unhovered) {
 	}
 }

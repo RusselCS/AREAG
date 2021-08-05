@@ -1,4 +1,4 @@
-class ZFUiEvent ui {
+struct ZFUiEvent ui {
 	// 
 	int Type;
 	//

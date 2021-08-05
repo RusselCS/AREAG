@@ -265,7 +265,7 @@ class AREAGLoadMenu : ZFGenericMenu
             pos, (1920, 810),
             img,
             ZFImage.AlignType_TopLeft,
-            imageScale: (0.05679, 0.05679)
+            imageScale: (0.055, 0.055)
         );
         snap.pack(mainframe);
 
