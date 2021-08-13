@@ -13,18 +13,32 @@
 // Script that actually handles map connections.
 // ARG1 - map: which arg the map abides by, as noted in the array.
 // ARG2 - door: which player spawn the player is intended to spawn, as noted by the value in its first special argument.
+// ARG3 - flags: 
+#define MAPSWITCH_NONE		0
+#define MAPSWITCH_NOSOUND	1
+#define MAPSWITCH_RESET		1<<1
 
-script "map_switchto" (int tomap, int door, int noSound)
-{
+script "map_switchto" (int tomap, int door, int flags)
+{	
 	if(toMap == GetLevelInfo(LEVELINFO_LEVELNUM)) {
 		terminate;
 	}
 
 	int map = findMapRoute(tomap);
-
 	if(map == -1) {
 		PrintBold(s:"\cgMAP ", i:tomap, s:" NOT FOUND! \cdMAP MAY BE IN DEVELOPMENT. PLEASE TRY AGAIN LATER.");
 		terminate;
+	}
+
+	int noSound = 0;
+	if(flags & MAPSWITCH_NOSOUND) {
+		noSound = 1;
+	}
+
+	int levelFlags = CHANGELEVEL_NOINTERMISSION;
+	if(flags & MAPSWITCH_RESET) {
+		levelflags |= CHANGELEVEL_RESETINVENTORY;
+		levelflags |= CHANGELEVEL_RESETHEALTH;
 	}
 	
 	if(CheckInventory("ChakramShield") > 0 && Checkinventory("ChakramStock") == 0) {
@@ -35,7 +49,7 @@ script "map_switchto" (int tomap, int door, int noSound)
 	if(!GetUserVariable(0, "bDroneChangingLevel")) {
 		Delay(35);
 	}
-	ChangeLevel(getMapCode(getMapByLevelNum(map)), door, CHANGELEVEL_NOINTERMISSION);
+	ChangeLevel(getMapCode(getMapByLevelNum(map)), door, levelflags);
 }
 
 int musicVolume = 1.0;
@@ -426,30 +440,37 @@ script "map_savepoint" (int doorNum)
 
 script "map_loadGame" (int file)
 {
-	SetActivator(1000); // multiplyer killer
+	SetActivator(1000); // multiplayer killer
 	SetCVar("SAVE_PICKER", file);
 	int levelNum = GetCVar(StrParam(s:"SAVE_MAP_", i:file));
 	int doorNum = GetCVar(StrParam(s:"SAVE_DOOR_", i:file)) + 20;
-	loadFile(file);
-	delay(1);
 
-	int mapSize = ScriptCall("MapDataRepo", "getMapCount");
-	for(int i = 0; i < mapSize; i++)
-	{
-		str flags = GetCVarString(ScriptCall("MapDataRepo", "getTempPickup", i));
-		int len = strLen(flags);
+	if(levelNum != 0) {
+		loadFile(file);
+		delay(1);
 
-		for(int j = 0; j < len; j++) {
-			if(GetChar(flags, j) == '1') {
-				GiveInventory(ScriptCall("MapDataRepo", "getPickupFrom", i, j+1), 1);
+		int mapSize = ScriptCall("MapDataRepo", "getMapCount");
+		for(int i = 0; i < mapSize; i++)
+		{
+			str flags = GetCVarString(ScriptCall("MapDataRepo", "getTempPickup", i));
+			int len = strLen(flags);
+
+			for(int j = 0; j < len; j++) {
+				if(GetChar(flags, j) == '1') {
+					GiveInventory(ScriptCall("MapDataRepo", "getPickupFrom", i, j+1), 1);
+				}
 			}
 		}
+
+		delay(1);
+
+		ACS_NamedExecuteAlways("map_switchto", 999, levelNum, doorNum, MAPSWITCH_NOSOUND);
+		ACS_NamedExecuteAlways("map_switchto", 0, 999, 0, MAPSWITCH_NOSOUND|MAPSWITCH_RESET);
+	} else {
+		newFile();
+		ACS_NamedExecuteAlways("map_switchto", 999, 1, 0, MAPSWITCH_NOSOUND);
+		ACS_NamedExecuteAlways("map_switchto", 0, 999, 0, MAPSWITCH_NOSOUND|MAPSWITCH_RESET);
 	}
-
-	delay(1);
-
-	ACS_NamedExecuteAlways("map_switchto", 100, levelNum, doorNum, true);
-	ACS_NamedExecuteAlways("map_switchto", 0, 100, 0);
 }
 
 script "map_moveFloor" (int tag, int dest, int speed)

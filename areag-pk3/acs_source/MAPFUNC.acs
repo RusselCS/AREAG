@@ -58,6 +58,10 @@ function void loadFile(int file) {
 	ScriptCall("MapDataRepo", "loadFile", file);
 }
 
+function void newFile(void) {
+	ScriptCall("MapDataRepo", "newFile");
+}
+
 function void queueSaveEvent(int levelNum, int evt) {
 	ScriptCall("MapDataRepo", "queueSaveEvent", levelNum, evt);
 }

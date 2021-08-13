@@ -61,6 +61,17 @@ GAMEINFO
 	statusbarclass = "AREAGStatusBar"
 }
 
+map ADVOUT "Nature's Respite"
+{
+	levelnum = 999
+	pixelratio = 1.0
+	music = "M_EXIT" // KFMF ~ Dust to Dust - Leviathan / Renaissance
+	sky1 = "TESTSKY1"
+	forcenoskystretch 
+	clipmidtextures
+	AllowRespawn
+}
+
 map ADV00 "Outskirts" 
 { 
 	levelnum = 1

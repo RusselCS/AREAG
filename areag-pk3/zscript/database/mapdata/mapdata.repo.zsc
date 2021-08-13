@@ -164,6 +164,26 @@ class MapDataRepo Abstract
         }
     }
 
+    // Set game 0's stuff to all 0s
+    static void newFile() {
+        let evh = getRepository();
+
+        if(evh) {
+            for(int i = 0; i < evh.maps.size(); i++) {
+                CVar event = CVar.findCVar(evh.maps[i].getTempEvent());
+                CVar pickup = CVar.findCVar(evh.maps[i].getTempPickup());
+
+                if(event && pickup) {
+                    let evtEval = string.format("%s0%dd", "%", event.getString().length());
+                    let pckEval = string.format("%s0%dd", "%", pickup.getString().length());
+
+                    event.setString(string.format(evtEval, 0));
+                    pickup.setString(string.format(pckEval, 0));
+                }
+            }
+        }
+    }
+
     static void queueSaveEvent(int levelNum, int evt) {
         let id = getMapByLevelNum(levelNum);
         let evh = getRepository();

@@ -184,6 +184,7 @@ class MapUtilInit : StaticEventHandler
         latest.addPickup("LuminiteOrbPickup");
 
         addMap(new("AREAGMapData").Init(101, "TESTMAP2", "MCRNE_09", "$NAME_ADV09", "TIX1", "SAVE_TESTMAP_2"));
+        addMap(new("AREAGMapData").Init(999, "ADVOUT", "MCRNE_09", "$NAME_ADV09", "TIX1", "SAVE_TESTMAP_2"));
     }
 
     private void AddMap(AREAGMapData map)
