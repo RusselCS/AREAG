@@ -39,13 +39,7 @@ class AREAGLoadMenu : ZFGenericMenu
 
     // A font to use for text.
     Font smallFont;
-
-    ZFLabel aLabel;
     vector2 startPos;
-
-    Array<ZFButton> buttons;
-
-    int loadSelect;
 
     override void Init (Menu parent)
     {
@@ -56,8 +50,6 @@ class AREAGLoadMenu : ZFGenericMenu
 
         handler = new ('AREAGLoadMenuHandler');
         handler.menu = self;
-
-        loadSelect = 0;
 
         createFocusIndicator();
         createBackground();
@@ -196,7 +188,6 @@ class AREAGLoadMenu : ZFGenericMenu
         );
         // Add the button element into the main frame.
         loadButton.Pack (mainFrame);
-        buttons.push(loadButton);
 
         return loadButton;
     }
