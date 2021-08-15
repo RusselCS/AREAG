@@ -1,166 +1,130 @@
 class MapDataRepo Abstract
 {
     static MapUtilInit getRepository() {
-        return MapUtilInit(StaticEventHandler.Find("MapUtilInit"));
+        let evh = MapUtilInit(StaticEventHandler.Find("MapUtilInit"));
+        if(evh) {
+            return evh;
+        }
+        throwAbortException("MapDataRepo.getRepository(): Map Data Event Handler not instantiated.");
+        return null;
     }
 
     static int getLevelNum(int index) {
         let evh = getRepository();
-        if(evh)
-            return evh.maps[index].getLevelNum();
-        return -1;
+        return evh.maps[index].getLevelNum();
     }
 
     static String getCode(int index) {
         let evh = getRepository();
-        if(evh)
-            return evh.maps[index].getCode();
-        return "";
+        return evh.maps[index].getCode();
     }
 
     static String getRuneName(int index) {
         let evh = getRepository();
-        if(evh)
-            return evh.maps[index].getRuneName();
-        return "";
+        return evh.maps[index].getRuneName();
     }
 
     static String getLangName(int index) {
         let evh = getRepository();
-        if(evh)
-            return evh.maps[index].getLangName();
-        return "";
+        return evh.maps[index].getLangName();
     }
 
     static String getTempEvent(int index) {
         let evh = getRepository();
-        if(evh)
-            return evh.maps[index].getTempEvent();
-        return "";
+        return evh.maps[index].getTempEvent();
     }
 
     static String getTempPickup(int index) {
         let evh = getRepository();
-        if(evh)
-            return evh.maps[index].getTempPickup();
-        return "";
+        return evh.maps[index].getTempPickup();
     }
 
     static String getSaveEvent(int index, int save) {
         let evh = getRepository();
-        if(evh)
-            return evh.maps[index].getSaveEvent(save);
-        return "";
+        return evh.maps[index].getSaveEvent(save);
     }
 
     static String getSavePickup(int index, int save) {
         let evh = getRepository();
-        if(evh)
-            return evh.maps[index].getSavePickup(save);
-        return "";
+        return evh.maps[index].getSavePickup(save);
     }
 
     static int getMapByLevelNum(int levelNum) {
         let evh = getRepository();
-        if(evh) {
-            for(int i = 0; i < evh.maps.size(); i++) {
-                if(evh.maps[i].getLevelNum() == levelNum)
-                {
-                    return i;
-                }
+        for(int i = 0; i < evh.maps.size(); i++) {
+            if(evh.maps[i].getLevelNum() == levelNum)
+            {
+                return i;
             }
         }
+        throwAbortException("MapDataRepo.getMapByLevelNum: Map not found. Levelnum: ", levelNum);
         return -1;
     }
 
     static String getTabletImage(int mapIndex) {
         let evh = getRepository();
-        if(evh) {
-            return evh.maps[mapIndex].getTabletImage();
-        }
+        return evh.maps[mapIndex].getTabletImage();
         return "";
     }
 
     static int getRoute(int mapIndex) {
         let evh = getRepository();
-        if(evh) {
-            return evh.maps[mapIndex].getRoute();
-        }
-        return -1;
+        return evh.maps[mapIndex].getRoute();
     }
 
     static int getMapByRoute(int lNum) {
         let id = getMapByLevelNum(lNum);
         let evh = getRepository();
-        if(id != -1 && evh) {
-            return evh.maps[id].getRoute();
+        return evh.maps[id].getRoute();
+    }
+
+    static Cvar findCVar(String cv) {
+        CVar cvr = CVar.findCVar(cv);
+        if(cvr) {
+            return cvr;
         }
-        return -1;
+        throwAbortException("MapDataRepo.findCvar: Cvar not found: %s", cv);
+        return null;
     }
 
     static int getTempEventByLevel(int lNum, int evt) {
         let id = getMapByLevelNum(lNum);
         let evh = getRepository();
-
-        if(id != -1 && evh) {
-            CVar save = CVar.findCVar(name(evh.maps[id].getTempEvent()));
-            if(save)
-            {
-                return save.getString().mid(evt, 1).ToInt();
-            }
-            return -2;
-        }
-        return -1;
+        CVar save = findCVar(evh.maps[id].getTempEvent());
+        return save.getString().mid(evt, 1).ToInt();
     }
 
     static int getTempPickupByLevel(int lNum, int evt) {
         let id = getMapByLevelNum(lNum);
         let evh = getRepository();
-
-        if(id != -1 && evh) {
-            CVar save = CVar.findCVar(name(evh.maps[id].getTempPickup()));
-            if(save)
-            {
-                return save.getString().mid(evt, 1).ToInt();
-            }
-            return -2;
-        }
-        return -1;
+        CVar save = findCVar(evh.maps[id].getTempPickup());
+        return save.getString().mid(evt, 1).ToInt();
     }
 
     static void loadFile(int save) {
         let evh = getRepository();
+        for(int i = 0; i < evh.maps.size(); i++) {
+            CVar eventFrom = findCVar(evh.maps[i].getSaveEvent(save));
+            CVar pickupFrom = findCVar(evh.maps[i].getSavePickup(save));
+            CVar eventTo = findCVar(evh.maps[i].getTempEvent());
+            CVar pickupTo = findCVar(evh.maps[i].getTempPickup());
 
-        if(evh) {
-            for(int i = 0; i < evh.maps.size(); i++) {
-                CVar eventFrom = CVar.findCVar(evh.maps[i].getSaveEvent(save));
-                CVar pickupFrom = CVar.findCVar(evh.maps[i].getSavePickup(save));
-                CVar eventTo = CVar.findCVar(evh.maps[i].getTempEvent());
-                CVar pickupTo = CVar.findCVar(evh.maps[i].getTempPickup());
-
-                if(eventFrom && pickupFrom && eventTo && pickupTo) {
-                    eventTo.setString(eventFrom.getString());
-                    pickupTo.setString(pickupFrom.getString());
-                }
-            }
+            eventTo.setString(eventFrom.getString());
+            pickupTo.setString(pickupFrom.getString());
         }
     }
 
     static void saveFile(int save) {
         let evh = getRepository();
 
-        if(evh) {
-            for(int i = 0; i < evh.maps.size(); i++) {
-                CVar eventFrom = CVar.findCVar(evh.maps[i].getTempEvent());
-                CVar pickupFrom = CVar.findCVar(evh.maps[i].getTempPickup());
-                CVar eventTo = CVar.findCVar(evh.maps[i].getSaveEvent(save));
-                CVar pickupTo = CVar.findCVar(evh.maps[i].getSavePickup(save));
+        for(int i = 0; i < evh.maps.size(); i++) {
+            CVar eventFrom = findCVar(evh.maps[i].getTempEvent());
+            CVar pickupFrom = findCVar(evh.maps[i].getTempPickup());
+            CVar eventTo = findCVar(evh.maps[i].getSaveEvent(save));
+            CVar pickupTo = findCVar(evh.maps[i].getSavePickup(save));
 
-                if(eventFrom && pickupFrom && eventTo && pickupTo) {
-                    eventTo.setString(eventFrom.getString());
-                    pickupTo.setString(pickupFrom.getString());
-                }
-            }
+            eventTo.setString(eventFrom.getString());
+            pickupTo.setString(pickupFrom.getString());
         }
     }
 
@@ -168,50 +132,66 @@ class MapDataRepo Abstract
     static void newFile() {
         let evh = getRepository();
 
-        if(evh) {
-            for(int i = 0; i < evh.maps.size(); i++) {
-                CVar event = CVar.findCVar(evh.maps[i].getTempEvent());
-                CVar pickup = CVar.findCVar(evh.maps[i].getTempPickup());
+        for(int i = 0; i < evh.maps.size(); i++) {
+            CVar event = findCVar(evh.maps[i].getTempEvent());
+            CVar pickup = findCVar(evh.maps[i].getTempPickup());
 
-                if(event && pickup) {
-                    let evtEval = string.format("%s0%dd", "%", event.getString().length());
-                    let pckEval = string.format("%s0%dd", "%", pickup.getString().length());
+            let evtEval = string.format("%s0%dd", "%", event.getString().length());
+            let pckEval = string.format("%s0%dd", "%", pickup.getString().length());
 
-                    event.setString(string.format(evtEval, 0));
-                    pickup.setString(string.format(pckEval, 0));
-                }
-            }
+            event.setString(string.format(evtEval, 0));
+            pickup.setString(string.format(pckEval, 0));
         }
     }
 
     static void queueSaveEvent(int levelNum, int evt) {
         let id = getMapByLevelNum(levelNum);
         let evh = getRepository();
-
-        if(id != -1 && evh) {
-            CVar eventFrom = CVar.findCVar(evh.maps[id].getTempEvent());
-
-            if(eventFrom)
-            {
-                String st = eventFrom.getString();
-                eventFrom.setString(setChar(st, 1, evt));
-            }
-        }
+        CVar eventFrom = findCVar(evh.maps[id].getTempEvent());
+        String st = eventFrom.getString();
+        eventFrom.setString(setChar(st, 1, evt));
     }
 
     static void queuePickupEvent(int levelNum, int evt) {
         let id = getMapByLevelNum(levelNum);
         let evh = getRepository();
+        CVar eventFrom = findCVar(evh.maps[id].getTempPickup());
+        String st = eventFrom.getString();
+        eventFrom.setString(setChar(st, 1, evt-1));
+    }
 
-        if(id != -1 && evh) {
-            CVar eventFrom = CVar.findCVar(evh.maps[id].getTempPickup());
+    // Sets a cvar flag, much like queueCvarEvent except it takes in cvar instead of map
+    static void setToggleEvent(String cv, int evt) {
+        CVar eventFrom = findCVar(cv);
+        String st = eventFrom.getString();
+        int res = 1;
 
-            if(eventFrom)
-            {
-                String st = eventFrom.getString();
-                eventFrom.setString(setChar(st, 1, evt-1));
-            }
+        if(getChar(st, evt) != 0) {
+            res = 0;
         }
+
+        eventFrom.setString(setChar(st, res, evt));
+    }
+
+    // Gets a cvar flag
+    static int getToggleEvent(String cv, int evt) {
+        CVar eventFrom = findCVar(cv);
+        return getToggleEventCvar(eventFrom, evt);
+    }
+
+    static int getToggleEventCvar(Cvar eventFrom, int evt) {
+        String st = eventFrom.getString();
+        return getChar(st, evt);
+    }
+
+    // Gets the full array
+    static String getEventArray(String cv) {
+        CVar eventFrom = findCVar(cv);
+        return getEventArrayCvar(eventFrom);
+    }
+
+    static String getEventArrayCvar(Cvar eventFrom) {
+        return eventFrom.getString();
     }
 
     static string setChar(String st, int val, int pos) {
@@ -230,20 +210,13 @@ class MapDataRepo Abstract
     static void loadMapEvents(int levelNum) {
         let id = getMapByLevelNum(levelNum);
         let evh = getRepository();
+        CVar eventFrom = findCVar(evh.maps[id].getTempEvent());
+        String flags = eventFrom.getString();
 
-        if(id != -1 && evh) {
-            CVar eventFrom = CVar.findCVar(evh.maps[id].getTempEvent());
-
-            if(eventFrom)
-            {
-                String flags = eventFrom.getString();
-
-                for(int i = 0; i < flags.length(); i++)
-                {
-                    if(getChar(flags, i) == 1) {
-                        ACS_ExecuteAlways(-int(name("map_events")), 0, 0, i, true);
-                    }
-                }
+        for(int i = 0; i < flags.length(); i++)
+        {
+            if(getChar(flags, i) == 1) {
+                ACS_ExecuteAlways(-int(name("map_events")), 0, 0, i, true);
             }
         }
     } // End loadMapEvents
@@ -251,29 +224,16 @@ class MapDataRepo Abstract
     static String getPickupFromHere(int levelnum, int index) {
         let id = getMapByLevelNum(levelnum);
         let evh = getRepository();
-
-        if(id != -1 && evh) {
-            return evh.maps[id].getPickup(index-1);
-        }
-        return "";
+        return evh.maps[id].getPickup(index-1);
     }
 
     static String getPickupFrom(int mapIndex, int index) {
         let evh = getRepository();
-
-        if(evh) {
-            return evh.maps[mapIndex].getPickup(index-1);
-        }
-        return "";
+        return evh.maps[mapIndex].getPickup(index-1);
     }
 
     static int getMapCount() {
         let evh = getRepository();
-
-        if(evh) {
-            return evh.maps.size();
-        }
-        return -1;
+        return evh.maps.size() - evh.excludeMaps;
     }
-
 }
