@@ -197,3 +197,51 @@ AMMOFONT
 	8 AMM8
 	9 AMM9
 }
+
+// Debug font is UbuntuMono from Google Fonts, 22 pt
+DBUGFONT
+{
+    A DBFNT01
+    B DBFNT02
+    C DBFNT03
+    D DBFNT04
+    E DBFNT05
+    F DBFNT06
+    G DBFNT07
+    H DBFNT08
+    I DBFNT09
+    J DBFNT10
+    K DBFNT11
+    L DBFNT12
+    M DBFNT13
+    N DBFNT14
+    O DBFNT15
+    P DBFNT16
+    Q DBFNT17
+    R DBFNT18
+    S DBFNT19
+    T DBFNT20
+    U DBFNT21
+    V DBFNT22
+    W DBFNT23
+    X DBFNT24
+    Y DBFNT25
+    Z DBFNT26
+    - DBFNT27
+    + DBFNT28
+    < DBFNT29
+    > DBFNT30
+    ? DBFNT31
+    0 DBFNT32
+    1 DBFNT33
+    2 DBFNT34
+    3 DBFNT35
+    4 DBFNT36
+    5 DBFNT37
+    6 DBFNT38
+    7 DBFNT39
+    8 DBFNT40
+    9 DBFNT41
+    # DBFNT42
+    : DBFNT43
+}

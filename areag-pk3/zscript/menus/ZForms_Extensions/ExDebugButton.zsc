@@ -1,0 +1,91 @@
+class ExDebugButton : ZFButton
+{
+    ZFImage debugImage;
+
+    String onTexture;
+    String offTexture;
+
+    String saveString;
+    String saveType;
+    int saveSlot;
+
+    Cvar eventList;
+    int eventSlot;
+
+    int swVal;
+
+    static ExDebugButton create
+    (
+        ZFButton zfbtn,
+        ZFImage zfimg,
+        String onTx,
+        String offTx,
+        String svStr,
+        String svType,
+        int svSlot,
+        Cvar cv,
+        int slot
+    ) {
+        let ret = new('ExDebugButton');
+
+        ret.importButton(zfbtn);
+
+        ret.debugImage = zfimg;
+        ret.onTexture = onTx;
+        ret.offTexture = offTx;
+        ret.saveString = svStr;
+        ret.saveType = svType;
+        ret.saveSlot = svSlot;
+        ret.eventList = cv;
+        ret.eventSlot = slot;
+
+        ret.swVal = -1;
+
+		return ret;
+    }
+
+    private void importButton(ZFButton zfbtn) {
+        config(zfbtn.getText(), zfbtn.getCmdHandler(), zfbtn.getCommand(), zfbtn.getInactiveTexture(), zfbtn.getHoverTexture(), zfbtn.getClickTexture(), zfbtn.getDisabledTexture(), zfbtn.getFont(), zfbtn.getTextScale(), zfbtn.getTextColor(), zfbtn.getHoldTicInterval(), zfbtn.getAlignment());
+		setBox(zfbtn.getPos(), zfbtn.getSize());
+    }
+
+    override void ticker()
+    {
+        super.ticker();
+        
+        int sw = MapDataRepo.getToggleEventCvar(eventList, eventSlot);
+
+        if(sw != swVal) {
+            swVal = sw;
+            let swImg = offTexture;
+
+            if(swVal != 0) {
+                swImg = onTexture;
+            }
+
+            console.printf("Updating image.");
+            debugImage.setImage(swImg);
+        }
+    }
+
+    override void pack(ZFFrame master) {
+		master.internalPack(self);
+        master.internalPack(debugImage);
+		requestMouseUpdate();
+	}
+
+    override void unpack() {
+        debugImage.unpack();
+        super.unpack();
+    }
+
+    void setSaveSlot(int slot) {
+        let cv = String.format("%s_%s_%d", saveString, saveType, slot);
+        let oldCv = String.format("%s_%s_%d", saveString, saveType, saveSlot);
+        saveSlot = slot;
+        console.printf("Updating %s to %s", oldCv, cv);
+
+        eventList = MapDataRepo.findCvar(cv);
+        setCommand(String.format("TOGGLE %s %d", cv, eventSlot));
+    }
+}

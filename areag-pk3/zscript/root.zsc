@@ -119,8 +119,12 @@
 #include "zscript/sbar/AREAGStatusBar.zsc"
 #include "zscript/sbar/menutools.zsc"
 
+// List of ZForms changes listed in ExInclude.zsc
 #include "zscript/menus/ZForms/ZFinclude.zsc"
+#include "zscript/menus/ZForms_Extensions/ExInclude.zsc"
+
 #include "zscript/menus/LoadMenu.zsc"
+#include "zscript/menus/Debug/DBMenuBase.zsc"
 
 // TEST BOSS
 #include "zscript/bosses/0_testboss.zsc"

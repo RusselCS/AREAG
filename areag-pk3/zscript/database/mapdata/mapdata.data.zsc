@@ -2,9 +2,10 @@ class MapUtilInit : StaticEventHandler
 {
     Array<AREAGMapData> maps;
     AREAGMapData latest;
+    int excludeMaps;
 
     override void NewGame() {
-        addMap(new("AREAGMapData").Init(1, "ADV00", "MCRNE_00", "$NAME_ADV00", "TI00", "SAVE_OUTSKIRTS"));
+        addMap(new("AREAGMapData").Init(1, "ADV00", "MCRNE_00", "$NAME_ADV00", "TI00", "SAVE_OUTSKIRTS", "Outskirts"));
         latest.addPickup("IronShieldPickup");
         latest.addPickup("EmptyItem");
         latest.addPickup("EmptyItem");
@@ -17,7 +18,7 @@ class MapUtilInit : StaticEventHandler
         latest.addPickup("EmptyItem");          // 10
         latest.addPickup("EmptyItem");
         
-        addMap(new("AREAGMapData").Init(2, "ADV01", "MCRNE_01", "$NAME_ADV01", "TI01", "SAVE_GATEWAY"));
+        addMap(new("AREAGMapData").Init(2, "ADV01", "MCRNE_01", "$NAME_ADV01", "TI01", "SAVE_GATEWAY", "Grand Gateway"));
         latest.addPickup("EmptyItem");          
         latest.addPickup("EmptyItem");
         latest.addPickup("KnifePouchPickup");
@@ -30,7 +31,7 @@ class MapUtilInit : StaticEventHandler
         latest.addPickup("EmptyItem");          // 10
         latest.addPickup("EmptyItem");
         
-        addMap(new("AREAGMapData").Init(3, "ADV02", "MCRNE_02", "$NAME_ADV02", "TI03", "SAVE_STUDY"));
+        addMap(new("AREAGMapData").Init(3, "ADV02", "MCRNE_02", "$NAME_ADV02", "TI03", "SAVE_STUDY", "Queen's Study"));
         latest.addPickup("EmptyItem");
         latest.addPickup("DronePickup");
         latest.addPickup("BolaSackPickup");
@@ -56,7 +57,7 @@ class MapUtilInit : StaticEventHandler
         latest.addPickup("EmptyItem");
         latest.addPickup("EmptyItem");
 
-        addMap(new("AREAGMapData").Init(4, "ADV03", "MCRNE_03", "$NAME_ADV03", "TI02", "SAVE_IMPACT"));
+        addMap(new("AREAGMapData").Init(4, "ADV03", "MCRNE_03", "$NAME_ADV03", "TI02", "SAVE_IMPACT", "Lost Impact"));
         latest.addPickup("GearGreavesPickup");
         latest.addPickup("DynamiteCratePickup");
         latest.addPickup("EmptyItem");
@@ -82,7 +83,7 @@ class MapUtilInit : StaticEventHandler
         // addMap(new("AREAGMapData").Init(9, "ADV08", "MCRNE_08", "$NAME_ADV08", "TI08", "SAVE_TEMPORAL"));
         // addMap(new("AREAGMapData").Init(10, "ADV09", "MCRNE_09", "$NAME_ADV09", "TI09", "SAVE_THRONE"));
         
-        addMap(new("AREAGMapData").Init(100, "TESTMAP", "MCRNE_09", "$NAME_ADV09", "TIX0", "SAVE_TESTMAP_1"));
+        addMap(new("AREAGMapData").Init(100, "TESTMAP", "MCRNE_09", "$NAME_ADV09", "TIX0", "SAVE_TESTMAP_1", "TESTMAP"));
         // Tier 1 Subweapons
         latest.addPickup("KnifePouchPickup");
         latest.addPickup("SeedPouchPickup");
@@ -183,8 +184,10 @@ class MapUtilInit : StaticEventHandler
         latest.addPickup("DrinkPickup"); // 75
         latest.addPickup("LuminiteOrbPickup");
 
-        addMap(new("AREAGMapData").Init(101, "TESTMAP2", "MCRNE_09", "$NAME_ADV09", "TIX1", "SAVE_TESTMAP_2"));
-        addMap(new("AREAGMapData").Init(999, "ADVOUT", "MCRNE_09", "$NAME_ADV09", "TIX1", "SAVE_TESTMAP_2"));
+        addMap(new("AREAGMapData").Init(101, "TESTMAP2", "MCRNE_09", "$NAME_ADV09", "TIX1", "SAVE_TESTMAP_2", "TESTMAP"));
+        addMap(new("AREAGMapData").Init(999, "ADVOUT", "MCRNE_09", "$NAME_ADV09", "TIX1", "SAVE_TESTMAP_2", "TESTMAP"));
+
+        excludeMaps = 3;
     }
 
     private void AddMap(AREAGMapData map)

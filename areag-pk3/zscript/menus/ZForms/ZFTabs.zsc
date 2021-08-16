@@ -138,6 +138,10 @@ class ZFTabs : ZFElementContainer {
 		return tabFrames[index];
 	}
 
+	int getTabCount() {
+		return tabFrames.size();
+	}
+
 	override void topDrawer() {
 		if (curTab.curVal != lastTab) {
 			lastTab = curTab.curVal;

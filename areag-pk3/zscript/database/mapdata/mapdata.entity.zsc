@@ -6,16 +6,18 @@ class AREAGMapData : Object
     private String langName;
     private String cvar;
     private String tabletImage;
+    private String mapName;
     private int route;
     private Array<String> pickups;
 
-    AREAGMapData Init(int lnum, String cd, String rn, String ln, String ti, String cv) {
+    AREAGMapData Init(int lnum, String cd, String rn, String ln, String ti, String cv, String mn) {
         levelNum = lnum;
         code = cd;
         runeName = rn;
         langName = ln;
         tabletImage = ti;
         cvar = cv;
+        mapName = mn;
         route = lnum;
         return self;
     }
@@ -53,6 +55,10 @@ class AREAGMapData : Object
         return langName;
     }
 
+    String getSaveBase() {
+        return cvar;
+    }
+
     String getTempEvent() {
         return String.format("%s_EVENT_0", cvar);
     }
@@ -71,7 +77,11 @@ class AREAGMapData : Object
 
     String getTabletImage() {
         return tabletImage;
-    }    
+    }
+
+    String getMapName() {
+        return mapName;
+    }
 
     void setRoute(int rt) {
         route = rt;

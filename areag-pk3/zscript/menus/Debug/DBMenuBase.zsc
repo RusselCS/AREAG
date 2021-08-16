@@ -1,0 +1,378 @@
+class AREAGDebugMenuHandler : ZFHandler
+{
+    AREAGDebugMenu menu;
+
+    override void buttonClickCommand (ZFButton caller, string command)
+    {
+        console.printf("Calling button click command \"%s\"", command);
+
+        Array<String> spl;
+
+        command.split(spl, " ");
+
+        if(spl[0] == "TOGGLE") {
+            let cv = spl[1];
+            let slot = spl[2].toInt();
+
+            MapDataRepo.setToggleEvent(cv, slot);
+        }
+
+        if(spl[0] == "NEXTFILE") {
+            menu.incrementFile();
+        }
+
+        if(spl[0] == "PREVFILE") {
+            menu.decrementFile();
+        }
+    }
+
+    void close(bool leave) {
+        if(leave)
+            menu.mParentMenu = null;
+        menu.Close();
+    }
+}
+
+class AREAGDebugMenu : ZFGenericMenu
+{
+    const TAB_HEIGHT = 16;
+    const TAB_PADDING = 5;
+
+    const SCROLL_OFFS = 2;
+    const BUTTON_HEIGHT = 16;
+
+    AREAGDebugMenuHandler handler;
+
+    // A font to use for text.
+    Font smallFont;
+    Font debugFont;
+    ZFFrame scrollArea;
+
+    ZFButton fileButton;
+    int curFile;
+
+    vector2 startPos;
+    double bodyHeight;
+    double bodyWidth;
+    double scrollWidth;
+    double footerHeight;
+
+    Array<ExDebugButton> debugButtons;
+
+    override void Init (Menu parent)
+    {
+        // Call GenericMenu's 'Init' function to do some required initialization.
+        Super.Init (parent);
+        SetBaseResolution ((320, 200));
+        smallFont = OptionFont();
+        debugFont = "DBUGFONT";
+
+        handler = new ('AREAGDebugMenuHandler');
+        handler.menu = self;
+
+        createBackground();
+        let bar = createTabBar();
+
+        let mapCount = MapDataRepo.getMapCount();
+
+        for(int i = 0; i < mapCount; i++) {
+            addDebugTab(bar, i);
+        }
+
+        createFileButton();
+
+        // tabBar.addTab("Tab 1");
+        // tabBar.addTab("Tab 2");
+        // tabBar.addTab("Borf");
+        // tabBar.addTab("Fig");
+
+        // tabBar.pack(mainFrame);
+        
+        // String evts = MapDataRepo.getEventArray("SAVE_OUTSKIRTS_EVENT_0");
+        // let evtBtnSize = ((baseResolution.x - 2*bodyPos.x) / 2 - 12, 16);
+        // let btnSpacing = 2;
+        // double scaleFactor = (evtBtnSize.y - 4) / 16;
+
+        //createScrollArea(tabBar.getTabFrame(0), bodyPos, (scrollSize.x / 2, scrollSize.y), (evtBtnSize.y + btnSpacing) * evts.length());
+
+        // for(int i = 0; i < evts.length(); i++)
+        // {
+        //     let btn = createToggleButton(String.format("Event %d", i), "SAVE_OUTSKIRTS_EVENT_0", i, evtBtnSize, scaleFactor);
+        //     bodyOffs += (0, btn.getHeight() + btnSpacing);
+        // }
+    }
+
+    void createBackground() {
+
+        let boxSize = (320, 180);
+        let tabSize = (320, TAB_HEIGHT);
+        let boxTexture = ZFBoxTextures.CreateTexturePixels("UIBG03", (5, 5), (8, 8), boxTiled, boxTiled);
+        startPos = ((baseResolution.X - boxSize.X) / 2.0, (baseResolution.Y - boxSize.Y) / 2.0);
+        
+        let boxImage = ZFBoxImage.Create
+        (
+            startPos, // Position
+            boxSize, // Size
+            boxTexture, // Texture
+            (1.0, 1.0) // Scale
+        );
+
+        let upperBarTex = ZFBoxTextures.CreateTexturePixels("TABBG05", (5, 5), (8, 8), boxTiled, boxTiled);
+        
+        let upperBar = ZFBoxImage.Create
+        (
+            startPos, // Position
+            tabSize, // Size
+            upperBarTex, // Texture
+            (1.0, 1.0) // Scale
+        );
+
+        footerHeight = boxSize.y / 4;
+        bodyHeight = boxSize.y - TAB_HEIGHT - footerHeight;
+        bodyWidth = boxSize.x;
+        scrollWidth = bodyWidth / 2;
+        
+        boxImage.pack(mainFrame);
+        upperBar.pack(mainFrame);
+    }
+
+    ZFTabs createTabBar() {
+        let tabNorm = ZFBoxTextures.CreateTexturePixels("TABBG05", (5, 5), (8, 8), boxTiled, boxTiled);
+        let tabHovr = ZFBoxTextures.CreateTexturePixels("TABBG01", (5, 5), (8, 8), boxTiled, boxTiled);
+        let tabActv = ZFBoxTextures.CreateTexturePixels("TABBG03", (5, 5), (8, 8), boxTiled, boxTiled);
+
+        let tabBar = ZFTabs.create(
+            startPos,
+            (baseResolution.x, bodyHeight + TAB_HEIGHT),
+            TAB_HEIGHT,
+            TAB_PADDING,
+            debugFont,
+            0.4,
+            tabNorm,
+            tabHovr,
+            tabActv
+        );
+
+        tabBar.pack(mainFrame);
+        return tabBar;
+    }
+
+    void addDebugTab(ZFTabs tabBar, int map) {
+
+        tabBar.addTab(MapDataRepo.getCode(map));
+        let tabFrame = tabBar.getTabFrame(map);
+
+        let eventList = MapDataRepo.getEventArray(MapDataRepo.getSaveEvent(map, curFile));
+        let pickupList = MapDataRepo.getEventArray(MapDataRepo.getSavePickup(map, curFile));
+
+        let eventFrame = createScrollArea(tabFrame, (0, 0), (scrollWidth, bodyHeight), eventList.length() * (SCROLL_OFFS + BUTTON_HEIGHT));
+        let pickupFrame = createScrollArea(tabFrame, (scrollWidth, 0), (scrollWidth, bodyHeight), pickupList.length() * (SCROLL_OFFS + BUTTON_HEIGHT));
+
+        let buttonSize = (scrollWidth - 12, BUTTON_HEIGHT);
+        double scaleFactor = (BUTTON_HEIGHT - 4.0) / BUTTON_HEIGHT;
+
+        for(int i = 0; i < eventList.length(); i++) {
+            createToggleButton(eventFrame, (1, 1+i*(BUTTON_HEIGHT + 2)), buttonSize, String.format("EVENT %d", i), MapDataRepo.getSaveBase(map), "EVENT", i, scaleFactor);
+        }
+
+        for(int i = 0; i < pickupList.length(); i++) {
+            createToggleButton(pickupFrame, (1, 1+i*(BUTTON_HEIGHT + 2)), buttonSize, String.format("PICKUP %d", i), MapDataRepo.getSaveBase(map), "PICKUP", i, scaleFactor);
+        }
+
+        // let eventList = 
+        // let itemList = 
+    }
+
+    ZFFrame createScrollArea(ZFFrame frm, vector2 pos, vector2 size, double scrollHeight) {
+        let scrNorm = ZFBoxTextures.CreateTexturePixels("SCRNORML", (5, 5), (8, 8), boxTiled, boxTiled);
+        let scrHovr = ZFBoxTextures.CreateTexturePixels("SCRHOVER", (5, 5), (8, 8), boxTiled, boxTiled);
+        let scrClik = ZFBoxTextures.CreateTexturePixels("SCRCLICK", (5, 5), (8, 8), boxTiled, boxTiled);
+        let scrBG   = ZFBoxTextures.CreateTexturePixels("SCRBCKGR", (5, 5), (8, 8), boxTiled, boxTiled);
+
+        let scr = ZFScrollContainer.create
+        (
+            pos, // pos
+            size, // size
+            10,  // scrollWidth
+            scrollHeight,  // scrollAreaHeight
+            10, // scrollNotchJump
+            scrNorm, // scrollBarNormal
+            scrHovr, // scrollBarHover
+            scrClik, // scrollBarClick
+            scrBG // scrollBg
+        );
+
+        let padding = 2;
+
+        let boxImage = ZFBoxImage.Create
+        (
+            pos,
+            size + (0, 2), // Size
+            scrClik, // Texture
+            (1.0, 1.0) // Scale
+        );
+
+        boxImage.pack(frm);
+        scr.pack(frm);
+
+        return ZFFrame(scr.getScrollArea());
+    }
+
+    void createToggleButton(ZFFrame frm, vector2 pos, vector2 size, String txt, String saveCV, String type, int slot, double scaleFactor) {
+        let scrNorm = ZFBoxTextures.CreateTexturePixels("SCRNORML", (5, 5), (8, 8), boxTiled, boxTiled);
+        let scrHovr = ZFBoxTextures.CreateTexturePixels("SCRHOVER", (5, 5), (8, 8), boxTiled, boxTiled);
+        let scrClik = ZFBoxTextures.CreateTexturePixels("SCRCLICK", (5, 5), (8, 8), boxTiled, boxTiled);
+
+        let cv = String.format("%s_%s_%d", saveCV, type, curFile);
+
+        let command = String.format("TOGGLE %s %d", cv, curFile, slot);
+
+        let toggleButton = ZFButton.Create
+        (
+            // Box
+            pos,
+            size,
+
+            text: txt,
+
+            // Command properties
+            cmdHandler: handler,
+            command: command,
+
+            // Textures
+            inactive: scrNorm,
+            hover: scrHovr,
+            click: scrClik,
+
+            // Font properties
+            fnt: debugFont,
+            textScale: 0.25
+        );
+
+        let img = ZFImage.create
+        (
+            pos + (size.x - scaleFactor*32 - 2, 2),
+            (scaleFactor*32, scaleFactor*16),
+            image: "TGLON",
+            imageScale: (scaleFactor, scaleFactor)
+        );
+
+        let debugButton = ExDebugButton.Create (
+            toggleButton,
+            img,
+            "TGLON",
+            "TGLOFF",
+            saveCV,
+            type,
+            curFile,
+            MapDataRepo.findCvar(cv),
+            slot
+        );
+
+        debugButtons.push(debugButton);
+        debugButton.pack(frm);
+    }
+
+    void createFileButton() {
+        let baseBtn = ZFBoxTextures.CreateTexturePixels("SCRNORML", (5, 5), (8, 8), boxTiled, boxTiled);
+
+        vector2 startPos = (2, TAB_HEIGHT + bodyHeight + 3 + BUTTON_HEIGHT / 2);
+
+        let lbl = ZFLabel.create(
+            startPos + (0, 5), 
+            (30, 10), 
+            "File #: ",
+            debugFont,
+            wrap: false,
+            textScale: 0.4
+        );
+
+        lbl.pack(mainFrame);
+
+        vector2 lblSize = lbl.getSize();
+
+        let btnPos = startPos + (lblSize.x, 0);
+
+        fileButton = ZFButton.create(
+            btnPos, 
+            (BUTTON_HEIGHT * 3, BUTTON_HEIGHT), 
+            text: String.format("%d", curFile), 
+            cmdHandler: NULL,
+            inactive: baseBtn, 
+            hover: baseBtn, 
+            click: baseBtn,
+            disabled: baseBtn, 
+            fnt: debugFont,
+            textScale: 0.4
+        );
+
+        let minBtn1 = ZFBoxTextures.CreateTexturePixels("MINBTN1", (6, 6), (10, 10), boxTiled, boxTiled);
+        let minBtn2 = ZFBoxTextures.CreateTexturePixels("MINBTN2", (6, 6), (10, 10), boxTiled, boxTiled);
+        let minBtn3 = ZFBoxTextures.CreateTexturePixels("MINBTN3", (6, 6), (10, 10), boxTiled, boxTiled);
+
+        fileButton.pack(mainFrame);
+
+        let minButton = ZFButton.create (
+            // Box
+            btnPos,
+            (BUTTON_HEIGHT, BUTTON_HEIGHT),
+
+            // Command properties
+            cmdHandler: handler,
+            command: "PREVFILE",
+
+            // Textures
+            inactive: minBtn1,
+            hover: minBtn2,
+            click: minBtn3
+        );
+
+        minButton.pack(mainFrame);
+
+        let pluBtn1 = ZFBoxTextures.CreateTexturePixels("PLUBTN1", (6, 6), (10, 10), boxTiled, boxTiled);
+        let pluBtn2 = ZFBoxTextures.CreateTexturePixels("PLUBTN2", (6, 6), (10, 10), boxTiled, boxTiled);
+        let pluBtn3 = ZFBoxTextures.CreateTexturePixels("PLUBTN3", (6, 6), (10, 10), boxTiled, boxTiled);
+
+        let pluButton = ZFButton.create (
+            // Box
+            btnPos + (2 * BUTTON_HEIGHT, 0),
+            (BUTTON_HEIGHT, BUTTON_HEIGHT),
+
+            // Command properties
+            cmdHandler: handler,
+            command: "NEXTFILE",
+
+            // Textures
+            inactive: pluBtn1,
+            hover: pluBtn2,
+            click: pluBtn3
+        );
+
+        pluButton.pack(mainFrame);
+    }
+
+    void incrementFile() {
+        curFile = (curFile + 1) % 4;
+        updateButtons();
+    }
+    void decrementFile() {
+        curFile--;
+        if(curFile < 0) {
+            curFile = 3;
+        }
+        updateButtons();
+    }
+
+    void updateButtons(int slot = -1) {
+
+        fileButton.setText(String.format("%d", curFile));
+
+        if(slot < 0) {
+            for(int i = 0; i < debugButtons.size(); i++) {
+                debugButtons[i].setSaveSlot(curFile);
+            }
+        } else {
+            debugButtons[slot].setSaveSlot(curFile);
+        }
+    }
+}

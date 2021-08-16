@@ -29,6 +29,11 @@ class MapDataRepo Abstract
         return evh.maps[index].getLangName();
     }
 
+    static String getSaveBase(int index) {
+        let evh = getRepository();
+        return evh.maps[index].getSaveBase();
+    }
+
     static String getTempEvent(int index) {
         let evh = getRepository();
         return evh.maps[index].getTempEvent();

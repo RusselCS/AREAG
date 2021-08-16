@@ -459,13 +459,13 @@ class ZFElement ui {
 	}
 
 	/// Packs the element into the master frame.
-	void pack(ZFFrame master) {
+	virtual void pack(ZFFrame master) {
 		master.internalPack(self);
 		requestMouseUpdate();
 	}
 
 	/// Unpacks the element from its master frame.
-	void unpack() {
+	virtual void unpack() {
 		if (master == NULL) {
 			return;
 		}
