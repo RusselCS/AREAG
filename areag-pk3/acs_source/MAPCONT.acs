@@ -39,6 +39,7 @@ script "map_switchto" (int tomap, int door, int flags)
 	if(flags & MAPSWITCH_RESET) {
 		levelflags |= CHANGELEVEL_RESETINVENTORY;
 		levelflags |= CHANGELEVEL_RESETHEALTH;
+		ClearInventory();
 	}
 	
 	if(CheckInventory("ChakramShield") > 0 && Checkinventory("ChakramStock") == 0) {
@@ -447,24 +448,8 @@ script "map_loadGame" (int file)
 
 	if(levelNum != 0) {
 		loadFile(file);
-		delay(1);
-
-		int mapSize = ScriptCall("MapDataRepo", "getMapCount");
-		for(int i = 0; i < mapSize; i++)
-		{
-			str flags = GetCVarString(ScriptCall("MapDataRepo", "getTempPickup", i));
-			int len = strLen(flags);
-
-			for(int j = 0; j < len; j++) {
-				if(GetChar(flags, j) == '1') {
-					GiveInventory(ScriptCall("MapDataRepo", "getPickupFrom", i, j+1), 1);
-				}
-			}
-		}
-
-		delay(1);
-
 		ACS_NamedExecuteAlways("map_switchto", 999, levelNum, doorNum, MAPSWITCH_NOSOUND);
+		ACS_NamedExecuteAlways("map_loadItems", 999);
 		ACS_NamedExecuteAlways("map_switchto", 0, 999, 0, MAPSWITCH_NOSOUND|MAPSWITCH_RESET);
 	} else {
 		newFile();
@@ -473,9 +458,25 @@ script "map_loadGame" (int file)
 	}
 }
 
+script "map_loadItems" (void)
+{
+	int mapSize = ScriptCall("MapDataRepo", "getMapCount");
+	for(int i = 0; i < mapSize; i++)
+	{
+		str flags = GetCVarString(ScriptCall("MapDataRepo", "getTempPickup", i));
+		int len = strLen(flags);
+
+		for(int j = 0; j < len; j++) {
+			if(GetChar(flags, j) == '1') {
+				GiveInventory(ScriptCall("MapDataRepo", "getPickupFrom", i, j+1), 1);
+			}
+		}
+	}
+}
+
 script "map_moveFloor" (int tag, int dest, int speed)
 {
-	int present = (isFloorMoving(tag, 0) == -1);
+	//int present = (isFloorMoving(tag, 0) == -1);
 	int idx = ScriptCall("MovingFloorsRepo", "addSector", tag, dest, speed);
 
 	if(!GetCVar("sys_timefreeze")) {
@@ -483,26 +484,26 @@ script "map_moveFloor" (int tag, int dest, int speed)
 		Floor_MoveToValue(tag, speed, abs(dest), dest < 0);
 	}
 	
-	if(!present) {
+	// if(!present) {
 
-		int cur, sDest;
+	// 	int cur, sDest;
 
-		do
-		{
-			delay(1);
-			idx = ScriptCall("MovingFloorsRepo", "refreshTag", tag, idx);
-			cur = GetSectorFloorZ(tag, 0, 0);
-			sDest = ScriptCall("MovingFloorsRepo", "getTargetHeightById", idx);
-		}
-		while(cur != sDest);
+	// 	do
+	// 	{
+	// 		delay(1);
+	// 		idx = ScriptCall("MovingFloorsRepo", "refreshTag", tag, idx);
+	// 		cur = GetSectorFloorZ(tag, 0, 0);
+	// 		sDest = ScriptCall("MovingFloorsRepo", "getTargetHeightById", idx);
+	// 	}
+	// 	while(cur != sDest);
 
-		ScriptCall("MovingFloorsRepo", "removeSectorById", idx);
-	}
+	// 	ScriptCall("MovingFloorsRepo", "removeSectorById", idx);
+	// }
 }
 
 script "map_moveCeiling" (int tag, int dest, int speed)
 {
-	int present = (isFloorMoving(tag, 0) == -1);
+	//int present = (isFloorMoving(tag, 0) == -1);
 	int idx = ScriptCall("MovingCeilingsRepo", "addSector", tag, dest, speed);
 
 	if(!GetCVar("sys_timefreeze")) {
@@ -510,22 +511,22 @@ script "map_moveCeiling" (int tag, int dest, int speed)
 		Ceiling_MoveToValue(tag, speed, abs(dest), dest < 0);
 	}
 
-	if(!present) {
+	// if(!present) {
 
-		int cur, sDest;
+	// 	int cur, sDest;
 
-		do
-		{
-			delay(1);
-			idx = ScriptCall("MovingCeilingsRepo", "refreshTag", tag, idx);
-			cur = GetSectorCeilingZ(tag, 0, 0);
-			sDest = ScriptCall("MovingCeilingsRepo", "getTargetHeightById", idx);
-			printBold(s:"cur ", f:cur, s:" / ", f:sDest, s:" dest");
-		}
-		while(cur != sDest);
+	// 	do
+	// 	{
+	// 		delay(1);
+	// 		idx = ScriptCall("MovingCeilingsRepo", "refreshTag", tag, idx);
+	// 		cur = GetSectorCeilingZ(tag, 0, 0);
+	// 		sDest = ScriptCall("MovingCeilingsRepo", "getTargetHeightById", idx);
+	// 		printBold(s:"cur ", f:cur, s:" / ", f:sDest, s:" dest");
+	// 	}
+	// 	while(cur != sDest);
 
-		ScriptCall("MovingCeilingsRepo", "removeSectorById", idx);
-	}
+	// 	ScriptCall("MovingCeilingsRepo", "removeSectorById", idx);
+	// }
 }
 
 script "map_pauseMovingSectors" (void)
