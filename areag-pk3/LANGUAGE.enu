@@ -94,10 +94,13 @@ AR_SILVERCUIRASS = "SILVER CUIRASS";
 PU_SILVERCUIRASS = "Damage taken is reduced by half.";
 
 AR_TIMEPIECE = "TEMPORAL TIMEPIECE";
-PU_TIMEPIECE = "Use to temporarily stop time.";
+PU_TIMEPIECE = "While active, freeze time. Drains battery while active.";
 
 AR_BATTERYHAT = "BATTERY HAT";
 PU_BATTERYHAT = "Halves battery drain speed.";
+
+AR_PAULDRON = "SHOULDER OF ATLAS";
+PU_PAULDRON = "While active, all knockback is resisted. You fall faster.";
 
 // TABLETS
 

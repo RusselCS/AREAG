@@ -36,6 +36,7 @@ extend class AREAGPlayerPawn {
     double dWaterLevel;
 
     bool bUWFrozenBecauseTimeStop;
+    bool bPauldronActive;
 
     int airTime;
     int jumpDelay;
@@ -67,6 +68,7 @@ extend class AREAGPlayerPawn {
         dViewHeightOffset = 0.0;
 
         bUWFrozenBecauseTimeStop = false;
+        bPauldronActive = false;
         
         setBaseJumpSpeed(dBaseJump);
         setBaseWalkSpeed(dBaseSpeed);
@@ -127,6 +129,9 @@ extend class AREAGPlayerPawn {
                 }
                 A_SetInventory("ScreenShakeTime", 5);
                 A_SpawnItemEx("AREAGCrashLand");
+                if(CountInv("PauldronFlag") > 0) {
+                    A_SpawnItemEx("AREAGCrashLand", 0, 0, 0, 0, 0, 0, 11.25);
+                }
                 A_StartSound("player/crashland", CHAN_BODY);
             }
         }
@@ -204,6 +209,20 @@ extend class AREAGPlayerPawn {
             {
                 GiveInventory("BreathTime", 100);
                 bHeadInWater = false;
+            }
+        }
+
+        // PAULDRON
+        // normally this would use a passive tick function, but due to how that works, I can't actually do that without reworking them again. :I
+        if(CountInv("PauldronFlag") > 0) {
+            if(!bPauldronActive) {
+                bPauldronActive = true;
+                resetGravity();
+            }
+        } else {
+            if(bPauldronActive) {
+                bPauldronActive = false;
+                resetGravity();
             }
         }
 
@@ -297,11 +316,15 @@ extend class AREAGPlayerPawn {
     }
 
     void resetGravity() {
+        double fGrav = dBaseGravity;
         if(CountInv("LegsUnderwater") > 0) {
-            gravity = dBaseGravity * WATER_GRAVITY_MULT;
-        } else {
-            gravity = dBaseGravity;
+            fGrav *= WATER_GRAVITY_MULT;
         }
+
+        if(CountInv("PauldronFlag") > 0) {
+            fGrav *= PAULDRON_GRAVITY_MULT;
+        }
+        gravity = fGrav;
     }
 
     void changeSize(double rd, double ht) {

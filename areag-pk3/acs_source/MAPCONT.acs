@@ -300,14 +300,6 @@ script "MAP_OPEN" OPEN
 	SpawnForced("MusicFader", 0, 0, 0, TID_MUSFADE);
 }
 
-// KEY CHECK
-script "map_checkKey" (int keyId) {
-    str key = ScriptCall("KeyBase", "getKey", keyId);
-
-    SetActivator(0, AAPTR_PLAYER1);
-    SetResultValue(CheckInventory("getKey")>0);
-}
-
 // DOORS
 script "map_door" (int tag, int top, int bottom) {
     int fixBottom = bottom << 16;

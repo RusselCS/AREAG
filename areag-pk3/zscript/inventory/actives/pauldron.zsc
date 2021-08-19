@@ -1,0 +1,73 @@
+// 
+class PauldronPickup : BasicActiveInventory
+{
+    Default
+    {
+        BasicInventory.PickupType PICKTYPE_TREASURE;
+        BasicInventory.PickupID PICKMSG_PAULDRON;
+        BasicInventory.Checkitem "PauldronTrigger";
+        Scale 1.0;
+    }
+
+    override void giveItemTrigger(AREAGPlayerPawn plr) {
+		plr.pushToggleTrigger(new("ToggleStateMap").Init("PauldronFlag", "PauldronOff"));
+	}
+
+	States
+	{
+	SpawnFrames:
+		PPAL A 1;
+		loop;
+	}
+}
+
+class PauldronFlag : Once {}
+
+extend class BasicActiveTrigger
+{
+    States
+    {
+    PauldronOff:
+		TNT1 A 0 A_SetInterruptState("PauldronSelect");
+		fail;
+    }
+}
+
+class PauldronTrigger : BasicActiveTrigger
+{
+    Default
+    {
+        inventory.icon "ICOIN4";
+    }
+
+	States
+	{
+	TreasureUse:
+		TNT1 A 0 A_SetInterruptState("PauldronSelect");
+		fail;
+	}
+}
+
+extend class AREAGProtoWeapon {
+
+    States
+    {
+    PauldronSelect:
+		TNT1 A 2;
+		HRN1 BCD 1;
+		HRN1 A 0;
+        HRN1 A 0 A_ClearInterruptState();
+		HRN1 A 0 {
+			let cnt = CountInv("PauldronFlag");
+			if(cnt == 0) {
+				A_SetInventory("PauldronFlag", 1);
+			} else {
+				A_SetInventory("PauldronFlag", 0);
+			}
+		}
+		HRN1 IJK 1;
+		TNT1 A 4;
+		TNT1 A 1 A_JumpIf(true, "Ready");
+		wait;
+    }
+}

@@ -167,7 +167,7 @@ class MapUtilInit : StaticEventHandler
 
         // Toggle items
         latest.addPickup("TransceiverPickup");
-        latest.addPickup("MaskPickup");
+        latest.addPickup("PauldronPickup");
         latest.addPickup("GogglesPickup");
         latest.addPickup("TimepiecePickup"); // 65
         latest.addPickup("SpectreCloakPickup");

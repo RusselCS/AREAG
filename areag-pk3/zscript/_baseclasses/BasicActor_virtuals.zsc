@@ -71,6 +71,31 @@ mixin class BasicActor_Virtuals
 		A_ChangeVelocity(0, 0, vel.z, CVF_REPLACE);
 	}
 
+	// Player push functions
+	action void A_radialPushPlayer(double radius, double spd, double forceDir = -1, bool ignoreZ = false) {
+		Actor who = invoker.getPlayer();
+		if(who.CountInv("PauldronFlag") > 0)
+			return;
+
+		double checkDist;
+		
+		if(ignoreZ) {
+			checkDist = Distance2D(who) - who.radius;
+		} else {
+			checkDist = Distance3D(who) - who.radius;
+		}
+		
+		if(checkDist < radius) {
+			double pushAng;
+			if(forceDir != -1) {
+				pushAng = forceDir;
+			} else {
+				pushAng = VectorAngle(who.pos.x - self.pos.x, who.pos.y - self.pos.y);
+			}
+			who.A_ChangeVelocity(spd * cos(pushAng), spd * sin(pushAng), 0);
+		}
+	}
+
     // ======================================================================================
     //  Distance and position functions, typically return values without modifying the actor
     // ======================================================================================
@@ -102,7 +127,7 @@ mixin class BasicActor_Virtuals
 	}
 
 	AREAGPlayerPawn getPlayer() {
-		return AREAGPlayerPawn(GetPointer(AAPTR_PLAYER1));
+		return AREAGPlayerPawn(GetPointer(AAPTR_PLAYER1)); // Multiplayer killer
 	}
 
     // ===============================
