@@ -37,6 +37,8 @@ extend class AREAGPlayerPawn {
 
     bool bUWFrozenBecauseTimeStop;
     bool bPauldronActive;
+    int iPauldronDrainTime;
+    const PAULDRON_DRAIN_TIME = 35;
 
     int airTime;
     int jumpDelay;
@@ -69,6 +71,7 @@ extend class AREAGPlayerPawn {
 
         bUWFrozenBecauseTimeStop = false;
         bPauldronActive = false;
+        iPauldronDrainTime = PAULDRON_DRAIN_TIME;
         
         setBaseJumpSpeed(dBaseJump);
         setBaseWalkSpeed(dBaseSpeed);
@@ -214,15 +217,27 @@ extend class AREAGPlayerPawn {
 
         // PAULDRON
         // normally this would use a passive tick function, but due to how that works, I can't actually do that without reworking them again. :I
-        if(CountInv("PauldronFlag") > 0) {
-            if(!bPauldronActive) {
-                bPauldronActive = true;
-                resetGravity();
-            }
-        } else {
-            if(bPauldronActive) {
-                bPauldronActive = false;
-                resetGravity();
+        if(CountInv("DroneFlag") == 0) {
+            if(CountInv("PauldronFlag") > 0 && CountInv("Battery") > 0) {
+                if(!bPauldronActive) {
+                    bPauldronActive = true;
+                    iPauldronDrainTime = 0;
+                    iBatteryRegenStack++;
+                    resetGravity();
+                }
+                if(iPauldronDrainTime == 0) {
+                    changeBatteryAmount(-2);
+                    iPauldronDrainTime = PAULDRON_DRAIN_TIME;
+                } else {
+                    iPauldronDrainTime--;
+                }
+            } else {
+                if(bPauldronActive) {
+                    A_SetInventory("PauldronFlag", 0);
+                    iBatteryRegenStack--;
+                    bPauldronActive = false;
+                    resetGravity();
+                }
             }
         }
 
