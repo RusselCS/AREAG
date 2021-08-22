@@ -140,6 +140,16 @@ class AREAGPlayerPawn : AREAGProtoPlayer {
         passiveClasses.push(clsName);
     }
 
+    void removePassiveEffect(String clsName) {
+        for(int i = 0; i < passiveClasses.size(); i++) {
+            if(passiveClasses[i] == clsName) {
+                passives[i].onRemove(AREAGPlayerPawn(self));
+                passiveClasses.Delete(i);
+                passives.Delete(i);
+            }
+        }
+    }
+
     void setCurrentHat(String clsName) {
         if(currentHat) {
             currentHat.hatRemove(AREAGPlayerPawn(self));

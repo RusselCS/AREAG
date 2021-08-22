@@ -102,6 +102,9 @@ PU_BATTERYHAT = "Halves battery drain speed.";
 AR_PAULDRON = "SHOULDER OF ATLAS";
 PU_PAULDRON = "While active, all knockback is resisted. You fall faster.";
 
+AR_CLOAK = "PHANTOM'S CLOAK";
+PU_CLOAK = "While active, monsters cannot see you.";
+
 // TABLETS
 
 TABLET_TESTMAP_0 = "This is a puzzle tablet. Read the other using nova pack.";

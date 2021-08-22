@@ -15,4 +15,5 @@ class PlayerPassive : Thinker
 {
     mixin AREAG_Common;
     virtual void passiveTick(AREAGPlayerPawn plr) {}
+    virtual void onRemove(AREAGPlayerPawn plr) {}
 }

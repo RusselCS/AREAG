@@ -1,0 +1,114 @@
+// 
+class SpectreCloakPickup : BasicActiveInventory
+{
+    Default
+    {
+        BasicInventory.PickupType PICKTYPE_TREASURE;
+        BasicInventory.PickupID PICKMSG_CLOAK;
+        BasicInventory.Checkitem "CloakTrigger";
+        Scale 1.0;
+    }
+
+    override void giveItemTrigger(AREAGPlayerPawn plr) {
+		plr.pushToggleTrigger(new("ToggleStateMap").Init("CloakFlag", "CloakOff"));
+	}
+
+	States
+	{
+	SpawnFrames:
+		SCLO A 1;
+		loop;
+	}
+}
+
+class CloakFlag : Once {}
+
+extend class BasicActiveTrigger
+{
+    States
+    {
+    CloakOff:
+		TNT1 A 0 A_SetInterruptState("CloakSelect");
+		fail;
+    }
+}
+
+class CloakTrigger : BasicActiveTrigger
+{
+    Default
+    {
+        inventory.icon "ICOIN5";
+    }
+
+	States
+	{
+	TreasureUse:
+		TNT1 A 0 A_SetInterruptState("CloakSelect");
+		fail;
+	}
+}
+
+extend class AREAGProtoWeapon {
+
+    States
+    {
+    CloakSelect:
+		TNT1 A 2;
+		HRN1 BCD 1;
+		HRN1 A 0;
+        HRN1 A 0 A_ClearInterruptState();
+		HRN1 A 0 {
+			let cnt = CountInv("CloakFlag");
+			if(cnt == 0) {
+                invoker.plr.enableCloak();
+			} else {
+                invoker.plr.disableCloak();
+			}
+		}
+		HRN1 IJK 1;
+		TNT1 A 4;
+		TNT1 A 1 A_JumpIf(true, "Ready");
+		wait;
+    }
+}
+
+class CloakPassive : PlayerPassive
+{
+    const PAULDRON_DRAIN_TIME = 35;
+
+    int iCloakDrainTime;
+
+    override void passiveTick(AREAGPlayerPawn plr) {
+        if(plr.CountInv("DroneFlag") == 0) {
+            if(plr.CountInv("Battery") > 0) {
+                if(iCloakDrainTime <= 0) {
+                    iCloakDrainTime = PAULDRON_DRAIN_TIME;
+                    plr.changeBatteryAmount(-2);
+                } else {
+                    iCloakDrainTime--;
+                }
+            } else {
+                plr.disableCloak();
+            }
+        }
+    }
+    
+    // override void onRemove(AREAGPlayerPawn plr) {
+    //     plr.disableCloak();
+    // }
+}
+
+extend class AREAGPlayerPawn
+{
+    void enableCloak() {
+        iBatteryRegenStack++;
+        pushPassiveEffect("CloakPassive");
+        A_SetInventory("CloakFlag", 1);
+    }
+
+    void disableCloak() {
+        iBatteryRegenStack--;
+        removePassiveEffect("CloakPassive");
+        A_SetInventory("CloakFlag", 0);
+    }
+}

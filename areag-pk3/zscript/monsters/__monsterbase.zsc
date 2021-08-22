@@ -250,6 +250,7 @@ class BasicEnemy : BasicActor
         super.BasicTick();
         tick_KnockBack();
         tick_DeathSequence();
+        tick_CheckVision();
         
         monsterTick();
 	}
