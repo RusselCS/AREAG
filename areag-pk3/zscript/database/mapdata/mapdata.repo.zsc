@@ -202,7 +202,7 @@ class MapDataRepo Abstract
     static string setChar(String st, int val, int pos) {
         int len = st.length();
         if(pos < 0 || pos >= len) {
-            Console.printf("\cgERROR IN SETCHAR: \c-Input out of bounds. Length: %d, Index: %d", len, pos);
+            throwAbortException("\cgERROR IN SETCHAR: \c-Input out of bounds. Length: %d, Index: %d", len, pos);
         }
 
         return String.format("%s%d%s", st.Left(pos), val, st.Mid(pos+1, len-pos));
