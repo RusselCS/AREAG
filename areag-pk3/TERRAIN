@@ -37,7 +37,7 @@ terrain advslime
 	friction 0.8
 
 	damagetype "Slime"
-	damageamount 1
+	damageamount 2
 	damagetimemask 1
 }
 

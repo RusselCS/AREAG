@@ -392,7 +392,7 @@ script "map_water_function" (int effect, int waterMode) {
 			effectCooldown = 35;
 			break;
 		case 1: // Slime from Lost Impact.
-			Thing_Damage(tid, 1, MOD_SLIME);
+			Thing_Damage(tid, 2, MOD_SLIME);
 			effectCooldown = 1;
 			break;
 	}
