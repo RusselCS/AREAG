@@ -90,7 +90,7 @@ class WaterSpeed : PowerSpeed
     Default
     {
         speed 0.8;
-	    powerup.duration 0x7ffffff;
+	    powerup.duration VAL_INF;
     }
 }
 

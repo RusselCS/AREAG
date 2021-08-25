@@ -5,6 +5,8 @@ const HEALTH_MAX = -1;
 
 const MAP_TABLET_WRAP = 100;
 
+const VAL_INF = 0x7FFFFFF;
+
 const RADIUS_OFFS = 1.4142;
 
 const BT_SUBNEXT = BT_USER1;
@@ -98,7 +100,7 @@ class TimeFreezer : PowerTimeFreezerSound
 {
 	Default
 	{
-		powerup.duration 0x7ffffff;
+		powerup.duration VAL_INF;
 	}
 }
 

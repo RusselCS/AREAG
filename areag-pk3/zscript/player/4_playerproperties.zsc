@@ -19,7 +19,7 @@ class AREAGPlayer : AREAGPlayerPawn
 		player.attackzoffset 20.0;
 		radius 16;
 		height 60;
-        mass 0x7ffffff;
+        mass VAL_INF;
         gravity 1.2;
         +DONTBLAST;
         +NOBLOOD;

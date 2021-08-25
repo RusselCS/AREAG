@@ -51,6 +51,7 @@ class MusicFader : Actor
 }
 
 // THE FOLLOWING CODE WAS NICKED FROM JUVENILE POWER FANTASY, WITH PERMISSION FROM KINSIE.
+// [TODO] REPLACE LATER
 // A version of PowerTimeFreezer which does not mute sound while in effect.
 // By Blue Shadow
 class PowerTimeFreezerSound : PowerTimeFreezer
