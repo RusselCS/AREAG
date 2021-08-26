@@ -105,6 +105,9 @@ PU_PAULDRON = "While active, all knockback is resisted. You fall faster.";
 AR_CLOAK = "PHANTOM'S CLOAK";
 PU_CLOAK = "While active, monsters cannot see you.";
 
+AR_SHADOW = "SHADOW MELD";
+PU_SHADOW = "Enemies pass through you.";
+
 // TABLETS
 
 TABLET_TESTMAP_0 = "This is a puzzle tablet. Read the other using nova pack.";

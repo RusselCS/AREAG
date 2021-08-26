@@ -1,0 +1,38 @@
+class ShadowMeldPickup : BasicPassive
+{
+    Default
+	{
+		BasicInventory.PickupType PICKTYPE_ARTIFICE;
+		BasicInventory.PickupID PICKMSG_SHADOW;
+		BasicInventory.CheckItem "ShadowMeldFlag";
+	}
+
+    override void definePickup()
+    {
+        clsName = "ShadowMeldPassive";
+    }
+
+    States
+	{
+	SpawnFrames:
+		PSVE C 1;
+		loop;
+	}
+}
+
+class ShadowMeldPassive : PlayerPassive
+{
+    override void passiveTick(AREAGPlayerPawn plr) {
+        if(!plr.bTHRUSPECIES) {
+            console.printf("Activating ghost.");
+            plr.bTHRUSPECIES = true;
+        }
+    }
+    
+    override void onRemove(AREAGPlayerPawn plr) {
+        console.printf("Removing ghost.");
+        plr.bTHRUSPECIES = false;
+    }
+}
+
+class ShadowMeldFlag : Once {}

@@ -176,7 +176,7 @@ class MapUtilInit : StaticEventHandler
         latest.addPickup("TimepiecePickup"); // 65
         latest.addPickup("SpectreCloakPickup");
         latest.addPickup("MonocleterPickup");
-        latest.addPickup("GhostWalkPickup");
+        latest.addPickup("ShadowMeldPickup");
 
         // Consumables - Spawned by Shop in the TestMap
         latest.addPickup("ArmorCrashPickup");

@@ -62,6 +62,7 @@
 #include "zscript/inventory/passives/keys.zsc"
 #include "zscript/inventory/passives/pendant.zsc"
 #include "zscript/inventory/passives/cuirass.zsc"
+#include "zscript/inventory/passives/shadowmeld.zsc"
 
 #include "zscript/inventory/passives/scrolls/efficientvandal.zsc"
 #include "zscript/inventory/passives/scrolls/shockabsorber.zsc"
