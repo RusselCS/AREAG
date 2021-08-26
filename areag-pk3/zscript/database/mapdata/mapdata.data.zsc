@@ -5,6 +5,10 @@ class MapUtilInit : StaticEventHandler
     int excludeMaps;
 
     override void NewGame() {
+        if(maps.size() > 0) {
+            maps.clear();
+        }
+
         addMap(new("AREAGMapData").Init(1, "ADV00", "MCRNE_00", "$NAME_ADV00", "TI00", "SAVE_OUTSKIRTS", "Outskirts"));
         latest.addPickup("IronShieldPickup");
         latest.addPickup("EmptyItem");
