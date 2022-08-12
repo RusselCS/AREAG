@@ -1,5 +1,8 @@
 [enu default]
 
+DB_DIALOGUETEST1 = "Clyde|CLYSNORM|L:Well, what have we here?$DB_DIALOGUETEST2";
+DB_DIALOGUETEST2 = "Village Elder|ELDSNORM|R:Food. Eat some.";
+
 // UPGRADES AND POWERUPS
 
 AR_GEARGREAVES = "GEAR GREAVES";

@@ -12,7 +12,7 @@ class ZFHandler ui {
 	///
 	/// More specifically, called when a button is currently being clicked on, and the mouse is
 	/// released while it is under the cursor.
-	virtual void buttonClickCommand(ZFButton caller, Name command) {}
+	virtual void buttonClickCommand(ZFButton caller, string command) {}
 	
 	/// Called periodically by a [button](ZF_Button) that uses the hold tic interval system.
 	///

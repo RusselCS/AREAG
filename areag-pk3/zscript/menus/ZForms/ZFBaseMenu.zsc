@@ -52,6 +52,8 @@ class ZFGenericMenu : GenericMenu {
 	/// See [`ZF_FocusPriority`].
 	void setFocusPriority(ZFFocusPriority focusPriority) { globalStore.focusPriority = focusPriority; }
 
+	vector2 baseresolution;
+
 	override void init(Menu parent) {
 		Super.init(parent);
 		mainFrame = ZFFrame.create((0, 0), (320, 200));
@@ -70,6 +72,7 @@ class ZFGenericMenu : GenericMenu {
 	void setBaseResolution(Vector2 size) {
 		mainFrame.setBox((0, 0), size);
 		mainFrame.setBaseResolution(size);
+		baseresolution = size;
 	}
 
 	/// Called whenever the back button is pressed, so that its behaviour can

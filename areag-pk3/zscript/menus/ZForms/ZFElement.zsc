@@ -651,13 +651,13 @@ class ZFElement ui {
 
 	/// Packs an element into a given frame. This adds it to the element tree, causing it to be
 	/// drawn and have input checks done to it in future ticks/frames.
-	void pack(ZFFrame master) {
+	virtual void pack(ZFFrame master) {
 		master.internalPack(self);
 		requestMouseUpdate();
 	}
 
 	/// Unpacks an element from the element tree, provided it isn't packed into a non-[`ZF_Frame`].
-	void unpack() {
+	virtual void unpack() {
 		if (master == NULL) {
 			return;
 		}

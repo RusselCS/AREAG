@@ -9,7 +9,7 @@
 /// Also see the documentation for [`ZF_ButtonBase`] as a lot of button things are documented
 /// there.
 class ZFButton : ZFButtonBase {
-	private void config(
+	void config(
 		string text = "", ZFHandler cmdHandler = NULL, Name command = '',
 		ZFBoxTextures inactive = NULL, ZFBoxTextures hover = NULL,
 		ZFBoxTextures click = NULL, ZFBoxTextures disabled = NULL,

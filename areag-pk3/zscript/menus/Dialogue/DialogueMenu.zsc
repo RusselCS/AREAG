@@ -1,0 +1,371 @@
+class DialogueHandler : ZFHandler {
+    // A reference to the menu we want to modify - the menu has to set this
+    // to itself.
+    DialogueMenu menu;
+
+    override void buttonClickCommand(ZFButton caller, String command) {
+        // Check if the command matches the button's command.
+        if (command == 'firstButtonClick') {
+            // Add 50 to the menu's desired label X position.
+            menu.desiredPosX += 50;
+        } else if (command == 'secondButtonClick') {
+            // Subtract 50 from the menu's desired label X position.
+            menu.desiredPosX -= 50;
+        }
+    }
+}
+
+enum DialogueState {
+    DGS_NONE = -1,
+    DGS_LEFT,
+    DGS_RIGHT
+}
+
+class DialogueMenu : ZFGenericMenu {
+    // Store a reference to the frame now that we want to change it later.
+    ZFFrame frame;
+
+    // Dialogue state information
+    int tick;
+    int stateTick;
+    int sframe;
+    DialogueState lastState;
+    DialogueState dgState;
+
+    // Dialogue screen elements
+    ZFImage borders;
+    ZFImage nameBox;
+    ZFImage leftSpeaker;
+    ZFImage rightSpeaker;
+    ZFImage textBox;
+    ZFLabel leftNameTag;
+    ZFLabel rightNameTag;
+
+    // Where we want the frame to end up.
+    double desiredPosX;
+
+    Font textFont;
+    Font nameFont;
+
+    Vector2 imgCenter;
+
+    String next;
+
+    override void init(Menu parent) {
+        tick = 0;
+        stateTick = 0;
+        sframe = 0;
+        lastState = DGS_NONE;
+        dgState = DGS_RIGHT;
+        textFont = "DIAGFONT";
+        nameFont = "AREAFONT";
+
+        imgCenter = (350, 0);
+
+        // This must be called to ensure that the menu is set up properly.
+        Super.init(parent);
+        // ZForms menus work by using a "virtual" resolution which means that
+        // you only have to design the menu for this resolution.
+        // Here we'll use a typical monitor resolution, but this can be anything,
+        // even 320x200.
+        let baseRes = (1600, 900);
+        setBaseResolution(baseRes);
+
+        // Here we make a frame - it needs to be positioned right, and big enough
+        // to contain the elements we want inside it.
+        self.frame = ZFFrame.create(
+            (0, 0),
+            (baseRes.x, baseRes.y)
+        );
+        // Set the desired X position to the starting X position so it doesn't
+        // instantly move.
+        self.desiredPosX = self.frame.getPosX();
+        frame.pack(mainFrame);
+
+        leftSpeaker = ZFImage.create (
+            imgCenter,
+            (900, 900), // max scale 3
+            image: "CLYSNORM",
+            alignment: ZFElement.AlignType_BottomCenter
+        );
+        leftSpeaker.pack(frame);
+
+        rightSpeaker = ZFImage.create (
+            imgCenter,
+            (900, 900),
+            image: "ELDSNORM",
+            alignment: ZFElement.AlignType_BottomCenter
+        );
+        rightSpeaker.pack(frame);
+
+        // Here we create our second element, an image.
+        // We'll put it under the label. STARTAN2 is 128x128 pixels
+        // so we'll use that size.
+        borders = ZFImage.create(
+            // This argument controls the position - 50 pixels under the label.
+            (  0, 0),
+            // This argument controls the size. Here we match STARTAN2.
+            (1600, 900),
+            alignment: ZFElement.AlignType_BottomCenter
+        );
+        borders.pack(frame);
+
+        textBox = ZFImage.create(
+            // This argument controls the position - 50 pixels under the label.
+            (  0, 0),
+            // This argument controls the size. Here we match STARTAN2.
+            (1600, 900),
+            // The texture name.
+            image: "DG_SPBOX",
+            alignment: ZFElement.AlignType_TopCenter
+        );
+        textBox.pack(frame);
+
+        nameBox = ZFImage.create(
+            (  0, 0),
+            (1600, 900),
+            alignment: ZFElement.AlignType_TopCenter
+        );
+        nameBox.pack(frame);
+
+        // Load images on cycles
+        for(int i = 0; i < borderNames.size(); i++) {
+            borders.setImage(borderNames[i]);
+            nameBox.setImage(nameBoxNames[i]);
+        }
+
+        leftNameTag = ZFLabel.create(
+            (NAMETAG_X, NAMETAG_Y),
+            (1600, 900),
+            text: "Clyde",
+            fnt: nameFont,
+            alignment: ZFElement.AlignType_BottomLeft,
+            textScale: NAMETAG_SCALE
+        );
+        rightNameTag = ZFLabel.create(
+            (-NAMETAG_X, NAMETAG_Y),
+            (1600, 900),
+            text: "Village Elder",
+            fnt: nameFont,
+            alignment: ZFElement.AlignType_BottomRight,
+            textScale: NAMETAG_SCALE
+        );
+        leftNameTag.pack(frame);
+        rightNameTag.pack(frame);
+
+        stageDialogue();
+    }
+
+    static const String[] borderNames = {
+        "DG_OFRM1",
+        "DG_OFRM2",
+        "DG_OFRM3",
+        "DG_OFRM4",
+        "DG_OFRM5"
+    };
+
+    static const String[] nameBoxNames = {
+        "DG_NMBX1",
+        "DG_NMBX2",
+        "DG_NMBX3",
+        "DG_NMBX4",
+        "DG_NMBX5"
+    };
+
+    static const double[] speakScales = {
+        1.000,
+        1.125,
+        1.250,
+        1.375,
+        1.500
+    };
+
+    static const double[] speakXs = {
+        -171,
+        -296,
+        -421,
+        -546,
+        -671
+    };
+
+    const TICKS_PER_FRAME = 2;
+
+    const NAMETAG_X = 100;
+    const NAMETAG_Y = -212;
+    const NAMETAG_SCALE = 1.1;
+
+    const NAMETAG_X_SCROLL = 200;
+
+    override void ticker() {
+        int st = stateTime();
+        int animTime = borderNames.size() * TICKS_PER_FRAME;
+        int openTime = animTime / 2;
+
+        if(st <= animTime) {
+            
+            if(dgState != DGS_NONE && lastState != DGS_NONE) {
+                
+                let opct = 1.0 - double(st) / double(openTime);
+                let ipct = 0.0 + double(st - openTime) / double(openTime);
+
+                if(dgState == DGS_RIGHT) {
+                    leftNameTag.setAlpha(opct);
+                    rightNameTag.setAlpha(ipct);
+                } else {
+                    leftNameTag.setAlpha(ipct);
+                    rightNameTag.setAlpha(opct);
+                }
+
+                if(tick % TICKS_PER_FRAME == 0) {
+                    let rframe = borderNames.size() - 1 - sframe;
+
+                    if(dgState == DGS_RIGHT)
+                    {
+                        if(lastState != DGS_NONE) { // left to right
+                            borders.setImage(borderNames[sframe]);
+                            nameBox.setImage(nameBoxNames[sframe]);
+
+                            // Left -> Right
+                            // Left image slides left
+                            leftSpeaker.setImageScale((speakScales[rframe], speakScales[rframe]));
+                            leftSpeaker.setPos(imgCenter + (speakXs[sframe], 0));
+                            // Right image slides right
+                            rightSpeaker.setImageScale((speakScales[sframe], speakScales[sframe]));
+                            rightSpeaker.setPos(imgCenter - (speakXs[rframe], 0));
+                        }
+                    }
+
+                    if(dgState == DGS_LEFT)
+                    {
+                        if(lastState != DGS_NONE) { // left to right
+                            borders.setImage(borderNames[borderNames.size() - 1 - (sframe)]);
+                            nameBox.setImage(nameBoxNames[nameBoxNames.size() - 1 - (sframe)]);
+
+                            // Right -> Left
+                            // Left image slides right
+                            leftSpeaker.setImageScale((speakScales[sframe], speakScales[sframe]));
+                            leftSpeaker.setPos(imgCenter + (speakXs[rframe], 0));
+                            // Right image slides left
+                            rightSpeaker.setImageScale((speakScales[rframe], speakScales[rframe]));
+                            rightSpeaker.setPos(imgCenter - (speakXs[sframe], 0));
+                        }
+                    }
+
+                    sframe++;
+                } // every X frames check
+
+            } else { // We can uncap the animation for opening/closing because those don't need to be hand-drawn.
+                if(st <= openTime) {
+                    let findex = 0;
+                    let lindex = borderNames.size() - 1;
+
+                    let sStart = 1.5;
+                    let sTarget = 1.0;
+                    let sMove = (sStart - sTarget) / openTime;
+
+                    let curScale = sStart - sMove * st;
+                    let curAlpha = (1.0 / openTime) * st;
+
+                    if(lastState == DGS_NONE) { // Open Speaker
+                        if(dgState == DGS_RIGHT) { // Right Speaker Open
+
+                            if(st == 0) {
+                                borders.setImage(borderNames[lindex]);
+                                nameBox.setImage(nameBoxNames[lindex]);
+
+                                borders.setImageScale((sStart, sStart) * curScale);
+                                leftNameTag.setAlpha(0.0);
+                            } else {
+                                borders.setImageScale((curScale, curScale));
+                                borders.setAlpha(curAlpha);
+                            }
+                            
+                            leftSpeaker.setImageScale((speakScales[findex], speakScales[findex]) * curScale);
+                            leftSpeaker.setPos(imgCenter + (speakXs[lindex], 0) * curScale);
+                            leftSpeaker.setAlpha(curAlpha);
+
+                            rightSpeaker.setImageScale((speakScales[lindex], speakScales[lindex]) * curScale);
+                            rightSpeaker.setPos(imgCenter - (speakXs[findex], 0) * curScale);
+                            rightSpeaker.setAlpha(curAlpha);
+
+                            rightNameTag.setAlpha(curAlpha);
+                            rightNameTag.setTextScale(curScale * NAMETAG_SCALE);
+                        } else { // Left Speaker Open
+
+                            if(st == 0) {
+                                borders.setImage(borderNames[findex]);
+                                nameBox.setImage(nameBoxNames[findex]);
+
+                                borders.setImageScale((sStart, sStart) * curScale);
+                                rightNameTag.setAlpha(0.0);
+                            } else {
+                                borders.setImageScale((curScale, curScale));
+                                borders.setAlpha(curAlpha);
+                            }
+                            
+                            leftSpeaker.setImageScale((speakScales[lindex], speakScales[lindex]) * curScale);
+                            leftSpeaker.setPos(imgCenter + (speakXs[findex], 0) * curScale);
+                            leftSpeaker.setAlpha(curAlpha);
+
+                            rightSpeaker.setImageScale((speakScales[findex], speakScales[findex]) * curScale);
+                            rightSpeaker.setPos(imgCenter - (speakXs[lindex], 0) * curScale);
+                            rightSpeaker.setAlpha(curAlpha);
+
+                            leftNameTag.setAlpha(curAlpha);
+                            leftNameTag.setTextScale(curScale * NAMETAG_SCALE);
+                        }
+
+                        textBox.setImageScale((curScale, curScale));
+                        textBox.setAlpha(curAlpha);
+
+                        nameBox.setImageScale((curScale, curScale));
+                        nameBox.setAlpha(curAlpha);
+                    }
+                } // openTime
+            } // animTime
+        }
+
+        // if(stateTime() > 70) {
+        //     swapSides();
+        // }
+
+        tick++;
+    }
+
+    int stateTime()
+    {
+        return tick - stateTick;
+    }
+
+    void swapSides()
+    {
+        if(dgState == DGS_LEFT || dgState == DGS_RIGHT)
+        {
+            if(dgState == DGS_LEFT)
+                changeState(DGS_RIGHT);
+            else
+                changeState(DGS_LEFT);
+        }
+    }
+
+    void changeState(DialogueState st)
+    {
+        if(st != dgState) {
+            sframe = 0;
+            stateTick = tick;
+            lastState = dgState;
+            dgState = st;
+        }
+    }
+
+    void stageDialogue()
+    {
+        String strIn = CVar.findCVar("DIALOGUE_QUEUE").getString();
+        Console.printf(strIn);
+
+        if(strIn.length() != 0) {
+            String lang = Stringtable.Localize(strIn);
+            Console.printf(lang);
+        }
+    }
+}

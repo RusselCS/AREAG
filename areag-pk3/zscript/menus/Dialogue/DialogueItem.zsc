@@ -1,0 +1,109 @@
+enum DialogueItemTypes
+{
+    DIT_MESSAGE,
+    DIT_MENU
+}
+
+class DialogueItem : Object
+{
+    DialogueItemTypes type;
+    DialogueItem next;
+    Array<int> charLen;
+}
+
+class DialogueMessage : DialogueItem
+{
+    const LINE_LEN = 1000;
+    const LINE_MAX = 3;
+
+    String text;
+    String raw;
+    int length;
+    // DialogueSpeaker speaker;
+    Array<DialogueLine> lines;
+    
+    Font fnt;
+
+    DialogueMessage init(String lang)
+    {
+        // raw = pull language value from LANGUAGE lump given `lang`
+        // text = formatted
+        // length = (sum of all letters in formatted text)
+        return self;
+    }
+}
+
+enum DialogueCharType
+{
+    DCT_NORMAL,
+    DCT_EXPLODE,
+    DCT_FADE
+}
+
+enum DialogueCharEffect
+{
+    DCE_NORMAL,
+    DCE_SHAKE,
+    DCE_WAVE,
+    DCE_GHOST
+}
+
+class DialogueChar : Object
+{
+    String letter;
+    
+    String avatar;
+    int delay;
+    DialogueCharType type;
+    DialogueCharEffect effect;
+    bool italic;
+    bool bold;
+    bool underline;
+    int length;
+    DialogueItem parent;
+
+    ZFLabel label;
+    Vector2 pos;    
+
+    DialogueChar Init(DialogueItem ln, String a, String l, int d, DialogueCharType t, DialogueCharEffect e, bool i, bool b, bool u, Vector2 p)
+    {
+        parent = ln;
+        avatar = a;
+        letter = l;
+        delay = d;
+        type = t;
+        effect = e;
+        italic = i;
+        bold = b;
+        underline = u;
+
+        pos = p;
+
+        return self;
+    }
+
+    void effectFrame(int time) {
+        
+    }
+}
+
+class DialogueLine : Object
+{
+    String text;
+    String raw;
+    Array<DialogueChar> chars;
+    DialogueItem parent;
+
+    DialogueLine Init(DialogueItem p, String t, String r) {
+        parent = p;
+        text = t;
+        raw = r;
+        populate(raw);
+        return self;
+    }
+
+    void populate(String strIn)
+    {
+        // fill in later
+    }
+}

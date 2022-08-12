@@ -3,7 +3,7 @@ class AREAGLoadMenuHandler : ZFHandler
 {
     AREAGLoadMenu menu;
 
-    override void buttonClickCommand (ZFButton caller, string command)
+    override void buttonClickCommand (ZFButton caller, String command)
     {
         console.printf("Calling button click command %s", command);
 
