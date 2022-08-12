@@ -33,13 +33,15 @@ class DialogueMenu : ZFGenericMenu {
     DialogueState dgState;
 
     // Dialogue screen elements
-    ZFImage borders;
-    ZFImage nameBox;
-    ZFImage leftSpeaker;
-    ZFImage rightSpeaker;
-    ZFImage textBox;
-    ZFLabel leftNameTag;
-    ZFLabel rightNameTag;
+    int bordersIdx;
+    int nameBoxIdx;
+    int leftSpeakerIdx;
+    int rightSpeakerIdx;
+    int textBoxIdx;
+    int leftNameTagIdx;
+    int rightNameTagIdx;
+
+    Array<NMElement> elems;
 
     // Where we want the frame to end up.
     double desiredPosX;
@@ -51,12 +53,14 @@ class DialogueMenu : ZFGenericMenu {
 
     String next;
 
+    const UPDATE_SPEED = 8.0;
+
     override void init(Menu parent) {
         tick = 0;
         stateTick = 0;
         sframe = 0;
         lastState = DGS_NONE;
-        dgState = DGS_RIGHT;
+        dgState = DGS_NONE;
         textFont = "DIAGFONT";
         nameFont = "AREAFONT";
 
@@ -82,35 +86,35 @@ class DialogueMenu : ZFGenericMenu {
         self.desiredPosX = self.frame.getPosX();
         frame.pack(mainFrame);
 
-        leftSpeaker = ZFImage.create (
+        leftSpeakerIdx = elems.size();
+        elems.push(NMImage.create(ZFImage.create(
             imgCenter,
             (900, 900), // max scale 3
             image: "CLYSNORM",
             alignment: ZFElement.AlignType_BottomCenter
-        );
-        leftSpeaker.pack(frame);
+        ), UPDATE_SPEED));
+        //elems[leftSpeakerIdx].myName = "leftSpeakerIdx";
 
-        rightSpeaker = ZFImage.create (
+        rightSpeakerIdx = elems.size();
+        elems.push(NMImage.create(ZFImage.create(
             imgCenter,
             (900, 900),
             image: "ELDSNORM",
             alignment: ZFElement.AlignType_BottomCenter
-        );
-        rightSpeaker.pack(frame);
+        ), UPDATE_SPEED));
+        //elems[rightSpeakerIdx].myName = "rightSpeakerIdx";
 
-        // Here we create our second element, an image.
-        // We'll put it under the label. STARTAN2 is 128x128 pixels
-        // so we'll use that size.
-        borders = ZFImage.create(
-            // This argument controls the position - 50 pixels under the label.
-            (  0, 0),
-            // This argument controls the size. Here we match STARTAN2.
-            (1600, 900),
-            alignment: ZFElement.AlignType_BottomCenter
-        );
-        borders.pack(frame);
+        // bordersIdx = elems.size();
+        // elems.push(NMImage.create(ZFImage.create(
+        //     // This argument controls the position - 50 pixels under the label.
+        //     (  0, 0),
+        //     // This argument controls the size. Here we match STARTAN2.
+        //     (1600, 900),
+        //     alignment: ZFElement.AlignType_BottomCenter
+        // ), UPDATE_SPEED));
 
-        textBox = ZFImage.create(
+        textBoxIdx = elems.size();
+        elems.push(NMImage.create(ZFImage.create(
             // This argument controls the position - 50 pixels under the label.
             (  0, 0),
             // This argument controls the size. Here we match STARTAN2.
@@ -118,42 +122,44 @@ class DialogueMenu : ZFGenericMenu {
             // The texture name.
             image: "DG_SPBOX",
             alignment: ZFElement.AlignType_TopCenter
-        );
-        textBox.pack(frame);
+        ), UPDATE_SPEED));
+        //elems[textBoxIdx].myName = "textBoxIdx";
 
-        nameBox = ZFImage.create(
-            (  0, 0),
-            (1600, 900),
-            alignment: ZFElement.AlignType_TopCenter
-        );
-        nameBox.pack(frame);
+        // nameBoxIdx = elems.size();
+        // elems.push(NMImage.create(ZFImage.create(
+        //     (  0, 0),
+        //     (1600, 900),
+        //     alignment: ZFElement.AlignType_TopCenter
+        // ), UPDATE_SPEED));
 
-        // Load images on cycles
-        for(int i = 0; i < borderNames.size(); i++) {
-            borders.setImage(borderNames[i]);
-            nameBox.setImage(nameBoxNames[i]);
-        }
-
-        leftNameTag = ZFLabel.create(
+        leftNameTagIdx = elems.size();
+        elems.push(NMLabel.create(ZFLabel.create(
             (NAMETAG_X, NAMETAG_Y),
             (1600, 900),
             text: "Clyde",
             fnt: nameFont,
             alignment: ZFElement.AlignType_BottomLeft,
             textScale: NAMETAG_SCALE
-        );
-        rightNameTag = ZFLabel.create(
+        ), UPDATE_SPEED));
+        //elems[leftNameTagIdx].myName = "leftNameTagIdx";
+
+        rightNameTagIdx = elems.size();
+        elems.push(NMLabel.create(ZFLabel.create(
             (-NAMETAG_X, NAMETAG_Y),
             (1600, 900),
             text: "Village Elder",
             fnt: nameFont,
             alignment: ZFElement.AlignType_BottomRight,
             textScale: NAMETAG_SCALE
-        );
-        leftNameTag.pack(frame);
-        rightNameTag.pack(frame);
+        ), UPDATE_SPEED));
+        //elems[rightNameTagIdx].myName = "rightNameTagIdx";
+
+        for(int i = 0; i < elems.size(); i++) {
+            elems[i].pack(frame);
+        }
 
         stageDialogue();
+        changeState(DGS_RIGHT);
     }
 
     static const String[] borderNames = {
@@ -196,140 +202,20 @@ class DialogueMenu : ZFGenericMenu {
 
     const NAMETAG_X_SCROLL = 200;
 
-    override void ticker() {
-        int st = stateTime();
-        int animTime = borderNames.size() * TICKS_PER_FRAME;
-        int openTime = animTime / 2;
+    const SPEAKER_SCALE_ACTIVE = 1.500;
+    const SPEAKER_SCALE_INACTIVE = 1.000;
 
-        if(st <= animTime) {
-            
-            if(dgState != DGS_NONE && lastState != DGS_NONE) {
-                
-                let opct = 1.0 - double(st) / double(openTime);
-                let ipct = 0.0 + double(st - openTime) / double(openTime);
+    const SPEAKER_POS_ACTIVE = -171;
+    const SPEAKER_POS_INACTIVE = -671;
 
-                if(dgState == DGS_RIGHT) {
-                    leftNameTag.setAlpha(opct);
-                    rightNameTag.setAlpha(ipct);
-                } else {
-                    leftNameTag.setAlpha(ipct);
-                    rightNameTag.setAlpha(opct);
-                }
+    const IMG_SCALE_INTRO = 1.5;
 
-                if(tick % TICKS_PER_FRAME == 0) {
-                    let rframe = borderNames.size() - 1 - sframe;
-
-                    if(dgState == DGS_RIGHT)
-                    {
-                        if(lastState != DGS_NONE) { // left to right
-                            borders.setImage(borderNames[sframe]);
-                            nameBox.setImage(nameBoxNames[sframe]);
-
-                            // Left -> Right
-                            // Left image slides left
-                            leftSpeaker.setImageScale((speakScales[rframe], speakScales[rframe]));
-                            leftSpeaker.setPos(imgCenter + (speakXs[sframe], 0));
-                            // Right image slides right
-                            rightSpeaker.setImageScale((speakScales[sframe], speakScales[sframe]));
-                            rightSpeaker.setPos(imgCenter - (speakXs[rframe], 0));
-                        }
-                    }
-
-                    if(dgState == DGS_LEFT)
-                    {
-                        if(lastState != DGS_NONE) { // left to right
-                            borders.setImage(borderNames[borderNames.size() - 1 - (sframe)]);
-                            nameBox.setImage(nameBoxNames[nameBoxNames.size() - 1 - (sframe)]);
-
-                            // Right -> Left
-                            // Left image slides right
-                            leftSpeaker.setImageScale((speakScales[sframe], speakScales[sframe]));
-                            leftSpeaker.setPos(imgCenter + (speakXs[rframe], 0));
-                            // Right image slides left
-                            rightSpeaker.setImageScale((speakScales[rframe], speakScales[rframe]));
-                            rightSpeaker.setPos(imgCenter - (speakXs[sframe], 0));
-                        }
-                    }
-
-                    sframe++;
-                } // every X frames check
-
-            } else { // We can uncap the animation for opening/closing because those don't need to be hand-drawn.
-                if(st <= openTime) {
-                    let findex = 0;
-                    let lindex = borderNames.size() - 1;
-
-                    let sStart = 1.5;
-                    let sTarget = 1.0;
-                    let sMove = (sStart - sTarget) / openTime;
-
-                    let curScale = sStart - sMove * st;
-                    let curAlpha = (1.0 / openTime) * st;
-
-                    if(lastState == DGS_NONE) { // Open Speaker
-                        if(dgState == DGS_RIGHT) { // Right Speaker Open
-
-                            if(st == 0) {
-                                borders.setImage(borderNames[lindex]);
-                                nameBox.setImage(nameBoxNames[lindex]);
-
-                                borders.setImageScale((sStart, sStart) * curScale);
-                                leftNameTag.setAlpha(0.0);
-                            } else {
-                                borders.setImageScale((curScale, curScale));
-                                borders.setAlpha(curAlpha);
-                            }
-                            
-                            leftSpeaker.setImageScale((speakScales[findex], speakScales[findex]) * curScale);
-                            leftSpeaker.setPos(imgCenter + (speakXs[lindex], 0) * curScale);
-                            leftSpeaker.setAlpha(curAlpha);
-
-                            rightSpeaker.setImageScale((speakScales[lindex], speakScales[lindex]) * curScale);
-                            rightSpeaker.setPos(imgCenter - (speakXs[findex], 0) * curScale);
-                            rightSpeaker.setAlpha(curAlpha);
-
-                            rightNameTag.setAlpha(curAlpha);
-                            rightNameTag.setTextScale(curScale * NAMETAG_SCALE);
-                        } else { // Left Speaker Open
-
-                            if(st == 0) {
-                                borders.setImage(borderNames[findex]);
-                                nameBox.setImage(nameBoxNames[findex]);
-
-                                borders.setImageScale((sStart, sStart) * curScale);
-                                rightNameTag.setAlpha(0.0);
-                            } else {
-                                borders.setImageScale((curScale, curScale));
-                                borders.setAlpha(curAlpha);
-                            }
-                            
-                            leftSpeaker.setImageScale((speakScales[lindex], speakScales[lindex]) * curScale);
-                            leftSpeaker.setPos(imgCenter + (speakXs[findex], 0) * curScale);
-                            leftSpeaker.setAlpha(curAlpha);
-
-                            rightSpeaker.setImageScale((speakScales[findex], speakScales[findex]) * curScale);
-                            rightSpeaker.setPos(imgCenter - (speakXs[lindex], 0) * curScale);
-                            rightSpeaker.setAlpha(curAlpha);
-
-                            leftNameTag.setAlpha(curAlpha);
-                            leftNameTag.setTextScale(curScale * NAMETAG_SCALE);
-                        }
-
-                        textBox.setImageScale((curScale, curScale));
-                        textBox.setAlpha(curAlpha);
-
-                        nameBox.setImageScale((curScale, curScale));
-                        nameBox.setAlpha(curAlpha);
-                    }
-                } // openTime
-            } // animTime
+    override void drawer() {
+        for(int i = 0; i < elems.size(); i++) {
+            elems[i].drawer();
         }
 
-        // if(stateTime() > 70) {
-        //     swapSides();
-        // }
-
-        tick++;
+        super.drawer();
     }
 
     int stateTime()
@@ -356,6 +242,118 @@ class DialogueMenu : ZFGenericMenu {
             lastState = dgState;
             dgState = st;
         }
+
+        let activePos = (SPEAKER_POS_ACTIVE, 0);
+        let inactivePos = (SPEAKER_POS_INACTIVE, 0);
+
+        let activeScale = (SPEAKER_SCALE_ACTIVE, SPEAKER_SCALE_ACTIVE);
+        let inactiveScale = (SPEAKER_SCALE_INACTIVE, SPEAKER_SCALE_INACTIVE);
+
+        if(dgState != DGS_NONE && lastState == DGS_NONE) { // intro
+            elems[textBoxIdx].setScale((1.0, 1.0) * IMG_SCALE_INTRO);
+            elems[textBoxIdx].setTScale((1.0, 1.0));
+            elems[textBoxIdx].setAlpha(0.0);
+            elems[textBoxIdx].setTAlpha(1.0);
+
+            switch(dgState) {
+                case DGS_RIGHT:
+                    elems[leftSpeakerIdx].setScale(inactiveScale * IMG_SCALE_INTRO);
+                    elems[leftSpeakerIdx].setTScale(inactiveScale);
+                    elems[leftSpeakerIdx].setAlpha(0.0);
+                    elems[leftSpeakerIdx].setTAlpha(1.0);
+                    elems[leftSpeakerIdx].setPos(imgCenter + IMG_SCALE_INTRO * inactivePos);
+                    elems[leftSpeakerIdx].setTPos(imgCenter + inactivePos);
+
+                    elems[leftNameTagIdx].setAlpha(0.0);
+                    elems[leftNameTagIdx].setTAlpha(0.0);
+                    elems[leftNameTagIdx].setPos((NAMETAG_X, NAMETAG_Y) - (NAMETAG_X_SCROLL, 0));
+                    elems[leftNameTagIdx].setTPos((NAMETAG_X, NAMETAG_Y) - (NAMETAG_X_SCROLL, 0));
+
+                    elems[rightSpeakerIdx].setScale(activeScale * IMG_SCALE_INTRO);
+                    elems[rightSpeakerIdx].setTScale(activeScale);
+                    elems[rightSpeakerIdx].setAlpha(0.0);
+                    elems[rightSpeakerIdx].setTAlpha(1.0);
+                    elems[rightSpeakerIdx].setPos(imgCenter - IMG_SCALE_INTRO * activePos);
+                    elems[rightSpeakerIdx].setTPos(imgCenter - activePos);
+
+                    elems[rightNameTagIdx].setAlpha(0.0);
+                    elems[rightNameTagIdx].setTAlpha(1.0);
+                    elems[rightNameTagIdx].setPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
+                    elems[rightNameTagIdx].setTPos((-NAMETAG_X, NAMETAG_Y));
+                    break;
+                case DGS_LEFT:
+                    elems[leftSpeakerIdx].setScale(activeScale * IMG_SCALE_INTRO);
+                    elems[leftSpeakerIdx].setTScale(activeScale);
+                    elems[leftSpeakerIdx].setAlpha(0.0);
+                    elems[leftSpeakerIdx].setTAlpha(1.0);
+                    elems[leftSpeakerIdx].setPos(imgCenter + IMG_SCALE_INTRO * activePos);
+                    elems[leftSpeakerIdx].setTPos(imgCenter + activePos);
+
+                    elems[leftNameTagIdx].setAlpha(0.0);
+                    elems[leftNameTagIdx].setTAlpha(1.0);
+                    elems[leftNameTagIdx].setPos((NAMETAG_X, NAMETAG_Y) - (NAMETAG_X_SCROLL, 0));
+                    elems[leftNameTagIdx].setTPos((NAMETAG_X, NAMETAG_Y));
+
+                    elems[rightSpeakerIdx].setScale(inactiveScale * IMG_SCALE_INTRO);
+                    elems[rightSpeakerIdx].setTScale(inactiveScale);
+                    elems[rightSpeakerIdx].setAlpha(0.0);
+                    elems[rightSpeakerIdx].setTAlpha(1.0);
+                    elems[rightSpeakerIdx].setPos(imgCenter - IMG_SCALE_INTRO * inactivePos);
+                    elems[rightSpeakerIdx].setTPos(imgCenter - inactivePos);
+
+                    elems[rightNameTagIdx].setAlpha(0.0);
+                    elems[rightNameTagIdx].setTAlpha(0.0);
+                    elems[rightNameTagIdx].setPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
+                    elems[rightNameTagIdx].setTPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
+                    break;
+            }
+        }
+
+        if(dgState != DGS_NONE && lastState != DGS_NONE) { // swap sides
+            switch(dgState) {
+                case DGS_RIGHT:
+                    elems[leftSpeakerIdx].setTScale(inactiveScale);
+                    elems[leftSpeakerIdx].setTAlpha(1.0);
+                    elems[leftSpeakerIdx].setTPos(imgCenter + inactivePos);
+
+                    elems[leftNameTagIdx].setTAlpha(0.0);
+                    elems[leftNameTagIdx].setTPos((NAMETAG_X, NAMETAG_Y) - (NAMETAG_X_SCROLL, 0));
+
+                    elems[rightSpeakerIdx].setTScale(activeScale);
+                    elems[rightSpeakerIdx].setTAlpha(1.0);
+                    elems[rightSpeakerIdx].setTPos(imgCenter - activePos);
+
+                    elems[rightNameTagIdx].setTAlpha(1.0);
+                    elems[rightNameTagIdx].setTPos((-NAMETAG_X, NAMETAG_Y));
+                    break;
+                case DGS_LEFT:
+                    elems[leftSpeakerIdx].setTScale(activeScale);
+                    elems[leftSpeakerIdx].setTAlpha(1.0);
+                    elems[leftSpeakerIdx].setTPos(imgCenter + activePos);
+
+                    elems[leftNameTagIdx].setTAlpha(1.0);
+                    elems[leftNameTagIdx].setTPos((NAMETAG_X, NAMETAG_Y));
+
+                    elems[rightSpeakerIdx].setTScale(inactiveScale);
+                    elems[rightSpeakerIdx].setTAlpha(1.0);
+                    elems[rightSpeakerIdx].setTPos(imgCenter - inactivePos);
+
+                    elems[rightNameTagIdx].setTAlpha(0.0);
+                    elems[rightNameTagIdx].setTPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
+                    break;
+            }
+        }
+    }
+
+    override void ticker()
+    {
+        let st = stateTime();
+
+        if(st > 70) {
+            swapSides();
+        }
+
+        tick++;
     }
 
     void stageDialogue()
@@ -368,4 +366,142 @@ class DialogueMenu : ZFGenericMenu {
             Console.printf(lang);
         }
     }
+
+    // LEGACY ==========================================================================================
+
+    // override void ticker() {
+        // int st = stateTime();
+        // int animTime = borderNames.size() * TICKS_PER_FRAME;
+        // int openTime = animTime / 2;
+
+        // if(st <= animTime) {
+            
+        //     if(dgState != DGS_NONE && lastState != DGS_NONE) {
+                
+        //         let opct = 1.0 - double(st) / double(openTime);
+        //         let ipct = 0.0 + double(st - openTime) / double(openTime);
+
+        //         if(dgState == DGS_RIGHT) {
+        //             leftNameTag.setAlpha(opct);
+        //             rightNameTag.setAlpha(ipct);
+        //         } else {
+        //             leftNameTag.setAlpha(ipct);
+        //             rightNameTag.setAlpha(opct);
+        //         }
+
+        //         if(tick % TICKS_PER_FRAME == 0) {
+        //             let rframe = borderNames.size() - 1 - sframe;
+
+        //             if(dgState == DGS_RIGHT)
+        //             {
+        //                 if(lastState != DGS_NONE) { // left to right
+        //                     borders.setImage(borderNames[sframe]);
+        //                     nameBox.setImage(nameBoxNames[sframe]);
+
+        //                     // Left -> Right
+        //                     // Left image slides left
+        //                     leftSpeaker.setImageScale((speakScales[rframe], speakScales[rframe]));
+        //                     leftSpeaker.setPos(imgCenter + (speakXs[sframe], 0));
+        //                     // Right image slides right
+        //                     rightSpeaker.setImageScale((speakScales[sframe], speakScales[sframe]));
+        //                     rightSpeaker.setPos(imgCenter - (speakXs[rframe], 0));
+        //                 }
+        //             }
+
+        //             if(dgState == DGS_LEFT)
+        //             {
+        //                 if(lastState != DGS_NONE) { // left to right
+        //                     borders.setImage(borderNames[borderNames.size() - 1 - (sframe)]);
+        //                     nameBox.setImage(nameBoxNames[nameBoxNames.size() - 1 - (sframe)]);
+
+        //                     // Right -> Left
+        //                     // Left image slides right
+        //                     leftSpeaker.setImageScale((speakScales[sframe], speakScales[sframe]));
+        //                     leftSpeaker.setPos(imgCenter + (speakXs[rframe], 0));
+        //                     // Right image slides left
+        //                     rightSpeaker.setImageScale((speakScales[rframe], speakScales[rframe]));
+        //                     rightSpeaker.setPos(imgCenter - (speakXs[sframe], 0));
+        //                 }
+        //             }
+
+        //             sframe++;
+        //         } // every X frames check
+
+        //     } else { // We can uncap the animation for opening/closing because those don't need to be hand-drawn.
+        //         if(st <= openTime) {
+        //             let findex = 0;
+        //             let lindex = borderNames.size() - 1;
+
+        //             let sStart = 1.5;
+        //             let sTarget = 1.0;
+        //             let sMove = (sStart - sTarget) / openTime;
+
+        //             let curScale = sStart - sMove * st;
+        //             let curAlpha = (1.0 / openTime) * st;
+
+        //             if(lastState == DGS_NONE) { // Open Speaker
+        //                 if(dgState == DGS_RIGHT) { // Right Speaker Open
+
+        //                     if(st == 0) {
+        //                         borders.setImage(borderNames[lindex]);
+        //                         nameBox.setImage(nameBoxNames[lindex]);
+
+        //                         borders.setImageScale((sStart, sStart) * curScale);
+        //                         leftNameTag.setAlpha(0.0);
+        //                     } else {
+        //                         borders.setImageScale((curScale, curScale));
+        //                         borders.setAlpha(curAlpha);
+        //                     }
+                            
+        //                     leftSpeaker.setImageScale((speakScales[findex], speakScales[findex]) * curScale);
+        //                     leftSpeaker.setPos(imgCenter + (speakXs[lindex], 0) * curScale);
+        //                     leftSpeaker.setAlpha(curAlpha);
+
+        //                     rightSpeaker.setImageScale((speakScales[lindex], speakScales[lindex]) * curScale);
+        //                     rightSpeaker.setPos(imgCenter - (speakXs[findex], 0) * curScale);
+        //                     rightSpeaker.setAlpha(curAlpha);
+
+        //                     rightNameTag.setAlpha(curAlpha);
+        //                     rightNameTag.setTextScale(curScale * NAMETAG_SCALE);
+        //                 } else { // Left Speaker Open
+
+        //                     if(st == 0) {
+        //                         borders.setImage(borderNames[findex]);
+        //                         nameBox.setImage(nameBoxNames[findex]);
+
+        //                         borders.setImageScale((sStart, sStart) * curScale);
+        //                         rightNameTag.setAlpha(0.0);
+        //                     } else {
+        //                         borders.setImageScale((curScale, curScale));
+        //                         borders.setAlpha(curAlpha);
+        //                     }
+                            
+        //                     leftSpeaker.setImageScale((speakScales[lindex], speakScales[lindex]) * curScale);
+        //                     leftSpeaker.setPos(imgCenter + (speakXs[findex], 0) * curScale);
+        //                     leftSpeaker.setAlpha(curAlpha);
+
+        //                     rightSpeaker.setImageScale((speakScales[findex], speakScales[findex]) * curScale);
+        //                     rightSpeaker.setPos(imgCenter - (speakXs[lindex], 0) * curScale);
+        //                     rightSpeaker.setAlpha(curAlpha);
+
+        //                     leftNameTag.setAlpha(curAlpha);
+        //                     leftNameTag.setTextScale(curScale * NAMETAG_SCALE);
+        //                 }
+
+        //                 textBox.setImageScale((curScale, curScale));
+        //                 textBox.setAlpha(curAlpha);
+
+        //                 nameBox.setImageScale((curScale, curScale));
+        //                 nameBox.setAlpha(curAlpha);
+        //             }
+        //         } // openTime
+        //     } // animTime
+        // }
+
+        // // if(stateTime() > 70) {
+        // //     swapSides();
+        // // }
+
+        // tick++;
+    // }
 }

@@ -1,0 +1,114 @@
+class NMElement : Object ui
+{
+    // System information
+    uint currTime;
+
+    // Element information
+    Vector2 tPos;
+    Vector2 tScale;
+    double tAlpha;
+    double elemTime;
+    String myName;
+
+    // Getters and setters
+    Vector2 getTPos() { return tPos; }
+    void setTPos(Vector2 newTPos) { tPos = newTPos; }
+    double comparePos() { return getTPos().length() - getPos().length(); }
+
+    Vector2 getTScale() { return tScale; }
+    void setTScale(Vector2 newTScale) { tScale = newTScale; }
+    double compareScale() { return getTScale().length() - getScale().length(); }
+
+    double getTAlpha() { return tAlpha; }
+    void setTAlpha(double newTAlpha) { tAlpha = newTAlpha; }
+    double compareAlpha() { return getTAlpha() - getAlpha(); }
+
+    double getElemTime() { return elemTime; }
+    void setElemTime(double newElemTime) { elemTime = newElemTime; }
+
+    // Should be called by menu.drawer(), every frame.
+    void drawer()
+    {
+        elemDrawer();
+        currTime = MSTime();
+    }
+
+    // Virtual functions (override for your needs)
+    // Called whenever drawer() is called.
+    virtual void elemDrawer() {
+
+        let sc = getScale();
+        let tsc = getTScale();
+        let ps = getPos();
+        let tps = getTPos();
+
+        let scDiff = max(abs(sc.X - tsc.X), abs(sc.Y - tsc.Y));
+        let posDiff = max(abs(ps.X - tps.X), abs(ps.Y - tps.Y));
+        let alpDiff = abs(getAlpha() - getTAlpha());
+
+        if(scDiff != 0) {
+            if(scDiff < 0.001) {
+                setScale(getTScale());
+            } else {
+                setScale(vec2Lerp(getScale(), getTScale(), getElemTime() * deltaTime()));
+            }
+        }
+
+        if(myName.length() > 0) {
+            console.printf("%s: posDiff is %f", myName, posDiff);
+        }
+        if(posDiff != 0.0) {
+            if(posDiff < 1.0) {
+                setPos(getTPos());
+            } else {
+                setPos(vec2Lerp(getPos(), getTPos(), getElemTime() * deltaTime()));
+            }
+        }
+
+        if(alpDiff != 0) {
+            if(alpDiff < 0.0001) {
+                setAlpha(getTAlpha());
+            } else {
+                setAlpha(lerp(getAlpha(), getTAlpha(), getElemTime() * deltaTime()));
+            }
+        }
+    }
+    // Normalize the scale to Vector2, even if scale only has one value.
+    virtual Vector2 getScale() { return (0.0, 0.0); }
+    virtual Vector2 getPos() { return (0.0, 0.0); }
+    virtual double getAlpha() { return 0.0; }
+
+    virtual void setScale(Vector2 scale) {}
+    virtual void setPos(Vector2 pos) {}
+    virtual void setAlpha(double alpha) {}
+
+    virtual void pack(ZFFrame frame) {}
+    virtual void unpack() {}
+
+    // Utility functions
+    // Initializes the NMElement to match the parameters of the inbound ZFElement.
+    void init() {
+        tScale = getScale();
+        tPos = getPos();
+        tAlpha = getAlpha();
+        currTime = MSTime();
+    }
+    // deltatime normalized to the nearest second.
+    double deltaTime() { return double(MSTime() - currTime) / 1000.0; }
+    // deltatime normalized to the nearest tick.
+    double deltaTimeTic() { return deltaTime() / 28.5714; }
+    double deltaTimeTick() { return deltaTimeTic(); }
+    double Lerp(double a, double b, double t) { return (1 - t) * a + t * b;	}
+    vector2 vec2Lerp(vector2 a, vector2 b, double t) { return (1 - t) * a + t * b; }
+
+    // Packs the given ZFElement into the given ZFFrame.
+    // Since this is just a wrapper class, it makes sense to just *have* these functions generalized as much as possible.
+    void packElement(ZFElement elem, ZFFrame frame) {
+        elem.pack(frame);
+    }
+
+    void unPackElement(ZFElement elem) {
+        elem.unpack();
+    }
+
+}

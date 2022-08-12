@@ -1,0 +1,27 @@
+class NMLabel : NMElement
+{
+    ZFLabel elem;
+
+    static NMLabel create(ZFLabel il, double lmt) {
+        let ret = new('NMLabel');
+
+        ret.setElem(il);
+        ret.setElemTime(lmt);
+        ret.init();
+        return ret;
+    }
+
+    ZFLabel getElem() { return elem; }
+    void setElem(ZFLabel il) { elem = il; }
+
+    override Vector2 getScale() { return ( elem.getTextScale(), elem.getTextScale()); }
+    override Vector2 getPos() { return elem.getPos(); }
+    override double getAlpha() { return elem.getAlpha(); }
+
+    override void setScale(Vector2 scale) { elem.setTextScale(scale.x); }
+    override void setPos(Vector2 pos) { elem.setPos(pos); }
+    override void setAlpha(double alpha) { elem.setAlpha(alpha); }
+
+    override void pack(ZFFrame frame) { packElement(elem, frame); }
+    override void unpack() { unpackElement(elem); }
+}

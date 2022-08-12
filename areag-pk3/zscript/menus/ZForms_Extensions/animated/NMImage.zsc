@@ -1,0 +1,27 @@
+class NMImage : NMElement
+{
+    ZFImage elem;
+
+    static NMImage create(ZFImage il, double lmt) {
+        let ret = new('NMImage');
+
+        ret.setElem(il);
+        ret.setElemTime(lmt);
+        ret.init();
+        return ret;
+    }
+
+    ZFImage getElem() { return elem; }
+    void setElem(ZFImage il) { elem = il; }
+
+    override Vector2 getScale() { return elem.getImageScale(); }
+    override Vector2 getPos() { return elem.getPos(); }
+    override double getAlpha() { return elem.getAlpha(); }
+
+    override void setScale(Vector2 scale) { elem.setImageScale(scale); }
+    override void setPos(Vector2 pos) { elem.setPos(pos); }
+    override void setAlpha(double alpha) { elem.setAlpha(alpha); }
+
+    override void pack(ZFFrame frame) { packElement(elem, frame); }
+    override void unpack() { unpackElement(elem); }
+}
