@@ -77,7 +77,7 @@ map ADV00 "Outskirts"
 	levelnum = 1
 	cluster = 1
 	pixelratio = 1.0
-	music = "M_BEACH" // Tallon Overworld - Kenji Yamamoto
+	music = "M_BEACH" // Rusty Ruin - Richard Jacques
 	sky1 = "TESTSKY1"
 	forcenoskystretch 
 	clipmidtextures
