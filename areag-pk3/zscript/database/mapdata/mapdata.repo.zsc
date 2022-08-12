@@ -77,6 +77,11 @@ class MapDataRepo Abstract
         return evh.maps[mapIndex].getRoute();
     }
 
+    static void setRoute(int mapIndex, int newIndex) {
+        let evh = getRepository();
+        evh.maps[mapIndex].setRoute(newIndex);
+    }
+
     static int getMapByRoute(int lNum) {
         let id = getMapByLevelNum(lNum);
         let evh = getRepository();

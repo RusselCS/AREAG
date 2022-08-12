@@ -24,6 +24,7 @@ class BatteryHatEquip : HatEquip
 }
 
 class HasBatteryHat : Once {}
+class WearingBatteryHat : Once {}
 
 class BatteryHatPassive : HatPassive {
 

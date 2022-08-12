@@ -48,6 +48,10 @@ class AREAGProtoWeapon : Weapon {
         A_SetAngle(angle + amt);
     }
 
+    action void A_PitchRecoil(double amt) {
+        A_SetPitch(pitch + amt);
+    }
+
     action Actor A_FireHandedProjectile(String leftProj, String rightProj, double angle = 0, bool useammo = true, double spawnofs_xy = 0, double spawnheight = 0, int flags = 0, double pitch = 0)
     {
         if(!invoker.bHandedness) {

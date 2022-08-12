@@ -9,6 +9,7 @@ class AREAGMapData : Object
     private String mapName;
     private int route;
     private Array<String> pickups;
+    private Array<int> pickupRooms;
 
     AREAGMapData Init(int lnum, String cd, String rn, String ln, String ti, String cv, String mn) {
         levelNum = lnum;
@@ -22,8 +23,9 @@ class AREAGMapData : Object
         return self;
     }
 
-    void addPickup(String pk) {
+    void addPickup(String pk, int room = -1) {
         pickups.push(pk);
+        pickupRooms.push(room);
     }
 
     void clearPickups() {
