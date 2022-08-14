@@ -1,0 +1,31 @@
+extend class ZFElement
+{
+    void drawShape(Vector2 relPos, ShapeInfo shapeInf, string imageName, bool animate, Vector2 shapeScale = (1, 1), double rotate = 0.0, double alpha = 1, ZFAABB clipRect = NULL) {
+		if (shapeScale.x == 0 || shapeScale.y == 0) return;
+
+		ZFAABB c;
+		if (clipRect == NULL) {
+			getClipAABB(c);
+		}
+		else {
+			c.pos = clipRect.pos;
+			c.size = clipRect.size;
+		}
+		TextureID tex = TexMan.checkForTexture(imageName, TexMan.Type_Any);
+		Vector2 drawPos = relToScreen(relPos);
+		drawPos = (drawPos.x / shapeScale.x, drawPos.y / shapeScale.y);
+		Vector2 virtualSize = scaleToVirtualSize(shapeScale);
+        //console.printf("Scale %f, %f", virtualSize.x, virtualSize.y);
+
+        let shapeReal = shapeInf.buildShape(shapeScale, rotate, drawPos);
+
+        Screen.DrawShape(
+            TexMan.checkForTexture(imageName, TexMan.Type_Any), animate, shapeReal,
+            DTA_Alpha, alpha * getDrawAlpha(),
+            DTA_ClipLeft, int(c.pos.x),
+            DTA_ClipTop, int(c.pos.y),
+            DTA_ClipRight, int(c.pos.x + c.size.x),
+            DTA_ClipBottom, int(c.pos.y + c.size.y)
+        );
+	}
+}

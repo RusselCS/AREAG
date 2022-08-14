@@ -1,0 +1,70 @@
+// this is built for specificially the border setup
+class NMShape : NMElement
+{
+    ZFShape elem;
+
+    ShapeInfo shape;
+    ShapeInfo tShape;
+
+    bool changed;
+
+    static NMShape create(ZFShape il, double lmt) {
+        let ret = new('NMShape');
+
+        ret.createShapes(il.getShape());
+        ret.setElem(il);
+        ret.setElemTime(lmt);
+        ret.init();
+        ret.changed = false;
+        return ret;
+    }
+
+    void createShapes(ShapeInfo init) {
+        shape = new("ShapeInfo");
+        shape.copy(init);
+        tShape = new("ShapeInfo");
+        tShape.copy(init);
+    }
+
+    override void elemDrawer() {
+
+        super.elemDrawer();
+
+        let update = false;
+
+        for(int i = 0; i < shape.vertexSize(); i++) {
+            let vd = VectorDiff(shape.getVertex(i), tShape.getVertex(i));
+            if(vd != 0) {
+                if(vd < 0.001) {
+                    shape.setVertex(i, tShape.getVertex(i));
+                    shape.setCoord(i, tShape.getCoord(i));
+                } else {
+                    shape.setVertex(i, vec2Lerp(shape.getVertex(i), tShape.getVertex(i), elemTime * deltaTime()));
+                    shape.setCoord(i, vec2Lerp(shape.getCoord(i), tShape.getCoord(i), elemTime * deltaTime()));
+                }
+            }
+        }
+
+        elem.setShape(shape);
+    }
+
+    ZFShape getElem() { return elem; }
+    void setElem(ZFShape il) { elem = il; }
+
+    ShapeInfo getShape() { return shape; }
+    void setShape(ShapeInfo il) { shape.copy(il); }
+
+    ShapeInfo getTShape() { return tShape; }
+    void setTShape(ShapeInfo il) { tShape.copy(il); }
+
+    override Vector2 getScale() { return elem.getShapeScale(); }
+    override Vector2 getPos() { return elem.getPos(); }
+    override double getAlpha() { return elem.getAlpha(); }
+
+    override void setScale(Vector2 scale) { elem.setShapeScale(scale); }
+    override void setPos(Vector2 pos) { elem.setPos(pos); }
+    override void setAlpha(double alpha) { elem.setAlpha(alpha); }
+
+    override void pack(ZFFrame frame) { packElement(elem, frame); }
+    override void unpack() { unpackElement(elem); }
+}

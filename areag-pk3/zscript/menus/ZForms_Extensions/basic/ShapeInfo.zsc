@@ -1,0 +1,161 @@
+class ShapeInfo ui
+{
+    private Array<double> vertexX;
+    private Array<double> vertexY;
+
+    private Array<double> coordX;
+    private Array<double> coordY;
+
+    private Array<int> triX;
+    private Array<int> triY;
+    private Array<int> triZ;
+
+    private Vector2 resolution;
+    
+    static ShapeInfo create(Vector2 res = (1.0, 1.0)) {
+        let ret = new("ShapeInfo");
+        ret.setResolution(res);
+
+        return ret;
+    }
+
+    // Vertex functions
+    int pushVertex(Vector2 vec) {
+        int ret = vertexX.size();
+        vertexX.push(vec.x);
+        vertexY.push(vec.y);
+
+        return ret;
+    }
+
+    Vector2 getVertex(int idx) {
+        return (vertexX[idx], vertexY[idx]);
+    }
+
+    void setVertex(int idx, Vector2 vec) {
+        vertexX[idx] = vec.x;
+        vertexY[idx] = vec.y;
+    }
+
+    int vertexSize() {
+        return vertexX.size();
+    }
+
+    // Coordinate functions
+    int pushCoord(Vector2 vec) {
+        int ret = coordX.size();
+        coordX.push(vec.x);
+        coordY.push(vec.y);
+
+        return ret;
+    }
+
+    Vector2 getCoord(int idx) {
+        return (coordX[idx], coordY[idx]);
+    }
+
+    void setCoord(int idx, Vector2 vec) {
+        coordX[idx] = vec.x;
+        coordY[idx] = vec.y;
+    }
+
+    int coordSize() {
+        return coordX.size();
+    }
+
+    // Triangle functions
+    int pushTriangle(Vector3 vec) {
+        int ret = triX.size();
+        triX.push(vec.x);
+        triY.push(vec.y);
+        triZ.push(vec.z);
+
+        return ret;
+    }
+
+    Vector3 getTriangle(int idx) {
+        return (triX[idx], triY[idx], triZ[idx]);
+    }
+
+    void setTriangle(int idx, Vector3 vec) {
+        triX[idx] = vec.x;
+        triY[idx] = vec.y;
+        triZ[idx] = vec.z;
+    }
+
+    int triangleSize() {
+        return triX.size();
+    }
+
+    // Overall management functions
+    Vector2 getResolution() { return self.resolution; }
+    void setResolution(Vector2 res) { self.resolution = res; }
+
+    void copy(ShapeInfo sin) {
+        vertexX.clear();
+        vertexY.clear();
+        coordX.clear();
+        coordY.clear();
+        triX.clear();
+        triY.clear();
+        triZ.clear();
+
+        for(int i = 0; i < sin.vertexSize(); i++) {
+            pushVertex(sin.getVertex(i));
+        }
+
+        for(int i = 0; i < sin.coordSize(); i++) {
+            pushCoord(sin.getCoord(i));
+        }
+
+        for(int i = 0; i < sin.triangleSize(); i++) {
+            pushTriangle(sin.getTriangle(i));
+        }
+    }
+
+    Vector2 scaleVector(Vector2 a, Vector2 b) { return (a.x * b.x, a.y * b.y); }
+
+    void pushVC(Vector2 vec) {
+        pushVertex(scaleVector(vec, resolution));
+        pushCoord(vec);
+    }
+
+    Shape2D buildShape(Vector2 transSc, double transRot, Vector2 transPos) {
+        let shape = new("Shape2D");
+
+        for(int i = 0; i < vertexSize(); i++) {
+            shape.pushVertex(getVertex(i));
+            shape.pushCoord(getCoord(i));
+        }
+
+        for(int i = 0; i < triangleSize(); i++) {
+            shape.pushTriangle(triX[i], triY[i], triZ[i]);
+        }
+
+        let trans = new("Shape2DTransform");
+        trans.scale(transSc);
+        trans.rotate(transRot);
+        trans.translate(transPos);
+
+        shape.setTransform(trans);
+
+        return shape;
+    }
+
+    void puke() {
+        console.printf("===== Outputting all data from shape =====");
+        console.printf("== Vertices ==");
+        for(int i = 0; i < vertexSize(); i++) {
+            console.printf("(%f, %f)", vertexX[i], vertexY[i]);
+        }
+        console.printf("== Coordinates ==");
+        for(int i = 0; i < vertexSize(); i++) {
+            console.printf("(%f, %f)", coordX[i], coordY[i]);
+        }
+        console.printf("== Triangles ==");
+        for(int i = 0; i < triangleSize(); i++) {
+            console.printf("(%d, %d, %d)", triX[i], triY[i], triZ[i]);
+        }
+        console.printf("==========================================");
+    }
+}

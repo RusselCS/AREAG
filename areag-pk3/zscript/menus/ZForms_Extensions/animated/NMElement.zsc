@@ -42,8 +42,8 @@ class NMElement : Object ui
         let ps = getPos();
         let tps = getTPos();
 
-        let scDiff = max(abs(sc.X - tsc.X), abs(sc.Y - tsc.Y));
-        let posDiff = max(abs(ps.X - tps.X), abs(ps.Y - tps.Y));
+        let scDiff = vectorDiff(getScale(), getTScale());
+        let posDiff = vectorDiff(getPos(), getTPos());
         let alpDiff = abs(getAlpha() - getTAlpha());
 
         if(scDiff != 0) {
@@ -87,7 +87,7 @@ class NMElement : Object ui
 
     // Utility functions
     // Initializes the NMElement to match the parameters of the inbound ZFElement.
-    void init() {
+    virtual void init() {
         tScale = getScale();
         tPos = getPos();
         tAlpha = getAlpha();
@@ -109,6 +109,10 @@ class NMElement : Object ui
 
     void unPackElement(ZFElement elem) {
         elem.unpack();
+    }
+
+    double vectorDiff(Vector2 a, Vector2 b) {
+        return max(abs(a.X - b.X), abs(a.Y - b.Y));
     }
 
 }

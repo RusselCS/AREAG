@@ -50,12 +50,18 @@ class DialogueMenu : ZFGenericMenu {
     Font nameFont;
 
     Vector2 imgCenter;
+    Vector2 baseres;
+
+    ShapeInfo borderCoordsLeft;
+    ShapeInfo borderCoordsRight;
+    NMShape borders;
 
     String next;
 
     const UPDATE_SPEED = 8.0;
 
     override void init(Menu parent) {
+
         tick = 0;
         stateTick = 0;
         sframe = 0;
@@ -63,6 +69,7 @@ class DialogueMenu : ZFGenericMenu {
         dgState = DGS_NONE;
         textFont = "DIAGFONT";
         nameFont = "AREAFONT";
+
 
         imgCenter = (350, 0);
 
@@ -72,8 +79,9 @@ class DialogueMenu : ZFGenericMenu {
         // you only have to design the menu for this resolution.
         // Here we'll use a typical monitor resolution, but this can be anything,
         // even 320x200.
-        let baseRes = (1600, 900);
+        baseRes = (1600, 900);
         setBaseResolution(baseRes);
+        populateCoords();
 
         // Here we make a frame - it needs to be positioned right, and big enough
         // to contain the elements we want inside it.
@@ -104,14 +112,13 @@ class DialogueMenu : ZFGenericMenu {
         ), UPDATE_SPEED));
         //elems[rightSpeakerIdx].myName = "rightSpeakerIdx";
 
-        // bordersIdx = elems.size();
-        // elems.push(NMImage.create(ZFImage.create(
-        //     // This argument controls the position - 50 pixels under the label.
-        //     (  0, 0),
-        //     // This argument controls the size. Here we match STARTAN2.
-        //     (1600, 900),
-        //     alignment: ZFElement.AlignType_BottomCenter
-        // ), UPDATE_SPEED));
+        borders = NMShape.create(ZFShape.create(
+            (0, 0),
+            baseRes,
+            borderCoordsRight,
+            "DG_OFRMX"
+        ), UPDATE_SPEED);
+        elems.push(borders);
 
         textBoxIdx = elems.size();
         elems.push(NMImage.create(ZFImage.create(
@@ -158,7 +165,7 @@ class DialogueMenu : ZFGenericMenu {
             elems[i].pack(frame);
         }
 
-        stageDialogue();
+        // stageDialogue();
         changeState(DGS_RIGHT);
     }
 
@@ -280,6 +287,8 @@ class DialogueMenu : ZFGenericMenu {
                     elems[rightNameTagIdx].setTAlpha(1.0);
                     elems[rightNameTagIdx].setPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
                     elems[rightNameTagIdx].setTPos((-NAMETAG_X, NAMETAG_Y));
+
+                    borders.setTShape(borderCoordsRight);
                     break;
                 case DGS_LEFT:
                     elems[leftSpeakerIdx].setScale(activeScale * IMG_SCALE_INTRO);
@@ -305,6 +314,8 @@ class DialogueMenu : ZFGenericMenu {
                     elems[rightNameTagIdx].setTAlpha(0.0);
                     elems[rightNameTagIdx].setPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
                     elems[rightNameTagIdx].setTPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
+
+                    borders.setTShape(borderCoordsLeft);
                     break;
             }
         }
@@ -325,6 +336,8 @@ class DialogueMenu : ZFGenericMenu {
 
                     elems[rightNameTagIdx].setTAlpha(1.0);
                     elems[rightNameTagIdx].setTPos((-NAMETAG_X, NAMETAG_Y));
+
+                    borders.setTShape(borderCoordsRight);
                     break;
                 case DGS_LEFT:
                     elems[leftSpeakerIdx].setTScale(activeScale);
@@ -340,6 +353,8 @@ class DialogueMenu : ZFGenericMenu {
 
                     elems[rightNameTagIdx].setTAlpha(0.0);
                     elems[rightNameTagIdx].setTPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
+
+                    borders.setTShape(borderCoordsLeft);
                     break;
             }
         }
@@ -365,6 +380,85 @@ class DialogueMenu : ZFGenericMenu {
             String lang = Stringtable.Localize(strIn);
             Console.printf(lang);
         }
+    }
+
+    void populateCoords()
+    {
+        borderCoordsLeft = ShapeInfo.create(baseRes);
+        borderCoordsRight = ShapeInfo.create(baseRes);
+
+        borderCoordsLeft.pushVC(( 0.000,  0.000));
+        borderCoordsLeft.pushVC(( 0.000,  0.000));
+        borderCoordsLeft.pushVC(( 0.660, -0.150));
+        borderCoordsLeft.pushVC(( 0.700,  0.000));
+        borderCoordsLeft.pushVC(( 1.000,  0.000));
+        borderCoordsLeft.pushVC(( 1.000,  0.000));
+        borderCoordsLeft.pushVC(( 0.000,  0.000));
+        borderCoordsLeft.pushVC(( 0.000,  0.000));
+        borderCoordsLeft.pushVC(( 0.660, -0.150));
+        borderCoordsLeft.pushVC(( 0.730,  0.320));
+        borderCoordsLeft.pushVC(( 1.000,  0.240));
+        borderCoordsLeft.pushVC(( 1.000,  0.240));
+        borderCoordsLeft.pushVC(( 0.000,  1.000));
+        borderCoordsLeft.pushVC(( 0.100,  1.000));
+        borderCoordsLeft.pushVC(( 0.780,  1.000));
+        borderCoordsLeft.pushVC(( 0.800,  1.000));
+        borderCoordsLeft.pushVC(( 1.070,  1.000));
+        borderCoordsLeft.pushVC(( 1.070,  1.000));
+
+        borderCoordsLeft.pushTriangle((0, 1, 7));
+        borderCoordsLeft.pushTriangle((0, 6, 7));
+        borderCoordsLeft.pushTriangle((6, 7, 13));
+        borderCoordsLeft.pushTriangle((6, 12, 13));
+        borderCoordsLeft.pushTriangle((1, 2, 8));
+        borderCoordsLeft.pushTriangle((1, 7, 8));
+        borderCoordsLeft.pushTriangle((2, 3, 9));
+        borderCoordsLeft.pushTriangle((2, 8, 9));
+        borderCoordsLeft.pushTriangle((8, 9, 15));
+        borderCoordsLeft.pushTriangle((8, 14, 15));
+        borderCoordsLeft.pushTriangle((3, 4, 10));
+        borderCoordsLeft.pushTriangle((3, 9, 10));
+        borderCoordsLeft.pushTriangle((4, 5, 11));
+        borderCoordsLeft.pushTriangle((4, 10, 11));
+        borderCoordsLeft.pushTriangle((10, 11, 17));
+        borderCoordsLeft.pushTriangle((10, 16, 17));
+        
+
+        borderCoordsRight.pushVC(( 0.000,  0.000));
+        borderCoordsRight.pushVC(( 0.000,  0.000));
+        borderCoordsRight.pushVC(( 0.300,  0.000));
+        borderCoordsRight.pushVC(( 0.340, -0.150));
+        borderCoordsRight.pushVC(( 0.340, -0.150));
+        borderCoordsRight.pushVC(( 1.000,  0.000));
+        borderCoordsRight.pushVC(( 0.000,  0.000));
+        borderCoordsRight.pushVC(( 0.000,  0.240));
+        borderCoordsRight.pushVC(( 0.270,  0.320));
+        borderCoordsRight.pushVC(( 0.340, -0.150));
+        borderCoordsRight.pushVC(( 1.000,  0.000));
+        borderCoordsRight.pushVC(( 1.000,  0.000));
+        borderCoordsRight.pushVC((-0.070,  1.000));
+        borderCoordsRight.pushVC((-0.070,  1.000));
+        borderCoordsRight.pushVC(( 0.200,  1.000));
+        borderCoordsRight.pushVC(( 0.220,  1.000));
+        borderCoordsRight.pushVC(( 0.900,  1.000));
+        borderCoordsRight.pushVC(( 1.000,  1.000));
+
+        borderCoordsRight.pushTriangle((0, 1, 7));
+        borderCoordsRight.pushTriangle((0, 6, 7));
+        borderCoordsRight.pushTriangle((6, 7, 13));
+        borderCoordsRight.pushTriangle((6, 12, 13));
+        borderCoordsRight.pushTriangle((1, 2, 8));
+        borderCoordsRight.pushTriangle((1, 7, 8));
+        borderCoordsRight.pushTriangle((2, 3, 9));
+        borderCoordsRight.pushTriangle((2, 8, 9));
+        borderCoordsRight.pushTriangle((8, 9, 15));
+        borderCoordsRight.pushTriangle((8, 14, 15));
+        borderCoordsRight.pushTriangle((3, 4, 10));
+        borderCoordsRight.pushTriangle((3, 9, 10));
+        borderCoordsRight.pushTriangle((4, 5, 11));
+        borderCoordsRight.pushTriangle((4, 10, 11));
+        borderCoordsRight.pushTriangle((10, 11, 17));
+        borderCoordsRight.pushTriangle((10, 16, 17));
     }
 
     // LEGACY ==========================================================================================

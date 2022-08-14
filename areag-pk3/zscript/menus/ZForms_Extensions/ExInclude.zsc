@@ -1,9 +1,14 @@
 // Additional AREAG-Specific custom elements used for ZForms.
 #include "zscript/menus/ZForms_Extensions/ExDebugButton.zsc"
 
+#include "zscript/menus/ZForms_Extensions/basic/ShapeInfo.zsc"
+#include "zscript/menus/ZForms_Extensions/basic/ZFExtend.zsc"
+#include "zscript/menus/ZForms_Extensions/basic/ZFShape.zsc"
+
 #include "zscript/menus/ZForms_Extensions/animated/NMElement.zsc"
 #include "zscript/menus/ZForms_Extensions/animated/NMLabel.zsc"
 #include "zscript/menus/ZForms_Extensions/animated/NMImage.zsc"
+#include "zscript/menus/ZForms_Extensions/animated/NMShape.zsc"
 
 /*  -  -  -  -  -  *\
 Changes made to ZForms by AREAG:
@@ -13,4 +18,5 @@ Changes made to ZForms by AREAG:
     - const boxTiled = 0;
 - ZFElement methods pack() and unpack() are now virtual, to allow children to add additional functionality to removing them
 - ZFTabs now has a getTabCount() method
+- ZFElement now has a DrawShape() method
 \*  -  -  -  -  -  */
