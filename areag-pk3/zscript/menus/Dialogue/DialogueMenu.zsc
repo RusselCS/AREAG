@@ -288,7 +288,10 @@ class DialogueMenu : ZFGenericMenu {
                     elems[rightNameTagIdx].setPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
                     elems[rightNameTagIdx].setTPos((-NAMETAG_X, NAMETAG_Y));
 
+                    borders.setShape(borderCoordsRight);
                     borders.setTShape(borderCoordsRight);
+                    borders.setAlpha(0.0);
+                    borders.setTAlpha(1.0);
                     break;
                 case DGS_LEFT:
                     elems[leftSpeakerIdx].setScale(activeScale * IMG_SCALE_INTRO);
@@ -315,7 +318,10 @@ class DialogueMenu : ZFGenericMenu {
                     elems[rightNameTagIdx].setPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
                     elems[rightNameTagIdx].setTPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
 
+                    borders.setShape(borderCoordsLeft);
                     borders.setTShape(borderCoordsLeft);
+                    borders.setAlpha(0.0);
+                    borders.setTAlpha(1.0);
                     break;
             }
         }
