@@ -52,8 +52,10 @@ class DialogueMenu : ZFGenericMenu {
     Vector2 imgCenter;
     Vector2 baseres;
 
-    ShapeInfo borderCoordsLeft;
-    ShapeInfo borderCoordsRight;
+    ShapeInfo borderIntroLeft;
+    ShapeInfo borderIntroRight;
+    ShapeInfo borderLeft;
+    ShapeInfo borderRight;
     NMShape borders;
 
     String next;
@@ -115,8 +117,9 @@ class DialogueMenu : ZFGenericMenu {
         borders = NMShape.create(ZFShape.create(
             (0, 0),
             baseRes,
-            borderCoordsRight,
-            "DG_OFRMX"
+            borderRight,
+            "DG_OFRMX",
+            ZFElement.AlignType_TopCenter
         ), UPDATE_SPEED);
         elems.push(borders);
 
@@ -165,43 +168,9 @@ class DialogueMenu : ZFGenericMenu {
             elems[i].pack(frame);
         }
 
-        // stageDialogue();
+        stageDialogue();
         changeState(DGS_RIGHT);
     }
-
-    static const String[] borderNames = {
-        "DG_OFRM1",
-        "DG_OFRM2",
-        "DG_OFRM3",
-        "DG_OFRM4",
-        "DG_OFRM5"
-    };
-
-    static const String[] nameBoxNames = {
-        "DG_NMBX1",
-        "DG_NMBX2",
-        "DG_NMBX3",
-        "DG_NMBX4",
-        "DG_NMBX5"
-    };
-
-    static const double[] speakScales = {
-        1.000,
-        1.125,
-        1.250,
-        1.375,
-        1.500
-    };
-
-    static const double[] speakXs = {
-        -171,
-        -296,
-        -421,
-        -546,
-        -671
-    };
-
-    const TICKS_PER_FRAME = 2;
 
     const NAMETAG_X = 100;
     const NAMETAG_Y = -212;
@@ -288,8 +257,8 @@ class DialogueMenu : ZFGenericMenu {
                     elems[rightNameTagIdx].setPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
                     elems[rightNameTagIdx].setTPos((-NAMETAG_X, NAMETAG_Y));
 
-                    borders.setShape(borderCoordsRight);
-                    borders.setTShape(borderCoordsRight);
+                    borders.setShape(borderIntroRight);
+                    borders.setTShape(borderRight);
                     borders.setAlpha(0.0);
                     borders.setTAlpha(1.0);
                     break;
@@ -318,8 +287,8 @@ class DialogueMenu : ZFGenericMenu {
                     elems[rightNameTagIdx].setPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
                     elems[rightNameTagIdx].setTPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
 
-                    borders.setShape(borderCoordsLeft);
-                    borders.setTShape(borderCoordsLeft);
+                    borders.setShape(borderIntroLeft);
+                    borders.setTShape(borderLeft);
                     borders.setAlpha(0.0);
                     borders.setTAlpha(1.0);
                     break;
@@ -343,7 +312,7 @@ class DialogueMenu : ZFGenericMenu {
                     elems[rightNameTagIdx].setTAlpha(1.0);
                     elems[rightNameTagIdx].setTPos((-NAMETAG_X, NAMETAG_Y));
 
-                    borders.setTShape(borderCoordsRight);
+                    borders.setTShape(borderRight);
                     break;
                 case DGS_LEFT:
                     elems[leftSpeakerIdx].setTScale(activeScale);
@@ -360,7 +329,7 @@ class DialogueMenu : ZFGenericMenu {
                     elems[rightNameTagIdx].setTAlpha(0.0);
                     elems[rightNameTagIdx].setTPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
 
-                    borders.setTShape(borderCoordsLeft);
+                    borders.setTShape(borderLeft);
                     break;
             }
         }
@@ -377,231 +346,144 @@ class DialogueMenu : ZFGenericMenu {
         tick++;
     }
 
+    // Population functions
+    // Shape population
+    void populateCoords()
+    {
+        borderLeft = ShapeInfo.create(baseRes);
+        borderIntroLeft = ShapeInfo.create(baseRes);
+        borderRight = ShapeInfo.create(baseRes);
+        borderIntroRight = ShapeInfo.create(baseRes);
+
+        borderLeft.pushVC(( 0.000,  0.000));
+        borderLeft.pushVC(( 0.000,  0.000));
+        borderLeft.pushVC(( 0.660, -0.150));
+        borderLeft.pushVC(( 0.700,  0.000));
+        borderLeft.pushVC(( 1.000,  0.000));
+        borderLeft.pushVC(( 1.000,  0.000));
+        borderLeft.pushVC(( 0.000,  0.000));
+        borderLeft.pushVC(( 0.000,  0.000));
+        borderLeft.pushVC(( 0.660, -0.150));
+        borderLeft.pushVC(( 0.730,  0.320));
+        borderLeft.pushVC(( 1.000,  0.240));
+        borderLeft.pushVC(( 1.000,  0.240));
+        borderLeft.pushVC(( 0.000,  1.000));
+        borderLeft.pushVC(( 0.100,  1.000));
+        borderLeft.pushVC(( 0.780,  1.000));
+        borderLeft.pushVC(( 0.800,  1.000));
+        borderLeft.pushVC(( 1.070,  1.000));
+        borderLeft.pushVC(( 1.070,  1.000));
+
+        borderLeft.pushTriangle((0, 1, 7));
+        borderLeft.pushTriangle((0, 6, 7));
+        borderLeft.pushTriangle((6, 7, 13));
+        borderLeft.pushTriangle((6, 12, 13));
+        borderLeft.pushTriangle((1, 2, 8));
+        borderLeft.pushTriangle((1, 7, 8));
+        borderLeft.pushTriangle((2, 3, 9));
+        borderLeft.pushTriangle((2, 8, 9));
+        borderLeft.pushTriangle((8, 9, 15));
+        borderLeft.pushTriangle((8, 14, 15));
+        borderLeft.pushTriangle((3, 4, 10));
+        borderLeft.pushTriangle((3, 9, 10));
+        borderLeft.pushTriangle((4, 5, 11));
+        borderLeft.pushTriangle((4, 10, 11));
+        borderLeft.pushTriangle((10, 11, 17));
+        borderLeft.pushTriangle((10, 16, 17));
+       
+
+        borderRight.pushVC(( 0.000,  0.000));
+        borderRight.pushVC(( 0.000,  0.000));
+        borderRight.pushVC(( 0.300,  0.000));
+        borderRight.pushVC(( 0.340, -0.150));
+        borderRight.pushVC(( 0.340, -0.150));
+        borderRight.pushVC(( 1.000,  0.000));
+        borderRight.pushVC(( 0.000,  0.000));
+        borderRight.pushVC(( 0.000,  0.240));
+        borderRight.pushVC(( 0.270,  0.320));
+        borderRight.pushVC(( 0.340, -0.150));
+        borderRight.pushVC(( 1.000,  0.000));
+        borderRight.pushVC(( 1.000,  0.000));
+        borderRight.pushVC((-0.070,  1.000));
+        borderRight.pushVC((-0.070,  1.000));
+        borderRight.pushVC(( 0.200,  1.000));
+        borderRight.pushVC(( 0.220,  1.000));
+        borderRight.pushVC(( 0.900,  1.000));
+        borderRight.pushVC(( 1.000,  1.000));
+
+        borderRight.pushTriangle((0, 1, 7));
+        borderRight.pushTriangle((0, 6, 7));
+        borderRight.pushTriangle((6, 7, 13));
+        borderRight.pushTriangle((6, 12, 13));
+        borderRight.pushTriangle((1, 2, 8));
+        borderRight.pushTriangle((1, 7, 8));
+        borderRight.pushTriangle((2, 3, 9));
+        borderRight.pushTriangle((2, 8, 9));
+        borderRight.pushTriangle((8, 9, 15));
+        borderRight.pushTriangle((8, 14, 15));
+        borderRight.pushTriangle((3, 4, 10));
+        borderRight.pushTriangle((3, 9, 10));
+        borderRight.pushTriangle((4, 5, 11));
+        borderRight.pushTriangle((4, 10, 11));
+        borderRight.pushTriangle((10, 11, 17));
+        borderRight.pushTriangle((10, 16, 17));
+
+        let offset = scaleShape((0.25, 0.5), baseRes); // i spent hours on this math and idk why this value works but works holy fuck leave me alone
+        borderIntroLeft.copy(borderLeft);
+        borderIntroRight.copy(borderRight);
+        
+        let my = 0.0;
+        let ny = 0.0;
+
+        for(int i = 0; i < borderIntroLeft.vertexSize(); i++) {
+            borderIntroLeft.setVertex(i, borderIntroLeft.getVertex(i) * IMG_SCALE_INTRO - offset);
+            borderIntroRight.setVertex(i, borderIntroRight.getVertex(i) * IMG_SCALE_INTRO - offset);
+            let vert = borderIntroRight.getVertex(i);
+            my = max(vert.y, my);
+            ny = min(vert.y, ny);
+        }
+
+        console.printf("MaxY: %f // MinY: %f // Diff: %f", my, ny, my-ny);
+    }
+
+    // Dialogue population
     void stageDialogue()
     {
-        String strIn = CVar.findCVar("DIALOGUE_QUEUE").getString();
+        let cv = CVar.findCVar("DIALOGUE_QUEUE");
+        String strIn = cv.getString();
         Console.printf(strIn);
 
         if(strIn.length() != 0) {
             String lang = Stringtable.Localize(strIn);
+
+            //for(int i = 0; i < )
             Console.printf(lang);
         }
     }
 
-    void populateCoords()
-    {
-        borderCoordsLeft = ShapeInfo.create(baseRes);
-        borderCoordsRight = ShapeInfo.create(baseRes);
-
-        borderCoordsLeft.pushVC(( 0.000,  0.000));
-        borderCoordsLeft.pushVC(( 0.000,  0.000));
-        borderCoordsLeft.pushVC(( 0.660, -0.150));
-        borderCoordsLeft.pushVC(( 0.700,  0.000));
-        borderCoordsLeft.pushVC(( 1.000,  0.000));
-        borderCoordsLeft.pushVC(( 1.000,  0.000));
-        borderCoordsLeft.pushVC(( 0.000,  0.000));
-        borderCoordsLeft.pushVC(( 0.000,  0.000));
-        borderCoordsLeft.pushVC(( 0.660, -0.150));
-        borderCoordsLeft.pushVC(( 0.730,  0.320));
-        borderCoordsLeft.pushVC(( 1.000,  0.240));
-        borderCoordsLeft.pushVC(( 1.000,  0.240));
-        borderCoordsLeft.pushVC(( 0.000,  1.000));
-        borderCoordsLeft.pushVC(( 0.100,  1.000));
-        borderCoordsLeft.pushVC(( 0.780,  1.000));
-        borderCoordsLeft.pushVC(( 0.800,  1.000));
-        borderCoordsLeft.pushVC(( 1.070,  1.000));
-        borderCoordsLeft.pushVC(( 1.070,  1.000));
-
-        borderCoordsLeft.pushTriangle((0, 1, 7));
-        borderCoordsLeft.pushTriangle((0, 6, 7));
-        borderCoordsLeft.pushTriangle((6, 7, 13));
-        borderCoordsLeft.pushTriangle((6, 12, 13));
-        borderCoordsLeft.pushTriangle((1, 2, 8));
-        borderCoordsLeft.pushTriangle((1, 7, 8));
-        borderCoordsLeft.pushTriangle((2, 3, 9));
-        borderCoordsLeft.pushTriangle((2, 8, 9));
-        borderCoordsLeft.pushTriangle((8, 9, 15));
-        borderCoordsLeft.pushTriangle((8, 14, 15));
-        borderCoordsLeft.pushTriangle((3, 4, 10));
-        borderCoordsLeft.pushTriangle((3, 9, 10));
-        borderCoordsLeft.pushTriangle((4, 5, 11));
-        borderCoordsLeft.pushTriangle((4, 10, 11));
-        borderCoordsLeft.pushTriangle((10, 11, 17));
-        borderCoordsLeft.pushTriangle((10, 16, 17));
+    void populateDialogue(String who, String port, bool pos) {
         
-
-        borderCoordsRight.pushVC(( 0.000,  0.000));
-        borderCoordsRight.pushVC(( 0.000,  0.000));
-        borderCoordsRight.pushVC(( 0.300,  0.000));
-        borderCoordsRight.pushVC(( 0.340, -0.150));
-        borderCoordsRight.pushVC(( 0.340, -0.150));
-        borderCoordsRight.pushVC(( 1.000,  0.000));
-        borderCoordsRight.pushVC(( 0.000,  0.000));
-        borderCoordsRight.pushVC(( 0.000,  0.240));
-        borderCoordsRight.pushVC(( 0.270,  0.320));
-        borderCoordsRight.pushVC(( 0.340, -0.150));
-        borderCoordsRight.pushVC(( 1.000,  0.000));
-        borderCoordsRight.pushVC(( 1.000,  0.000));
-        borderCoordsRight.pushVC((-0.070,  1.000));
-        borderCoordsRight.pushVC((-0.070,  1.000));
-        borderCoordsRight.pushVC(( 0.200,  1.000));
-        borderCoordsRight.pushVC(( 0.220,  1.000));
-        borderCoordsRight.pushVC(( 0.900,  1.000));
-        borderCoordsRight.pushVC(( 1.000,  1.000));
-
-        borderCoordsRight.pushTriangle((0, 1, 7));
-        borderCoordsRight.pushTriangle((0, 6, 7));
-        borderCoordsRight.pushTriangle((6, 7, 13));
-        borderCoordsRight.pushTriangle((6, 12, 13));
-        borderCoordsRight.pushTriangle((1, 2, 8));
-        borderCoordsRight.pushTriangle((1, 7, 8));
-        borderCoordsRight.pushTriangle((2, 3, 9));
-        borderCoordsRight.pushTriangle((2, 8, 9));
-        borderCoordsRight.pushTriangle((8, 9, 15));
-        borderCoordsRight.pushTriangle((8, 14, 15));
-        borderCoordsRight.pushTriangle((3, 4, 10));
-        borderCoordsRight.pushTriangle((3, 9, 10));
-        borderCoordsRight.pushTriangle((4, 5, 11));
-        borderCoordsRight.pushTriangle((4, 10, 11));
-        borderCoordsRight.pushTriangle((10, 11, 17));
-        borderCoordsRight.pushTriangle((10, 16, 17));
     }
 
-    // LEGACY ==========================================================================================
+    Vector2 scaleShape(Vector2 a, Vector2 b) { return (a.x * b.x, a.y * b.y); }
 
-    // override void ticker() {
-        // int st = stateTime();
-        // int animTime = borderNames.size() * TICKS_PER_FRAME;
-        // int openTime = animTime / 2;
+    Vector2 scaleToOffset(Vector2 target, Vector2 current, double sc) {
+        let diff = current - target;
 
-        // if(st <= animTime) {
-            
-        //     if(dgState != DGS_NONE && lastState != DGS_NONE) {
-                
-        //         let opct = 1.0 - double(st) / double(openTime);
-        //         let ipct = 0.0 + double(st - openTime) / double(openTime);
+        return (diff.x / target.x * sc, diff.y / target.y * sc);
+    }
 
-        //         if(dgState == DGS_RIGHT) {
-        //             leftNameTag.setAlpha(opct);
-        //             rightNameTag.setAlpha(ipct);
-        //         } else {
-        //             leftNameTag.setAlpha(ipct);
-        //             rightNameTag.setAlpha(opct);
-        //         }
+    /* might need these later
+        Vector2 scaleShape(Vector2 a, Vector2 b) { return (a.x * b.x, a.y * b.y); }
 
-        //         if(tick % TICKS_PER_FRAME == 0) {
-        //             let rframe = borderNames.size() - 1 - sframe;
+    Vector2 getOffsFactors(AlignType align) {
+		let top = align >> 4;
+		let side = align - (top << 4) - 1;
+		top--;
 
-        //             if(dgState == DGS_RIGHT)
-        //             {
-        //                 if(lastState != DGS_NONE) { // left to right
-        //                     borders.setImage(borderNames[sframe]);
-        //                     nameBox.setImage(nameBoxNames[sframe]);
+		let ret = (side * -0.5, top * -0.5);
 
-        //                     // Left -> Right
-        //                     // Left image slides left
-        //                     leftSpeaker.setImageScale((speakScales[rframe], speakScales[rframe]));
-        //                     leftSpeaker.setPos(imgCenter + (speakXs[sframe], 0));
-        //                     // Right image slides right
-        //                     rightSpeaker.setImageScale((speakScales[sframe], speakScales[sframe]));
-        //                     rightSpeaker.setPos(imgCenter - (speakXs[rframe], 0));
-        //                 }
-        //             }
-
-        //             if(dgState == DGS_LEFT)
-        //             {
-        //                 if(lastState != DGS_NONE) { // left to right
-        //                     borders.setImage(borderNames[borderNames.size() - 1 - (sframe)]);
-        //                     nameBox.setImage(nameBoxNames[nameBoxNames.size() - 1 - (sframe)]);
-
-        //                     // Right -> Left
-        //                     // Left image slides right
-        //                     leftSpeaker.setImageScale((speakScales[sframe], speakScales[sframe]));
-        //                     leftSpeaker.setPos(imgCenter + (speakXs[rframe], 0));
-        //                     // Right image slides left
-        //                     rightSpeaker.setImageScale((speakScales[rframe], speakScales[rframe]));
-        //                     rightSpeaker.setPos(imgCenter - (speakXs[sframe], 0));
-        //                 }
-        //             }
-
-        //             sframe++;
-        //         } // every X frames check
-
-        //     } else { // We can uncap the animation for opening/closing because those don't need to be hand-drawn.
-        //         if(st <= openTime) {
-        //             let findex = 0;
-        //             let lindex = borderNames.size() - 1;
-
-        //             let sStart = 1.5;
-        //             let sTarget = 1.0;
-        //             let sMove = (sStart - sTarget) / openTime;
-
-        //             let curScale = sStart - sMove * st;
-        //             let curAlpha = (1.0 / openTime) * st;
-
-        //             if(lastState == DGS_NONE) { // Open Speaker
-        //                 if(dgState == DGS_RIGHT) { // Right Speaker Open
-
-        //                     if(st == 0) {
-        //                         borders.setImage(borderNames[lindex]);
-        //                         nameBox.setImage(nameBoxNames[lindex]);
-
-        //                         borders.setImageScale((sStart, sStart) * curScale);
-        //                         leftNameTag.setAlpha(0.0);
-        //                     } else {
-        //                         borders.setImageScale((curScale, curScale));
-        //                         borders.setAlpha(curAlpha);
-        //                     }
-                            
-        //                     leftSpeaker.setImageScale((speakScales[findex], speakScales[findex]) * curScale);
-        //                     leftSpeaker.setPos(imgCenter + (speakXs[lindex], 0) * curScale);
-        //                     leftSpeaker.setAlpha(curAlpha);
-
-        //                     rightSpeaker.setImageScale((speakScales[lindex], speakScales[lindex]) * curScale);
-        //                     rightSpeaker.setPos(imgCenter - (speakXs[findex], 0) * curScale);
-        //                     rightSpeaker.setAlpha(curAlpha);
-
-        //                     rightNameTag.setAlpha(curAlpha);
-        //                     rightNameTag.setTextScale(curScale * NAMETAG_SCALE);
-        //                 } else { // Left Speaker Open
-
-        //                     if(st == 0) {
-        //                         borders.setImage(borderNames[findex]);
-        //                         nameBox.setImage(nameBoxNames[findex]);
-
-        //                         borders.setImageScale((sStart, sStart) * curScale);
-        //                         rightNameTag.setAlpha(0.0);
-        //                     } else {
-        //                         borders.setImageScale((curScale, curScale));
-        //                         borders.setAlpha(curAlpha);
-        //                     }
-                            
-        //                     leftSpeaker.setImageScale((speakScales[lindex], speakScales[lindex]) * curScale);
-        //                     leftSpeaker.setPos(imgCenter + (speakXs[findex], 0) * curScale);
-        //                     leftSpeaker.setAlpha(curAlpha);
-
-        //                     rightSpeaker.setImageScale((speakScales[findex], speakScales[findex]) * curScale);
-        //                     rightSpeaker.setPos(imgCenter - (speakXs[lindex], 0) * curScale);
-        //                     rightSpeaker.setAlpha(curAlpha);
-
-        //                     leftNameTag.setAlpha(curAlpha);
-        //                     leftNameTag.setTextScale(curScale * NAMETAG_SCALE);
-        //                 }
-
-        //                 textBox.setImageScale((curScale, curScale));
-        //                 textBox.setAlpha(curAlpha);
-
-        //                 nameBox.setImageScale((curScale, curScale));
-        //                 nameBox.setAlpha(curAlpha);
-        //             }
-        //         } // openTime
-        //     } // animTime
-        // }
-
-        // // if(stateTime() > 70) {
-        // //     swapSides();
-        // // }
-
-        // tick++;
-    // }
+		return ret;
+	}
+    */
 }

@@ -24,12 +24,13 @@ class DialogueMessage : DialogueItem
     
     Font fnt;
 
-    DialogueMessage init(String lang)
+    static DialogueMessage create(String lang)
     {
+        let ret = new("DialogueMessage");
         // raw = pull language value from LANGUAGE lump given `lang`
         // text = formatted
         // length = (sum of all letters in formatted text)
-        return self;
+        return ret;
     }
 }
 
