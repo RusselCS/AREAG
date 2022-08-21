@@ -1,6 +1,6 @@
 [enu default]
 
-DB_DIALOGUETEST1 = "Clyde|CLYSNORM|L:Well, what have we here?$DB_DIALOGUETEST2";
+DB_DIALOGUETEST1 = "Clyde|CLYSNORM|L:Lorem #0.2:~w:ipsum #dolor~ sit amet, consectetur adipiscing elit, sed do eiusmod tempor ~s:incididunt~ ut ~s:labore~ et dolore magna aliqua.$DB_DIALOGUETEST2";
 DB_DIALOGUETEST2 = "Village Elder|ELDSNORM|R:Food. Eat some.";
 
 // UPGRADES AND POWERUPS
