@@ -327,7 +327,7 @@ class DialogueMenu : ZFGenericMenu {
         let st = stateTime();
 
         if(st > 70) {
-            swapSides();
+            //swapSides();
         }
 
         tick++;

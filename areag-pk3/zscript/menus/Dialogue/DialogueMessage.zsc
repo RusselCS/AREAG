@@ -9,7 +9,7 @@ class DialogueObject ui
     virtual void pack(ZFFrame frame) {}
     virtual void unpack() {}
 
-    virtual void drawer(double oldTime) {}
+    virtual bool drawer(double oldTime) { return true; }
 
     double getMaxWidth() { return self.maxWidth; }
     void setMaxWidth(double maxWidth) { self.maxWidth = maxWidth; }
@@ -46,6 +46,7 @@ class DialogueMessage : DialogueObject
 {
     Array<DialogueLine> lines;
     String message; // message with formatting text
+    int lineQueue;
 
     static DialogueMessage create(String message, double maxWidth, Vector2 pos, double scale, double alpha) {
         let ret = new("DialogueMessage");
@@ -62,6 +63,9 @@ class DialogueMessage : DialogueObject
 
     void populate() {
         DialogueLine.populateLines(message, self, lines);
+        if(lines.size() > 0) {
+            lineQueue = 1;
+        }
     }
 
     String getMessage() { return self.message; }
@@ -85,16 +89,26 @@ class DialogueMessage : DialogueObject
         }
     }
 
-    override void drawer(double oldTime) {
-        for(int i = 0; i < lines.size(); i++) {
-            lines[i].drawer(oldTime);
+    override bool drawer(double oldTime) {
+        let addLine = true;
+
+        for(int i = 0; i < lineQueue && i < lines.size(); i++) {
+            addLine = addLine && lines[i].drawer(oldTime);
         }
+
+        if(addLine && lineQueue < lines.size()) {
+            lineQueue++;
+        }
+        return true;
     }
 }
 
 class DialogueLine : DialogueObject
 {
     Array<DialogueChar> chars;
+    int charQueue;
+    ZFFrame frame;
+    double delayTime;
 
     static void populateLines(String message, DialogueObject parent, out Array<DialogueLine> lines) {
         // this is where the lines are broken apart
@@ -111,6 +125,7 @@ class DialogueLine : DialogueObject
         DialogueLine line = null;
         let newLine = true;
         String currentWord = "";
+        Array<DialogueCharTemplate> wordFormats;
         int lastLen = 0;
         Vector2 linePos = (0, 0);
         let fnt = format.getFont();
@@ -125,53 +140,105 @@ class DialogueLine : DialogueObject
                 }
                 line = new("DialogueLine");
                 line.config(parent);
+                line.charQueue = -1;
                 lastLen = 0;
                 newLine = false;
             }
 
-            if(chr != "\n") {
-                currentWord.appendFormat("%s", chr);
-            }
-
             let newWord = false;
-
-            if(chr == " " || chr == "-") {
+            
+            if(chr == "#") { // delay text
+                if(format.getDelay() != 0) {
+                    format.setDelay(0);
+                } else {
+                    String time;
+                    [time, i] = getStringTil(message, i+1, ":");
+                    format.setDelay(time.toDouble());
+                }
+            } else if(chr == "|") { // type-on effect
+                if(format.getType() != DCT_NORMAL) {
+                    format.setType(DCT_NORMAL);
+                } else {
+                    String fx;
+                    [fx, i] = getStringTil(message, i+1, ":");
+                    fx = fx.makeUpper();
+                    if(fx == "E") {
+                        format.setType(DCT_EXPLODE);
+                    } else if(fx == "F") {
+                        format.setType(DCT_FADE);
+                    }
+                }
+            } else if(chr == "~") { // passive effect
+                if(format.getEffect() != DCE_NORMAL) {
+                    format.setEffect(DCE_NORMAL);
+                } else {
+                    String fx;
+                    [fx, i] = getStringTil(message, i+1, ":");
+                    fx = fx.makeUpper();
+                    if(fx == "S") {
+                        format.setEffect(DCE_SHAKE);
+                    } else if(fx == "W") {
+                        format.setEffect(DCE_WAVE);
+                    } else if(fx == "G") {
+                        format.setEffect(DCE_GHOST);
+                    }
+                }
+            } else 
+            if(chr == "\n") {
                 newWord = true;
+                newLine = true;
+            } else if(chr == " " || chr == "-") {
+                currentWord.appendFormat("%s", chr);
+                wordFormats.push(format.dupe());
+                newWord = true;
+            } else {
+                currentWord.appendFormat("%s", chr);
+                wordFormats.push(format.dupe());
             }
 
-            if(chr == "\n" || (fnt.stringWidth(currentWord) * line.getScale()) + lastLen > line.getMaxWidth()) {
-                newWord = true;
+            if((fnt.stringWidth(currentWord) * line.getScale()) + lastLen > line.getMaxWidth()) {
                 newLine = true;
             }
 
             if(newWord) {
-                line.addChars(currentWord, format, linePos);
+                line.addChars(currentWord, wordFormats, linePos);
                 let diff = fnt.stringWidth(currentWord) * line.getScale();
                 lastLen += diff;
                 linePos += (diff, 0);
                 currentWord = "";
+                wordFormats.clear();
             }
         }
         
         if(line != null) {
-            line.addChars(currentWord, format, linePos);
+            line.addChars(currentWord, wordFormats, linePos);
             lines.push(line);
         }
     }
 
-    void addChars(String word, DialogueCharTemplate template, Vector2 linePos) {
+    static string, int getStringTil(String s, int idx, string dest) {
+        let end = s.indexOf(dest, idx);
+
+        if(end >= s.length())
+            end = s.length();
+
+        if(end == -1)
+            end = s.length();
+        
+        return s.mid(idx, end-idx), end;
+    }
+
+    void addChars(String word, Array<DialogueCharTemplate> templates, Vector2 linePos) {
         let offs = (0, 0);
         for(int i = 0; i < word.length(); i++) {
             let chr = word.mid(i, 1);
-            chars.push(DialogueChar.create(chr, self, linePos + offs, template));
-            offs += (template.getFont().stringWidth(chr) * scale, 0);
+            chars.push(DialogueChar.create(chr, self, linePos + offs, templates[i]));
+            offs += (templates[i].getFont().stringWidth(chr) * scale, 0);
         }
     }
 
     override void pack(ZFFrame frame) {
-        for(int i = 0; i < chars.size(); i++) {
-            chars[i].pack(frame);
-        }
+        self.frame = frame;
     }
 
     override void unpack() {
@@ -193,10 +260,31 @@ class DialogueLine : DialogueObject
         console.printf("%s", toString());
     }
 
-    override void drawer(double oldTime) {
-        for(int i = 0; i < chars.size(); i++) {
-            chars[i].drawer(oldTime);
+    override bool drawer(double oldTime) {
+        if(charQueue == -1) {
+            delayTime = chars[0].getFormat().getDelay();
+            charQueue++;
+        } else {
+            for(int i = 0; i < charQueue; i++) {
+                chars[i].drawer(oldTime);
+            }
+            
+            let dTime = double(MSTime() - oldTime) / 1000.0;
+            if(delayTime > 0.0) {
+                delayTime -= dTime;
+            } else {
+                if(charQueue < chars.size()) {
+                    chars[charQueue].pack(frame);
+                    charQueue++;
+                    if(charQueue < chars.size()) {
+                        delayTime = chars[charQueue].getFormat().getDelay();
+                    }
+                } else {
+                    return true;
+                }
+            }
         }
+        return false;
     }
 }
 
@@ -240,9 +328,10 @@ class DialogueChar : DialogueObject
         label.unpack();
     }
 
-    override void drawer(double oldTime) {
+    override bool drawer(double oldTime) {
         let effect = format.getEffect();
         let effectRange = 8.0;
+        let dTime = double(MSTime() - oldTime) / 1000.0;
         switch(effect) {
             default:
                 label.setPos(pos);
@@ -251,11 +340,12 @@ class DialogueChar : DialogueObject
                 label.setPos(pos + (frandom(-1.0, 1.0), frandom(-1.0, 1.0) * effectRange/2.0));
                 break;
             case DCE_WAVE:
-                label.setPos(pos + (0, sin(pos.X - MSTime()) * effectRange));
+                label.setPos(pos + (0, sin(pos.X - MSTime() / 2) * effectRange));
                 break;
             case DCE_GHOST:
                 break;
         }
+        return true;
     }
 }
 
@@ -270,9 +360,9 @@ class DialogueCharTemplate ui
     String getAvatar() { return self.avatar; }
     void setAvatar(String avatar) { self.avatar = avatar; }
 
-    int delay;
-    int getDelay() { return self.delay; }
-    void setDelay(int delay) { self.delay = delay; }
+    double delay;
+    double getDelay() { return self.delay; }
+    void setDelay(double delay) { self.delay = delay; }
 
     DialogueCharType type;
     DialogueCharType getType() { return self.type; }
@@ -294,7 +384,15 @@ class DialogueCharTemplate ui
     bool getUnderline() { return self.underline; }
     void setUnderline(bool underline) { self.underline = underline; }
 
-    static DialogueCharTemplate create(Font fnt = "SMALLFONT", String avatar = "", int delay = 0, DialogueCharType type = DCT_NORMAL, DialogueCharEffect effect = DCE_NORMAL, bool italic = false, bool bold = false, bool underline = false) {
+    DialogueCharTemplate dupe() {
+        let ret = new("DialogueCharTemplate");
+
+        ret.copy(self);
+
+        return ret;
+    }
+
+    static DialogueCharTemplate create(Font fnt = "SMALLFONT", String avatar = "", double delay = 0, DialogueCharType type = DCT_NORMAL, DialogueCharEffect effect = DCE_NORMAL, bool italic = false, bool bold = false, bool underline = false) {
         let ret = new("DialogueCharTemplate");
 
         ret.setFont(fnt);
