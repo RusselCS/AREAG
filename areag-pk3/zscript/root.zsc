@@ -129,7 +129,7 @@
 #include "zscript/menus/LoadMenu.zsc"
 #include "zscript/menus/Debug/DBMenuBase.zsc"
 
-#include "zscript/menus/Dialogue/DialogueItem.zsc"
+#include "zscript/menus/Dialogue/DialogueMessage.zsc"
 #include "zscript/menus/Dialogue/DialogueMenu.zsc"
 
 // TEST BOSS

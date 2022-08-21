@@ -11,6 +11,19 @@
 // RETURN scripts activate on every map change AFTER ENTER has been run at least once.
 // UNLOADING executes on every map change, on the map you're leaving.
 
+script "map_load_dialoguescreen" OPEN
+{
+    str dg = ACS_NamedExecuteWithResult("map_get_dialoguescreen");
+
+    SetFont(dg);
+    HudMessageBold(s:"A"; HUDMSG_ALPHA, 25000, CR_BLACK, 0.0, 0.0, 0.0, 0.0);
+}
+
+script "map_get_dialoguescreen" (void)
+{
+    SetResultValue("DG_OFRMX");
+}
+
 script "map_event_open" OPEN
 {
     

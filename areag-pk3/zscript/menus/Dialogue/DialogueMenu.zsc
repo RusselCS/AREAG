@@ -6,11 +6,7 @@ class DialogueHandler : ZFHandler {
     override void buttonClickCommand(ZFButton caller, String command) {
         // Check if the command matches the button's command.
         if (command == 'firstButtonClick') {
-            // Add 50 to the menu's desired label X position.
-            menu.desiredPosX += 50;
-        } else if (command == 'secondButtonClick') {
-            // Subtract 50 from the menu's desired label X position.
-            menu.desiredPosX -= 50;
+            
         }
     }
 }
@@ -35,16 +31,13 @@ class DialogueMenu : ZFGenericMenu {
     // Dialogue screen elements
     int bordersIdx;
     int nameBoxIdx;
-    int leftSpeakerIdx;
-    int rightSpeakerIdx;
+    NMImage leftSpeaker;
+    NMImage rightSpeaker;
     int textBoxIdx;
-    int leftNameTagIdx;
-    int rightNameTagIdx;
+    NMLabel leftNameTag;
+    NMLabel rightNameTag;
 
     Array<NMElement> elems;
-
-    // Where we want the frame to end up.
-    double desiredPosX;
 
     Font textFont;
     Font nameFont;
@@ -58,7 +51,8 @@ class DialogueMenu : ZFGenericMenu {
     ShapeInfo borderRight;
     NMShape borders;
 
-    String next;
+    Vector2 messagePos;
+    DialogueMessage dgMessage;
 
     const UPDATE_SPEED = 8.0;
 
@@ -91,28 +85,22 @@ class DialogueMenu : ZFGenericMenu {
             (0, 0),
             (baseRes.x, baseRes.y)
         );
-        // Set the desired X position to the starting X position so it doesn't
-        // instantly move.
-        self.desiredPosX = self.frame.getPosX();
         frame.pack(mainFrame);
 
-        leftSpeakerIdx = elems.size();
-        elems.push(NMImage.create(ZFImage.create(
+        leftSpeaker = NMImage.create(ZFImage.create(
             imgCenter,
             (900, 900), // max scale 3
-            image: "CLYSNORM",
             alignment: ZFElement.AlignType_BottomCenter
-        ), UPDATE_SPEED));
-        //elems[leftSpeakerIdx].myName = "leftSpeakerIdx";
+        ), UPDATE_SPEED);
+        elems.push(leftSpeaker);
+        //elems[leftSpeaker].myName = "leftSpeaker";
 
-        rightSpeakerIdx = elems.size();
-        elems.push(NMImage.create(ZFImage.create(
+        rightSpeaker = NMImage.create(ZFImage.create(
             imgCenter,
             (900, 900),
-            image: "ELDSNORM",
             alignment: ZFElement.AlignType_BottomCenter
-        ), UPDATE_SPEED));
-        //elems[rightSpeakerIdx].myName = "rightSpeakerIdx";
+        ), UPDATE_SPEED);
+        elems.push(rightSpeaker);
 
         borders = NMShape.create(ZFShape.create(
             (0, 0),
@@ -120,7 +108,7 @@ class DialogueMenu : ZFGenericMenu {
             borderRight,
             "DG_OFRMX",
             ZFElement.AlignType_TopCenter
-        ), UPDATE_SPEED);
+        ), UPDATE_SPEED);        
         elems.push(borders);
 
         textBoxIdx = elems.size();
@@ -128,12 +116,11 @@ class DialogueMenu : ZFGenericMenu {
             // This argument controls the position - 50 pixels under the label.
             (  0, 0),
             // This argument controls the size. Here we match STARTAN2.
-            (1600, 900),
+            baseRes,
             // The texture name.
             image: "DG_SPBOX",
             alignment: ZFElement.AlignType_TopCenter
         ), UPDATE_SPEED));
-        //elems[textBoxIdx].myName = "textBoxIdx";
 
         // nameBoxIdx = elems.size();
         // elems.push(NMImage.create(ZFImage.create(
@@ -142,34 +129,29 @@ class DialogueMenu : ZFGenericMenu {
         //     alignment: ZFElement.AlignType_TopCenter
         // ), UPDATE_SPEED));
 
-        leftNameTagIdx = elems.size();
-        elems.push(NMLabel.create(ZFLabel.create(
+        leftNameTag = NMLabel.create(ZFLabel.create(
             (NAMETAG_X, NAMETAG_Y),
             (1600, 900),
-            text: "Clyde",
             fnt: nameFont,
             alignment: ZFElement.AlignType_BottomLeft,
             textScale: NAMETAG_SCALE
-        ), UPDATE_SPEED));
-        //elems[leftNameTagIdx].myName = "leftNameTagIdx";
+        ), UPDATE_SPEED);
+        elems.push(leftNameTag);
 
-        rightNameTagIdx = elems.size();
-        elems.push(NMLabel.create(ZFLabel.create(
+        rightNameTag = NMLabel.create(ZFLabel.create(
             (-NAMETAG_X, NAMETAG_Y),
             (1600, 900),
-            text: "Village Elder",
             fnt: nameFont,
             alignment: ZFElement.AlignType_BottomRight,
             textScale: NAMETAG_SCALE
-        ), UPDATE_SPEED));
-        //elems[rightNameTagIdx].myName = "rightNameTagIdx";
+        ), UPDATE_SPEED);
+        elems.push(rightNameTag);
 
         for(int i = 0; i < elems.size(); i++) {
             elems[i].pack(frame);
         }
 
-        stageDialogue();
-        changeState(DGS_RIGHT);
+        stageDialogue(true);
     }
 
     const NAMETAG_X = 100;
@@ -186,10 +168,15 @@ class DialogueMenu : ZFGenericMenu {
 
     const IMG_SCALE_INTRO = 1.5;
 
+    uint oldTime;
+
     override void drawer() {
         for(int i = 0; i < elems.size(); i++) {
             elems[i].drawer();
         }
+
+        dgMessage.drawer(oldTime);
+        oldTime = MSTime();
 
         super.drawer();
     }
@@ -233,29 +220,29 @@ class DialogueMenu : ZFGenericMenu {
 
             switch(dgState) {
                 case DGS_RIGHT:
-                    elems[leftSpeakerIdx].setScale(inactiveScale * IMG_SCALE_INTRO);
-                    elems[leftSpeakerIdx].setTScale(inactiveScale);
-                    elems[leftSpeakerIdx].setAlpha(0.0);
-                    elems[leftSpeakerIdx].setTAlpha(1.0);
-                    elems[leftSpeakerIdx].setPos(imgCenter + IMG_SCALE_INTRO * inactivePos);
-                    elems[leftSpeakerIdx].setTPos(imgCenter + inactivePos);
+                    leftSpeaker.setScale(inactiveScale * IMG_SCALE_INTRO);
+                    leftSpeaker.setTScale(inactiveScale);
+                    leftSpeaker.setAlpha(0.0);
+                    leftSpeaker.setTAlpha(1.0);
+                    leftSpeaker.setPos(imgCenter + IMG_SCALE_INTRO * inactivePos);
+                    leftSpeaker.setTPos(imgCenter + inactivePos);
 
-                    elems[leftNameTagIdx].setAlpha(0.0);
-                    elems[leftNameTagIdx].setTAlpha(0.0);
-                    elems[leftNameTagIdx].setPos((NAMETAG_X, NAMETAG_Y) - (NAMETAG_X_SCROLL, 0));
-                    elems[leftNameTagIdx].setTPos((NAMETAG_X, NAMETAG_Y) - (NAMETAG_X_SCROLL, 0));
+                    leftNameTag.setAlpha(0.0);
+                    leftNameTag.setTAlpha(0.0);
+                    leftNameTag.setPos((NAMETAG_X, NAMETAG_Y) - (NAMETAG_X_SCROLL, 0));
+                    leftNameTag.setTPos((NAMETAG_X, NAMETAG_Y) - (NAMETAG_X_SCROLL, 0));
 
-                    elems[rightSpeakerIdx].setScale(activeScale * IMG_SCALE_INTRO);
-                    elems[rightSpeakerIdx].setTScale(activeScale);
-                    elems[rightSpeakerIdx].setAlpha(0.0);
-                    elems[rightSpeakerIdx].setTAlpha(1.0);
-                    elems[rightSpeakerIdx].setPos(imgCenter - IMG_SCALE_INTRO * activePos);
-                    elems[rightSpeakerIdx].setTPos(imgCenter - activePos);
+                    rightSpeaker.setScale(activeScale * IMG_SCALE_INTRO);
+                    rightSpeaker.setTScale(activeScale);
+                    rightSpeaker.setAlpha(0.0);
+                    rightSpeaker.setTAlpha(1.0);
+                    rightSpeaker.setPos(imgCenter - IMG_SCALE_INTRO * activePos);
+                    rightSpeaker.setTPos(imgCenter - activePos);
 
-                    elems[rightNameTagIdx].setAlpha(0.0);
-                    elems[rightNameTagIdx].setTAlpha(1.0);
-                    elems[rightNameTagIdx].setPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
-                    elems[rightNameTagIdx].setTPos((-NAMETAG_X, NAMETAG_Y));
+                    rightNameTag.setAlpha(0.0);
+                    rightNameTag.setTAlpha(1.0);
+                    rightNameTag.setPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
+                    rightNameTag.setTPos((-NAMETAG_X, NAMETAG_Y));
 
                     borders.setShape(borderIntroRight);
                     borders.setTShape(borderRight);
@@ -263,29 +250,29 @@ class DialogueMenu : ZFGenericMenu {
                     borders.setTAlpha(1.0);
                     break;
                 case DGS_LEFT:
-                    elems[leftSpeakerIdx].setScale(activeScale * IMG_SCALE_INTRO);
-                    elems[leftSpeakerIdx].setTScale(activeScale);
-                    elems[leftSpeakerIdx].setAlpha(0.0);
-                    elems[leftSpeakerIdx].setTAlpha(1.0);
-                    elems[leftSpeakerIdx].setPos(imgCenter + IMG_SCALE_INTRO * activePos);
-                    elems[leftSpeakerIdx].setTPos(imgCenter + activePos);
+                    leftSpeaker.setScale(activeScale * IMG_SCALE_INTRO);
+                    leftSpeaker.setTScale(activeScale);
+                    leftSpeaker.setAlpha(0.0);
+                    leftSpeaker.setTAlpha(1.0);
+                    leftSpeaker.setPos(imgCenter + IMG_SCALE_INTRO * activePos);
+                    leftSpeaker.setTPos(imgCenter + activePos);
 
-                    elems[leftNameTagIdx].setAlpha(0.0);
-                    elems[leftNameTagIdx].setTAlpha(1.0);
-                    elems[leftNameTagIdx].setPos((NAMETAG_X, NAMETAG_Y) - (NAMETAG_X_SCROLL, 0));
-                    elems[leftNameTagIdx].setTPos((NAMETAG_X, NAMETAG_Y));
+                    leftNameTag.setAlpha(0.0);
+                    leftNameTag.setTAlpha(1.0);
+                    leftNameTag.setPos((NAMETAG_X, NAMETAG_Y) - (NAMETAG_X_SCROLL, 0));
+                    leftNameTag.setTPos((NAMETAG_X, NAMETAG_Y));
 
-                    elems[rightSpeakerIdx].setScale(inactiveScale * IMG_SCALE_INTRO);
-                    elems[rightSpeakerIdx].setTScale(inactiveScale);
-                    elems[rightSpeakerIdx].setAlpha(0.0);
-                    elems[rightSpeakerIdx].setTAlpha(1.0);
-                    elems[rightSpeakerIdx].setPos(imgCenter - IMG_SCALE_INTRO * inactivePos);
-                    elems[rightSpeakerIdx].setTPos(imgCenter - inactivePos);
+                    rightSpeaker.setScale(inactiveScale * IMG_SCALE_INTRO);
+                    rightSpeaker.setTScale(inactiveScale);
+                    rightSpeaker.setAlpha(0.0);
+                    rightSpeaker.setTAlpha(1.0);
+                    rightSpeaker.setPos(imgCenter - IMG_SCALE_INTRO * inactivePos);
+                    rightSpeaker.setTPos(imgCenter - inactivePos);
 
-                    elems[rightNameTagIdx].setAlpha(0.0);
-                    elems[rightNameTagIdx].setTAlpha(0.0);
-                    elems[rightNameTagIdx].setPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
-                    elems[rightNameTagIdx].setTPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
+                    rightNameTag.setAlpha(0.0);
+                    rightNameTag.setTAlpha(0.0);
+                    rightNameTag.setPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
+                    rightNameTag.setTPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
 
                     borders.setShape(borderIntroLeft);
                     borders.setTShape(borderLeft);
@@ -298,36 +285,36 @@ class DialogueMenu : ZFGenericMenu {
         if(dgState != DGS_NONE && lastState != DGS_NONE) { // swap sides
             switch(dgState) {
                 case DGS_RIGHT:
-                    elems[leftSpeakerIdx].setTScale(inactiveScale);
-                    elems[leftSpeakerIdx].setTAlpha(1.0);
-                    elems[leftSpeakerIdx].setTPos(imgCenter + inactivePos);
+                    leftSpeaker.setTScale(inactiveScale);
+                    leftSpeaker.setTAlpha(1.0);
+                    leftSpeaker.setTPos(imgCenter + inactivePos);
 
-                    elems[leftNameTagIdx].setTAlpha(0.0);
-                    elems[leftNameTagIdx].setTPos((NAMETAG_X, NAMETAG_Y) - (NAMETAG_X_SCROLL, 0));
+                    leftNameTag.setTAlpha(0.0);
+                    leftNameTag.setTPos((NAMETAG_X, NAMETAG_Y) - (NAMETAG_X_SCROLL, 0));
 
-                    elems[rightSpeakerIdx].setTScale(activeScale);
-                    elems[rightSpeakerIdx].setTAlpha(1.0);
-                    elems[rightSpeakerIdx].setTPos(imgCenter - activePos);
+                    rightSpeaker.setTScale(activeScale);
+                    rightSpeaker.setTAlpha(1.0);
+                    rightSpeaker.setTPos(imgCenter - activePos);
 
-                    elems[rightNameTagIdx].setTAlpha(1.0);
-                    elems[rightNameTagIdx].setTPos((-NAMETAG_X, NAMETAG_Y));
+                    rightNameTag.setTAlpha(1.0);
+                    rightNameTag.setTPos((-NAMETAG_X, NAMETAG_Y));
 
                     borders.setTShape(borderRight);
                     break;
                 case DGS_LEFT:
-                    elems[leftSpeakerIdx].setTScale(activeScale);
-                    elems[leftSpeakerIdx].setTAlpha(1.0);
-                    elems[leftSpeakerIdx].setTPos(imgCenter + activePos);
+                    leftSpeaker.setTScale(activeScale);
+                    leftSpeaker.setTAlpha(1.0);
+                    leftSpeaker.setTPos(imgCenter + activePos);
 
-                    elems[leftNameTagIdx].setTAlpha(1.0);
-                    elems[leftNameTagIdx].setTPos((NAMETAG_X, NAMETAG_Y));
+                    leftNameTag.setTAlpha(1.0);
+                    leftNameTag.setTPos((NAMETAG_X, NAMETAG_Y));
 
-                    elems[rightSpeakerIdx].setTScale(inactiveScale);
-                    elems[rightSpeakerIdx].setTAlpha(1.0);
-                    elems[rightSpeakerIdx].setTPos(imgCenter - inactivePos);
+                    rightSpeaker.setTScale(inactiveScale);
+                    rightSpeaker.setTAlpha(1.0);
+                    rightSpeaker.setTPos(imgCenter - inactivePos);
 
-                    elems[rightNameTagIdx].setTAlpha(0.0);
-                    elems[rightNameTagIdx].setTPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
+                    rightNameTag.setTAlpha(0.0);
+                    rightNameTag.setTPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
 
                     borders.setTShape(borderLeft);
                     break;
@@ -431,38 +418,119 @@ class DialogueMenu : ZFGenericMenu {
         let offset = scaleShape((0.25, 0.5), baseRes); // i spent hours on this math and idk why this value works but works holy fuck leave me alone
         borderIntroLeft.copy(borderLeft);
         borderIntroRight.copy(borderRight);
-        
-        let my = 0.0;
-        let ny = 0.0;
 
         for(int i = 0; i < borderIntroLeft.vertexSize(); i++) {
             borderIntroLeft.setVertex(i, borderIntroLeft.getVertex(i) * IMG_SCALE_INTRO - offset);
             borderIntroRight.setVertex(i, borderIntroRight.getVertex(i) * IMG_SCALE_INTRO - offset);
-            let vert = borderIntroRight.getVertex(i);
-            my = max(vert.y, my);
-            ny = min(vert.y, ny);
         }
-
-        console.printf("MaxY: %f // MinY: %f // Diff: %f", my, ny, my-ny);
     }
+
+    enum DGReadMode {
+        DRM_NONE = -1,
+        DRM_SPEAKER,
+        DRM_AUTOTIME,
+        DRM_AVATAR,
+        DRM_DIR,
+        DRM_MESSAGE,
+        DRM_MENU,
+        DRM_NEXT
+    }
+
+    String speaker;
+    String avatar;
+    bool dir;
+    String message;
+    String next;
 
     // Dialogue population
-    void stageDialogue()
+    void stageDialogue(bool start)
     {
-        let cv = CVar.findCVar("DIALOGUE_QUEUE");
-        String strIn = cv.getString();
-        Console.printf(strIn);
+        if(start) {
+            let cv = CVar.findCVar("DIALOGUE_QUEUE");
+            next = cv.getString();
+        }
 
-        if(strIn.length() != 0) {
-            String lang = Stringtable.Localize(strIn);
+        if(next.length() > 0) {
+            let mode = DRM_NONE;
 
-            //for(int i = 0; i < )
-            Console.printf(lang);
+            dir = false;
+            String lang = Stringtable.Localize(next);
+            next = "";
+
+            String build = "";
+            let i = 0;
+            String ch = lang.mid(i, 1);
+
+            //for(int i = 0; i < lang.length(); i++) {
+
+            switch(mode) {
+                default:
+                    break;
+                case DRM_NONE:
+                    if(ch == "@") {
+                        mode = DRM_MENU;
+                        break;
+                    }
+                    if(ch == "$") {
+                        mode = DRM_AUTOTIME;
+                        break;
+                    }
+                    mode = DRM_SPEAKER; // set the state to speaker, then fallthrough
+                case DRM_SPEAKER:
+                    [speaker, i] = getStringTil(lang, i, "|");
+                    mode = DRM_AVATAR; // set the state to avatar, then fallthrough
+                case DRM_AVATAR:
+                    [avatar, i] = getStringTil(lang, i, "|");
+                    mode = DRM_DIR; // yeah
+                case DRM_DIR:
+                    let s = lang.mid(i, 1);
+                    if(s == "R") {
+                        dir = true;
+                    }
+                    i += 2;
+                    mode = DRM_MESSAGE;
+                case DRM_MESSAGE:
+                    [message, i] = getStringTil(lang, i, "$");
+                    next = lang.mid(i, 100);
+                    mode = DRM_NONE;
+                    break;
+                case DRM_MENU:
+                    break;
+            }
+            //Console.printf(message);
+            populateDialogue(speaker, avatar, dir);
+            showMessage(message);
         }
     }
 
-    void populateDialogue(String who, String port, bool pos) {
+    string, int getStringTil(String s, int idx, string dest) {
+        let end = s.indexOf(dest, idx);
+
+        if(end >= s.length())
+            end = s.length();
+
+        if(end == -1)
+            end = s.length();
         
+        return s.mid(idx, end-idx), end+1;
+    }
+
+    void populateDialogue(String speaker, String avatar, bool dir) {
+        if(!dir) {
+            changeState(DGS_LEFT);
+            leftSpeaker.getElem().setImage(avatar);
+            leftNameTag.getElem().setText(speaker);
+        } else {
+            changeState(DGS_RIGHT);
+            rightSpeaker.getElem().setImage(avatar);
+            rightNameTag.getElem().setText(speaker);
+        }
+    }
+
+    void showMessage(String message) {
+
+        dgMessage = DialogueMessage.create(message, baseRes.X-(160.0*2), (160.0, 710.0), 1.35, 1.0);
+        dgMessage.pack(frame);
     }
 
     Vector2 scaleShape(Vector2 a, Vector2 b) { return (a.x * b.x, a.y * b.y); }
