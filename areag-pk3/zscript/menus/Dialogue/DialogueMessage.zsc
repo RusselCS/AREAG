@@ -14,6 +14,8 @@ class DialogueObject ui
     double getMaxWidth() { return self.maxWidth; }
     void setMaxWidth(double maxWidth) { self.maxWidth = maxWidth; }
 
+    virtual void changePos(Vector2 delta) { self.pos += delta; }
+
     Vector2 getPos() { return self.pos; }
     virtual void setPos(Vector2 pos) { self.pos = pos; }
 
@@ -25,6 +27,8 @@ class DialogueObject ui
 
     DialogueObject getParent() { return self.parent; }
     void setParent(DialogueObject parent) { self.parent = parent; }
+
+    virtual void next(bool remove, double amount) {}
 
     void config(DialogueObject parent, double maxWidth = 0.0, Vector2 pos = (0, 0), double scale = 1.0, double alpha = 1.0) {
         self.parent = parent;
@@ -40,6 +44,8 @@ class DialogueObject ui
             self.alpha = alpha;
         }
     }
+
+    static double deltaTime(double oldTime) { return double(MSTime() - oldTime) / 1000.0; }
 }
 
 class DialogueMessage : DialogueObject
@@ -47,6 +53,11 @@ class DialogueMessage : DialogueObject
     Array<DialogueLine> lines;
     String message; // message with formatting text
     int lineQueue;
+    int lineMax;
+    int destMax;
+    int hiddenLines;
+    double lineFeedDelay;
+    bool finished;
 
     static DialogueMessage create(String message, double maxWidth, Vector2 pos, double scale, double alpha) {
         let ret = new("DialogueMessage");
@@ -61,10 +72,21 @@ class DialogueMessage : DialogueObject
         return ret;
     }
 
+    override void changePos(Vector2 delta) {
+        self.pos += delta;
+        for(int i = 0; i < lines.size(); i++) {
+            lines[i].changePos(delta);
+        }
+    }
+
     void populate() {
         DialogueLine.populateLines(message, self, lines);
         if(lines.size() > 0) {
             lineQueue = 1;
+            lineMax = min(lines.size(), 2);
+            hiddenLines = 0;
+            destMax = lineMax;
+            finished = false;
         }
     }
 
@@ -92,14 +114,59 @@ class DialogueMessage : DialogueObject
     override bool drawer(double oldTime) {
         let addLine = true;
 
-        for(int i = 0; i < lineQueue && i < lines.size(); i++) {
+        for(int i = 0; i < lineQueue && i < lineMax; i++) {
             addLine = addLine && lines[i].drawer(oldTime);
         }
 
-        if(addLine && lineQueue < lines.size()) {
-            lineQueue++;
+        if(lineFeedDelay > 0.0) {
+            lineFeedDelay -= deltaTime(oldTime);
+        } else if(addLine) {
+            if(lineMax >= lines.size()) {
+                finished = true;
+            }
+
+            if(lineQueue < lineMax) {
+                lineQueue++;
+            } else {
+                if(lineMax < destMax) {
+                    lineMax++;
+                    dismissFirstLine();
+                }
+            }
         }
+
         return true;
+    }
+
+    bool isFinished() {
+        return finished;
+    }
+
+    double offsetAmount;
+
+    override void next(bool remove, double amount) {
+        offsetAmount = amount;
+        dismissFirstLine();
+        lineMax = min(lineMax+1, lines.size());
+        destMax = min(destMax+2, lines.size());
+    }
+
+    void dismissFirstLine() {
+        let b = true;
+        changePos((0, offsetAmount));
+        for(int i = hiddenLines; i < lines.size(); i++) {
+            lines[i].next(b, offsetAmount);
+            b = false;
+        }
+        hiddenLines++;
+        lineFeedDelay = 0.2;
+    }
+
+    void dismiss(double amount) {
+        changePos((amount, 0));
+        for(int i = 0; i < lines.size(); i++) {
+            lines[i].dismiss();
+        }
     }
 }
 
@@ -216,6 +283,13 @@ class DialogueLine : DialogueObject
         }
     }
 
+    override void changePos(Vector2 delta) {
+        self.pos += delta;
+        for(int i = 0; i < chars.size(); i++) {
+            chars[i].changePos(delta);
+        }
+    }
+
     static string, int getStringTil(String s, int idx, string dest) {
         let end = s.indexOf(dest, idx);
 
@@ -286,13 +360,27 @@ class DialogueLine : DialogueObject
         }
         return false;
     }
+
+    override void next(bool remove, double amount) {
+        for(int i = 0; i < chars.size(); i++) {
+            chars[i].next(remove, amount);
+        }
+    }
+
+    void dismiss() {
+        for(int i = 0; i < chars.size(); i++) {
+            chars[i].next(true, 0.0);
+        }
+    }
 }
 
 class DialogueChar : DialogueObject
 {
-    ZFLabel label;
+    NMLabel label;
     DialogueCharTemplate format;
     String chr;
+    bool packed;
+    int dismissState;
 
     static DialogueChar create(String chr, DialogueObject parent, Vector2 offs, DialogueCharTemplate format) {
         let ret = new("DialogueChar");
@@ -303,16 +391,17 @@ class DialogueChar : DialogueObject
         let size = (fnt.stringWidth(chr), fnt.getHeight()) * ret.getScale();
         ret.setPos(parent.getPos() + offs);
 
-        let label = ZFLabel.create(ret.getPos(), size, chr, fnt:fnt, textScale: ret.getScale());
+        let label = NMLabel.create(ZFLabel.create(ret.getPos(), size, chr, fnt:fnt, textScale: ret.getScale()), DialogueMenu.UPDATE_SPEED);
 
         ret.setLabel(label);
         ret.setFormat(format);
         ret.setChar(chr);
+        ret.init();
         return ret;
     }
 
-    ZFLabel getLabel() { return self.label; }
-    void setLabel(ZFLabel label) { self.label = label; }
+    NMLabel getLabel() { return self.label; }
+    void setLabel(NMLabel label) { self.label = label; }
 
     DialogueCharTemplate getFormat() { return self.format; }
     void setFormat(DialogueCharTemplate format) { self.format = format; }
@@ -320,32 +409,59 @@ class DialogueChar : DialogueObject
     String getChar() { return self.chr; }
     void setChar(String chr) { self.chr = chr; }
 
+    void init() {
+        packed = false;
+        dismissState = 0;
+    }
+
+    override void changePos(Vector2 delta) {
+        self.pos += delta;
+        label.setTPos(pos);
+    }
+
     override void pack(ZFFrame frame)  {
+        packed = true;
+        label.setPos(label.getTPos());
         label.pack(frame);
     }
 
     override void unpack() {
+        packed = false;
         label.unpack();
     }
 
     override bool drawer(double oldTime) {
-        let effect = format.getEffect();
-        let effectRange = 8.0;
-        let dTime = double(MSTime() - oldTime) / 1000.0;
-        switch(effect) {
-            default:
-                label.setPos(pos);
-                break;
-            case DCE_SHAKE:
-                label.setPos(pos + (frandom(-1.0, 1.0), frandom(-1.0, 1.0) * effectRange/2.0));
-                break;
-            case DCE_WAVE:
-                label.setPos(pos + (0, sin(pos.X - MSTime() / 2) * effectRange));
-                break;
-            case DCE_GHOST:
-                break;
+        if(packed) {
+            label.drawer();
+            if(dismissState == 1) {
+                if(label.getAlpha() <= 0.0) {
+                    dismissState = 2;
+                    unpack();
+                }
+            }
+            let effect = format.getEffect();
+            let effectRange = 8.0;
+            let dTime = double(MSTime() - oldTime) / 1000.0;
+            switch(effect) {
+                default:
+                    label.setTPos(pos);
+                    break;
+                case DCE_SHAKE:
+                    label.setTPos(pos + (frandom(-1.0, 1.0), frandom(-1.0, 1.0) * effectRange/2));
+                    break;
+                case DCE_WAVE:
+                    label.setTPos(pos + (0, sin(pos.X - MSTime() / 2) * effectRange));
+                    break;
+                case DCE_GHOST:
+                    break;
+            }
         }
         return true;
+    }
+
+    override void next(bool remove, double amount) {
+        if(remove)
+            label.setTAlpha(0.0);
     }
 }
 

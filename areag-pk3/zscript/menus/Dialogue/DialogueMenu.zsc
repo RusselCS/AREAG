@@ -168,6 +168,8 @@ class DialogueMenu : ZFGenericMenu {
 
     const IMG_SCALE_INTRO = 1.5;
 
+    const MSG_BODY_SCALE = 1.35;
+
     uint oldTime;
 
     override void drawer() {
@@ -326,8 +328,12 @@ class DialogueMenu : ZFGenericMenu {
     {
         let st = stateTime();
 
-        if(st > 70) {
-            //swapSides();
+        if(st != 0 && st % (8 * 35) == 0) {
+            if(!dgMessage.isFinished()) {
+                dgMessage.next(false, -textFont.getHeight() * MSG_BODY_SCALE);
+            } else {
+                dgMessage.dismiss(-NAMETAG_X_SCROLL);
+            }
         }
 
         tick++;
@@ -529,7 +535,7 @@ class DialogueMenu : ZFGenericMenu {
 
     void showMessage(String message) {
 
-        dgMessage = DialogueMessage.create(message, baseRes.X-(160.0*2), (160.0, 710.0), 1.35, 1.0);
+        dgMessage = DialogueMessage.create(message, baseRes.X-(160.0*2), (160.0, 710.0), MSG_BODY_SCALE, 1.0);
         dgMessage.pack(frame);
     }
 
