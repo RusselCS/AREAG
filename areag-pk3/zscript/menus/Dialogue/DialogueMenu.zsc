@@ -151,6 +151,9 @@ class DialogueMenu : ZFGenericMenu {
             elems[i].pack(frame);
         }
 
+        SetMouseCapture(false);
+        createNextImages();
+
         stageDialogue(true);
     }
 
@@ -324,19 +327,127 @@ class DialogueMenu : ZFGenericMenu {
         }
     }
 
+    int inputDelay;
+
     override void ticker()
     {
         let st = stateTime();
 
-        if(st != 0 && st % (8 * 35) == 0) {
-            if(!dgMessage.isFinished()) {
-                dgMessage.next(false, -textFont.getHeight() * MSG_BODY_SCALE);
+        if(inputDelay > 0) {
+            inputDelay--;
+        }
+
+        if(!dgMessage.isTyping()) {
+            if(dgMessage.isFinished()) {
+                setNextButton(nextMessageImage);
             } else {
-                dgMessage.dismiss(-NAMETAG_X_SCROLL);
+                setNextButton(nextLineImage);
             }
+        } else {
+            setNextButton(null);
+        }
+
+        if(st != 0 && st % (8 * 35) == 0) {
+            // if(!dgMessage.isFinished()) {
+            //     dgMessage.next(false, -textFont.getHeight() * MSG_BODY_SCALE);
+            // } else {
+            //     dgMessage.dismiss(-NAMETAG_X_SCROLL);
+            //     setNextButton(null);
+            // }
         }
 
         tick++;
+    }
+
+    override bool MenuEvent (int mkey, bool fromcontroller)
+	{
+		switch (mkey)
+		{
+        case MKEY_Enter:
+            if(inputDelay == 0) {
+                if(!dgMessage.isFinished()) {
+                    if(!dgMessage.isTyping()) {
+                        MenuSound("dialogue/next");
+                        dgMessage.next(false, -textFont.getHeight() * MSG_BODY_SCALE);
+                    } else {
+                        dgMessage.skipTyping();
+                    }
+                } else {
+                    MenuSound("dialogue/next");
+                    dgMessage.dismiss(-NAMETAG_X_SCROLL);
+                    setNextButton(null);
+                }
+                inputDelay = 10;
+            }
+            return true;
+		case MKEY_Back:
+			Close();
+			MenuSound (GetCurrentMenu() != null? "menu/backup" : "menu/clear");
+			return true;
+		}
+		return false;
+	}
+
+    Array<NMImage> nextImages;
+    NMImage nextLineImage;
+    NMImage nextMessageImage;
+    NMImage nextImageActive;
+
+    const nextImageScale = 0.3;
+
+    void createNextImages() {
+
+        let imgSize = (512, 512);
+        let nextImagePos = baseRes - (imgSize * nextImageScale) - (baseRes * 0.03);
+
+        let img = ZFImage.create(
+                nextImagePos,
+                imgSize * nextImageScale,
+                image: "DG_OARNL",
+                imageScale: (nextImageScale, nextImageScale)
+                );
+        nextLineImage = DGNextLine.make(img, UPDATE_SPEED);
+
+        nextMessageImage = DGNextPage.make(
+            ZFImage.create(
+                nextImagePos,
+                imgSize * nextImageScale,
+                image: "DG_OARNP",
+                imageScale: (nextImageScale, nextImageScale)
+                ),
+            UPDATE_SPEED
+        );
+
+        nextImages.push(nextLineImage);
+        nextImages.push(nextMessageImage);
+
+        elems.push(nextLineImage);
+        elems.push(nextMessageImage);
+
+        nextLineImage.setHidden(true);
+        nextMessageImage.setHidden(true);
+
+        nextLineImage.pack(frame);
+        nextMessageImage.pack(frame);
+    }
+
+    bool setNextButton(NMImage button) {
+
+        if(button == nextImageActive)
+            return false;
+        
+        let idx = nextImages.find(button);
+
+        for(int i = 0; i < nextImages.size(); i++) {
+            nextImages[i].setHidden(true);
+        }
+
+        if(idx != -1 && button != null) {
+            button.setHidden(false);
+        }
+
+        nextImageActive = button;
+        return true;
     }
 
     // Population functions

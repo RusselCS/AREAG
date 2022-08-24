@@ -56,6 +56,8 @@ menu/dismiss MNUBACK // Mega Man ZX
 menu/choose MNUMENU // Virtua Fighter
 menu/clear MNUBACK // Mega Man ZX
 
+dialogue/next DGNEXT // Danganronpa: Trigger Happy Havoc!!
+
 misc/HeavySplash INSPLASH // Mega Man ZX
 misc/WaterLoop UNWATER1 // Mega Man ZX
 $volume misc/WaterLoop 0.5

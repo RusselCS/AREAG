@@ -131,6 +131,7 @@
 
 #include "zscript/menus/Dialogue/DialogueMessage.zsc"
 #include "zscript/menus/Dialogue/DialogueMenu.zsc"
+#include "zscript/menus/dialogue/DialogueNext.zsc"
 
 // TEST BOSS
 #include "zscript/bosses/0_testboss.zsc"

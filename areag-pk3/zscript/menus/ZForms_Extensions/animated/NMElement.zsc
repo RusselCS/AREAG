@@ -26,6 +26,9 @@ class NMElement : Object ui
     double getElemTime() { return elemTime; }
     void setElemTime(double newElemTime) { elemTime = newElemTime; }
 
+    virtual bool isHidden() { return false; }
+	virtual void setHidden(bool hidden) {  }
+
     // Should be called by menu.drawer(), every frame.
     void drawer()
     {

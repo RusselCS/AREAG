@@ -1,0 +1,69 @@
+class DGNextLine : NMImage
+{
+    Vector2 basePos;
+
+    static DGNextLine make(ZFImage il, double lmt) {
+        let ret = new('DGNextLine');
+
+        ret.setElem(il);
+        ret.setElemTime(lmt);
+        ret.init();
+        ret.basePos = il.getPos() + (0, -16.0);
+        return ret;
+    }
+
+    override void elemDrawer()
+    {
+        if(isHidden()) {
+            setPos(basePos);
+            setTPos(basePos);
+            setAlpha(0.0);
+            setTAlpha(0.0);
+        } else {
+            if(getAlpha() <= 0.0) {
+                setPos(basePos);
+                setTPos(basePos - (0, -16.0));
+                setTAlpha(1.0);
+            } else if(getAlpha() >= 1.0) {
+                setTAlpha(0.0);
+            }
+        }
+        
+        super.elemDrawer();
+    }
+}
+
+class DGNextPage : NMImage
+{
+    Vector2 basePos;
+
+    static DGNextPage make(ZFImage il, double lmt) {
+        let ret = new('DGNextPage');
+
+        ret.setElem(il);
+        ret.setElemTime(lmt);
+        ret.init();
+        ret.basePos = il.getPos() + (-16.0, 0);
+        return ret;
+    }
+
+    override void elemDrawer()
+    {
+        if(isHidden()) {
+            setPos(basePos);
+            setTPos(basePos);
+            setAlpha(0.0);
+            setTAlpha(0.0);
+        } else {
+            if(getAlpha() <= 0.0) {
+                setPos(basePos);
+                setTPos(basePos - (-16.0, 0));
+                setTAlpha(1.0);
+            } else if(getAlpha() >= 1.0) {
+                setTAlpha(0.0);
+            }
+        }
+        
+        super.elemDrawer();
+    }
+}

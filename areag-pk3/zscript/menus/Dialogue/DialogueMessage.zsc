@@ -58,6 +58,7 @@ class DialogueMessage : DialogueObject
     int hiddenLines;
     double lineFeedDelay;
     bool finished;
+    bool typing;
 
     static DialogueMessage create(String message, double maxWidth, Vector2 pos, double scale, double alpha) {
         let ret = new("DialogueMessage");
@@ -87,6 +88,7 @@ class DialogueMessage : DialogueObject
             hiddenLines = 0;
             destMax = lineMax;
             finished = false;
+            typing = true;
         }
     }
 
@@ -131,6 +133,8 @@ class DialogueMessage : DialogueObject
                 if(lineMax < destMax) {
                     lineMax++;
                     dismissFirstLine();
+                } else {
+                    typing = false;
                 }
             }
         }
@@ -138,14 +142,32 @@ class DialogueMessage : DialogueObject
         return true;
     }
 
+    void skipTyping() {
+        while(lineMax < destMax) {
+            lineMax++;
+            dismissFirstLine();
+        }
+        lineQueue = lineMax;
+        lineFeedDelay = 0.0;
+
+        for(int i = 0; i < lineMax; i++) {
+            lines[i].skipTyping();
+        }
+    }
+
     bool isFinished() {
         return finished;
+    }
+
+    bool isTyping() {
+        return typing;
     }
 
     double offsetAmount;
 
     override void next(bool remove, double amount) {
         offsetAmount = amount;
+        typing = true;
         dismissFirstLine();
         lineMax = min(lineMax+1, lines.size());
         destMax = min(destMax+2, lines.size());
@@ -290,6 +312,16 @@ class DialogueLine : DialogueObject
         }
     }
 
+    void skipTyping() {
+        charQueue = chars.size()-1;
+        for(int i = 0; i < chars.size(); i++) {
+            if(!chars[i].isPacked()) {
+                chars[i].pack(frame);
+            }
+            chars[i].skipTyping();
+        }
+    }
+
     static string, int getStringTil(String s, int idx, string dest) {
         let end = s.indexOf(dest, idx);
 
@@ -408,6 +440,15 @@ class DialogueChar : DialogueObject
 
     String getChar() { return self.chr; }
     void setChar(String chr) { self.chr = chr; }
+
+    bool isPacked() {
+        return packed;
+    }
+
+    void skipTyping() {
+        label.setPos(label.getTPos());
+        label.setAlpha(label.getTAlpha());
+    }
 
     void init() {
         packed = false;

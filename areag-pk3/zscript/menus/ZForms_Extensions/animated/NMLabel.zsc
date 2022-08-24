@@ -24,4 +24,7 @@ class NMLabel : NMElement
 
     override void pack(ZFFrame frame) { packElement(elem, frame); }
     override void unpack() { unpackElement(elem); }
+
+    override bool isHidden() { return elem.isHidden(); }
+	override void setHidden(bool hidden) { elem.setHidden(hidden); }
 }
