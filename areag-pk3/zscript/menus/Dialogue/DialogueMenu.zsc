@@ -209,6 +209,8 @@ class DialogueMenu : ZFGenericMenu {
             stateTick = tick;
             lastState = dgState;
             dgState = st;
+        } else {
+            return;
         }
 
         let activePos = (SPEAKER_POS_ACTIVE, 0);
@@ -285,6 +287,7 @@ class DialogueMenu : ZFGenericMenu {
                     borders.setTAlpha(1.0);
                     break;
             }
+            return;
         }
 
         if(dgState != DGS_NONE && lastState != DGS_NONE) { // swap sides
@@ -324,6 +327,78 @@ class DialogueMenu : ZFGenericMenu {
                     borders.setTShape(borderLeft);
                     break;
             }
+            return;
+        }
+
+        if(dgState == DGS_NONE && lastState != DGS_NONE) { // exit
+            elems[textBoxIdx].setTScale((1.0, 1.0) * IMG_SCALE_INTRO);
+            elems[textBoxIdx].setScale((1.0, 1.0));
+            elems[textBoxIdx].setTAlpha(0.0);
+            elems[textBoxIdx].setAlpha(1.0);
+
+            switch(lastState) {
+                case DGS_RIGHT:
+                    leftSpeaker.setTScale(inactiveScale * IMG_SCALE_INTRO);
+                    leftSpeaker.setScale(inactiveScale);
+                    leftSpeaker.setTAlpha(0.0);
+                    leftSpeaker.setAlpha(1.0);
+                    leftSpeaker.setTPos(imgCenter + IMG_SCALE_INTRO * inactivePos);
+                    leftSpeaker.setPos(imgCenter + inactivePos);
+
+                    leftNameTag.setTAlpha(0.0);
+                    leftNameTag.setAlpha(0.0);
+                    leftNameTag.setTPos((NAMETAG_X, NAMETAG_Y) - (NAMETAG_X_SCROLL, 0));
+                    leftNameTag.setPos((NAMETAG_X, NAMETAG_Y) - (NAMETAG_X_SCROLL, 0));
+
+                    rightSpeaker.setTScale(activeScale * IMG_SCALE_INTRO);
+                    rightSpeaker.setScale(activeScale);
+                    rightSpeaker.setTAlpha(0.0);
+                    rightSpeaker.setAlpha(1.0);
+                    rightSpeaker.setTPos(imgCenter - IMG_SCALE_INTRO * activePos);
+                    rightSpeaker.setPos(imgCenter - activePos);
+
+                    rightNameTag.setTAlpha(0.0);
+                    rightNameTag.setAlpha(1.0);
+                    rightNameTag.setTPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
+                    rightNameTag.setPos((-NAMETAG_X, NAMETAG_Y));
+
+                    borders.setTShape(borderIntroRight);
+                    borders.setShape(borderRight);
+                    borders.setTAlpha(0.0);
+                    borders.setAlpha(1.0);
+                    break;
+                case DGS_LEFT:
+                    leftSpeaker.setTScale(activeScale * IMG_SCALE_INTRO);
+                    leftSpeaker.setScale(activeScale);
+                    leftSpeaker.setTAlpha(0.0);
+                    leftSpeaker.setAlpha(1.0);
+                    leftSpeaker.setTPos(imgCenter + IMG_SCALE_INTRO * activePos);
+                    leftSpeaker.setPos(imgCenter + activePos);
+
+                    leftNameTag.setTAlpha(0.0);
+                    leftNameTag.setAlpha(1.0);
+                    leftNameTag.setTPos((NAMETAG_X, NAMETAG_Y) - (NAMETAG_X_SCROLL, 0));
+                    leftNameTag.setPos((NAMETAG_X, NAMETAG_Y));
+
+                    rightSpeaker.setTScale(inactiveScale * IMG_SCALE_INTRO);
+                    rightSpeaker.setScale(inactiveScale);
+                    rightSpeaker.setTAlpha(0.0);
+                    rightSpeaker.setAlpha(1.0);
+                    rightSpeaker.setTPos(imgCenter - IMG_SCALE_INTRO * inactivePos);
+                    rightSpeaker.setPos(imgCenter - inactivePos);
+
+                    rightNameTag.setTAlpha(0.0);
+                    rightNameTag.setAlpha(0.0);
+                    rightNameTag.setTPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
+                    rightNameTag.setPos((-NAMETAG_X, NAMETAG_Y) + (NAMETAG_X_SCROLL, 0));
+
+                    borders.setTShape(borderIntroLeft);
+                    borders.setShape(borderLeft);
+                    borders.setTAlpha(0.0);
+                    borders.setAlpha(1.0);
+                    break;
+            }
+            return;
         }
     }
 
@@ -337,23 +412,23 @@ class DialogueMenu : ZFGenericMenu {
             inputDelay--;
         }
 
-        if(!dgMessage.isTyping()) {
-            if(dgMessage.isFinished()) {
-                setNextButton(nextMessageImage);
-            } else {
-                setNextButton(nextLineImage);
+        if(dgState == DGS_NONE && lastState != DGS_NONE) // closing menu now...
+        {
+            if(borders.getAlpha() ~== 0.0) {
+                Close();
             }
-        } else {
-            setNextButton(null);
         }
-
-        if(st != 0 && st % (8 * 35) == 0) {
-            // if(!dgMessage.isFinished()) {
-            //     dgMessage.next(false, -textFont.getHeight() * MSG_BODY_SCALE);
-            // } else {
-            //     dgMessage.dismiss(-NAMETAG_X_SCROLL);
-            //     setNextButton(null);
-            // }
+        else
+        {
+            if(!dgMessage.isTyping()) {
+                if(dgMessage.isFinished()) {
+                    setNextButton(nextMessageImage);
+                } else {
+                    setNextButton(nextLineImage);
+                }
+            } else {
+                setNextButton(null);
+            }
         }
 
         tick++;
@@ -374,10 +449,11 @@ class DialogueMenu : ZFGenericMenu {
                     }
                 } else {
                     MenuSound("dialogue/next");
-                    dgMessage.dismiss(-NAMETAG_X_SCROLL);
+                    dgMessage.dismiss(NAMETAG_X_SCROLL);
                     setNextButton(null);
+                    stageDialogue(false);
                 }
-                inputDelay = 10;
+                inputDelay = 8;
             }
             return true;
 		case MKEY_Back:
@@ -565,6 +641,20 @@ class DialogueMenu : ZFGenericMenu {
         if(start) {
             let cv = CVar.findCVar("DIALOGUE_QUEUE");
             next = cv.getString();
+
+            cv = CVar.findCVar("DIALOGUE_OPEN");
+            let start = cv.getString();
+
+            String lang = Stringtable.Localize(start);
+            String av;
+            int ds;
+            [av, ds] = getStringTil(lang, 0, "|");
+            bool dr = false;
+            console.printf("%s // %s", av, lang.mid(ds, 1));
+            if(lang.mid(ds, 1) == "R") {
+                dr = true;
+            }
+            populateDialogue("", av, dr, true);
         }
 
         if(next.length() > 0) {
@@ -608,15 +698,16 @@ class DialogueMenu : ZFGenericMenu {
                     mode = DRM_MESSAGE;
                 case DRM_MESSAGE:
                     [message, i] = getStringTil(lang, i, "$");
-                    next = lang.mid(i, 100);
+                    next = lang.mid(i-1, 100);
                     mode = DRM_NONE;
                     break;
                 case DRM_MENU:
                     break;
             }
-            //Console.printf(message);
             populateDialogue(speaker, avatar, dir);
             showMessage(message);
+        } else {
+            changeState(DGS_NONE);
         }
     }
 
@@ -632,13 +723,15 @@ class DialogueMenu : ZFGenericMenu {
         return s.mid(idx, end-idx), end+1;
     }
 
-    void populateDialogue(String speaker, String avatar, bool dir) {
+    void populateDialogue(String speaker, String avatar, bool dir, bool skip = false) {
         if(!dir) {
-            changeState(DGS_LEFT);
+            if(!skip)
+                changeState(DGS_LEFT);
             leftSpeaker.getElem().setImage(avatar);
             leftNameTag.getElem().setText(speaker);
         } else {
-            changeState(DGS_RIGHT);
+            if(!skip)
+                changeState(DGS_RIGHT);
             rightSpeaker.getElem().setImage(avatar);
             rightNameTag.getElem().setText(speaker);
         }
