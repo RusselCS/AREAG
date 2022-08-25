@@ -59,8 +59,9 @@ class DialogueMessage : DialogueObject
     double lineFeedDelay;
     bool finished;
     bool typing;
+    int dismissFactor;
 
-    static DialogueMessage create(String message, double maxWidth, Vector2 pos, double scale, double alpha) {
+    static DialogueMessage create(String message, double maxWidth, Vector2 pos, double scale, double alpha, int dismissFactor = 1) {
         let ret = new("DialogueMessage");
 
         ret.setMessage(message);
@@ -68,6 +69,7 @@ class DialogueMessage : DialogueObject
         ret.setPos(pos);
         ret.setScale(scale);
         ret.setAlpha(alpha);
+        ret.setDismissFactor(dismissFactor);
         ret.populate();
 
         return ret;
@@ -94,6 +96,9 @@ class DialogueMessage : DialogueObject
 
     String getMessage() { return self.message; }
     void setMessage(String message) { self.message = message; }
+
+    int getDismissFactor() { return self.dismissFactor; }
+    void setDismissFactor(int dismissFactor) { self.dismissFactor = dismissFactor; }
 
     override void pack(ZFFrame frame) {
         for(int i = 0; i < lines.size(); i++) {
@@ -185,7 +190,7 @@ class DialogueMessage : DialogueObject
     }
 
     void dismiss(double amount) {
-        changePos((amount, 0));
+        changePos((amount, 0) * dismissFactor);
         for(int i = 0; i < lines.size(); i++) {
             lines[i].dismiss();
         }

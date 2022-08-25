@@ -52,7 +52,8 @@ class DialogueMenu : ZFGenericMenu {
     NMShape borders;
 
     Vector2 messagePos;
-    DialogueMessage dgMessage;
+    Array<DialogueMessage> dgMessages;
+    int dgCurrent;
 
     const UPDATE_SPEED = 8.0;
 
@@ -61,6 +62,7 @@ class DialogueMenu : ZFGenericMenu {
         tick = 0;
         stateTick = 0;
         sframe = 0;
+        dgCurrent = -1;
         lastState = DGS_NONE;
         dgState = DGS_NONE;
         textFont = "DIAGFONT";
@@ -180,7 +182,11 @@ class DialogueMenu : ZFGenericMenu {
             elems[i].drawer();
         }
 
-        dgMessage.drawer(oldTime);
+        if(dgCurrent > -1) {
+            for(int i = 0; i < dgMessages.size(); i++) {
+                dgMessages[i].drawer(oldTime);
+            }
+        }
         oldTime = MSTime();
 
         super.drawer();
@@ -420,8 +426,9 @@ class DialogueMenu : ZFGenericMenu {
         }
         else
         {
-            if(!dgMessage.isTyping()) {
-                if(dgMessage.isFinished()) {
+            let dgMsg = dgMessages[dgCurrent];
+            if(!dgMsg.isTyping()) {
+                if(dgMsg.isFinished()) {
                     setNextButton(nextMessageImage);
                 } else {
                     setNextButton(nextLineImage);
@@ -439,17 +446,18 @@ class DialogueMenu : ZFGenericMenu {
 		switch (mkey)
 		{
         case MKEY_Enter:
+            let msg = dgMessages[dgCurrent];
             if(inputDelay == 0) {
-                if(!dgMessage.isFinished()) {
-                    if(!dgMessage.isTyping()) {
+                if(!msg.isFinished()) {
+                    if(!msg.isTyping()) {
                         MenuSound("dialogue/next");
-                        dgMessage.next(false, -textFont.getHeight() * MSG_BODY_SCALE);
+                        msg.next(false, -textFont.getHeight() * MSG_BODY_SCALE);
                     } else {
-                        dgMessage.skipTyping();
+                        msg.skipTyping();
                     }
                 } else {
                     MenuSound("dialogue/next");
-                    dgMessage.dismiss(NAMETAG_X_SCROLL);
+                    msg.dismiss(NAMETAG_X_SCROLL);
                     setNextButton(null);
                     stageDialogue(false);
                 }
@@ -649,12 +657,7 @@ class DialogueMenu : ZFGenericMenu {
             String av;
             int ds;
             [av, ds] = getStringTil(lang, 0, "|");
-            bool dr = false;
-            console.printf("%s // %s", av, lang.mid(ds, 1));
-            if(lang.mid(ds, 1) == "R") {
-                dr = true;
-            }
-            populateDialogue("", av, dr, true);
+            populateDialogue("", av, lang.mid(ds, 1), true);
         }
 
         if(next.length() > 0) {
@@ -690,10 +693,7 @@ class DialogueMenu : ZFGenericMenu {
                     [avatar, i] = getStringTil(lang, i, "|");
                     mode = DRM_DIR; // yeah
                 case DRM_DIR:
-                    let s = lang.mid(i, 1);
-                    if(s == "R") {
-                        dir = true;
-                    }
+                    let dir = lang.mid(i, 1);
                     i += 2;
                     mode = DRM_MESSAGE;
                 case DRM_MESSAGE:
@@ -705,7 +705,7 @@ class DialogueMenu : ZFGenericMenu {
                     break;
             }
             populateDialogue(speaker, avatar, dir);
-            showMessage(message);
+            showMessage(message, dir);
         } else {
             changeState(DGS_NONE);
         }
@@ -723,24 +723,44 @@ class DialogueMenu : ZFGenericMenu {
         return s.mid(idx, end-idx), end+1;
     }
 
-    void populateDialogue(String speaker, String avatar, bool dir, bool skip = false) {
-        if(!dir) {
-            if(!skip)
-                changeState(DGS_LEFT);
-            leftSpeaker.getElem().setImage(avatar);
-            leftNameTag.getElem().setText(speaker);
+    void populateDialogue(String speaker, String avatar, String dir, bool skip = false) {
+
+        DGReadMode dgs;
+        NMImage lmSpeaker;
+        NMLabel lmTag;
+
+        if(dirIsRight(dir)) {
+            dgs = DGS_RIGHT;
+            lmSpeaker = rightSpeaker;
+            lmTag = rightNameTag;
         } else {
-            if(!skip)
-                changeState(DGS_RIGHT);
-            rightSpeaker.getElem().setImage(avatar);
-            rightNameTag.getElem().setText(speaker);
+            dgs = DGS_LEFT;
+            lmSpeaker = leftSpeaker;
+            lmTag = leftNameTag;
         }
+
+        if(!skip)
+            changeState(dgs);
+        lmSpeaker.getElem().setImage(avatar);
+        lmTag.getElem().setText(speaker);
     }
 
-    void showMessage(String message) {
+    void showMessage(String message, String dir) {
+        
+        int ds = -1;
 
-        dgMessage = DialogueMessage.create(message, baseRes.X-(160.0*2), (160.0, 710.0), MSG_BODY_SCALE, 1.0);
-        dgMessage.pack(frame);
+        if(dirIsRight(dir)) {
+            ds = 1;
+        }
+
+        let msg = DialogueMessage.create(message, baseRes.X-(160.0*2), (160.0, 710.0), MSG_BODY_SCALE, 1.0, ds);
+        msg.pack(frame);
+        dgMessages.push(msg);
+        dgCurrent++;
+    }
+
+    bool dirIsRight(String dir) {
+        return dir == "R";
     }
 
     Vector2 scaleShape(Vector2 a, Vector2 b) { return (a.x * b.x, a.y * b.y); }
