@@ -12,14 +12,9 @@ class DialogueNPC : BasicActionProp
     string user_queue;
 
     override void BasicActivate(Actor activator) {
-
-        console.printf("pringles");
-
-        CVar dgOpen = CVar.findCVar("DIALOGUE_OPEN");
-        CVar dgQueue = CVar.findCVar("DIALOGUE_QUEUE");
-
-        dgOpen.setString(String.format("$%s", user_open));
-        dgQueue.setString(String.format("$%s", user_queue));
+        CVar.findCVar("DIALOGUE_ACTIVE").setBool(true);
+        CVar.findCVar("DIALOGUE_OPEN").setString(String.format("$%s", user_open));
+        CVar.findCVar("DIALOGUE_QUEUE").setString(String.format("$%s", user_queue));
 
 		Menu.setMenu("DialogueMenu");
 	}

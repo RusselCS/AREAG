@@ -184,7 +184,9 @@ class DialogueMenu : ZFGenericMenu {
 
         if(dgCurrent > -1) {
             for(int i = 0; i < dgMessages.size(); i++) {
-                dgMessages[i].drawer(oldTime);
+                if(dgMessages[i] != null) {
+                    dgMessages[i].drawer(oldTime);
+                }
             }
         }
         oldTime = MSTime();
@@ -412,6 +414,12 @@ class DialogueMenu : ZFGenericMenu {
 
     override void ticker()
     {
+        if(tick == 0) {
+            if(!CVar.findCVar("DIALOGUE_ACTIVE").getBool()) {
+                closeDialogue();
+            }
+        }
+
         let st = stateTime();
 
         if(inputDelay > 0) {
@@ -421,7 +429,7 @@ class DialogueMenu : ZFGenericMenu {
         if(dgState == DGS_NONE && lastState != DGS_NONE) // closing menu now...
         {
             if(borders.getAlpha() ~== 0.0) {
-                Close();
+                closeDialogue();
             }
         }
         else
@@ -465,7 +473,7 @@ class DialogueMenu : ZFGenericMenu {
             }
             return true;
 		case MKEY_Back:
-			Close();
+			closeDialogue();
 			MenuSound (GetCurrentMenu() != null? "menu/backup" : "menu/clear");
 			return true;
 		}
@@ -532,6 +540,11 @@ class DialogueMenu : ZFGenericMenu {
 
         nextImageActive = button;
         return true;
+    }
+
+    void closeDialogue() {
+        CVar.findCVar("DIALOGUE_ACTIVE").setBool(false);
+        Close();
     }
 
     // Population functions

@@ -137,5 +137,6 @@ user int SAVE_DOOR_3;
 
 user noarchive int SAVE_PICKER = 1;
 
+user noarchive bool DIALOGUE_ACTIVE = false;
 user noarchive String DIALOGUE_OPEN = "";
-user noarchive String DIALOGUE_QUEUE = "$DB_DIALOGUETEST";
+user noarchive String DIALOGUE_QUEUE = "$DB_DIALOGUEERROR";

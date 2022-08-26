@@ -106,3 +106,19 @@ class TimeFreezer : PowerTimeFreezerSound
 }
 
 class LevelNumTracker : Counter {}
+
+class GlobalTime
+{
+	// returns time since starting the engine as a string
+	static String timeStamp() {
+		let baseTime = MSTime();
+		int seconds = baseTime / 1000;
+		int minutes = seconds / 60;
+		int hours = minutes / 60;
+
+		int pSeconds = seconds % 60;
+		int pMinutes = minutes % 60;
+
+		return String.format("[%02d:%02d:%02d]", hours, pMinutes, pSeconds);
+	}
+}

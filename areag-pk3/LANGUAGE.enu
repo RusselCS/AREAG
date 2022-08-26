@@ -1,6 +1,6 @@
 [enu default]
 
-DB_DIALOGUETEST = "Clyde|CLYSNORM|L:This is a test dialogue that you should never see!";
+DB_DIALOGUEERROR = "Clyde|CLYSNORM|L:Wow! You got to something you shouldn't see! ~w:Nice job!~ You'd make a ~w:great~ explorer!!";
 
 DB_DIALOGUETEST_OPEN = "ELDSTHNK|R";
 DB_DIALOGUETEST00 = "Clyde|CLYSNORM|L:Uhh. Excuse me#0.3:... ...#$DB_DIALOGUETEST01";

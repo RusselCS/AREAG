@@ -22,7 +22,7 @@ class DialogueObject ui
     double getScale() { return self.scale; }
     virtual void setScale(double scale) { self.scale = scale; }
 
-    double getAlpha() { return self.alpha; }
+    virtual double getAlpha() { return self.alpha; }
     virtual void setAlpha(double alpha) { self.alpha = alpha; }
 
     DialogueObject getParent() { return self.parent; }
@@ -61,6 +61,10 @@ class DialogueMessage : DialogueObject
     bool typing;
     int dismissFactor;
 
+    bool dismissing;
+
+    const MAX_LINES = 2;
+
     static DialogueMessage create(String message, double maxWidth, Vector2 pos, double scale, double alpha, int dismissFactor = 1) {
         let ret = new("DialogueMessage");
 
@@ -86,11 +90,12 @@ class DialogueMessage : DialogueObject
         DialogueLine.populateLines(message, self, lines);
         if(lines.size() > 0) {
             lineQueue = 1;
-            lineMax = min(lines.size(), 2);
+            lineMax = min(lines.size(), MAX_LINES);
             hiddenLines = 0;
             destMax = lineMax;
             finished = false;
             typing = true;
+            dismissing = false;
         }
     }
 
@@ -119,6 +124,12 @@ class DialogueMessage : DialogueObject
     }
 
     override bool drawer(double oldTime) {
+        if(dismissing && getAlpha() ~== 0.0)
+        {
+            removeMessage();
+            return true;
+        }
+
         let addLine = true;
 
         for(int i = 0; i < lineQueue && i < lineMax; i++) {
@@ -175,7 +186,7 @@ class DialogueMessage : DialogueObject
         typing = true;
         dismissFirstLine();
         lineMax = min(lineMax+1, lines.size());
-        destMax = min(destMax+2, lines.size());
+        destMax = min(destMax+MAX_LINES, lines.size());
     }
 
     void dismissFirstLine() {
@@ -194,6 +205,27 @@ class DialogueMessage : DialogueObject
         for(int i = 0; i < lines.size(); i++) {
             lines[i].dismiss();
         }
+        dismissing = true;
+    }
+
+    override void onDestroy() {
+        super.onDestroy();
+    }
+
+    override double getAlpha() {
+        let mx = 0.0;
+        for(int i = 0; i < lines.size(); i++) {
+            mx = max(lines[i].getAlpha(), mx);
+        }
+        return mx;
+    }
+
+    void removeMessage() {
+        unpack();
+        for(int i = 0; i < lines.size(); i++) {
+            lines[i].removeMessage();
+        }
+        self.destroy();
     }
 }
 
@@ -409,6 +441,29 @@ class DialogueLine : DialogueObject
             chars[i].next(true, 0.0);
         }
     }
+
+    override void onDestroy() {
+        // for(int i = 0; i < chars.size(); i++) {
+        //     chars[i].destroy();
+        // }
+        super.onDestroy();
+    }
+
+    override double getAlpha() {
+        let mx = 0.0;
+        for(int i = 0; i < chars.size(); i++) {
+            mx = max(chars[i].getAlpha(), mx);
+        }
+        return mx;
+    }
+
+    void removeMessage()
+    {
+        for(int i = 0; i < chars.size(); i++) {
+            chars[i].removeMessage();
+        }
+        self.destroy();
+    }
 }
 
 class DialogueChar : DialogueObject
@@ -509,6 +564,21 @@ class DialogueChar : DialogueObject
         if(remove)
             label.setTAlpha(0.0);
     }
+
+    override void onDestroy() {
+        //format.destroy();
+        super.onDestroy();
+    }
+
+    override double getAlpha() {
+        return label.getAlpha();
+    }
+
+    void removeMessage()
+    {
+        format.destroy();
+        self.destroy();
+    }
 }
 
 // will likely contain all the format types
@@ -578,6 +648,10 @@ class DialogueCharTemplate ui
         self.setItalic(template.getItalic());
         self.setBold(template.getBold());
         self.setUnderline(template.getUnderline());
+    }
+
+    override void onDestroy() {
+        super.onDestroy();
     }
 }
 
