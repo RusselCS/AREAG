@@ -108,6 +108,8 @@
 // PROPS
 #include "zscript/props/0_general/jars.zsc"
 #include "zscript/props/0_general/blocks.zsc"
+#include "zscript/props/0_general/npcs.zsc"
+
 #include "zscript/props/1_gateway/darttrap.zsc"
 #include "zscript/props/1_gateway/lasertrap.zsc"
 #include "zscript/props/1_gateway/speartrap.zsc"

@@ -1,0 +1,40 @@
+class DialogueNPC : BasicActionProp
+{
+    Default
+    {
+        +SOLID;
+        Height 56;
+        Radius 16;
+        Scale 2.5;
+    }
+
+    string user_open;
+    string user_queue;
+
+    override void BasicActivate(Actor activator) {
+
+        console.printf("pringles");
+
+        CVar dgOpen = CVar.findCVar("DIALOGUE_OPEN");
+        CVar dgQueue = CVar.findCVar("DIALOGUE_QUEUE");
+
+        dgOpen.setString(String.format("$%s", user_open));
+        dgQueue.setString(String.format("$%s", user_queue));
+
+		Menu.setMenu("DialogueMenu");
+	}
+}
+
+class ElderNPC : DialogueNPC
+{
+    Default
+    {
+        scale 4.0;
+    }
+    States
+    {
+    Spawn:
+        ELDR A 1;
+        loop;
+    }
+}

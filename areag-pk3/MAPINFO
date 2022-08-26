@@ -37,6 +37,8 @@ DoomEdNums
 	30099 = MonsterPathNode
     30100 = ObArcherSpawner
 	30101 = ObBruteSpawner
+
+	30200 = ElderNPC
 }
 
 episode TESTMAP

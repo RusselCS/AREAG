@@ -1,8 +1,36 @@
 [enu default]
 
-DB_DIALOGUETEST_OPEN = "ELDSNORM|R";
-DB_DIALOGUETEST1 = "Clyde|CLYSNORM|L:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Laoreet suspendisse interdum consectetur libero id faucibus nisl tincidunt eget. Massa massa ultricies mi quis hendrerit dolor. Porta nibh venenatis cras sed felis eget velit aliquet. Metus aliquam eleifend mi in nulla posuere sollicitudin. ~w:Tellus molestie nunc non blandit massa enim nec.~$DB_DIALOGUETEST2";
-DB_DIALOGUETEST2 = "Village Elder|ELDSNORM|R:Food. Eat some.";
+DB_DIALOGUETEST = "Clyde|CLYSNORM|L:This is a test dialogue that you should never see!";
+
+DB_DIALOGUETEST_OPEN = "ELDSTHNK|R";
+DB_DIALOGUETEST00 = "Clyde|CLYSNORM|L:Uhh. Excuse me#0.3:... ...#$DB_DIALOGUETEST01";
+DB_DIALOGUETEST01 = "Clyde|CLYSNORM|L:(Did they not hear me? They're still messing with something...)$DB_DIALOGUETEST02";
+DB_DIALOGUETEST02 = "Clyde|CLYSSICK|L:~s:Uaah!~ What was ~s:that!?~ I just felt something on the back of my neck!$DB_DIALOGUETEST03";
+DB_DIALOGUETEST03 = "Village Elder|ELDSTHNK|R:Ah. So you are human. And your tongue is... You call it English. It has been quite a long time since we've had guests.$DB_DIALOGUETEST04";
+DB_DIALOGUETEST04 = "Village Elder|ELDSNORM|R:Greetings, young traveller. Though perhaps you come at an#0.3:... #inopportune time?$DB_DIALOGUETEST05";
+DB_DIALOGUETEST05 = "Clyde|CLYSNORM|L:Err... hello. My name is--$DB_DIALOGUETEST06";
+DB_DIALOGUETEST06 = "Village Elder|ELDSTHNK|R:You call yourself \"Clyde\", correct?$DB_DIALOGUETEST07";
+DB_DIALOGUETEST07 = "Clyde|CLYSSICK|L:--~s:Uh! How did you~--$DB_DIALOGUETEST08";
+DB_DIALOGUETEST08 = "Village Elder|ELDSNORM|R:My people here are not what you might call#0.3:... #human.#2.0:\n#I do not feel the need to disclose further. Please state your purpose here.$DB_DIALOGUETEST09";
+DB_DIALOGUETEST09 = "Clyde|CLYSSICK|L:~s:#0.8:...#~$DB_DIALOGUETEST10";
+DB_DIALOGUETEST10 = "Clyde|CLYSNORM|L:~s:Sh...~--sure.$DB_DIALOGUETEST11";
+DB_DIALOGUETEST11 = "Clyde|CLYSNORM|L:I am here on behalf of my home country. A horrible disease as struck the populace and I heard legend of a cure hidden on an island in the far seas.$DB_DIALOGUETEST12";
+DB_DIALOGUETEST12 = "Village Elder|ELDSTHNK|R:#0.2:...#$DB_DIALOGUETEST13";
+DB_DIALOGUETEST13 = "Village Elder|ELDSNORM|R:We understand.#2.0:\n#A quid pro quo, then? We have some troubles of our own. #0.1:Perhaps #your identity as an...#0.4: ~w:outsider~ #could be of use to us.$DB_DIALOGUETEST14";
+DB_DIALOGUETEST14 = "Clyde|CLYSNORM|L:Go on...$DB_DIALOGUETEST15";
+DB_DIALOGUETEST15 = "Village Elder|ELDSTHNK|R:Our small dwelling here was... originally meant to be temporary. Our previous home was the large complex, deeper in the jungle. We were driven out by an#0.1:... #ideology shift.$DB_DIALOGUETEST16";
+DB_DIALOGUETEST16 = "Clyde|CLYSNORM|L:So, you're refugees?$DB_DIALOGUETEST17";
+DB_DIALOGUETEST17 = "Village Elder|ELDSNORM|R:You could call us that, yes.#1.0:\n#There have been recent signs of escalation from within the complex. We wish to just leave these old wars behind and be at peace with nature.$DB_DIALOGUETEST18";
+DB_DIALOGUETEST18 = "Village Elder|ELDSTHNK|R:Our tribes knew how to tap into power beyond the physical realm. If you wish to heal your people, perhaps you will find the way there.$DB_DIALOGUETEST19";
+DB_DIALOGUETEST19 = "Clyde|CLYSNORM|L:What's in it for you? You proposed some form of trade here...$DB_DIALOGUETEST20";
+DB_DIALOGUETEST20 = "Village Elder|ELDSNORM|R:An outsider such as yourself could prove problematic for those seeking to do us harm.$DB_DIALOGUETEST21";
+DB_DIALOGUETEST21 = "Clyde|CLYSNORM|L:That sounds like a hard gamble you're taking on someone you just met.$DB_DIALOGUETEST22";
+DB_DIALOGUETEST22 = "Village Elder|ELDSNORM|R:\"gamble\" is a good word for it... but I am not betting the lives of myself or my people on this.#1.0:\n#After all, you came here seeking the cure to your people's disease.$DB_DIALOGUETEST23";
+DB_DIALOGUETEST23 = "Clyde|CLYSNORM|L:... Fine. Point the way, and I'll go.$DB_DIALOGUETEST24";
+DB_DIALOGUETEST24 = "Village Elder|ELDSNORM|R:\"Sure.\" The guard by the gateway will be informed.$DB_DIALOGUETEST25";
+DB_DIALOGUETEST25 = "Village Elder|ELDSNORM|R:In the meantime, you are welcome to visit with the others here. I do not sense ill intent with your visitation.$DB_DIALOGUETEST26";
+DB_DIALOGUETEST26 = "Clyde|CLYSNORM|L:Thanks. I'll try and be respectful.$DB_DIALOGUETEST27";
+DB_DIALOGUETEST27 = "Village Elder|ELDSNORM|R:Good luck, young one. May the stars above guide your journey.";
 
 // UPGRADES AND POWERUPS
 
