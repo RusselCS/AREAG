@@ -1,0 +1,24 @@
+
+/*
+// Button add function stuff
+// [TODO] REMOVE LATER!!
+int bs = 25;
+screenshotButton((320-bs, 0), (bs, bs));
+// Really it's just the Load Button from the AREAGLoadMenu but with a screenshot command
+
+// Screenshot command in the Menu handler
+if(command == "screenshot")
+{
+    Console.Printf("screenshot");
+    CallACS("map_screenshot_reopen"); // script already exists in MAPCONT.acs but needs to be updated when the journal is known
+    StateMan.saveState("ShotTest");
+}
+
+// Draw the savegame screenshot
+// Need to override ZForms's draw function to do this
+    override void Drawer() {
+        super.drawer();
+        StateMan.findAndSelectState("ShotTest");
+        StateMan.drawStatePic((160, 55), (480, 270));
+    }
+*/

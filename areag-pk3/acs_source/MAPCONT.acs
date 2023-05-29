@@ -550,3 +550,9 @@ script "map_forceResumePlane" (int which, int tag, int dest, int speed)
 		Ceiling_MoveToValue(tag, speed, abs(dest), dest < 0);
 	}
 }
+
+script "map_screenshot_reopen" (void)
+{
+	delay(1);
+	ScriptCall("Menu", "setMenu", "AREAGLoadMenu");
+}

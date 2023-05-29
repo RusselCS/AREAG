@@ -123,6 +123,7 @@
 // STATUS BARS AND MENUS
 #include "zscript/sbar/AREAGStatusBar.zsc"
 #include "zscript/sbar/menutools.zsc"
+#include "zscript/menus/Stateman.zsc"
 
 // List of ZForms changes listed in ExInclude.zsc
 #include "zscript/menus/ZForms/ZFinclude.zsc"

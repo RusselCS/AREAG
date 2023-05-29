@@ -1,0 +1,65 @@
+class StateMan ui
+{
+    // SaveGameManager abstraction
+    private static SaveGameManager sm() {
+        return SaveGameManager.GetManager();
+    }
+
+    static int findState(String nm) {
+        for(int i = 0; i < sm().SavegameCount(); i++) {
+            let node = sm().GetSaveGame(i);
+            if(node.SaveTitle == nm) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    static int findAndSelectState(String nm) {
+        int idx = findState(nm);
+
+        if(idx != -1) {
+            return selectState(idx);
+        }
+
+        return -1;
+    }
+
+    static int selectState(int idx) {
+        return sm().ExtractSaveData(idx);
+    }
+
+    static void saveState(String nm) {
+        int idx = findState(nm);
+        if(idx == -1) {
+            sm().InsertNewSaveNode();
+            sm().DoSave(sm().SavegameCount()-1, nm);
+        } else {
+            sm().DoSave(idx, nm);
+        }
+    }
+
+    static void loadState(String nm) {
+        int idx = findState(nm);
+
+        if(idx != -1) {
+            sm().LoadSavegame(idx);
+        }
+    }
+
+    static void clearState() {
+        sm().ClearSaveStuff();
+    }
+
+    static bool drawStatePic(Vector2 pos, Vector2 size) {
+        return sm().DrawSavePic(pos.x, pos.y, size.x, size.y);
+    }
+
+    static int size() {
+        return sm().SavegameCount();
+    }
+
+    static SaveGameNode getState(int idx) {
+        return sm().getSaveGame(idx);
+    }
+}
