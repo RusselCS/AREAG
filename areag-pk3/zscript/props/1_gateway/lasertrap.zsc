@@ -1,12 +1,11 @@
 class LaserTrap : Actor
 {
-    //$Category AREAG-Traps
-    //$Title Laser Trap
-    //$Sprite E0WCA0
-    //$NotAngled
-
     Default
     {
+        //$Category AREAG-Traps
+        //$Title Laser Trap
+        //$Sprite E0WCA0
+
         renderstyle "none";
         height 32;
         radius 10;

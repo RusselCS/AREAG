@@ -1,12 +1,15 @@
 // AREA TRANSITION GATES
 class AreaGate : SecActEnter
 {
-    //$Category AREAG-Map Tools
-    //$Title Area Gate
-    //$Sprite E0WCC0
-    //$NotAngled
-    //$Arg0 Map ID
-    //$Arg1 Door ID
+    Default
+    {
+        //$Category AREAG-Map Tools
+        //$Title Area Gate
+        //$Sprite E0WCC0
+        //$NotAngled
+        //$Arg0 Map ID
+        //$Arg1 Door ID
+    }
 
     override void PostBeginPlay() {
         int id = args[0];

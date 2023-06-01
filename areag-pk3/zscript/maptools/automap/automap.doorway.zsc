@@ -1,13 +1,12 @@
 class AutomapDoorway : BasicActor
 {
-    //$Category AREAG-Automap
-	//$Title Room Change (Doorway)
-	//$Sprite E0WBE0
-    //$Arg0 Front Room
-    //$Arg1 Back Room
-
     Default
     {
+        //$Category AREAG-Automap
+        //$Title Room Change (Doorway)
+        //$Sprite E0WBE0
+        //$Arg0 Front Room
+        //$Arg1 Back Room
         +NOGRAVITY;
         +NOCLIP;
     }

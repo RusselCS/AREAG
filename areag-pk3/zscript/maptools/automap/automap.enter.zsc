@@ -1,13 +1,12 @@
 class AutomapEntrance : BasicActor
 {
-    //$Category AREAG-Automap
-	//$Title Starting Room
-	//$Sprite E0WBG0
-    //$Arg0 Room ID
-	//$NotAngled
-
     Default
     {
+        //$Category AREAG-Automap
+        //$Title Starting Room
+        //$Sprite E0WBG0
+        //$Arg0 Room ID
+        //$NotAngled
         +NOGRAVITY;
         +NOINTERACTION;
     }

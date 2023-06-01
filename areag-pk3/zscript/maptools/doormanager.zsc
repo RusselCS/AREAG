@@ -1,14 +1,17 @@
 // DOORS
 class DoorController : Actor
 {
-    //$Category AREAG-Map Tools
-    //$Title Door Controller
-	//$Sprite E0WAC0
-    //$Arg0 Key Number
-    //$Arg1 Front Room ID
-    //$Arg2 Back Room ID
-    //$Arg3 Open Height
-    //$Arg4 Closed Height
+    Default
+    {
+        //$Category AREAG-Map Tools
+        //$Title Door Controller
+        //$Sprite E0WAC0
+        //$Arg0 Key Number
+        //$Arg1 Front Room ID
+        //$Arg2 Back Room ID
+        //$Arg3 Open Height
+        //$Arg4 Closed Height
+    }
 
     Sector sDoor;
     array<Line> doorLines;

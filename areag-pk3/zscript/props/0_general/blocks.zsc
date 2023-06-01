@@ -1,17 +1,17 @@
 // PUSH BLOCKS, FLOOR SWITCHES
 class AREAGPushBlock : BasicActionProp
 {
-    //$Category AREAG-Map Tools
-    //$Title Large Stone Block
-	//$Sprite E0WCF0
-    //$NotAngled
-
     mixin AREAG_Common;
     AREAGPlayerPawn plr;
     bool bPushActive;
 
     Default
     {
+        //$Category AREAG-Map Tools
+        //$Title Large Stone Block
+        //$Sprite E0WCF0
+        //$NotAngled
+        
         +SOLID;
         +SLIDESONWALLS;
         +CANPASS;
@@ -188,13 +188,13 @@ extend class AREAGProtoWeapon {
 
 class AREAGPushBlockSmall : AREAGPushBlock
 {
-    //$Category AREAG-Map Tools
-    //$Title Small Metal Block
-	//$Sprite E0WCG0
-    //$NotAngled
-
     Default
     {
+        //$Category AREAG-Map Tools
+        //$Title Small Metal Block
+        //$Sprite E0WCG0
+        //$NotAngled
+        
         Height 32;
         Radius 16;
         Scale 1.0;

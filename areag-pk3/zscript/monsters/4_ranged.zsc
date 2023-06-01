@@ -1,11 +1,10 @@
 class ObArcherSpawner : EnemySpawner
 {
-    //$Category AREAG-Enemies
-    //$Title Ob Archer
-	//$Sprite KNIGA2A8
-
     Default
     {
+        //$Category AREAG-Enemies
+        //$Title Ob Archer
+        //$Sprite KNIGA2A8
         EnemySpawner.EnemyType "ObArcher";
         Height 62;
         Radius 16;

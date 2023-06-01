@@ -1,15 +1,15 @@
 // SWITCH CRYSTALS
 class ZSCSwitchCrystal : BasicActor
 {
-    //$Category AREAG-Map Tools
-    //$Title Crystal Switch
-	//$Sprite E0WAD0
-    //$NotAngled
-
     bool bSwitchOn;
 
     Default
     {
+        //$Category AREAG-Map Tools
+        //$Title Crystal Switch
+        //$Sprite E0WAD0
+        //$NotAngled
+        
         +SOLID;
         +SHOOTABLE;
         +NOBLOOD;
@@ -106,11 +106,6 @@ class CrystalSwitchPop : Actor
 
 class ZSCFloorSwitch : Actor
 {
-    //$Category AREAG-Map Tools
-    //$Title Floor Switch
-	//$Sprite E0WAB0
-    //$NotAngled
-
     mixin AREAG_Common;
 
     static const String[] steps = {
@@ -123,6 +118,11 @@ class ZSCFloorSwitch : Actor
 
     Default
     {
+        //$Category AREAG-Map Tools
+        //$Title Floor Switch
+        //$Sprite E0WAB0
+        //$NotAngled
+
         -SOLID;
         radius 32;
         height 10;
@@ -180,14 +180,14 @@ class ZSCFloorSwitch : Actor
 
 class ZSCWallSwitch : Actor
 {
-    //$Category AREAG-Map Tools
-    //$Title Wall Switch
-	//$Sprite E0WCI0
-
     bool bSwitchOn;
 
     Default
     {
+        //$Category AREAG-Map Tools
+        //$Title Wall Switch
+	    //$Sprite E0WCI0
+
         +NOINTERACTION;
         +NOGRAVITY;
 	    +WALLSPRITE;

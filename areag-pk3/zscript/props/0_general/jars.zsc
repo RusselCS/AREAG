@@ -90,12 +90,13 @@ class JarSpawner : BasicActor
 
 class JarSmall : StoneBody
 {
-    //$Category AREAG-Map Tools
-    //$Title Jar Small
-    //$Sprite E0WCE0
-    //$NotAngled
     Default
     {
+        //$Category AREAG-Map Tools
+        //$Title Jar Small
+        //$Sprite E0WCE0
+        //$NotAngled
+        
         Health 3;
         scale 2.5;
         radius 14;
@@ -130,12 +131,13 @@ class BigJarSpawner : JarSpawner
 
 class JarBig : JarSmall
 {
-    //$Category AREAG-Map Tools
-    //$Title Jar Large
-	//$Sprite E0WCD0
-    //$NotAngled
     Default
     {
+        //$Category AREAG-Map Tools
+        //$Title Jar Large
+        //$Sprite E0WCD0
+        //$NotAngled
+        
         radius 18;
         height 36;
     }

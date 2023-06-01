@@ -1,11 +1,10 @@
 class ObBruteSpawner : EnemySpawner
 {
-    //$Category AREAG-Enemies
-    //$Title Ob Brute
-	//$Sprite SMT1A2C8
-
     Default
     {
+        //$Category AREAG-Enemies
+        //$Title Ob Brute
+        //$Sprite SMT1A2C8
         EnemySpawner.EnemyType "ObBrute";
         Height 82;
         Radius 24;

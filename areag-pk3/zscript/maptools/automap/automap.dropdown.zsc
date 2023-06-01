@@ -1,14 +1,13 @@
 class AutomapDropdown : BasicActor
 {
-    //$Category AREAG-Automap
-	//$Title Room Change (Dropdown)
-	//$Sprite E0WBD0
-    //$Arg0 Top Room
-    //$Arg1 Bottom Room
-	//$NotAngled
-	
     Default
     {
+        //$Category AREAG-Automap
+        //$Title Room Change (Dropdown)
+        //$Sprite E0WBD0
+        //$Arg0 Top Room
+        //$Arg1 Bottom Room
+        //$NotAngled
         +NOGRAVITY;
         +NOINTERACTION;
     }
@@ -31,18 +30,22 @@ class AutomapDropdown : BasicActor
 
     override void BasicTick()
     {
-        if(playerInSector()) {
-            if(plr.pos.z > pos.z) {
-                if(plr.getRoomId() != topRoom) {
-                    // Set player tag to top;
-                    plr.setRoomId(topRoom);
-                    console.printf("Entered topRoom %d", topRoom);
-                }
-            } else {
-                if(plr.getRoomId() != botRoom) {
-                    // Set player tag to bottom;
-                    plr.setRoomId(botRoom);
-                    console.printf("Entered botRoom %d", botRoom);
+        int plrRoom = plr.getRoomId();
+        if(plrRoom == topRoom || plrRoom == botRoom)
+        {
+            if(playerInSector()) {
+                if(plr.pos.z > pos.z) {
+                    if(plr.getRoomId() != topRoom) {
+                        // Set player tag to top;
+                        plr.setRoomId(topRoom);
+                        console.printf("Entered topRoom %d", topRoom);
+                    }
+                } else {
+                    if(plr.getRoomId() != botRoom) {
+                        // Set player tag to bottom;
+                        plr.setRoomId(botRoom);
+                        console.printf("Entered botRoom %d", botRoom);
+                    }
                 }
             }
         }

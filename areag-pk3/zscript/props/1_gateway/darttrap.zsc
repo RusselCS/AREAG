@@ -1,11 +1,11 @@
 class DartTrap : BasicActor
 {
-    //$Category AREAG-Traps
-    //$Title Dart Trap
-    //$Sprite E0WBB0
-
     Default
     {
+        //$Category AREAG-Traps
+        //$Title Dart Trap
+        //$Sprite E0WBB0
+
         +NOGRAVITY;
         -SOLID;
         height 16;

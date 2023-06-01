@@ -1,14 +1,13 @@
 class MonsterPathNode : BasicActor
 {
-    //$Category AREAG-Map Tools
-	//$Title Monster Path Node
-	//$Sprite E0WBF0
-	//$NotAngled
-    //$Arg0 Next Node
-    //$Arg1 Delay Time
-
     Default
     {
+        //$Category AREAG-Map Tools
+        //$Title Monster Path Node
+        //$Sprite E0WBF0
+        //$NotAngled
+        //$Arg0 Next Node
+        //$Arg1 Delay Time
         +NOINTERACTION;
         +NOGRAVITY;
         Renderstyle "None";

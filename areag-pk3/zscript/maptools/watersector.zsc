@@ -1,12 +1,12 @@
 class WaterSector : SoundEnvironment
 {
-	//$Category AREAG-Map Tools
-	//$Title Water Sector
-	//$Sprite E0WAA0
-	//$ClearArgs
-	//$NotAngled
     Default
     {
+		//$Category AREAG-Map Tools
+		//$Title Water Sector
+		//$Sprite E0WAA0
+		//$ClearArgs
+		//$NotAngled
         height 3;
         radius 3;
         +DORMANT;

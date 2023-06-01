@@ -229,13 +229,12 @@ class HornNoteClear : HornNoteHandler
 
 class HornSwitch : ZSCSwitchCrystal
 {
-	//$Category AREAG-Map Tools
-    //$Title Music Switch
-	//$Sprite E0WAE0
-    //$NotAngled
-
 	Default
 	{
+		//$Category AREAG-Map Tools
+    	//$Title Music Switch
+		//$Sprite E0WAE0
+    	//$NotAngled
 		+NOINTERACTION;
 	}
 
