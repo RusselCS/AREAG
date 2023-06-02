@@ -1,0 +1,117 @@
+class JournalShared ui
+{
+    static const String[] tabIcons = {
+        "JRNLTAB1",
+        "JRNLTAB2",
+        "JRNLTAB3",
+        "JRNLTAB4",
+        "JRNLTAB5",
+        "JRNLTAB6"
+    };
+
+    static const Name[] tabMenus = {
+        "AREAGMapMenu",
+        "AREAGEventLogMenu",
+        "AREAGScrapbookMenu",
+        "AREAGSatchelMenu",
+        "AREAGRadioMenu",
+        "AREAGSettingsMenu"
+    };
+
+    static const String[] tabCommands = {
+        "Map",
+        "EventLog",
+        "Scrapbook",
+        "Satchel",
+        "Radio",
+        "Settings"
+    };
+
+    static String activeTab() {
+        return "JRNLTABA";
+    }
+
+    static String inactiveTab() {
+        return "JRNLTABI";
+    }
+
+    static String background() {
+        return "JRNLBACK";
+    }
+
+    static Font font() {
+        return GenericMenu.OptionFont();
+    }
+
+    static Vector2 getTabPos(int slot, int idx) {
+        int diff = (idx-slot);
+        int y = (16+2)*idx; // height + split
+
+        if(diff >= 0) {
+            return (-diff, y);
+        } else {
+            return (-(JournalShared.tabIcons.size()-slot+idx), y);
+        }
+    }
+
+    static int getTabSlot(Name key) {
+        for(int i = 0; i < JournalShared.tabMenus.size(); i++) {
+            if(JournalShared.tabMenus[i] == key) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    static Vector2 createBackground(Vector2 res, ZFFrame frame) {
+
+        let boxSize = (280, 186);
+
+        let image = ZFImage.create (
+            ((res.X - boxSize.X) / 2., (res.Y - boxSize.Y) / 2.),
+            boxSize,
+            JournalShared.background()
+            //alignment: AlignType_TopLeft,
+            //imageScale: (1, 1),
+            //tiled: false
+        );
+        
+        image.Pack(frame);
+
+        return (image.getPos() + (14, 14));
+    }
+
+    static void createTabs(int slot, Vector2 startPos, ZFFrame frame) {
+        for(int i = 0; i < JournalShared.tabIcons.size(); i++) {
+            let tabPos = startPos + getTabPos(slot, i);
+
+            String baseTab;
+
+            if(slot == i) {
+                baseTab = JournalShared.ActiveTab();
+            } else {
+                baseTab = JournalShared.InactiveTab();
+            }
+
+            let tab = ZFImage.create (
+                tabPos,
+                (23, 16),
+                baseTab
+                //alignment: AlignType_TopLeft,
+                //imageScale: (1, 1),
+                //tiled: false
+            );
+            tab.Pack(frame);
+
+            let icon = ZFImage.create (
+                tabPos + (3, 1),
+                (14, 14),
+                JournalShared.tabIcons[i],
+                //alignment: AlignType_TopLeft,
+                imageScale: (0.028, 0.028)
+                //tiled: false
+            );
+            icon.pack(frame);
+        }
+    }
+}
