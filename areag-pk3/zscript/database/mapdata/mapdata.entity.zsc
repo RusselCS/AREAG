@@ -93,3 +93,35 @@ class AREAGMapData : Object
         return route;
     }
 }
+
+class AREAGRoomData : Object
+{
+    private String title;
+    private int baseFloor;
+    private Array<float> floorZ;
+
+    AREAGRoomData Create() {
+        title = "";
+        baseFloor = 0;
+        return self;
+    }
+
+    void config(String nm, int bf) {
+        title = nm;
+        baseFloor = bf;
+    }
+
+    AREAGRoomData Init(String nm, int bf) {
+        config(nm, bf);
+        return self;
+    }
+
+    void setTitle(String nm) { title = nm; }
+    void setBaseFloor(int bf) { baseFloor = bf; }
+    void addFloorZ(float ht) { floorZ.push(ht); }
+
+    String getTitle() { return title; }
+    int getBaseFloor() { return baseFloor; }
+    float getFloorZ(int idx) { return floorZ[idx]; }
+    int getFloorZSize() { return floorZ.size(); }
+}

@@ -260,3 +260,43 @@ class ErrorMarker : MapMarker
 		wait;
 	}
 }
+
+class DebugPlane : BasicActor
+{
+	Default
+	{
+		renderstyle "Translucent";
+		alpha 0.6;
+		+NOGRAVITY;
+		+NOINTERACTION;
+		+MISSILE;
+		+FLATSPRITE;
+		height 2;
+		radius 2;
+	}
+
+	static const String colors[] = {
+		"DebugPlaneR",
+		"DebugPlaneO",
+		"DebugPlaneY",
+		"DebugPlaneG",
+		"DebugPlaneB",
+		"DebugPlaneI",
+		"DebugPlaneV"
+	};
+
+	float zPos;
+
+	override void BasicInit()
+	{
+		zPos = target.pos.z;
+		A_SetTranslation(colors[(zpos/128) % colors.size()]);
+	}
+
+	States
+	{
+	Spawn:
+		DBGP A 1 A_Warp(AAPTR_TARGET, target.pos.x, target.pos.y, zPos, 0, WARPF_ABSOLUTEANGLE|WARPF_ABSOLUTEPOSITION|WARPF_INTERPOLATE|WARPF_NOCHECKPOSITION);
+		wait;
+	}
+}
