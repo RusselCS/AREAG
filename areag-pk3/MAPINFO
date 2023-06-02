@@ -20,6 +20,7 @@ DoomEdNums
 	10575 = AutomapDropdown
 	10576 = AutomapDoorway
 	10577 = AutomapEntrance
+	// 10578 = AutomapFloor
 
     20000 = JarSpawner
     20001 = BigJarSpawner
