@@ -78,12 +78,12 @@ class EnemySpawner : BasicActor
                 if(activeEnemy) {
                     if(!playerInRoom() && !enemyInSight()) {
                         if(!activeEnemy.sightFrozen) {
-                            console.printf("Freezing enemy");
+                            // console.printf("Freezing enemy");
                             activeEnemy.sightFrozen = true;
                         }
                     } else {
                         if(activeEnemy.sightFrozen) {
-                            console.printf("Unfreezing enemy");
+                            // console.printf("Unfreezing enemy");
                             activeEnemy.sightFrozen = false;
                         }
                     }
@@ -95,7 +95,7 @@ class EnemySpawner : BasicActor
                         } else {
                             if(canRespawn()) {
                                 respawnCountdown--;
-                                console.printf("Frozen counting down %d", respawnCountdown);
+                                // console.printf("Frozen counting down %d", respawnCountdown);
                                 if(respawnCountdown <= 0) {
                                     activeEnemy.Destroy();
                                     spawnEnemy();
@@ -114,7 +114,7 @@ class EnemySpawner : BasicActor
                     } else {
                         if(canRespawn()) {
                             respawnCountdown--;
-                            console.printf("Dead counting down %d", respawnCountdown);
+                            // console.printf("Dead counting down %d", respawnCountdown);
                             if(respawnCountdown <= 0) {
                                 spawnEnemy();
                             }

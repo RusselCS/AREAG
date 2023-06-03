@@ -54,6 +54,18 @@ extend class AREAGPlayerPawn
     }
 
     void setRoomId(int room) {
+        SetInventory("RoomIdCounter", room);
         roomId = room;
+        Console.printf("Switched to room %s", MapDataRepo.getRoomName(level.levelnum, roomId-100));
+
+        for(int i = 0; i < MapDataRepo.getRoomFloorCount(level.levelnum, roomId-100); i++) {
+            bool s;
+            Actor a;
+            float zd = MapDataRepo.getRoomFloorZ(level.levelnum, roomId-100, i);
+            [s, a] = A_SpawnItemEx("RoomDebugPlane", 0, 0, zd-pos.z, 0, 0, 0, 0, SXF_ABSOLUTEANGLE|SXF_SETTARGET|SXF_NOCHECKPOSITION);
+            a.args[0] = room;
+        }
     }
 }
+
+class RoomIdCounter : Counter {}

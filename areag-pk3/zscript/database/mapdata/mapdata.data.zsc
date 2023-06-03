@@ -19,6 +19,8 @@ class MapUtilInit : StaticEventHandler
             maps.clear();
         }
 
+        AREAGRoomData latestRoom;
+
         addMap(new("AREAGMapData").Init(1, "ADV00", "MCRNE_00", "$NAME_ADV00", "TI00", "SAVE_OUTSKIRTS", "Outskirts"));
         latestMap.addPickup("IronShieldPickup");
         latestMap.addPickup("EmptyItem");
@@ -44,6 +46,79 @@ class MapUtilInit : StaticEventHandler
         latestMap.addPickup("EmptyItem");
         latestMap.addPickup("EmptyItem");          // 10
         latestMap.addPickup("EmptyItem");
+
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("entryway", -1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("underhalls", -1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("the gantlet", -1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("the focus", 0)); // 03
+        latestRoom.addFloorZ(1280);
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("the waste tunnels", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("the crusher", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("dead simple", -1)); // 06
+        latestRoom.addFloorZ(992);
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("tricks and traps", -1)); // 07
+        latestRoom.addFloorZ(992);
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("the pit", -1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("refueling base", -1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("'o' of destruction!", -1)); // 10
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("the factory", -1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("downtown", -1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("the inmost dens", -1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("industrial zone", -1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("suburbs", -1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("tenements", -1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("the courtyard", -1)); // 17
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("the citadel", -1)); // 18
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("gotcha!", -1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("nirvana", -1)); // 20
+        latestRoom.addFloorZ(768);
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("the catacombs", -1)); // 21
+        latestRoom.addFloorZ(848);
+        latestRoom.addFloorZ(1336);
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("barrels o' fun", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("the chasm", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("bloodfalls", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("the abandoned mines", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("monster condo", 1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("the spirit world", 1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("the living end", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("icon of sin", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("wolfenstein", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("grosse", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("congo", 0)); // 32
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("well of souls", -1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("aztec", -1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("caged", -1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("ghost town", -1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("baron's lair", -1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("caughtyard", -1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("realm", -1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("abattoire", -1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("onslaught", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("hunted", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("speed", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("the crypt", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("genesis", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("the twilight", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("the omen", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("compound", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("neurosphere", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("nme", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("the death domain", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("slayer", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("impossible mission", 1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("tombstone", 1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("the final frontier", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("the temple of darkness", -1));
+        latestRoom.addFloorZ(1168);
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("bunker", -1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("anti-christ", -1));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("the sewers", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("odyssey of noises", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("the gateway of hell", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("cyberden", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("go 2 it", 0));
+        latestRoom = latestMap.addRoom(new("AREAGRoomData").Init("system control", 0));
         
         addMap(new("AREAGMapData").Init(3, "ADV02", "MCRNE_02", "$NAME_ADV02", "TI03", "SAVE_STUDY", "Queen's Study"));
         latestMap.addPickup("EmptyItem");

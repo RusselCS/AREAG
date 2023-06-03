@@ -290,7 +290,7 @@ class DebugPlane : BasicActor
 	override void BasicInit()
 	{
 		zPos = target.pos.z;
-		A_SetTranslation(colors[(zpos/128) % colors.size()]);
+		A_SetTranslation(colors[(zpos/256) % colors.size()]);
 	}
 
 	States
@@ -298,5 +298,24 @@ class DebugPlane : BasicActor
 	Spawn:
 		DBGP A 1 A_Warp(AAPTR_TARGET, target.pos.x, target.pos.y, zPos, 0, WARPF_ABSOLUTEANGLE|WARPF_ABSOLUTEPOSITION|WARPF_INTERPOLATE|WARPF_NOCHECKPOSITION);
 		wait;
+	}
+}
+
+class RoomDebugPlane : DebugPlane
+{
+	int room;
+
+	override void BasicInit()
+	{
+		super.BasicInit();
+		room = args[0];
+		zPos = pos.z;
+	}
+
+	override void BasicTick()
+	{
+		super.BasicTick();
+		if(target.CountInv("RoomIdCounter") != room)
+			Destroy();
 	}
 }

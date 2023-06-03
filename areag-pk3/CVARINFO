@@ -21,6 +21,7 @@ user bool db_enginepushable = true;
 // TEST MAP VARIABLES
 server int db_enemytestterrain = 0;
 server int db_mapexitdest = 0;
+server int db_basefloor = 0;
 
 // SYSTEM TOGGLES
 server noarchive bool sys_timefreeze = false;

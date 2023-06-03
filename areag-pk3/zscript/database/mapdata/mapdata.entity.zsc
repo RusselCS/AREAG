@@ -10,6 +10,7 @@ class AREAGMapData : Object
     private int route;
     private Array<String> pickups;
     private Array<int> pickupRooms;
+    private Array<AREAGRoomData> rooms;
 
     AREAGMapData Init(int lnum, String cd, String rn, String ln, String ti, String cv, String mn) {
         levelNum = lnum;
@@ -38,6 +39,24 @@ class AREAGMapData : Object
             return "EmptyItem";
         } else {
             return pickups[id];
+        }
+    }
+
+    AREAGRoomData addRoom(AREAGRoomData room) {
+        rooms.push(room);
+        return room;
+    }
+
+    void clearRooms() {
+        rooms.clear();
+    }
+
+    AREAGRoomData getRoom(int id) {
+        if(id < 0 || id >= rooms.size()) {
+            console.printf("Tried to access room ID: %d when the pickup table for this map is size %d.", id, rooms.size());
+            return null;
+        } else {
+            return rooms[id];
         }
     }
 

@@ -13,3 +13,7 @@ alias CMD_LOAD_3 "pukename map_loadGame 3"
 
 alias db_stopsectors "pukename map_pauseMovingSectors"
 alias db_resumesectors "pukename map_resumeMovingSectors"
+
+alias setfloor "pukename map_setfloor"
+alias addfloorz "pukename map_addfloorz"
+alias printfloors "pukename map_printfloors"

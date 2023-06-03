@@ -246,4 +246,34 @@ class MapDataRepo Abstract
         let evh = getRepository();
         return evh.maps.size() - evh.excludeMaps;
     }
+
+    static String getRoomName(int levelnum, int room) {
+        let id = getMapByLevelNum(levelNum);
+        let evh = getRepository();
+
+        if(id != -1 && evh) {
+            return evh.maps[id].getRoom(room).getTitle();
+        }
+        return "";
+    }
+
+    static int getRoomFloorCount(int levelnum, int room) {
+        let id = getMapByLevelNum(levelNum);
+        let evh = getRepository();
+
+        if(id != -1 && evh) {
+            return evh.maps[id].getRoom(room).getFloorZSize();
+        }
+        return 0;
+    }
+
+    static float getRoomFloorZ(int levelnum, int room, int idx) {
+        let id = getMapByLevelNum(levelNum);
+        let evh = getRepository();
+
+        if(id != -1 && evh) {
+            return evh.maps[id].getRoom(room).getFloorZ(idx);
+        }
+        return -255.0;
+    }
 }
