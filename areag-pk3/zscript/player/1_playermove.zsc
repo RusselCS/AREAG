@@ -23,7 +23,7 @@ extend class AREAGPlayerPawn {
 
     double dBaseGravity;
 
-    vector2 prevBob;
+    vector2 prevSway;
     double prevViewBob;
 
     double dBaseRadius;
@@ -427,8 +427,8 @@ extend class AREAGPlayerPawn {
             r = (0, 0);
         }
 
-        vector2 goal = Vec2Lerp(prevBob, r, ticfrac/2);
-        prevBob = goal;
+        vector2 goal = Vec2Lerp(prevSway, r, ticfrac/2);
+        prevSway = goal;
         goal.y += max(Lerp(lerpVelZ, vel.z, 0.5), -16.0);
 
 		return goal;

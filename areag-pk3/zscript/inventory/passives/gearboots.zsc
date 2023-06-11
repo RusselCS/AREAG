@@ -155,8 +155,8 @@ extend class AREAGPlayerPawn
             -cos(ang) * 0.8 * 60.0,
              1.0-sin(ang) * 0.4 * 60.0
         );
-        res = Vec2Lerp(prevBob, res, ticfrac/2);
-        prevBob = res;
+        res = Vec2Lerp(prevSway, res, ticfrac/2);
+        prevSway = res;
 
         return res;
 
@@ -176,12 +176,12 @@ extend class AREAGPlayerPawn
 
         // bobx = Player.Bob * wep.BobRangeX;
         // boby = Player.Bob * wep.BobRangeY;
-        // bobx *= prevBobXFracMult;
-        // boby *= prevBobYFracMult;
+        // bobx *= prevSwayXFracMult;
+        // boby *= prevSwayYFracMult;
         // p[1] = (bobx, boby+5.0);
 
-        // prevBobXFracMult = xFracMult;
-        // prevBobYFracMult = yFracMult;
+        // prevSwayXFracMult = xFracMult;
+        // prevSwayYFracMult = yFracMult;
         
         // vector2 interp = p[0] * (1 - 0.5) + p[1] * 0.5;
         // interp.y += Lerp(lerpVelZ, vel.z, 0.5);
