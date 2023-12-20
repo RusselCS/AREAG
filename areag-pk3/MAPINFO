@@ -60,7 +60,7 @@ cluster 1
 
 GAMEINFO
 {
-    EventHandlers = "MapUtilInit", "MovingSectorsHandler", //"MEvents", "ReverseViewHandler", "DynamicMusicHandler"
+    EventHandlers = "MapUtilInit", "MovingSectorsHandler"//, "MEvents", "ReverseViewHandler", "DynamicMusicHandler"
 	statusbarclass = "AREAGStatusBar"
 }
 
