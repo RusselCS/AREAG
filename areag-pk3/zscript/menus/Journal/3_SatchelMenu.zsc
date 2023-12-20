@@ -1,0 +1,216 @@
+
+class AREAGSatchelMenuHandler : ZFHandler
+{
+    AREAGSatchelMenu menu;
+
+    override void buttonClickCommand (ZFButton caller, String command)
+    {
+        console.printf("Calling button click command %s", command);
+
+        if (command == "Load_1")
+        {
+            CallACS("map_loadGame", 1);
+            close(true);
+        }
+        else if(command == "Load_2")
+        {
+            CallACS("map_loadGame", 2);
+            close(true);
+        }
+        else if(command == "Load_3")
+        {
+            CallACS("map_loadGame", 3);
+            close(true);
+        }
+    }
+
+    void close(bool leave) {
+        if(leave)
+            menu.mParentMenu = null;
+        menu.Close();
+    }
+}
+
+class AREAGSatchelMenu : ZFGenericMenu
+{
+    // The menu's command handler.
+    // We need a command handler so we can make our menu interactable.
+    AREAGSatchelMenuHandler handler;
+
+    // A font to use for text.
+    Font smallFont;
+    vector2 startPos;
+
+    int tabSlot;
+
+    override void Init (Menu parent)
+    {
+        // Call GenericMenu's 'Init' function to do some required initialization.
+        Super.Init (parent);
+        SetBaseResolution ((320, 200));
+        smallFont = OptionFont ();
+        tabSlot = JournalShared.getTabSlot("AREAGSatchelMenu");
+
+        handler = new ('AREAGSatchelMenuHandler');
+        handler.menu = self;
+
+        //createFocusIndicator();
+        startPos = JournalShared.createBackground(baseResolution, mainFrame);
+        JournalShared.createTabs(tabSlot, baseResolution, (19, 15), mainFrame);
+    }
+}
+
+// class MEvents : EventHandler
+// {
+//     override bool InputProcess (InputEvent e)
+//     {
+//         if (e.Type == InputEvent.Type_KeyDown) {
+//             if(CallACS("menu_fillcontroller_isActive")) {
+//                 console.printf("you pressed %s", idToKey(e.KeyScan));
+//                 CallACS("menu_fillcontroller_button", e.KeyScan);
+//             } else {
+//                 console.printf("");
+//             }
+//         }
+//         // if (e.Type == InputEvent.Type_KeyDown)
+//         //     SendNetworkEvent("KEYPRESS", e.KeyScan);            
+//         return false;
+//     }
+    
+//     override void NetworkProcess(ConsoleEvent e)
+//     {    
+//         //if (e.Name == "KEYPRESS" && e.Args[0] == 34)    //G pressed
+//         if (e.Name == "KEYPRESS")
+//            console.printf("you pressed %d", e.Args[0]);
+//     }
+
+//     ui String idToKey(int id) {
+//         String ret = "Unknown Input (id: %d)";
+//         switch(id) {
+//             case InputEvent.Key_Pause: ret = "Key_Pause (id: %d)"; break;
+//             case InputEvent.Key_RightArrow: ret = "Key_RightArrow (id: %d)"; break;
+//             case InputEvent.Key_LeftArrow: ret = "Key_LeftArrow (id: %d)"; break;
+//             case InputEvent.Key_UpArrow: ret = "Key_UpArrow (id: %d)"; break;
+//             case InputEvent.Key_DownArrow: ret = "Key_DownArrow (id: %d)"; break;
+//             case InputEvent.Key_Escape: ret = "Key_Escape (id: %d)"; break;
+//             case InputEvent.Key_Enter: ret = "Key_Enter (id: %d)"; break;
+//             case InputEvent.Key_Space: ret = "Key_Space (id: %d)"; break;
+//             case InputEvent.Key_Tab: ret = "Key_Tab (id: %d)"; break;
+//             case InputEvent.Key_F1: ret = "Key_F1 (id: %d)"; break;
+//             case InputEvent.Key_F2: ret = "Key_F2 (id: %d)"; break;
+//             case InputEvent.Key_F3: ret = "Key_F3 (id: %d)"; break;
+//             case InputEvent.Key_F4: ret = "Key_F4 (id: %d)"; break;
+//             case InputEvent.Key_F5: ret = "Key_F5 (id: %d)"; break;
+//             case InputEvent.Key_F6: ret = "Key_F6 (id: %d)"; break;
+//             case InputEvent.Key_F7: ret = "Key_F7 (id: %d)"; break;
+//             case InputEvent.Key_F8: ret = "Key_F8 (id: %d)"; break;
+//             case InputEvent.Key_F9: ret = "Key_F9 (id: %d)"; break;
+//             case InputEvent.Key_F10: ret = "Key_F10 (id: %d)"; break;
+//             case InputEvent.Key_F11: ret = "Key_F11 (id: %d)"; break;
+//             case InputEvent.Key_F12: ret = "Key_F12 (id: %d)"; break;
+//             case InputEvent.Key_Grave: ret = "Key_Grave (id: %d)"; break;
+//             case InputEvent.KEY_kpad_1: ret = "KEY_kpad_1 (id: %d)"; break;
+//             case InputEvent.KEY_kpad_2: ret = "KEY_kpad_2 (id: %d)"; break;
+//             case InputEvent.KEY_kpad_3: ret = "KEY_kpad_3 (id: %d)"; break;
+//             case InputEvent.KEY_kpad_4: ret = "KEY_kpad_4 (id: %d)"; break;
+//             case InputEvent.KEY_kpad_5: ret = "KEY_kpad_5 (id: %d)"; break;
+//             case InputEvent.KEY_kpad_6: ret = "KEY_kpad_6 (id: %d)"; break;
+//             case InputEvent.KEY_kpad_7: ret = "KEY_kpad_7 (id: %d)"; break;
+//             case InputEvent.KEY_kpad_8: ret = "KEY_kpad_8 (id: %d)"; break;
+//             case InputEvent.KEY_kpad_9: ret = "KEY_kpad_9 (id: %d)"; break;
+//             case InputEvent.KEY_kpad_0: ret = "KEY_kpad_0 (id: %d)"; break;
+//             case InputEvent.KEY_kpad_Minus: ret = "KEY_kpad_Minus (id: %d)"; break;
+//             case InputEvent.KEY_kpad_Plus: ret = "KEY_kpad_Plus (id: %d)"; break;
+//             case InputEvent.KEY_kpad_Period: ret = "KEY_kpad_Period (id: %d)"; break;
+//             case InputEvent.Key_Backspace: ret = "Key_Backspace (id: %d)"; break;
+//             case InputEvent.Key_Equals: ret = "Key_Equals (id: %d)"; break;
+//             case InputEvent.Key_Minus: ret = "Key_Minus (id: %d)"; break;
+//             case InputEvent.Key_LShift: ret = "Key_LShift (id: %d)"; break;
+//             case InputEvent.Key_LCtrl: ret = "Key_LCtrl (id: %d)"; break;
+//             case InputEvent.Key_LAlt: ret = "Key_LAlt (id: %d)"; break;
+//             case InputEvent.Key_RShift: ret = "Key_RShift (id: %d)"; break;
+//             case InputEvent.Key_RCtrl: ret = "Key_RCtrl (id: %d)"; break;
+//             case InputEvent.Key_RAlt: ret = "Key_RAlt (id: %d)"; break;
+//             case InputEvent.Key_Ins: ret = "Key_Ins (id: %d)"; break;
+//             case InputEvent.Key_Del: ret = "Key_Del (id: %d)"; break;
+//             case InputEvent.Key_End: ret = "Key_End (id: %d)"; break;
+//             case InputEvent.Key_Home: ret = "Key_Home (id: %d)"; break;
+//             case InputEvent.Key_PgUp: ret = "Key_PgUp (id: %d)"; break;
+//             case InputEvent.Key_PgDn: ret = "Key_PgDn (id: %d)"; break;
+//             case InputEvent.KEY_VOLUMEDOWN: ret = "KEY_VOLUMEDOWN (id: %d)"; break;
+//             case InputEvent.KEY_VOLUMEUP: ret = "KEY_VOLUMEUP (id: %d)"; break;
+//             case InputEvent.Key_Mouse1: ret = "Key_Mouse1 (id: %d)"; break;
+//             case InputEvent.Key_Mouse2: ret = "Key_Mouse2 (id: %d)"; break;
+//             case InputEvent.Key_Mouse3: ret = "Key_Mouse3 (id: %d)"; break;
+//             case InputEvent.Key_Mouse4: ret = "Key_Mouse4 (id: %d)"; break;
+//             case InputEvent.Key_Mouse5: ret = "Key_Mouse5 (id: %d)"; break;
+//             case InputEvent.Key_Mouse6: ret = "Key_Mouse6 (id: %d)"; break;
+//             case InputEvent.Key_Mouse7: ret = "Key_Mouse7 (id: %d)"; break;
+//             case InputEvent.Key_Mouse8: ret = "Key_Mouse8 (id: %d)"; break;
+//             case InputEvent.Key_FirstJoyButton: ret = "Key_FirstJoyButton (id: %d)"; break;
+//             case InputEvent.Key_Joy1: ret = "Key_Joy1 (id: %d)"; break;
+//             case InputEvent.Key_Joy2: ret = "Key_Joy2 (id: %d)"; break;
+//             case InputEvent.Key_Joy3: ret = "Key_Joy3 (id: %d)"; break;
+//             case InputEvent.Key_Joy4: ret = "Key_Joy4 (id: %d)"; break;
+//             case InputEvent.Key_Joy5: ret = "Key_Joy5 (id: %d)"; break;
+//             case InputEvent.Key_Joy6: ret = "Key_Joy6 (id: %d)"; break;
+//             case InputEvent.Key_Joy7: ret = "Key_Joy7 (id: %d)"; break;
+//             case InputEvent.Key_Joy8: ret = "Key_Joy8 (id: %d)"; break;
+//             case InputEvent.Key_LastJoyButton: ret = "Key_LastJoyButton (id: %d)"; break;
+//             case InputEvent.Key_JoyPOV1_Up: ret = "Key_JoyPOV1_Up (id: %d)"; break;
+//             case InputEvent.Key_JoyPOV1_Right: ret = "Key_JoyPOV1_Right (id: %d)"; break;
+//             case InputEvent.Key_JoyPOV1_Down: ret = "Key_JoyPOV1_Down (id: %d)"; break;
+//             case InputEvent.Key_JoyPOV1_Left: ret = "Key_JoyPOV1_Left (id: %d)"; break;
+//             case InputEvent.Key_JoyPOV2_Up: ret = "Key_JoyPOV2_Up (id: %d)"; break;
+//             case InputEvent.Key_JoyPOV3_Up: ret = "Key_JoyPOV3_Up (id: %d)"; break;
+//             case InputEvent.Key_JoyPOV4_Up: ret = "Key_JoyPOV4_Up (id: %d)"; break;
+//             case InputEvent.Key_MWheelUp: ret = "Key_MWheelUp (id: %d)"; break;
+//             case InputEvent.Key_MWheelDown: ret = "Key_MWheelDown (id: %d)"; break;
+//             case InputEvent.Key_MWheelRight: ret = "Key_MWheelRight (id: %d)"; break;
+//             case InputEvent.Key_MWheelLeft: ret = "Key_MWheelLeft (id: %d)"; break;
+//             case InputEvent.Key_JoyAxis1Plus: ret = "Key_JoyAxis1Plus (id: %d)"; break;
+//             case InputEvent.Key_JoyAxis1Minus: ret = "Key_JoyAxis1Minus (id: %d)"; break;
+//             case InputEvent.Key_JoyAxis2Plus: ret = "Key_JoyAxis2Plus (id: %d)"; break;
+//             case InputEvent.Key_JoyAxis2Minus: ret = "Key_JoyAxis2Minus (id: %d)"; break;
+//             case InputEvent.Key_JoyAxis3Plus: ret = "Key_JoyAxis3Plus (id: %d)"; break;
+//             case InputEvent.Key_JoyAxis3Minus: ret = "Key_JoyAxis3Minus (id: %d)"; break;
+//             case InputEvent.Key_JoyAxis4Plus: ret = "Key_JoyAxis4Plus (id: %d)"; break;
+//             case InputEvent.Key_JoyAxis4Minus: ret = "Key_JoyAxis4Minus (id: %d)"; break;
+//             case InputEvent.Key_JoyAxis5Plus: ret = "Key_JoyAxis5Plus (id: %d)"; break;
+//             case InputEvent.Key_JoyAxis5Minus: ret = "Key_JoyAxis5Minus (id: %d)"; break;
+//             case InputEvent.Key_JoyAxis6Plus: ret = "Key_JoyAxis6Plus (id: %d)"; break;
+//             case InputEvent.Key_JoyAxis6Minus: ret = "Key_JoyAxis6Minus (id: %d)"; break;
+//             case InputEvent.Key_JoyAxis7Plus: ret = "Key_JoyAxis7Plus (id: %d)"; break;
+//             case InputEvent.Key_JoyAxis7Minus: ret = "Key_JoyAxis7Minus (id: %d)"; break;
+//             case InputEvent.Key_JoyAxis8Plus: ret = "Key_JoyAxis8Plus (id: %d)"; break;
+//             case InputEvent.Key_JoyAxis8Minus: ret = "Key_JoyAxis8Minus (id: %d)"; break;
+//             case InputEvent.Num_JoyAxisButtons: ret = "Num_JoyAxisButtons (id: %d)"; break;
+//             case InputEvent.Key_Pad_LThumb_Right: ret = "Key_Pad_LThumb_Right (id: %d)"; break;
+//             case InputEvent.Key_Pad_LThumb_Left: ret = "Key_Pad_LThumb_Left (id: %d)"; break;
+//             case InputEvent.Key_Pad_LThumb_Down: ret = "Key_Pad_LThumb_Down (id: %d)"; break;
+//             case InputEvent.Key_Pad_LThumb_Up: ret = "Key_Pad_LThumb_Up (id: %d)"; break;
+//             case InputEvent.Key_Pad_RThumb_Right: ret = "Key_Pad_RThumb_Right (id: %d)"; break;
+//             case InputEvent.Key_Pad_RThumb_Left: ret = "Key_Pad_RThumb_Left (id: %d)"; break;
+//             case InputEvent.Key_Pad_RThumb_Down: ret = "Key_Pad_RThumb_Down (id: %d)"; break;
+//             case InputEvent.Key_Pad_RThumb_Up: ret = "Key_Pad_RThumb_Up (id: %d)"; break;
+//             case InputEvent.Key_Pad_DPad_Up: ret = "Key_Pad_DPad_Up (id: %d)"; break;
+//             case InputEvent.Key_Pad_DPad_Down: ret = "Key_Pad_DPad_Down (id: %d)"; break;
+//             case InputEvent.Key_Pad_DPad_Left: ret = "Key_Pad_DPad_Left (id: %d)"; break;
+//             case InputEvent.Key_Pad_DPad_Right: ret = "Key_Pad_DPad_Right (id: %d)"; break;
+//             case InputEvent.Key_Pad_Start: ret = "Key_Pad_Start (id: %d)"; break;
+//             case InputEvent.Key_Pad_Back: ret = "Key_Pad_Back (id: %d)"; break;
+//             case InputEvent.Key_Pad_LThumb: ret = "Key_Pad_LThumb (id: %d)"; break;
+//             case InputEvent.Key_Pad_RThumb: ret = "Key_Pad_RThumb (id: %d)"; break;
+//             case InputEvent.Key_Pad_LShoulder: ret = "Key_Pad_LShoulder (id: %d)"; break;
+//             case InputEvent.Key_Pad_RShoulder: ret = "Key_Pad_RShoulder (id: %d)"; break;
+//             case InputEvent.Key_Pad_LTrigger: ret = "Key_Pad_LTrigger (id: %d)"; break;
+//             case InputEvent.Key_Pad_RTrigger: ret = "Key_Pad_RTrigger (id: %d)"; break;
+//             case InputEvent.Key_Pad_A: ret = "Key_Pad_A (id: %d)"; break;
+//             case InputEvent.Key_Pad_B: ret = "Key_Pad_B (id: %d)"; break;
+//             case InputEvent.Key_Pad_X: ret = "Key_Pad_X (id: %d)"; break;
+//             case InputEvent.Key_Pad_Y: ret = "Key_Pad_Y (id: %d)"; break;
+//             case InputEvent.Num_Keys: ret = "Num_Keys (id: %d)"; break;
+//         }
+//         return String.Format(ret, id);
+//     }
+// }

@@ -184,10 +184,10 @@ class AREAGDebugMenu : ZFGenericMenu
     }
 
     ZFFrame createScrollArea(ZFFrame frm, vector2 pos, vector2 size, double scrollHeight) {
-        let scrNorm = ZFBoxTextures.CreateTexturePixels("SCRNORML", (5, 5), (8, 8), boxTiled, boxTiled);
-        let scrHovr = ZFBoxTextures.CreateTexturePixels("SCRHOVER", (5, 5), (8, 8), boxTiled, boxTiled);
-        let scrClik = ZFBoxTextures.CreateTexturePixels("SCRCLICK", (5, 5), (8, 8), boxTiled, boxTiled);
-        let scrBG   = ZFBoxTextures.CreateTexturePixels("SCRBCKGR", (5, 5), (8, 8), boxTiled, boxTiled);
+        let scrNorm = ZFBoxTextures.CreateTexturePixels("JRNLSCRN", (9, 9), (16, 16), boxTiled, boxTiled);
+        let scrHovr = ZFBoxTextures.CreateTexturePixels("JRNLSCRH", (9, 9), (16, 16), boxTiled, boxTiled);
+        let scrClik = ZFBoxTextures.CreateTexturePixels("JRNLSCRC", (9, 9), (16, 16), boxTiled, boxTiled);
+        let scrBG   = ZFBoxTextures.CreateTexturePixels("JRNLSCRB", (9, 9), (16, 16), boxTiled, boxTiled);
 
         let scr = ZFScrollContainer.create
         (
@@ -208,7 +208,7 @@ class AREAGDebugMenu : ZFGenericMenu
         (
             pos,
             size + (0, 2), // Size
-            scrClik, // Texture
+            ZFBoxTextures.CreateTexturePixels("SCRCLICK", (5, 5), (8, 8), boxTiled, boxTiled), // Texture
             (1.0, 1.0) // Scale
         );
 

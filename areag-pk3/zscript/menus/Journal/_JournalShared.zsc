@@ -5,7 +5,6 @@ class JournalShared ui
         "JRNLTAB2",
         "JRNLTAB3",
         "JRNLTAB4",
-        "JRNLTAB5",
         "JRNLTAB6"
     };
 
@@ -14,7 +13,6 @@ class JournalShared ui
         "AREAGEventLogMenu",
         "AREAGScrapbookMenu",
         "AREAGSatchelMenu",
-        "AREAGRadioMenu",
         "AREAGSettingsMenu"
     };
 
@@ -23,7 +21,6 @@ class JournalShared ui
         "EventLog",
         "Scrapbook",
         "Satchel",
-        "Radio",
         "Settings"
     };
 
@@ -63,16 +60,25 @@ class JournalShared ui
         return -1;
     }
 
+    static const int stdRes[] = {320, 200};
+
+    static Vector2 resFactor(Vector2 res) {
+
+        return (res.x/JournalShared.stdRes[0], res.y/JournalShared.stdRes[1]);
+    }
+
     static Vector2 createBackground(Vector2 res, ZFFrame frame) {
 
-        let boxSize = (280, 186);
+        let resFactor = JournalShared.resFactor(res);
+        let boxSizeX = 280.0 * resFactor.x;
+        let boxSizeY = 186.0 * resFactor.y;
 
         let image = ZFImage.create (
-            ((res.X - boxSize.X) / 2., (res.Y - boxSize.Y) / 2.),
-            boxSize,
-            JournalShared.background()
+            ((res.X - boxSizeX) / 2., (res.Y - boxSizeY) / 2.),
+            (boxSizeX, boxSizeY),
+            JournalShared.background(),
             //alignment: AlignType_TopLeft,
-            //imageScale: (1, 1),
+            imageScale: resFactor
             //tiled: false
         );
         
@@ -81,9 +87,13 @@ class JournalShared ui
         return (image.getPos() + (14, 14));
     }
 
-    static void createTabs(int slot, Vector2 startPos, ZFFrame frame) {
+    static void createTabs(int slot, Vector2 res, Vector2 startPos, ZFFrame frame) {
+        let resFactor = JournalShared.resFactor(res);
+
         for(int i = 0; i < JournalShared.tabIcons.size(); i++) {
             let tabPos = startPos + getTabPos(slot, i);
+            tabPos.x = tabPos.x * resFactor.x;
+            tabPos.y = tabPos.y * resFactor.y;
 
             String baseTab;
 
@@ -95,20 +105,20 @@ class JournalShared ui
 
             let tab = ZFImage.create (
                 tabPos,
-                (23, 16),
-                baseTab
+                (23 * resFactor.x, 16 * resFactor.y),
+                baseTab,
                 //alignment: AlignType_TopLeft,
-                //imageScale: (1, 1),
+                imageScale: resFactor
                 //tiled: false
             );
             tab.Pack(frame);
 
             let icon = ZFImage.create (
-                tabPos + (3, 1),
-                (14, 14),
+                tabPos + (3 * resFactor.x, 1 * resFactor.y),
+                (14 * resFactor.x, 14 * resFactor.y),
                 JournalShared.tabIcons[i],
                 //alignment: AlignType_TopLeft,
-                imageScale: (0.028, 0.028)
+                imageScale: (0.028 * resFactor.x, 0.028 * resFactor.y)
                 //tiled: false
             );
             icon.pack(frame);

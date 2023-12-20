@@ -26,6 +26,35 @@ server int db_basefloor = 0;
 // SYSTEM TOGGLES
 server noarchive bool sys_timefreeze = false;
 
+// CONTROLLER SETTINGS
+user int CONT_Style = 0;
+
+user int CONT_DPadU = 0;
+user int CONT_DPadD = 0;
+user int CONT_DPadL = 0;
+user int CONT_DPadR = 0;
+user int CONT_LStickU = 0;
+user int CONT_LStickD = 0;
+user int CONT_LStickL = 0;
+user int CONT_LStickR = 0;
+user int CONT_RStickU = 0;
+user int CONT_RStickD = 0;
+user int CONT_RStickL = 0;
+user int CONT_RStickR = 0;
+user int CONT_FaceU = 0;
+user int CONT_FaceD = 0;
+user int CONT_FaceL = 0;
+user int CONT_FaceR = 0;
+user int CONT_LB = 0;
+user int CONT_RB = 0;
+user int CONT_LT = 0;
+user int CONT_RT = 0;
+user int CONT_Select = 0;
+user int CONT_Start = 0;
+user int CONT_LStickB = 0;
+user int CONT_RStickB = 0;
+user int CONT_ExButton = 0;
+
 // SAVE SYSTEM
 user noarchive string SAVE_OUTSKIRTS_EVENT_0 = "000000000000000";
 user noarchive string SAVE_OUTSKIRTS_PICKUP_0 = "00000000000";

@@ -1,0 +1,52 @@
+#define ALIGN_RIGHT 0.1
+#define ALIGN_LEFT 0.2
+
+#define ALIGN_BOTTOM 0.1
+#define ALIGN_TOP 0.2
+
+#define BASE_RES_X 1280
+#define BASE_RES_Y 960
+
+#define BASE_ID 11037
+
+function void displayIcon(str icon, int id, int offsX, int offsY, int scaleX, int scaleY, int alpha)
+{
+    SetFont(icon);
+    displayMessage("A", id, offsX, offsY, scaleX, scaleY, alpha);
+}
+
+function void displayMessage(str msg, int id, int offsX, int offsY, int scaleX, int scaleY, int alpha)
+{
+	int resX = FixedDiv(BASE_RES_X, scaleX);
+	int resY = FixedDiv(BASE_RES_Y, scaleY);
+	offsX = FixedDiv(offsX, scaleX);
+	offsY = FixedDiv(offsY, scaleY);
+	SetHudSize(resX, resY, 0);
+	HudMessage(s:msg; HUDMSG_PLAIN|HUDMSG_ALPHA|HUDMSG_NOWRAP, id, CR_UNTRANSLATED, 1.0*(resX/2)+1.0*offsX, 1.0*(resY/2)+1.0*offsY, 0.0, alpha);
+}
+
+function void removeMessage(int id)
+{
+    HudMessage(s:""; HUDMSG_PLAIN, id, CR_UNTRANSLATED, 0, 0, 0.1);
+}
+
+function void displayIconBold(str icon, int id, int offsX, int offsY, int scaleX, int scaleY, int alpha)
+{
+    SetFont(icon);
+    displayMessageBold("A", id, offsX, offsY, scaleX, scaleY, alpha);
+}
+
+function void displayMessageBold(str msg, int id, int offsX, int offsY, int scaleX, int scaleY, int alpha)
+{
+	int resX = FixedDiv(BASE_RES_X, scaleX);
+	int resY = FixedDiv(BASE_RES_Y, scaleY);
+	offsX = FixedDiv(offsX, scaleX);
+	offsY = FixedDiv(offsY, scaleY);
+	SetHudSize(resX, resY, 0);
+	HudMessageBold(s:msg; HUDMSG_PLAIN|HUDMSG_ALPHA|HUDMSG_NOWRAP, id, CR_UNTRANSLATED, 1.0*(resX/2)+1.0*offsX, 1.0*(resY/2)+1.0*offsY, 0.0, alpha);
+}
+
+function void removeMessageBold(int id)
+{
+    HudMessageBold(s:""; HUDMSG_PLAIN, id, CR_UNTRANSLATED, 0, 0, 0.1);
+}

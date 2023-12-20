@@ -9,6 +9,8 @@
 #include "zscript/_baseclasses/BasicEffect.zsc"
 #include "zscript/_baseclasses/BasicProjectile.zsc"
 #include "zscript/_baseclasses/StoneBody.zsc"
+#include "zscript/_baseclasses/AGCVar.zsc"
+#include "zscript/_baseclasses/AGBinder.zsc"
 
 // DATABASE SYSTEM DEFINITIONS
 #include "zscript/database/mapdata.zsc"
@@ -130,7 +132,9 @@
 #include "zscript/menus/ZForms_Extensions/ExInclude.zsc"
 
 #include "zscript/menus/Journal/_JournalShared.zsc"
-#include "zscript/menus/Journal/SatchelMenu.zsc"
+#include "zscript/menus/Journal/3_SatchelMenu.zsc"
+#include "zscript/menus/Journal/4_SettingsMenu.zsc"
+#include "zscript/menus/Journal/4.1_ControllerCalibrateMenu.zsc"
 
 #include "zscript/menus/LoadMenu.zsc"
 #include "zscript/menus/Debug/DBMenuBase.zsc"

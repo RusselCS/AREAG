@@ -1,0 +1,22 @@
+class AGCVar : Object
+{
+    static ui CVar findCVar(Name nm) {
+        let ret = CVar.findCVar(nm);
+
+        if(!ret) {
+            ThrowAbortException("ERROR in CVar Wrapper: %s not found", nm);
+        }
+
+        return ret;
+    }
+
+    static ui bool getBool(Name nm) { return AGCVar.findCVar(nm).getBool(); }
+    static ui int getInt(Name nm) { return AGCVar.findCVar(nm).getInt(); }
+    static ui double getFloat(Name nm) { return AGCVar.findCVar(nm).getFloat(); }
+    static ui String getString(Name nm) { return AGCVar.findCVar(nm).getString(); }
+
+    static ui void setBool(Name nm, bool b) { AGCVar.findCVar(nm).setBool(b); }
+    static ui void setInt(Name nm, int v) { AGCVar.findCVar(nm).setInt(v); }
+    static ui void setFloat(Name nm, double v) { AGCVar.findCVar(nm).setFloat(v); }
+    static ui void setString(Name nm, String s) { AGCVar.findCVar(nm).setString(s); }
+}

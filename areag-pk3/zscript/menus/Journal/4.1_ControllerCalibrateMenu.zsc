@@ -1,0 +1,237 @@
+class AREAGControllerCalibrateMenuHandler : ZFHandler
+{
+    AREAGControllerCalibrateMenu menu;
+    bool readingPad;
+    
+    int btnIdx;
+    int activeButton;
+
+    int btnCooldown;
+    int BTN_COOLDOWN_MAX;
+
+    // broad swing: i assume only one menu can be active at a time
+    int oldMenuactive;
+
+    void handlerInit() {
+        btnIdx = 0;
+        activeButton = 0;
+        btnCooldown = Menu.menuTime();
+        BTN_COOLDOWN_MAX = 8;
+
+        oldMenuactive = menuactive;
+        menuactive = Menu.WaitKey;
+    }
+
+    override void buttonClickCommand (ZFButton caller, String command)
+    {
+        console.printf("Calling button click command %s", command);
+
+        if (command == "Load_1")
+        {
+            CallACS("map_loadGame", 1);
+            close(true);
+        }
+        else if(command == "Load_2")
+        {
+            CallACS("map_loadGame", 2);
+            close(true);
+        }
+        else if(command == "Load_3")
+        {
+            CallACS("map_loadGame", 3);
+            close(true);
+        }
+    }
+
+    void close(bool leave) {
+        if(leave)
+            menu.mParentMenu = null;
+        menuactive = oldMenuactive;
+        menu.Close();
+    }
+
+    void keyPressed(int input) {
+        if(activeButton == 0 && AGBinder.isInputController(input) && Menu.MenuTime()-btnCooldown >= BTN_COOLDOWN_MAX) {
+            activeButton = input;
+            AGBinder.setButtonToInput(btnIdx, input);
+            btnIdx++;
+            Menu.MenuSound("menu/advance");
+            if(btnIdx < AGBinder.cvars.size()) {
+                menu.updatePadIcons();
+            } else {
+                close(false);
+            }
+        } else {
+            if(activeButton != 0)
+                console.printf("Barred input %d. activeButton is %d", input, activeButton);
+            else if(!AGBinder.isInputController(input))
+                console.printf("Barred input %d. Not a controller input.", input);
+            else if(Menu.MenuTime()-btnCooldown < BTN_COOLDOWN_MAX)
+                console.printf("Barred input %d. Input too soon.", input);
+        }
+    }
+
+    void keyReleased(int input) {
+        if(input == activeButton) {
+            activeButton = 0;
+            btnCooldown = Menu.MenuTime();
+        }
+    }
+}
+
+class AREAGControllerCalibrateMenu : ZFGenericMenu
+{
+    AREAGControllerCalibrateMenuHandler handler;
+
+    // A font to use for text.
+    Font smallFont;
+    vector2 startPos;
+
+    int tabSlot;
+
+    double guiScale;
+
+    int jumpBind;
+    ZFImage zImg;
+
+    override void Init (Menu parent)
+    {
+        Super.Init (parent);
+
+        SetBaseResolution ((640, 400));
+        smallFont = OptionFont ();
+
+        handler = new ('AREAGControllerCalibrateMenuHandler');
+        handler.menu = self;
+        handler.handlerInit();
+
+        //createFocusIndicator();
+        startPos = JournalShared.createBackground(baseResolution, mainFrame);
+        JournalShared.createTabs(tabSlot, baseResolution, (19, 15), mainFrame);
+
+        guiScale = 1.0;
+
+        zImg = createIcon((100, 40), 1.0, AGBinder.getButtonIconFromId(handler.btnIdx));
+        zImg.pack(mainframe);
+    }
+
+    void updatePadIcons() {
+        // [TODO] Populate with logic to change all the button icons.
+        zImg.setImage(AGBinder.getButtonIconFromId(handler.btnIdx));
+    }
+
+    override bool onInputEvent(InputEvent e) {
+        int k = e.KeyScan;
+        if(e.Type == InputEvent.Type_KeyDown) {
+            console.printf("Pressing button %d", k);
+            handler.keyPressed(e.KeyScan);
+        } else if(e.Type == InputEvent.Type_KeyUp) {
+            console.printf("Releasing button %d", k);
+            handler.keyReleased(e.KeyScan);
+        }
+        return true;
+    }
+
+    // [Russ] Generic stuff that SHOULD be in the parent class but I'm too dumb to put them in myself
+    ZFButton createOptionButton(vector2 pos, String lbl, String cmd) {
+
+        let padding = 2;
+        let width = (smallFont.stringWidth(lbl) + padding*2) * guiScale;
+        let height = (smallFont.getHeight() + padding*2) * guiScale;
+
+        let baseBoxTexture = ZFBoxTextures.createSingleTexture("LOADBOX", true);
+        let clickedBoxTexture = ZFBoxTextures.createSingleTexture("LOADBXCL", true);
+
+        let btn = ZFButton.create(
+            pos, // Vector2
+            (width, height), // Vector2
+            lbl, // string
+            handler, // ZFHandler
+            cmd, // Name
+            baseBoxTexture, // ZFBoxTextures
+            baseBoxTexture, // ZFBoxTextures
+            clickedBoxTexture, // ZFBoxTextures
+            baseBoxTexture, // ZFBoxTextures
+            smallFont, // Font
+            guiScale // double
+            //textColor = Font.CR_WHITE, // int
+            //holdInterval = -1, // int
+            //alignment = AlignType_Center // AlignType
+        );
+
+        return btn;
+    }
+
+    ZFLabel createLabel(vector2 pos, String lbl) {
+
+        let ret = ZFLabel.create(
+            pos, // Vector2
+            pos, // Vector2
+            lbl, // string
+            smallFont, // Font
+            // alignment = AlignType_TopLeft, // AlignType
+            // wrap = true, // bool
+            autoSize: true, // bool
+            guiScale // double
+            // textColor = Font.CR_WHINULLTE, // int
+            // lineSpacing = 0, // double
+            // forElement = NULL // ZFElement
+        );
+
+        return ret;
+    }
+
+    ZFDropdownList createDropdown(vector2 pos, ZFDropdownItems items, String cmd, int defSel) {
+
+        let padding = 2;
+        let width = (getMaxWidth(items) + padding*2 + 20) * guiScale;
+        let height = (smallFont.getHeight() + padding*2) * guiScale;
+
+        let ret = ZFDropdownList.create(
+            pos, // Vector2 pos
+            (width, height), // Vector2 size
+            items, // ZFDropdownItems items
+            smallFont, // Font fnt
+            guiScale, // double textScale
+            Font.CR_WHITE, // int textColor
+            ZFBoxTextures.CreateTexturePixels("UIBG04", (5, 5), (8, 8), boxTiled, boxTiled), // ZFBoxTextures boxBg
+            ZFBoxTextures.CreateTexturePixels("UIBG05", (5, 5), (8, 8), boxTiled, boxTiled), // ZFBoxTextures listBg
+            ZFBoxTextures.CreateTexturePixels("UIBG03", (5, 5), (8, 8), boxTiled, boxTiled), // ZFBoxTextures highlightBg
+            "UIDD01", // string dropTex
+            defSel, // int defaultSelection
+            handler, // ZFHandler cmdHandler
+            cmd//, // Name command
+            //bindingFrame = NULL // ZFFrame bindingFrame
+        );
+
+        return ret;
+    }
+
+    ZFImage createIcon(vector2 pos, double scl, String img) {
+
+        let ret = ZFImage.create(
+            pos, // Vector2 pos
+            (32, 32), // Vector2 size
+            img, // string image
+            ZFElement.AlignType_TopLeft, // AlignType alignment
+            (guiScale*scl, guiScale*scl), // Vector2 imageScale
+            false // bool tiled
+        );
+
+        return ret;
+    }
+
+    int getMaxWidth(ZFDropdownItems items) {
+        int ret = 0;
+
+        for(int i = 0; i < items.items.size(); i++) {
+            let chk = smallFont.stringWidth(items.items[i]);
+            if(ret < chk) {
+                ret = chk;
+            }
+        }
+
+        return ret;
+    }
+}
+

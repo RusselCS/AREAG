@@ -1,0 +1,129 @@
+class AGControllerWatcher
+{
+
+}
+
+class AGBind ui
+{
+    ZFButton keyBtn;
+    ZFButton padBtn;
+    Name btnCommand;
+
+    ZFImage keyImg;
+    ZFImage padImg;
+
+    ZFLabel bindLabel;
+
+    int keyBind;
+    int padBind;
+
+    String bindString;
+}
+
+class AGBinder
+{
+    static ui bool isInputController(int input) {
+        return (input >= InputEvent.Key_Joy1) && !(input >= InputEvent.Key_MWheelUp && input <= InputEvent.Key_MWheelLeft);
+    }
+
+    static ui String getBindCmd(String cmd, bool controller) {
+        int btn1 = getBindFor(cmd, controller);
+        return getButtonIconFromInput(btn1, controller);
+    }
+
+    static ui int getBindFor(String cmd, bool controller) {
+        int ret1, ret2;
+        [ret1, ret2] = Bindings.getKeysForCommand(cmd);
+        if(isInputController(ret1) == controller) {
+            return ret1;
+        }
+        if(isInputController(ret2) == controller) {
+            return ret2;
+        }
+        return 0;
+    }
+
+    static const String cvars[] = { "CONT_DPadU", "CONT_DPadD", "CONT_DPadL", "CONT_DPadR","CONT_LStickU", "CONT_LStickD", "CONT_LStickL", "CONT_LStickR","CONT_RStickU", "CONT_RStickD", "CONT_RStickL", "CONT_RStickR","CONT_FaceU", "CONT_FaceD", "CONT_FaceL", "CONT_FaceR","CONT_LB", "CONT_RB", "CONT_LT", "CONT_RT","CONT_Select", "CONT_Start","CONT_LStickB", "CONT_RStickB","CONT_ExButton" };
+
+    static const String styles[] = { "Generic", "Nintendo", "Sony", "XBox" };
+
+    static const String buttonIconsG[] = {"UIBTDPUG","UIBTDPDG","UIBTDPLG","UIBTDPRG","UIBTLSUG","UIBTLSDG","UIBTLSLG","UIBTLSRG","UIBTRSUG","UIBTRSDG","UIBTRSLG","UIBTRSRG","UIBTFCUG","UIBTFCDG","UIBTFCLG","UIBTFCRG","UIBTLBG","UIBTRBG","UIBTLTG","UIBTRTG","UIBTSELG","UIBTSTRG","UIBTLSBG","UIBTRSBG","UIBTEXBG"};
+    static const String buttonIconsN[] = {"UIBTDPUN","UIBTDPDN","UIBTDPLN","UIBTDPRN","UIBTLSUN","UIBTLSDN","UIBTLSLN","UIBTLSRN","UIBTRSUN","UIBTRSDN","UIBTRSLN","UIBTRSRN","UIBTFCUN","UIBTFCDN","UIBTFCLN","UIBTFCRN","UIBTLBN","UIBTRBN","UIBTLTN","UIBTRTN","UIBTSELN","UIBTSTRN","UIBTLSBN","UIBTRSBN","UIBTEXBN"};
+    static const String buttonIconsS[] = {"UIBTDPUS","UIBTDPDS","UIBTDPLS","UIBTDPRS","UIBTLSUS","UIBTLSDS","UIBTLSLS","UIBTLSRS","UIBTRSUS","UIBTRSDS","UIBTRSLS","UIBTRSRS","UIBTFCUS","UIBTFCDS","UIBTFCLS","UIBTFCRS","UIBTLBS","UIBTRBS","UIBTLTS","UIBTRTS","UIBTSELS","UIBTSTRS","UIBTLSBS","UIBTRSBS","UIBTEXBS"};
+    static const String buttonIconsX[] = {"UIBTDPUX","UIBTDPDX","UIBTDPLX","UIBTDPRX","UIBTLSUX","UIBTLSDX","UIBTLSLX","UIBTLSRX","UIBTRSUX","UIBTRSDX","UIBTRSLX","UIBTRSRX","UIBTFCUX","UIBTFCDX","UIBTFCLX","UIBTFCRX","UIBTLBX","UIBTRBX","UIBTLTX","UIBTRTX","UIBTSELX","UIBTSTRX","UIBTLSBX","UIBTRSBX","UIBTEXBX"};
+
+    static ui String getButtonIconFromInput(int input, bool controller) {
+        if(controller) {
+            for(int i = 0; i < AGBinder.cvars.size(); i++) {
+                if(AGCvar.getInt(AGBinder.cvars[i]) == input)
+                    return getButtonIconFromStyleId(AGCVar.getInt("CONT_Style"), i);
+            }
+
+            return "NULLA0";
+        } else {
+            if(input == 0)
+                return "NULLA0";
+            else {
+                return String.format("UIBTK%03d", input);
+            }
+        }
+    }
+
+    static ui String getButtonIconFromStyleId(int st, int id) {
+        switch(st) {
+            case 0: return AGBinder.buttonIconsG[id];
+            case 1: return AGBinder.buttonIconsN[id];
+            case 2: return AGBinder.buttonIconsS[id];
+            case 3: return AGBinder.buttonIconsX[id];
+        }
+        return "NULLA0";
+    }
+
+    static ui String getButtonIconFromId(int id) {
+        return getButtonIconFromStyleId(AGCVar.getInt("CONT_Style"), id);
+    }
+
+    static ui String getButtonFromInput(int input) {
+        // console.printf("input: %d", input);
+        for(int i = 0; i < AGBinder.cvars.size(); i++) {
+            if(AGCvar.getInt(AGBinder.cvars[i]) == input)
+                return AGBinder.cvars[i];
+        }
+        return "MISSING";
+    }
+
+    static ui void setButtonToInput(int idx, int input) {
+        AGCvar.setInt(AGBinder.cvars[idx], input);
+    }
+
+    // static ui String getButtonFromInput(int input) {
+    //     CVar cv;
+    //     cv = CVar.FindCVar("CONT_DPadU"); if(cv) { if(cv.getInt() == input) { return "CONT_DPadU"; }}
+    //     cv = CVar.FindCVar("CONT_DPadD"); if(cv) { if(cv.getInt() == input) { return "CONT_DPadD"; }}
+    //     cv = CVar.FindCVar("CONT_DPadL"); if(cv) { if(cv.getInt() == input) { return "CONT_DPadL"; }}
+    //     cv = CVar.FindCVar("CONT_DPadR"); if(cv) { if(cv.getInt() == input) { return "CONT_DPadR"; }}
+    //     cv = CVar.FindCVar("CONT_LStickU"); if(cv) { if(cv.getInt() == input) { return "CONT_LStickU"; }}
+    //     cv = CVar.FindCVar("CONT_LStickD"); if(cv) { if(cv.getInt() == input) { return "CONT_LStickD"; }}
+    //     cv = CVar.FindCVar("CONT_LStickL"); if(cv) { if(cv.getInt() == input) { return "CONT_LStickL"; }}
+    //     cv = CVar.FindCVar("CONT_LStickR"); if(cv) { if(cv.getInt() == input) { return "CONT_LStickR"; }}
+    //     cv = CVar.FindCVar("CONT_RStickU"); if(cv) { if(cv.getInt() == input) { return "CONT_RStickU"; }}
+    //     cv = CVar.FindCVar("CONT_RStickD"); if(cv) { if(cv.getInt() == input) { return "CONT_RStickD"; }}
+    //     cv = CVar.FindCVar("CONT_RStickL"); if(cv) { if(cv.getInt() == input) { return "CONT_RStickL"; }}
+    //     cv = CVar.FindCVar("CONT_RStickR"); if(cv) { if(cv.getInt() == input) { return "CONT_RStickR"; }}
+    //     cv = CVar.FindCVar("CONT_FaceU"); if(cv) { if(cv.getInt() == input) { return "CONT_FaceU"; }}
+    //     cv = CVar.FindCVar("CONT_FaceD"); if(cv) { if(cv.getInt() == input) { return "CONT_FaceD"; }}
+    //     cv = CVar.FindCVar("CONT_FaceL"); if(cv) { if(cv.getInt() == input) { return "CONT_FaceL"; }}
+    //     cv = CVar.FindCVar("CONT_FaceR"); if(cv) { if(cv.getInt() == input) { return "CONT_FaceR"; }}
+    //     cv = CVar.FindCVar("CONT_LB"); if(cv) { if(cv.getInt() == input) { return "CONT_LB"; }}
+    //     cv = CVar.FindCVar("CONT_RB"); if(cv) { if(cv.getInt() == input) { return "CONT_RB"; }}
+    //     cv = CVar.FindCVar("CONT_LT"); if(cv) { if(cv.getInt() == input) { return "CONT_LT"; }}
+    //     cv = CVar.FindCVar("CONT_RT"); if(cv) { if(cv.getInt() == input) { return "CONT_RT"; }}
+    //     cv = CVar.FindCVar("CONT_Select"); if(cv) { if(cv.getInt() == input) { return "CONT_Select"; }}
+    //     cv = CVar.FindCVar("CONT_Start"); if(cv) { if(cv.getInt() == input) { return "CONT_Start"; }}
+    //     cv = CVar.FindCVar("CONT_LStickB"); if(cv) { if(cv.getInt() == input) { return "CONT_LStickB"; }}
+    //     cv = CVar.FindCVar("CONT_RStickB"); if(cv) { if(cv.getInt() == input) { return "CONT_RStickB"; }}
+    //     cv = CVar.FindCVar("CONT_ExButton"); if(cv) { if(cv.getInt() == input) { return "CONT_ExButton"; }}
+
+    //     return "MISSING";
+    // }
+}

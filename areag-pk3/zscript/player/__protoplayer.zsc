@@ -49,6 +49,7 @@ class AREAGProtoPlayer : PlayerPawn {
         iButtons = GetPlayerInput(MODINPUT_BUTTONS);
 
         // VelZ interpolations also based on Lithium.
+        // [TODO] Make sure to remove this proprietary code.
         if(Vel.Z - lastZVel > double.Epsilon)
         {
             if(lastZVel >= 0) zVelLerp += Vel.Z;
