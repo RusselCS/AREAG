@@ -415,7 +415,8 @@ script "map_checkEvent" (int evt)
 script "map_loadEvents" OPEN
 {
 	int levelNum = GetLevelInfo(LEVELINFO_LEVELNUM);
-	loadMapEvents(levelNum);
+	if(levelNum > 0)
+		loadMapEvents(levelNum);
 }
 
 script "map_savepoint" (int doorNum)

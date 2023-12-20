@@ -1,3 +1,16 @@
+// shaders
+HardwareShader PostProcess scene
+{
+	Name "reverseshader"
+	Shader "shaders/reverse.frag" 330
+}
+
+HardwareShader PostProcess scene
+{
+	Name "cartoonshader"
+	Shader "shaders/cartoon.glsl" 330
+}
+
 // ============================================ LIGHTS ============================================
 // GENERAL
 

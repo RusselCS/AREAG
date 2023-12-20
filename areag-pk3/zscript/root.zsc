@@ -145,3 +145,25 @@
 
 // TEST BOSS
 #include "zscript/bosses/0_testboss.zsc"
+
+class ReverseViewHandler : StaticEventHandler
+{
+    override void RenderOverlay(RenderEvent e)
+    {
+        // set the player's timer up correctly (more-than-1-tick precision)
+        PlayerInfo p = players[consoleplayer];
+        
+        if (p.mo.CountInv("TestScreenPower") > 0)
+        {
+            Shader.SetEnabled(p, "cartoonshader", true);
+        }
+        else
+        {
+            Shader.SetEnabled(p, "cartoonshader", false);
+        }
+    }
+}
+
+class ReverseScreenPower : Powerup { Default { powerup.duration -30; } }
+
+class TestScreenPower : ReverseScreenPower {}
