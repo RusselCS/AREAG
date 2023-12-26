@@ -22,7 +22,7 @@ class AREAGSettingsMenuHandler : ZFHandler
 
         if(command == "PADSTYLE") {
             AGCVar.setInt("CONT_Style", val);
-            menu.updatePadIcons(val);
+            menu.updatePadIcons();
         }
     }
 
@@ -71,22 +71,67 @@ class AREAGSettingsMenu : ZFGenericMenu
         startPos = JournalShared.createBackground(baseResolution, mainFrame);
         JournalShared.createTabs(tabSlot, baseResolution, (19, 15), mainFrame);
 
+        vector2 curPos = startPos;
+
         guiScale = 1.0;
 
-        createOptionButton((60, 20), "Calibrate Controller", "CALIBRATE").pack(mainFrame);
-
-        jumpBind = AGBinder.getBindFor("+jump", true);
-        createLabel((60, 40), String.format("Jump: %s", AGBinder.getButtonFromInput(jumpBind))).pack(mainFrame);
-        zImg = createIcon((100, 40), 1.0, AGBinder.getButtonIconFromInput(jumpBind, true));
-        zImg.pack(mainFrame);
-
+        createOptionButton(curPos, "Calibrate Controller", "CALIBRATE").pack(mainFrame);
+        curPos += (0, 32);
         let padStyleList = new('ZFDropdownItems');
 
         for(int i = 0; i < AGBinder.styles.size(); i++) {
             padStyleList.items.push(AGBinder.styles[i]);
         }
 
-        createDropdown((60, 60), padStyleList, "PADSTYLE", AGCvar.getInt("CONT_Style")).pack(mainFrame);
+        createDropdown(curPos, padStyleList, "PADSTYLE", AGCvar.getInt("CONT_Style")).pack(mainFrame);
+        curPos += (0, 48);
+
+        curPos = createBindAndLabel(curPos, guiScale, "Melee Weapon", "+attack", "", "", mainFrame);
+        curPos = createBindAndLabel(curPos, guiScale, "Sub Weapon", "+altattack", "", "", mainFrame);
+        curPos = createBindAndLabel(curPos, guiScale, "Held Item", "invuse", "", "", mainFrame);
+        curPos = createBindAndLabel(curPos, guiScale, "Activate Object", "+use", "", "", mainFrame);
+        curPos = createBindAndLabel(curPos, guiScale, "Jump", "+jump", "", "", mainFrame);
+        curPos = createBindAndLabel(curPos, guiScale, "Dash", "+user3", "", "", mainFrame);
+
+        // jumpBind = AGBinder.getBindFor("+jump", true);
+        // String jumpPad = AGBinder.getBindCmd("+jump", true);
+        // String jumpMKB = AGBinder.getBindCmd("+jump", false);
+        // createLabel(curPos+(0, 16), "Jump: ").pack(mainFrame);
+        // zImg = createIcon(curPos + (60, 0), 1.0, jumpMKB);
+        // zImg.pack(mainFrame);
+        // zImg = createIcon(curPos + (92, 0), 1.0, jumpPad);
+        // zImg.pack(mainFrame);
+        // curPos += (0, 32);
+    }
+
+    Array<ZFImage> images;
+    Array<String> binds;
+
+    vector2 createBindAndLabel(vector2 pos, Double scale, String lbl, String bind, String cmd1, String cmd2, ZFFrame frame) {
+        
+        createLabel(pos+(0, 8), String.format("%s:", lbl)).pack(frame);
+        String mkbIcon = AGBinder.getBindCmd(bind, false);
+        ZFImage mkbImg = createIcon(pos + (128, 0), scale, mkbIcon);
+        mkbImg.pack(frame);
+
+        String padIcon = AGBinder.getBindCmd(bind, true);
+        ZFImage padImg = createIcon(pos + (128+32, 0), scale, padIcon);
+        padImg.pack(frame);
+
+        images.push(padImg);
+        binds.push(bind);
+
+        return pos += (0, 32);
+    }
+
+    void updatePadIcons() {
+        for(int i = 0; i < images.size(); i++) {
+            images[i].setImage(AGBinder.getBindCmd(binds[i], true));
+        }
+    }
+
+    override void onReturn() {
+        updatePadIcons();
     }
 
     ZFButton createOptionButton(vector2 pos, String lbl, String cmd) {
@@ -125,8 +170,9 @@ class AREAGSettingsMenu : ZFGenericMenu
             pos, // Vector2
             lbl, // string
             smallFont, // Font
-            // alignment = AlignType_TopLeft, // AlignType
-            // wrap = true, // bool
+            ZFElement.AlignType_TopLeft,
+            false,
+            // wrap = false, // bool
             autoSize: true, // bool
             guiScale // double
             // textColor = Font.CR_WHINULLTE, // int
@@ -188,11 +234,6 @@ class AREAGSettingsMenu : ZFGenericMenu
         }
 
         return ret;
-    }
-
-    void updatePadIcons(int curSel) {
-        // [TODO] Populate with logic to change all the button icons.
-        zImg.setImage(AGBinder.getButtonIconFromInput(jumpBind, true));
     }
 }
 

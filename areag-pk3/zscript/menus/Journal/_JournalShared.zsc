@@ -84,7 +84,7 @@ class JournalShared ui
         
         image.Pack(frame);
 
-        return (image.getPos() + (14, 14));
+        return (image.getPos() + (64, 16));
     }
 
     static void createTabs(int slot, Vector2 res, Vector2 startPos, ZFFrame frame) {

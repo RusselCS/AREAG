@@ -9,6 +9,7 @@ Journal (Back)
 
 Satchel (Pause)
 - Gear, use items
+- Radio
 - Hats
 - (Journal shortcut)
 
@@ -19,3 +20,28 @@ Journal should just be all of them...
 - Satchel: https://game-icons.net/1x1/delapouite/backpack.html
 - Radio: https://game-icons.net/1x1/delapouite/pocket-radio.html
 - Settings: https://game-icons.net/1x1/lorc/gears.html
+
+
+Scrapbook:
+Max string size: 252 minus cvar name length.
+- Map snippit
+--- CVar: SB_MAP_XYY (X = Save #, YY = Page #)
+--- Format: "XXX,YYY;Z;AAA,BBB;CCC,DDD"
+----- XXX,YYY: Where on page to draw it.
+----- Z: Level number.
+----- AAA,BBB: Where in level to start the snippit.
+----- CCC,DDD: Size of the snippit.
+- Drawing (One per page)
+--- CVar name: SB_DRAW_XYYA (X = Save #; YY = Page #; A = A B C or D, which part of the image it is.)
+--- CVar format: "XXX,YYY;img"
+----- img format: Each character represents 16 pixels. "0-9A-Za-z!@#$%^&*()_+-=[]{}\|:;'"`~<>,.?/ " + tab.
+----- It's stored in 4 CVars to allow an image of 120x120 to be drawn.
+----- Each pixel can be one of six colors (transparent + 5 player-chosen colors).
+- Screenshot (One per page)
+--- CVar name: SB_SNAP_XYY (X = Save #, YY = Page #)
+--- Format: "XXX,YYY"
+--- Abuses the save system to draw a screenshot.
+- Notes (Up to six per page)
+--- CVar name: SB_NOTE_XYYA (X = Save #; YY = Page #; A = A number 1-6, which note ID it is.)
+--- CVar format: "XXX,YYY;text"
+--- Max note size: 225 characters.

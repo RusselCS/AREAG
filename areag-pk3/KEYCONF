@@ -17,3 +17,5 @@ alias db_resumesectors "pukename map_resumeMovingSectors"
 alias setfloor "pukename map_setfloor"
 alias addfloorz "pukename map_addfloorz"
 alias printfloors "pukename map_printfloors"
+
+alias defaultcontroller "CONT_DPadU = 0; CONT_DPadD = 0; CONT_DPadL = 0; CONT_DPadR = 0; CONT_LStickU = 0; CONT_LStickD = 0; CONT_LStickL = 0; CONT_LStickR = 0; CONT_RStickU = 0; CONT_RStickD = 0; CONT_RStickL = 0; CONT_RStickR = 0; CONT_FaceU = 0; CONT_FaceD = 0; CONT_FaceL = 0; CONT_FaceR = 0; CONT_LB = 0; CONT_RB = 0; CONT_LT = 0; CONT_RT = 0; CONT_Select = 0; CONT_Start = 0; CONT_LStickB = 0; CONT_RStickB = 0; CONT_ExButton = 0;"
