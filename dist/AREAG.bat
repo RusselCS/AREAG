@@ -1,1 +1,0 @@
-"engine/gzdoom.exe" -iwad ../wads/megagame.wad -file ../wads/AREAG.pk3 -file "../wads/AREAG_TEXTURES.wad" +sv_cheats true +logfile lastrun.log +map TESTMAP2

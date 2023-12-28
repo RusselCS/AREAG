@@ -1,0 +1,10 @@
+IWad
+{
+	Name = "AREAG"
+	Autoname = "AREAG"
+	Game = "Doom"
+	Config = "AREAG"
+	IWADName = "AREAG.ipk3"
+	MustContain = "ADV00"
+	bannercolors = "FF FF 00", "59 2D 00"
+}
